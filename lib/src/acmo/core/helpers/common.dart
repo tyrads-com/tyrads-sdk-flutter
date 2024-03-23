@@ -1,8 +1,6 @@
-import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:path_provider/path_provider.dart';
 
 SharedPreferences getSharedPreferences() {
   Future<SharedPreferences> pref0 = SharedPreferences.getInstance();
@@ -36,20 +34,3 @@ String acmoGetEmailURL(String email) {
   return "mailto:$email";
 }
 
-// bool acmoIsRTL() {
-//   var rtlLanguages = [
-//     'ur',
-//   ];
-//   return rtlLanguages.contains(Get.locale!.languageCode);
-// }
-
-Future<Directory> acmoUserLocalDirectory() async {
-  Directory appDocDirectory = await getApplicationDocumentsDirectory();
-  String localPath = appDocDirectory.path;
-  final savedDir = Directory(localPath);
-  bool hasExisted = await savedDir.exists();
-  if (!hasExisted) {
-    await savedDir.create();
-  }
-  return savedDir;
-}
