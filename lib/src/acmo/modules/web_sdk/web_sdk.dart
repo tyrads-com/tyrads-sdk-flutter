@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoWebSdk extends StatelessWidget {
@@ -21,12 +22,31 @@ class AcmoWebSdk extends StatelessWidget {
         return true;
       },
       child: SafeArea(
+        bottom: false,
         child: InAppWebView(
-          initialUrlRequest: URLRequest(url: WebUri(url)),
-          onWebViewCreated: (controller) {
-            webViewController = controller;
-          },
-        ),
+            initialUrlRequest: URLRequest(url: WebUri(url)),
+            onWebViewCreated: (controller) {
+              webViewController = controller;
+            },
+            shouldOverrideUrlLoading:
+                (controller, shouldOverrideUrlLoadingRequest) async {
+              var url =
+                  shouldOverrideUrlLoadingRequest.request.url?.rawValue ?? '';
+              if (url.contains("acmo-cmd")) {
+                if (url.contains("close-app")) {
+                  Tyrads.instance.back();
+                  return NavigationActionPolicy.CANCEL;
+                }
+              } else {
+                if ((url.toString()).contains('acmosoft.com')) {
+                  return NavigationActionPolicy.ALLOW;
+                } else {
+                  acmoLaunchURLForce(url);
+                  return NavigationActionPolicy.CANCEL;
+                }
+              }
+              return NavigationActionPolicy.ALLOW;
+            }),
       ),
     );
   }

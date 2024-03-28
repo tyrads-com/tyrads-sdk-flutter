@@ -100,8 +100,12 @@ class Tyrads {
     }, (error, stack) {});
   }
 
-  to(Widget page) {
-    navKey.currentState!.push(MaterialPageRoute(builder: (context) => page));
+  to(Widget page, {bool replace = false}) {
+    if (replace) {
+      navKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) => page));
+    } else {
+      navKey.currentState!.push(MaterialPageRoute(builder: (context) => page));
+    }
   }
 
   back() {
@@ -115,6 +119,7 @@ class Tyrads {
       }
       return true;
     }
+    Navigator.pop(parentContext!);
     return false;
   }
 }

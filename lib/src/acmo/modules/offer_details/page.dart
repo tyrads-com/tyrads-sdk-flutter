@@ -284,7 +284,7 @@ class _AcmoOfferDetailsPageState extends State<AcmoOfferDetailsPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           AcmoButtonOfferView(
-                            label: 'Play',
+                            label: 'Play Now',
                             onTap: () async {
                               _controller.openOffer();
                             },

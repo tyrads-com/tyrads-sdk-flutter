@@ -186,7 +186,7 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                         width: 74,
                         height: 31,
                         child: AcmoButton_3(
-                          label: "Play",
+                          label: "Play Now",
                           onTap: null,
                         )),
                   ),
