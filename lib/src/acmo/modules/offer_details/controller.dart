@@ -32,6 +32,9 @@ class AcmoOffersDetailsController {
       earnedPurchasePoints = 0;
       allCompletedEvents.clear();
       allActiveEvents.clear();
+      purchaseEvents.clear();
+      duplicateEvents.clear();
+      dailyPurchaseEvents.clear();
       item.payoutEvents.forEach((element) async {
         if (element.payoutAmount == 0) return;
         maxPoints += element.payoutAmountConverted.toInt();

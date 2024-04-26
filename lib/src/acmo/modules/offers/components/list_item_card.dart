@@ -151,7 +151,7 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                             width: 4,
                           ),
                           Text(
-                            numeral(item.campaignPayout.totalPayoutConverted,fractionDigits: 2),
+                            item.campaignPayout.totalPayoutConverted.numeral(digits: 2),
                             style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 10,

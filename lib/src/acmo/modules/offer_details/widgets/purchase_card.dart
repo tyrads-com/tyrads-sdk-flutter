@@ -353,7 +353,7 @@ class PurchaseCard extends StatelessWidget {
                                             SizedBox(
                                               width: 80,
                                               child: Text(
-                                                ' ${numeral(e.payoutAmountConverted, fractionDigits: 2)} $currencyName',
+                                                ' ${e.payoutAmountConverted.numeral(digits: 2)} $currencyName',
                                                 style: const TextStyle(
                                                     color: Colors.black,
                                                     fontWeight: FontWeight.w600,
@@ -510,7 +510,7 @@ class PurchaseCard extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${numeral(e.payoutAmountConverted, fractionDigits: 2)} $currencyName',
+                                      '${e.payoutAmountConverted.numeral(digits: 2)} $currencyName',
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
@@ -577,7 +577,7 @@ class PurchaseCard extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${numeral(e.payoutAmountConverted, fractionDigits: 2)} $currencyName',
+                                      '${e.payoutAmountConverted.numeral(digits: 2)} $currencyName',
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,

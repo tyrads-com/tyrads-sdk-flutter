@@ -65,7 +65,7 @@ class AcmoDeviceDetailsController {
     IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
     fd['deviceId'] = await PlatformDeviceId.getDeviceId;
     fd['device'] =
-        (iosInfo.model != null && iosInfo.model!.toLowerCase().contains("ipad"))
+        (iosInfo.model.toLowerCase().contains("ipad"))
             ? "iPad"
             : "iPhone";
     fd['brand'] = "Apple";

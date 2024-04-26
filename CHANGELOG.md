@@ -1,3 +1,7 @@
+## 0.0.4
+
+- updgraded package dependencies 
+- fixed purchase event duplicating on reload 
 
 ## 0.0.3
 

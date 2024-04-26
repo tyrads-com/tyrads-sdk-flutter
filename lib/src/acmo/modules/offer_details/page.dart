@@ -126,7 +126,7 @@ class _AcmoOfferDetailsPageState extends State<AcmoOfferDetailsPage> {
                                           width: 4,
                                         ),
                                         Text(
-                                          numeral(_controller.item.campaignPayout.totalPayoutConverted, fractionDigits: 2),
+                                          _controller.item.campaignPayout.totalPayoutConverted.numeral(digits: 2),
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 14),
