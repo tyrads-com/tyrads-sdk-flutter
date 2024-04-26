@@ -342,7 +342,7 @@ mixin _$AcmoTicketEventsModel {
   String get identifier => throw _privateConstructorUsedError;
   String get eventName => throw _privateConstructorUsedError;
   String get payoutType => throw _privateConstructorUsedError;
-  int get payoutAmountConverted => throw _privateConstructorUsedError;
+  double get payoutAmountConverted => throw _privateConstructorUsedError;
   bool get isTicketSubmitted => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -362,7 +362,7 @@ abstract class $AcmoTicketEventsModelCopyWith<$Res> {
       String identifier,
       String eventName,
       String payoutType,
-      int payoutAmountConverted,
+      double payoutAmountConverted,
       bool isTicketSubmitted});
 }
 
@@ -407,7 +407,7 @@ class _$AcmoTicketEventsModelCopyWithImpl<$Res,
       payoutAmountConverted: null == payoutAmountConverted
           ? _value.payoutAmountConverted
           : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       isTicketSubmitted: null == isTicketSubmitted
           ? _value.isTicketSubmitted
           : isTicketSubmitted // ignore: cast_nullable_to_non_nullable
@@ -430,7 +430,7 @@ abstract class _$$AcmoTicketEventsModelImplCopyWith<$Res>
       String identifier,
       String eventName,
       String payoutType,
-      int payoutAmountConverted,
+      double payoutAmountConverted,
       bool isTicketSubmitted});
 }
 
@@ -473,7 +473,7 @@ class __$$AcmoTicketEventsModelImplCopyWithImpl<$Res>
       payoutAmountConverted: null == payoutAmountConverted
           ? _value.payoutAmountConverted
           : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       isTicketSubmitted: null == isTicketSubmitted
           ? _value.isTicketSubmitted
           : isTicketSubmitted // ignore: cast_nullable_to_non_nullable
@@ -509,7 +509,7 @@ class _$AcmoTicketEventsModelImpl implements _AcmoTicketEventsModel {
   final String payoutType;
   @override
   @JsonKey()
-  final int payoutAmountConverted;
+  final double payoutAmountConverted;
   @override
   @JsonKey()
   final bool isTicketSubmitted;
@@ -563,7 +563,7 @@ abstract class _AcmoTicketEventsModel implements AcmoTicketEventsModel {
       final String identifier,
       final String eventName,
       final String payoutType,
-      final int payoutAmountConverted,
+      final double payoutAmountConverted,
       final bool isTicketSubmitted}) = _$AcmoTicketEventsModelImpl;
 
   factory _AcmoTicketEventsModel.fromJson(Map<String, dynamic> json) =
@@ -578,7 +578,7 @@ abstract class _AcmoTicketEventsModel implements AcmoTicketEventsModel {
   @override
   String get payoutType;
   @override
-  int get payoutAmountConverted;
+  double get payoutAmountConverted;
   @override
   bool get isTicketSubmitted;
   @override

@@ -16,6 +16,7 @@ import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
+import 'package:tyrads_sdk/src/acmo/modules/users/repository.dart';
 
 class Tyrads {
   static final Tyrads _singleton = Tyrads._internal();
@@ -92,6 +93,18 @@ class Tyrads {
     prefs.setString(AcmoKeyNames.USER_ID, publisherUserID);
   }
 
+  updateUser(String userId,{int? age , int? gender }) async {
+    var fd = <String, dynamic>{};
+    var repo = AcmoUsersRepository();
+    if (age != null) {
+      fd["age"] = age;
+    }
+    if (gender != null) {
+      fd["gender"] = gender;
+    }
+    await repo.updateUser(userId, fd);
+  }
+
   showOffers(context) {
     runZonedGuarded(() {
       parentContext = context;
@@ -102,7 +115,8 @@ class Tyrads {
 
   to(Widget page, {bool replace = false}) {
     if (replace) {
-      navKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) => page));
+      navKey.currentState!
+          .pushReplacement(MaterialPageRoute(builder: (context) => page));
     } else {
       navKey.currentState!.push(MaterialPageRoute(builder: (context) => page));
     }

@@ -18,7 +18,7 @@ class AcmoHelpPage extends StatelessWidget {
       body: Column(children: [
         AcmoHelpItemComponent(
           icon: Assets.images.sadFace.image(),
-          title: "I didn’t receive my TPoints",
+          title: "I didn’t receive my points",
           onTap: () async {
             Tyrads.instance.to(AcmoTicketsPage(
               id: id,

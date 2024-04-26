@@ -1,4 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:numeral/numeral.dart';
+import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/offer_details.dart';
 
 import '../../../../gen/assets.gen.dart';
 import '../../offers/components/custom_progress_bar.dart';
@@ -6,11 +9,14 @@ import 'countdown.dart';
 
 class PurchaseCard extends StatelessWidget {
   final bool isSuperCharge;
-  final List purchaseEvents;
-  final List dailyPurchaseEvents;
-  final List duplicateEvents;
+  final List<PayoutEvents> purchaseEvents;
+  final List<PayoutEvents> dailyPurchaseEvents;
+  final List<PayoutEvents> duplicateEvents;
   final int maxPoints;
   final int earnedPoints;
+  final String currencyIcon;
+  final String currencyName;
+
   const PurchaseCard(
       {Key? key,
       this.isSuperCharge = false,
@@ -18,7 +24,9 @@ class PurchaseCard extends StatelessWidget {
       required this.duplicateEvents,
       required this.dailyPurchaseEvents,
       required this.maxPoints,
-      required this.earnedPoints})
+      required this.earnedPoints,
+      required this.currencyIcon,
+      required this.currencyName})
       : super(key: key);
 
   @override
@@ -58,7 +66,7 @@ class PurchaseCard extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4),
                               child: Text(
-                                'you earned: $earnedPoints TPoints',
+                                'you earned: $earnedPoints $currencyName',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w400,
@@ -66,7 +74,7 @@ class PurchaseCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              'from total $maxPoints TPoints',
+                              'from total $maxPoints $currencyName',
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w700,
@@ -331,7 +339,13 @@ class PurchaseCard extends StatelessWidget {
                                           ),
                                         ),
                                         const Spacer(),
-                                        Assets.images.tPoints.image(height: 16),
+                                        CachedNetworkImage(
+                                            imageUrl: currencyIcon,
+                                            width: 16,
+                                            height: 16),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
@@ -339,7 +353,7 @@ class PurchaseCard extends StatelessWidget {
                                             SizedBox(
                                               width: 80,
                                               child: Text(
-                                                ' ${e.points} TPoints',
+                                                ' ${numeral(e.payoutAmountConverted, fractionDigits: 2)} $currencyName',
                                                 style: const TextStyle(
                                                     color: Colors.black,
                                                     fontWeight: FontWeight.w600,
@@ -351,7 +365,7 @@ class PurchaseCard extends StatelessWidget {
                                             //   padding: const EdgeInsets.only(
                                             //       top: 4.0),
                                             //   child: Text(
-                                            //     '${numeral(int.tryParse(e.points) ?? 0)} TPoints',
+                                            //     '${numeral(int.tryParse(e.points) ?? 0)} $currencyName',
                                             //     style: const TextStyle(
                                             //         color: Color(0xff26A1C8),
                                             //         fontWeight: FontWeight.w500,
@@ -363,11 +377,16 @@ class PurchaseCard extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  if (e.remainingTime > 0 ||
-                                      e.isRejected ||
-                                      e.isCompleted ||
-                                      e.isPending ||
-                                      e.timeUp)
+                                  if (e.maxTimeRemainSeconds > 0 ||
+                                      e.conversionStatus.toLowerCase() ==
+                                          'rejected' ||
+                                      e.conversionStatus.toLowerCase() ==
+                                          'pending' ||
+                                      e.conversionStatus.toLowerCase() ==
+                                          'completed' 
+                                        //  || e.timeUp
+                                     
+                                      )
                                     Container(
                                       height: 24,
                                       width: MediaQuery.of(context).size.width,
@@ -378,7 +397,9 @@ class PurchaseCard extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          if (e.isRejected)
+                                          if (e.conversionStatus
+                                                  .toLowerCase() ==
+                                              'rejected')
                                             const Center(
                                               child: Text(
                                                 'Rejected',
@@ -388,7 +409,9 @@ class PurchaseCard extends StatelessWidget {
                                                     fontSize: 12),
                                               ),
                                             )
-                                          else if (e.isPending)
+                                          else if (e.conversionStatus
+                                                  .toLowerCase() ==
+                                              'pending')
                                             const Center(
                                               child: Text(
                                                 'Pending',
@@ -398,17 +421,19 @@ class PurchaseCard extends StatelessWidget {
                                                     fontSize: 12),
                                               ),
                                             )
-                                          else if (e.timeUp)
-                                            const Center(
-                                              child: Text(
-                                                'Rejected, time limit reached',
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 12),
-                                              ),
-                                            )
-                                          else if (e.isCompleted)
+                                          // else if (e.timeUp)
+                                          //   const Center(
+                                          //     child: Text(
+                                          //       'Rejected, time limit reached',
+                                          //       style: TextStyle(
+                                          //           color: Colors.black,
+                                          //           fontWeight: FontWeight.w500,
+                                          //           fontSize: 12),
+                                          //     ),
+                                          //   )
+                                          else if (e.conversionStatus
+                                                  .toLowerCase() ==
+                                              'completed')
                                             const Center(
                                               child: Text(
                                                 'Completed',
@@ -418,7 +443,7 @@ class PurchaseCard extends StatelessWidget {
                                                     fontSize: 12),
                                               ),
                                             )
-                                          else if (e.remainingTime > 0)
+                                          else if (e.maxTimeRemainSeconds > 0)
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
@@ -432,7 +457,8 @@ class PurchaseCard extends StatelessWidget {
                                                       fontSize: 10),
                                                 ),
                                                 AcmoComponentCountdown(
-                                                  seconds: e.remainingTime,
+                                                  seconds:
+                                                      e.maxTimeRemainSeconds.toInt(),
                                                   style: const TextStyle(
                                                       color: Colors.black,
                                                       fontWeight:
@@ -473,7 +499,10 @@ class PurchaseCard extends StatelessWidget {
                                       fontSize: 12),
                                 ),
                                 const Spacer(),
-                                Assets.images.tPoints.image(height: 16),
+                                CachedNetworkImage(
+                                    imageUrl: currencyIcon,
+                                    width: 16,
+                                    height: 16),
                                 const SizedBox(
                                   width: 4,
                                 ),
@@ -481,7 +510,7 @@ class PurchaseCard extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${e.points} TPoints',
+                                      '${numeral(e.payoutAmountConverted, fractionDigits: 2)} $currencyName',
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
@@ -491,7 +520,7 @@ class PurchaseCard extends StatelessWidget {
                                     //   height: 4,
                                     // ),
                                     // Text(
-                                    //   '${numeral(int.tryParse(e.points) ?? 0)} TPoints',
+                                    //   '${numeral(int.tryParse(e.points) ?? 0)} $currencyName',
                                     //   style: const TextStyle(
                                     //       color: Color(0xff26A1C8),
                                     //       fontWeight: FontWeight.w600,
@@ -502,14 +531,14 @@ class PurchaseCard extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Padding(
+                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
                             child: AcmoCustomBarWithColor(
                               circularRadius: BorderRadius.circular(4),
                               title: e.eventName,
-                              total: e.dailyLimit,
-                              completed: e.todayCompleted,
+                              total:1,// e.dailyLimit,
+                              completed: 0,//e.todayCompleted,
                               progressBarColor: const Color(0xff26A1C8),
                             ),
                           )
@@ -537,7 +566,10 @@ class PurchaseCard extends StatelessWidget {
                                       fontSize: 12),
                                 ),
                                 const Spacer(),
-                                Assets.images.tPoints.image(height: 16),
+                                CachedNetworkImage(
+                                    imageUrl: currencyIcon,
+                                    width: 16,
+                                    height: 16),
                                 const SizedBox(
                                   width: 4,
                                 ),
@@ -545,7 +577,7 @@ class PurchaseCard extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${e.points} TPoints',
+                                      '${numeral(e.payoutAmountConverted, fractionDigits: 2)} $currencyName',
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
@@ -555,7 +587,7 @@ class PurchaseCard extends StatelessWidget {
                                     //   height: 4,
                                     // ),
                                     // Text(
-                                    //   '${numeral(int.tryParse(e.points) ?? 0)} TPoints',
+                                    //   '${numeral(int.tryParse(e.points) ?? 0)} $currencyName',
                                     //   style: const TextStyle(
                                     //       color: Color(0xff26A1C8),
                                     //       fontWeight: FontWeight.w600,
@@ -572,8 +604,8 @@ class PurchaseCard extends StatelessWidget {
                             child: AcmoCustomBarWithColor(
                               circularRadius: BorderRadius.circular(4),
                               title: e.eventName,
-                              total: e.dailyLimit,
-                              completed: e.todayCompleted,
+                              total: 1,// e.dailyLimit,
+                              completed: 0,// e.todayCompleted,
                               progressBarColor: const Color(0xff26A1C8),
                             ),
                           )

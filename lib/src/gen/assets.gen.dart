@@ -60,10 +60,6 @@ class $AssetsImagesGen {
   AssetGenImage get superChargeCan =>
       const AssetGenImage('assets/images/super-charge-can.png');
 
-  /// File path: assets/images/t_points.png
-  AssetGenImage get tPoints =>
-      const AssetGenImage('assets/images/t_points.png');
-
   /// List of all assets
   List<AssetGenImage> get values => [
         chargeCan,
@@ -78,8 +74,7 @@ class $AssetsImagesGen {
         silverStar,
         singupBg,
         submitComplete,
-        superChargeCan,
-        tPoints
+        superChargeCan
       ];
 }
 

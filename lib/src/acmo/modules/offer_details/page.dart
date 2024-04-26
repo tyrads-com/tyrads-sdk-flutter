@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:numeral/numeral.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -12,10 +15,8 @@ import 'package:tyrads_sdk/src/acmo/modules/help/page.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/controller.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
-import '../../../gen/assets.gen.dart';
 import '../offers/components/chip_category.dart';
 import '../offers/components/chip_channel.dart';
-import '../offers/components/chip_offer_type.dart';
 import 'widgets/normal_events.dart';
 import 'widgets/purchase_card.dart';
 
@@ -83,7 +84,7 @@ class _AcmoOfferDetailsPageState extends State<AcmoOfferDetailsPage> {
                                   ),
                                 ),
                               ),
-                              title: Text(_controller.item.campaignName,
+                              title: Text(_controller.item.app.title,
                                   maxLines: 1,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
@@ -91,11 +92,11 @@ class _AcmoOfferDetailsPageState extends State<AcmoOfferDetailsPage> {
                                   )),
                               subtitle: Row(
                                 children: [
-                                  AcmoChipOfferType(
-                                      _controller.item.targeting.targetingType),
-                                  const SizedBox(
-                                    width: 2,
-                                  ),
+                                  // AcmoChipOfferType(
+                                  //     _controller.item.targeting.targetingType),
+                                  // const SizedBox(
+                                  //   width: 2,
+                                  // ),
                                   AcmoChipOfferCategory(
                                       _controller.item.app.storeCategory),
                                   const SizedBox(
@@ -116,10 +117,16 @@ class _AcmoOfferDetailsPageState extends State<AcmoOfferDetailsPage> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Assets.images.tPoints
-                                            .image(width: 16, height: 16),
+                                        CachedNetworkImage(
+                                            imageUrl: _controller.item
+                                                .currency.adUnitCurrencyIcon,
+                                            width: 16,
+                                            height: 16),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
                                         Text(
-                                          numeral(_controller.maxPoints),
+                                          numeral(_controller.item.campaignPayout.totalPayoutConverted, fractionDigits: 2),
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 14),
@@ -127,9 +134,9 @@ class _AcmoOfferDetailsPageState extends State<AcmoOfferDetailsPage> {
                                       ],
                                     ),
                                   ),
-                                  const Text(
-                                    "TPoints",
-                                    style: TextStyle(
+                                   Text(
+                                    _controller.item.currency.adUnitCurrencyName,
+                                    style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.normal,
                                         fontSize: 10),
@@ -192,62 +199,125 @@ class _AcmoOfferDetailsPageState extends State<AcmoOfferDetailsPage> {
                                     fontSize: 12, color: Colors.black54),
                                 child: Column(
                                   children: [
-                                    StyledText(
-                                      text: "Daily Reward",
-                                      // style: TextStyle(fontSize: 12),
-                                      tags: {
-                                        "b": StyledTextTag(
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w700))
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-                                    StyledText(
-                                      text:
-                                          "1. Make sure you select <b>Google Play Store</b> to download the game.",
-                                      //style: TextStyle(fontSize: 12),
-                                      tags: {
-                                        "b": StyledTextTag(
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w700))
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-                                    StyledText(
-                                      text:
-                                          "2. Download right away after you click “<b>Confirm</b>” button.",
-                                      //  style: TextStyle(fontSize: 12),
-                                      tags: {
-                                        "b": StyledTextTag(
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w700))
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-                                    StyledText(
-                                      text:
-                                          "3. After the download complete, <b>open the game</b> from Google Play Store.",
-                                      //  style: TextStyle(fontSize: 12),
-                                      tags: {
-                                        "b": StyledTextTag(
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w700))
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-                                    StyledText(
-                                      text:
-                                          "Note: If the download failed, do not continue to play!",
-                                      // style: TextStyle(fontSize: 12),
-                                      tags: {
-                                        "b": StyledTextTag(
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w700))
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 54,
-                                    ),
+                                    if(!kIsWeb && Platform.isAndroid)
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        StyledText(
+                                          text: "Follow this few steps to avoid download failure and make sure you’ll get your points.",
+                                          // style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        StyledText(
+                                          text:
+                                              "1. Make sure you select <b>Google Play Store</b> to download the game.",
+                                          //style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        StyledText(
+                                          text:
+                                              "2. Download right away after you click “<b>Confirm</b>” button.",
+                                          //  style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        StyledText(
+                                          text:
+                                              "3. After the download complete, <b>open the game</b> from Google Play Store.",
+                                          //  style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        StyledText(
+                                          text:
+                                              "Note: If the download failed, do not continue to play!",
+                                          // style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        )
+                                      ])
+                                        else 
+                                        Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        StyledText(
+                                          text: "Follow this few steps to avoid download failure and make sure you’ll get your points.",
+                                          // style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        StyledText(
+                                          text:
+                                              "1. Make sure you select <b>App Store</b> to download the game.",
+                                          //style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        StyledText(
+                                          text:
+                                              "2. Download right away after you click “<b>Confirm</b>” button.",
+                                          //  style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        StyledText(
+                                          text:
+                                              "3. After the download complete, <b>open the game</b> from App Store.",
+                                          //  style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        StyledText(
+                                          text:
+                                              "Note: If the download failed, do not continue to play!",
+                                          // style: TextStyle(fontSize: 12),
+                                          tags: {
+                                            "b": StyledTextTag(
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700))
+                                          },
+                                        ),
+                                      ]),
+                                        const SizedBox(
+                                          height: 54,
+                                        )
                                   ],
                                 ),
                               ),
@@ -263,6 +333,8 @@ class _AcmoOfferDetailsPageState extends State<AcmoOfferDetailsPage> {
                                   maxPoints: _controller.maxPurchasePoints,
                                   earnedPoints:
                                       _controller.earnedPurchasePoints,
+                                      currencyIcon: _controller.item.currency.adUnitCurrencyIcon,
+                                      currencyName: _controller.item.currency.adUnitCurrencyName,
                                 ),
                                 const SizedBox(
                                   height: 36,

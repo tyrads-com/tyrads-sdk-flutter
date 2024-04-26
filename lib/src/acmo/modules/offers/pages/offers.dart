@@ -43,7 +43,7 @@ class _AcmoOffersPageState extends State<AcmoOffersPage> {
                   },
                   child: SingleChildScrollView(
                     child: Column(
-                      children: _controller.items
+                      children:[ ..._controller.items
                           .map((e) => InkWell(
                               onTap: () {
                                 Tyrads.instance.to(AcmoOfferDetailsPage(
@@ -54,6 +54,8 @@ class _AcmoOffersPageState extends State<AcmoOffersPage> {
                                 item: e,
                               )))
                           .toList(),
+                          const SizedBox(height: 100,)
+                          ],
                     ),
                   ),
                 ),

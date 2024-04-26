@@ -80,7 +80,7 @@ class _AcmoBodyOfferIssuesState extends State<AcmoBodyOfferIssues> {
                               height: 4,
                             ),
                             Text(
-                              'Please select which task(s) that you think you achieved but you didn’t get the TPoints',
+                              'Please select which task(s) that you think you achieved but you didn’t get the points',
                               style: TextStyle(
                                   fontSize: 11, color: Colors.black54),
                             ),

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:numeral/numeral.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/button_3.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/widgets/countdown.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/models/offers.dart';
@@ -150,7 +151,7 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                             width: 4,
                           ),
                           Text(
-                            item.campaignPayout.totalPayout.toString(),
+                            numeral(item.campaignPayout.totalPayoutConverted,fractionDigits: 2),
                             style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 10,
@@ -159,9 +160,9 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                           const SizedBox(
                             width: 4,
                           ),
-                          const Text(
-                            "TPoints",
-                            style: TextStyle(
+                           Text(
+                            item.currency.adUnitCurrencyName,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.normal,
                                 fontSize: 10),

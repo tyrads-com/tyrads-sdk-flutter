@@ -82,20 +82,21 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                       children: [
                         AcmoEventCard(
                           isActive: false,
-                          isCompleted: item.conversionStatus == "completed",
+                          isCompleted: item.conversionStatus.toLowerCase() == "completed",
                           isFuture: false,
-                          isPending: item.conversionStatus == "pending",
-                          isRejected: item.conversionStatus == "rejected",
+                          isPending: item.conversionStatus.toLowerCase() == "pending",
+                          isRejected: item.conversionStatus.toLowerCase() == "rejected",
                           isSuperCharged: false,
                           difcultyLevelLabel: item.eventCategory,
-                          tPoints: numeral(item.payoutAmountConverted),
+                          tPoints: numeral(item.payoutAmountConverted,fractionDigits: 2),
                           eventName: item.eventName,
-                          isOfferActive: _controller.item.status == "active",
+                          isOfferActive: _controller.item.status.toLowerCase() == "active",
                           remainingTime: 0,
                           timeUp: false,
                           isPlaytime: false,
                           totalPlaytime: 0,
                           playedPlaytime: 0,
+                          item: _controller.item,
                         ),
                         if (index == 0)
                           Padding(
@@ -129,7 +130,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                 var titleText = "";
                 if (_controller.allActiveEvents.isNotEmpty &&
                     _controller.allActiveEvents.first.id == item.id) {
-                  if (_controller.item.status == "active") {
+                  if (_controller.item.status.toLowerCase() == "active") {
                     titleText = 'Active Tasks';
                   } else {
                     titleText = 'Available Tasks';
@@ -165,20 +166,21 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                               color: AcmoConfig.SECONDARY_COLOR),
                         AcmoEventCard(
                           isActive: index == 0,
-                          isCompleted: item.conversionStatus == "completed",
+                          isCompleted: item.conversionStatus.toLowerCase() == "completed",
                           isFuture: false,
-                          isPending: item.conversionStatus == "pending",
-                          isRejected: item.conversionStatus == "rejected",
+                          isPending: item.conversionStatus.toLowerCase() == "pending",
+                          isRejected: item.conversionStatus.toLowerCase() == "rejected",
                           isSuperCharged: false,
                           difcultyLevelLabel: item.eventCategory,
-                          tPoints: numeral(item.payoutAmountConverted),
+                          tPoints: numeral(item.payoutAmountConverted,fractionDigits: 2),
                           eventName: item.eventName,
-                          isOfferActive: _controller.item.status == "active",
+                          isOfferActive: _controller.item.status.toLowerCase() == "active",
                           remainingTime: 0,
                           timeUp: false,
                           isPlaytime: false,
                           totalPlaytime: 0,
                           playedPlaytime: 0,
+                          item: _controller.item,
                         ),
                       ],
                     ),
