@@ -103,7 +103,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                                 });
                                 _controller.updateUser(
                                     Tyrads.instance.publisherUserID);
-                                Tyrads.instance.to(const AcmoOffersPage());
+                                Tyrads.instance.to(const AcmoOffersPage(),replace: true);
                               },
                       ),
                     ),

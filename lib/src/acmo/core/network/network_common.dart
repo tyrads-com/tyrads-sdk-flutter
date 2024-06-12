@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/endpoint_name.dart';
-import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/app_config.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
@@ -75,8 +74,8 @@ class NetworkCommon {
         // }
         if (!isDialogOpen) {
           isDialogOpen = true;
-          acmoSnackbar(
-              "Connectivity problem, kindly connect to a stable internet connection.");
+          // acmoSnackbar(
+          //     "Connectivity problem, kindly connect to a stable internet connection. ");
           Future.delayed(const Duration(seconds: 5))
               .then((value) => isDialogOpen = false);
         }

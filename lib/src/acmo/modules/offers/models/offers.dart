@@ -108,7 +108,7 @@ class Currency with _$Currency {
     @Default('') String adUnitName,
     @Default('') String adUnitCurrencyName,
     @Default('') String adUnitCurrencyIcon,
-    @Default(0) int adUnitCurrencyConversion,
+    @Default(0) double adUnitCurrencyConversion,
   }) = _Currency;
 
   factory Currency.fromJson(Map<String, dynamic> json) =>

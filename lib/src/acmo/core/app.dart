@@ -36,22 +36,28 @@ class _AcmoAppState extends State<AcmoApp> {
   @override
   Widget build(BuildContext context) {
     if (kIsWeb || Platform.isIOS) {
-      return AcmoWebSdk();
+      return  SafeArea(
+        child: Theme(
+          data: AcmoStyleThemes.light,
+          child: const AcmoWebSdk())
+        );
     } else {
-      return MaterialApp(
-        navigatorKey: Tyrads.instance.navKey,
-        theme: AcmoStyleThemes.light,
-        initialRoute: '/',
-        onGenerateRoute: (settings) {
-          Widget page;
-          if (Tyrads.instance.newUser) {
-            page = const AcmoUsersUpdatePage();
-          } else {
-            page = const AcmoOffersPage();
-          }
-
-          return MaterialPageRoute(builder: (c) => page);
-        },
+      return SafeArea(
+        top: false,
+        child: MaterialApp(
+          navigatorKey: Tyrads.instance.navKey,
+          theme: AcmoStyleThemes.light,
+          initialRoute: '/',
+          onGenerateRoute: (settings) {
+            Widget page;
+            if (Tyrads.instance.newUser) {
+              page = const AcmoUsersUpdatePage();
+            } else {
+              page = const AcmoOffersPage();
+            }        
+            return MaterialPageRoute(builder: (c) => page);
+          },
+        ),
       );
     }
   }

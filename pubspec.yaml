@@ -1,10 +1,11 @@
 name: tyrads_sdk
 description: Show TyrAds offer wall.
-version: 0.0.1
-homepage:
+version: 0.2.6
+homepage: https://github.com/tyrads-com/tyrads-sdk-flutter
+
 
 environment:
-  sdk: ">=3.1.0 <4.0.0"
+  sdk: ">=3.3.0 <4.0.0"
   flutter: ">=3.13.0"
 
 dependencies:
@@ -13,31 +14,31 @@ dependencies:
   equatable: ^2.0.5
   json_annotation: ^4.8.1
   freezed_annotation: ^2.4.1
-  dio: ^5.1.1
+  dio: ^5.4.2+1
   url_launcher: ^6.0.3
   cached_network_image: ^3.0.0
   pull_to_refresh: ^2.0.0
-  readmore: ^2.1.0
+  readmore: ^3.0.0
   shared_preferences: ^2.0.5
   fluttertoast: ^8.0.9
   custom_timer: ^0.2.3
-  material_design_icons_flutter: ^6.0.7096
-  google_fonts: ^4.0.3
-  styled_text: ^7.0.0
-  numeral: ^2.0.1
-  back_button_interceptor: ^6.0.2
+  material_design_icons_flutter: ^7.0.7296
+  google_fonts: ^6.2.0
+  styled_text: ^8.1.0
+  numeral: ^3.0.0
+  back_button_interceptor: ^7.0.0
   custom_platform_device_id: ^1.0.8
   advertising_id: ^2.6.0
-  safe_device: ^1.1.4
-  device_info_plus: ^8.2.2
-  package_info_plus: ^3.0.3
+  #safe_device: ^1.1.4
+  device_info_plus: ^10.1.0
+  package_info_plus: ^6.0.0
   flutter_inappwebview: ^6.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   json_serializable: ^6.7.1
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.2
   freezed: ^2.4.7
   ### flutter pub run build_runner build --delete-conflicting-outputs
   build_runner: ^2.4.8

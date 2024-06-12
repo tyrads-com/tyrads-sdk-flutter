@@ -1691,7 +1691,7 @@ mixin _$Currency {
   String get adUnitName => throw _privateConstructorUsedError;
   String get adUnitCurrencyName => throw _privateConstructorUsedError;
   String get adUnitCurrencyIcon => throw _privateConstructorUsedError;
-  int get adUnitCurrencyConversion => throw _privateConstructorUsedError;
+  double get adUnitCurrencyConversion => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -1710,7 +1710,7 @@ abstract class $CurrencyCopyWith<$Res> {
       String adUnitName,
       String adUnitCurrencyName,
       String adUnitCurrencyIcon,
-      int adUnitCurrencyConversion});
+      double adUnitCurrencyConversion});
 }
 
 /// @nodoc
@@ -1757,7 +1757,7 @@ class _$CurrencyCopyWithImpl<$Res, $Val extends Currency>
       adUnitCurrencyConversion: null == adUnitCurrencyConversion
           ? _value.adUnitCurrencyConversion
           : adUnitCurrencyConversion // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
     ) as $Val);
   }
 }
@@ -1776,7 +1776,7 @@ abstract class _$$CurrencyImplCopyWith<$Res>
       String adUnitName,
       String adUnitCurrencyName,
       String adUnitCurrencyIcon,
-      int adUnitCurrencyConversion});
+      double adUnitCurrencyConversion});
 }
 
 /// @nodoc
@@ -1821,7 +1821,7 @@ class __$$CurrencyImplCopyWithImpl<$Res>
       adUnitCurrencyConversion: null == adUnitCurrencyConversion
           ? _value.adUnitCurrencyConversion
           : adUnitCurrencyConversion // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
     ));
   }
 }
@@ -1857,7 +1857,7 @@ class _$CurrencyImpl implements _Currency {
   final String adUnitCurrencyIcon;
   @override
   @JsonKey()
-  final int adUnitCurrencyConversion;
+  final double adUnitCurrencyConversion;
 
   @override
   String toString() {
@@ -1908,7 +1908,7 @@ abstract class _Currency implements Currency {
       final String adUnitName,
       final String adUnitCurrencyName,
       final String adUnitCurrencyIcon,
-      final int adUnitCurrencyConversion}) = _$CurrencyImpl;
+      final double adUnitCurrencyConversion}) = _$CurrencyImpl;
 
   factory _Currency.fromJson(Map<String, dynamic> json) =
       _$CurrencyImpl.fromJson;
@@ -1924,7 +1924,7 @@ abstract class _Currency implements Currency {
   @override
   String get adUnitCurrencyIcon;
   @override
-  int get adUnitCurrencyConversion;
+  double get adUnitCurrencyConversion;
   @override
   @JsonKey(ignore: true)
   _$$CurrencyImplCopyWith<_$CurrencyImpl> get copyWith =>

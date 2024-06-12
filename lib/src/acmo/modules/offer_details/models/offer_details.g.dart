@@ -129,12 +129,14 @@ _$PayoutEventsImpl _$$PayoutEventsImplFromJson(Map<String, dynamic> json) =>
       eventDescription: json['eventDescription'] as String? ?? '',
       eventCategory: json['eventCategory'] as String? ?? '',
       payoutAmount: (json['payoutAmount'] as num?)?.toDouble() ?? 0,
-      payoutAmountConverted: json['payoutAmountConverted'] as int? ?? 0,
+      payoutAmountConverted:
+          (json['payoutAmountConverted'] as num?)?.toDouble() ?? 0,
       payoutType: json['payoutType'] as String? ?? '',
       allowDuplicateEvents: json['allowDuplicateEvents'] as bool? ?? false,
       maxTime: json['maxTime'] as int? ?? 0,
       maxTimeMetric: json['maxTimeMetric'] as String? ?? '',
-      maxTimeRemainSeconds: json['maxTimeRemainSeconds'] as String? ?? '',
+      maxTimeRemainSeconds:
+          (json['maxTimeRemainSeconds'] as num?)?.toDouble() ?? 0,
       enforceMaxTimeCompletion:
           json['enforceMaxTimeCompletion'] as bool? ?? false,
     );
@@ -194,7 +196,8 @@ _$CurrencyImpl _$$CurrencyImplFromJson(Map<String, dynamic> json) =>
       adUnitName: json['adUnitName'] as String? ?? '',
       adUnitCurrencyName: json['adUnitCurrencyName'] as String? ?? '',
       adUnitCurrencyIcon: json['adUnitCurrencyIcon'] as String? ?? '',
-      adUnitCurrencyConversion: json['adUnitCurrencyConversion'] as int? ?? 0,
+      adUnitCurrencyConversion:
+          (json['adUnitCurrencyConversion'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$$CurrencyImplToJson(_$CurrencyImpl instance) =>

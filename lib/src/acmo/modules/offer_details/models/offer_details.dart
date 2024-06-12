@@ -86,12 +86,12 @@ class PayoutEvents with _$PayoutEvents {
     @Default('') String eventDescription,
     @Default('') String eventCategory,
     @Default(0) double payoutAmount,
-    @Default(0) int payoutAmountConverted,
+    @Default(0) double payoutAmountConverted,
     @Default('') String payoutType,
     @Default(false) bool allowDuplicateEvents,
     @Default(0) int maxTime,
     @Default('') String maxTimeMetric,
-    @Default('') String maxTimeRemainSeconds,
+    @Default(0) double maxTimeRemainSeconds,
     @Default(false) bool enforceMaxTimeCompletion,
   }) = _PayoutEvents;
 
@@ -131,7 +131,7 @@ class Currency with _$Currency {
     @Default('') String adUnitName,
     @Default('') String adUnitCurrencyName,
     @Default('') String adUnitCurrencyIcon,
-    @Default(0) int adUnitCurrencyConversion,
+    @Default(0) double adUnitCurrencyConversion,
   }) = _Currency;
 
   factory Currency.fromJson(Map<String, dynamic> json) =>

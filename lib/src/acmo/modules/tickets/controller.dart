@@ -1,4 +1,6 @@
+import 'package:tyrads_sdk/src/acmo/modules/tickets/issues_raised.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tickets/model/tickets.dart';
+import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import '../../core/helpers/toasts.dart';
 import 'repository.dart';
@@ -39,8 +41,10 @@ class AcmoTicketsController {
       try {
         await _repository.submitTicket(
             offerID: id, eventID: submitEventIds.first);
-      } finally {
+        Tyrads.instance.to(const AcmoTicketRaisedPage());
         submiting = false;
+      } catch(e) {
+        acmoSnackbar("Error submitting ticket");
       }
     }
   }

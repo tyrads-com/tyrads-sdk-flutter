@@ -153,7 +153,8 @@ _$CurrencyImpl _$$CurrencyImplFromJson(Map<String, dynamic> json) =>
       adUnitName: json['adUnitName'] as String? ?? '',
       adUnitCurrencyName: json['adUnitCurrencyName'] as String? ?? '',
       adUnitCurrencyIcon: json['adUnitCurrencyIcon'] as String? ?? '',
-      adUnitCurrencyConversion: json['adUnitCurrencyConversion'] as int? ?? 0,
+      adUnitCurrencyConversion:
+          (json['adUnitCurrencyConversion'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$$CurrencyImplToJson(_$CurrencyImpl instance) =>
