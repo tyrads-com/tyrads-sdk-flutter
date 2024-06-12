@@ -1408,12 +1408,12 @@ mixin _$PayoutEvents {
   String get eventDescription => throw _privateConstructorUsedError;
   String get eventCategory => throw _privateConstructorUsedError;
   double get payoutAmount => throw _privateConstructorUsedError;
-  int get payoutAmountConverted => throw _privateConstructorUsedError;
+  double get payoutAmountConverted => throw _privateConstructorUsedError;
   String get payoutType => throw _privateConstructorUsedError;
   bool get allowDuplicateEvents => throw _privateConstructorUsedError;
   int get maxTime => throw _privateConstructorUsedError;
   String get maxTimeMetric => throw _privateConstructorUsedError;
-  String get maxTimeRemainSeconds => throw _privateConstructorUsedError;
+  double get maxTimeRemainSeconds => throw _privateConstructorUsedError;
   bool get enforceMaxTimeCompletion => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1436,12 +1436,12 @@ abstract class $PayoutEventsCopyWith<$Res> {
       String eventDescription,
       String eventCategory,
       double payoutAmount,
-      int payoutAmountConverted,
+      double payoutAmountConverted,
       String payoutType,
       bool allowDuplicateEvents,
       int maxTime,
       String maxTimeMetric,
-      String maxTimeRemainSeconds,
+      double maxTimeRemainSeconds,
       bool enforceMaxTimeCompletion});
 }
 
@@ -1505,7 +1505,7 @@ class _$PayoutEventsCopyWithImpl<$Res, $Val extends PayoutEvents>
       payoutAmountConverted: null == payoutAmountConverted
           ? _value.payoutAmountConverted
           : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       payoutType: null == payoutType
           ? _value.payoutType
           : payoutType // ignore: cast_nullable_to_non_nullable
@@ -1525,7 +1525,7 @@ class _$PayoutEventsCopyWithImpl<$Res, $Val extends PayoutEvents>
       maxTimeRemainSeconds: null == maxTimeRemainSeconds
           ? _value.maxTimeRemainSeconds
           : maxTimeRemainSeconds // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       enforceMaxTimeCompletion: null == enforceMaxTimeCompletion
           ? _value.enforceMaxTimeCompletion
           : enforceMaxTimeCompletion // ignore: cast_nullable_to_non_nullable
@@ -1550,12 +1550,12 @@ abstract class _$$PayoutEventsImplCopyWith<$Res>
       String eventDescription,
       String eventCategory,
       double payoutAmount,
-      int payoutAmountConverted,
+      double payoutAmountConverted,
       String payoutType,
       bool allowDuplicateEvents,
       int maxTime,
       String maxTimeMetric,
-      String maxTimeRemainSeconds,
+      double maxTimeRemainSeconds,
       bool enforceMaxTimeCompletion});
 }
 
@@ -1617,7 +1617,7 @@ class __$$PayoutEventsImplCopyWithImpl<$Res>
       payoutAmountConverted: null == payoutAmountConverted
           ? _value.payoutAmountConverted
           : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       payoutType: null == payoutType
           ? _value.payoutType
           : payoutType // ignore: cast_nullable_to_non_nullable
@@ -1637,7 +1637,7 @@ class __$$PayoutEventsImplCopyWithImpl<$Res>
       maxTimeRemainSeconds: null == maxTimeRemainSeconds
           ? _value.maxTimeRemainSeconds
           : maxTimeRemainSeconds // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       enforceMaxTimeCompletion: null == enforceMaxTimeCompletion
           ? _value.enforceMaxTimeCompletion
           : enforceMaxTimeCompletion // ignore: cast_nullable_to_non_nullable
@@ -1662,7 +1662,7 @@ class _$PayoutEventsImpl implements _PayoutEvents {
       this.allowDuplicateEvents = false,
       this.maxTime = 0,
       this.maxTimeMetric = '',
-      this.maxTimeRemainSeconds = '',
+      this.maxTimeRemainSeconds = 0,
       this.enforceMaxTimeCompletion = false});
 
   factory _$PayoutEventsImpl.fromJson(Map<String, dynamic> json) =>
@@ -1691,7 +1691,7 @@ class _$PayoutEventsImpl implements _PayoutEvents {
   final double payoutAmount;
   @override
   @JsonKey()
-  final int payoutAmountConverted;
+  final double payoutAmountConverted;
   @override
   @JsonKey()
   final String payoutType;
@@ -1706,7 +1706,7 @@ class _$PayoutEventsImpl implements _PayoutEvents {
   final String maxTimeMetric;
   @override
   @JsonKey()
-  final String maxTimeRemainSeconds;
+  final double maxTimeRemainSeconds;
   @override
   @JsonKey()
   final bool enforceMaxTimeCompletion;
@@ -1792,12 +1792,12 @@ abstract class _PayoutEvents implements PayoutEvents {
       final String eventDescription,
       final String eventCategory,
       final double payoutAmount,
-      final int payoutAmountConverted,
+      final double payoutAmountConverted,
       final String payoutType,
       final bool allowDuplicateEvents,
       final int maxTime,
       final String maxTimeMetric,
-      final String maxTimeRemainSeconds,
+      final double maxTimeRemainSeconds,
       final bool enforceMaxTimeCompletion}) = _$PayoutEventsImpl;
 
   factory _PayoutEvents.fromJson(Map<String, dynamic> json) =
@@ -1818,7 +1818,7 @@ abstract class _PayoutEvents implements PayoutEvents {
   @override
   double get payoutAmount;
   @override
-  int get payoutAmountConverted;
+  double get payoutAmountConverted;
   @override
   String get payoutType;
   @override
@@ -1828,7 +1828,7 @@ abstract class _PayoutEvents implements PayoutEvents {
   @override
   String get maxTimeMetric;
   @override
-  String get maxTimeRemainSeconds;
+  double get maxTimeRemainSeconds;
   @override
   bool get enforceMaxTimeCompletion;
   @override
@@ -2204,7 +2204,7 @@ mixin _$Currency {
   String get adUnitName => throw _privateConstructorUsedError;
   String get adUnitCurrencyName => throw _privateConstructorUsedError;
   String get adUnitCurrencyIcon => throw _privateConstructorUsedError;
-  int get adUnitCurrencyConversion => throw _privateConstructorUsedError;
+  double get adUnitCurrencyConversion => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -2223,7 +2223,7 @@ abstract class $CurrencyCopyWith<$Res> {
       String adUnitName,
       String adUnitCurrencyName,
       String adUnitCurrencyIcon,
-      int adUnitCurrencyConversion});
+      double adUnitCurrencyConversion});
 }
 
 /// @nodoc
@@ -2270,7 +2270,7 @@ class _$CurrencyCopyWithImpl<$Res, $Val extends Currency>
       adUnitCurrencyConversion: null == adUnitCurrencyConversion
           ? _value.adUnitCurrencyConversion
           : adUnitCurrencyConversion // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
     ) as $Val);
   }
 }
@@ -2289,7 +2289,7 @@ abstract class _$$CurrencyImplCopyWith<$Res>
       String adUnitName,
       String adUnitCurrencyName,
       String adUnitCurrencyIcon,
-      int adUnitCurrencyConversion});
+      double adUnitCurrencyConversion});
 }
 
 /// @nodoc
@@ -2334,7 +2334,7 @@ class __$$CurrencyImplCopyWithImpl<$Res>
       adUnitCurrencyConversion: null == adUnitCurrencyConversion
           ? _value.adUnitCurrencyConversion
           : adUnitCurrencyConversion // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
     ));
   }
 }
@@ -2370,7 +2370,7 @@ class _$CurrencyImpl implements _Currency {
   final String adUnitCurrencyIcon;
   @override
   @JsonKey()
-  final int adUnitCurrencyConversion;
+  final double adUnitCurrencyConversion;
 
   @override
   String toString() {
@@ -2421,7 +2421,7 @@ abstract class _Currency implements Currency {
       final String adUnitName,
       final String adUnitCurrencyName,
       final String adUnitCurrencyIcon,
-      final int adUnitCurrencyConversion}) = _$CurrencyImpl;
+      final double adUnitCurrencyConversion}) = _$CurrencyImpl;
 
   factory _Currency.fromJson(Map<String, dynamic> json) =
       _$CurrencyImpl.fromJson;
@@ -2437,7 +2437,7 @@ abstract class _Currency implements Currency {
   @override
   String get adUnitCurrencyIcon;
   @override
-  int get adUnitCurrencyConversion;
+  double get adUnitCurrencyConversion;
   @override
   @JsonKey(ignore: true)
   _$$CurrencyImplCopyWith<_$CurrencyImpl> get copyWith =>

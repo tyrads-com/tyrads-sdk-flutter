@@ -30,7 +30,7 @@ class AcmoTicketsModel with _$AcmoTicketsModel {
   @Default('') String identifier,
  @Default('')  String eventName,
  @Default('') String payoutType,
-  @Default(0) int  payoutAmountConverted,
+  @Default(0) double  payoutAmountConverted,
   @Default(false) bool isTicketSubmitted
 
   }) = _AcmoTicketEventsModel;

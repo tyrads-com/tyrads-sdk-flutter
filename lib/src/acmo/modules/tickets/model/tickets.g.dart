@@ -43,7 +43,8 @@ _$AcmoTicketEventsModelImpl _$$AcmoTicketEventsModelImplFromJson(
       identifier: json['identifier'] as String? ?? '',
       eventName: json['eventName'] as String? ?? '',
       payoutType: json['payoutType'] as String? ?? '',
-      payoutAmountConverted: json['payoutAmountConverted'] as int? ?? 0,
+      payoutAmountConverted:
+          (json['payoutAmountConverted'] as num?)?.toDouble() ?? 0,
       isTicketSubmitted: json['isTicketSubmitted'] as bool? ?? false,
     );
 

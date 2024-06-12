@@ -1,30 +1,33 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/offer_details.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/widgets/countdown.dart';
 import 'package:tyrads_sdk/src/app_config.dart';
 import '../../../../gen/assets.gen.dart';
 import 'custom_bar.dart';
 
 class AcmoEventCard extends StatelessWidget {
-  AcmoEventCard({
-    Key? key,
-    required this.isRejected,
-    required this.isActive,
-    required this.isCompleted,
-    required this.isPending,
-    required this.isFuture,
-    required this.isSuperCharged,
-    required this.difcultyLevelLabel,
-    required this.tPoints,
-    required this.eventName,
-    required this.isOfferActive,
-    required this.remainingTime,
-    required this.timeUp,
-    required this.isPlaytime,
-    required this.totalPlaytime,
-    required this.playedPlaytime,
-  }) : super(key: key);
+  AcmoEventCard(
+      {Key? key,
+      required this.isRejected,
+      required this.isActive,
+      required this.isCompleted,
+      required this.isPending,
+      required this.isFuture,
+      required this.isSuperCharged,
+      required this.difcultyLevelLabel,
+      required this.tPoints,
+      required this.eventName,
+      required this.isOfferActive,
+      required this.remainingTime,
+      required this.timeUp,
+      required this.isPlaytime,
+      required this.totalPlaytime,
+      required this.playedPlaytime,
+      required this.item})
+      : super(key: key);
   bool isRejected;
   bool isActive;
   bool isCompleted;
@@ -40,6 +43,7 @@ class AcmoEventCard extends StatelessWidget {
   final String difcultyLevelLabel;
   final String tPoints;
   final String eventName;
+  final AcmoOfferDetailsModel item;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -123,7 +127,7 @@ class AcmoEventCard extends StatelessWidget {
                         height: 8,
                       ),
                       //Tpoints widget with icon and tpoints
-                      TPointsWithIcon(tPoints: tPoints),
+                      TPointsWithIcon(tPoints: tPoints, currencyIconUrl: item.currency.adUnitCurrencyIcon,currencyName: item.currency.adUnitCurrencyName,),
                       //Bottom Widget
                       const SizedBox(
                         height: 6,
@@ -315,22 +319,25 @@ class BottomWidgetWIthTitle extends StatelessWidget {
 class TPointsWithIcon extends StatelessWidget {
   const TPointsWithIcon({
     Key? key,
-    required this.tPoints,
+    required this.tPoints, required this.currencyIconUrl, required this.currencyName,
   }) : super(key: key);
 
   final String tPoints;
+  final String currencyIconUrl;
+  final String currencyName;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Assets.images.tPoints.image(height: 14),
+        CachedNetworkImage(
+            imageUrl: currencyIconUrl, width: 16, height: 16),
         const SizedBox(
-          width: 6,
+          width: 1,
         ),
         Text(
-          '$tPoints TPoints',
+          '$tPoints $currencyName',
           style: const TextStyle(
               color: Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
         ),
@@ -364,19 +371,23 @@ class EventTypeText extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Text(
-          eventName.length > 20 ? '${eventName.substring(0,17)}...' : eventName,
-          style: TextStyle(
-              color: isCompleted && isSuperCharged ||
-                      isActive && isSuperCharged ||
-                      isFuture && isSuperCharged ||
-                      isPending && isSuperCharged ||
-                      isRejected && isSuperCharged
-                  ? const Color(0xff9426C8)
-                  : const Color(0xff2CB388),
-              fontWeight: FontWeight.w700,
-              fontSize: 14),
-          textAlign: TextAlign.center,
+        child: SizedBox(
+          height :38,
+          child: Text(
+              eventName,
+              maxLines: 2,              
+            style: TextStyle(
+                color: isCompleted && isSuperCharged ||
+                        isActive && isSuperCharged ||
+                        isFuture && isSuperCharged ||
+                        isPending && isSuperCharged ||
+                        isRejected && isSuperCharged
+                    ? const Color(0xff9426C8)
+                    : const Color(0xff2CB388),
+                fontWeight: FontWeight.w700,
+                fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
