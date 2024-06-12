@@ -32,18 +32,21 @@ class AcmoOffersDetailsController {
       earnedPurchasePoints = 0;
       allCompletedEvents.clear();
       allActiveEvents.clear();
+      purchaseEvents.clear();
+      duplicateEvents.clear();
+      dailyPurchaseEvents.clear();
       item.payoutEvents.forEach((element) async {
         if (element.payoutAmount == 0) return;
-        maxPoints += element.payoutAmountConverted;
+        maxPoints += element.payoutAmountConverted.toInt();
 
         if (element.allowDuplicateEvents ||
-            element.eventCategory == "purchase") {
-          maxPurchasePoints += element.payoutAmountConverted;
+            element.eventCategory.toLowerCase() == "purchase") {
+          maxPurchasePoints += element.payoutAmountConverted.toInt();
           if (element.conversionStatus.isNotEmpty) {
-            earnedPurchasePoints += element.payoutAmountConverted;
+            earnedPurchasePoints += element.payoutAmountConverted.toInt();
           }
           if (element.allowDuplicateEvents) {
-            if (element.eventCategory == "purchase") {
+            if (element.eventCategory.toLowerCase() == "purchase") {
               dailyPurchaseEvents.add(element);
             } else {
               duplicateEvents.add(element);
@@ -52,7 +55,7 @@ class AcmoOffersDetailsController {
             purchaseEvents.add(element);
           }
         } else {
-          if (element.conversionStatus == "success") {
+          if (element.conversionStatus.toLowerCase() == "approved") {
             allCompletedEvents.add(element);
           } else {
             allActiveEvents.add(element);
