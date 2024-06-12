@@ -329,7 +329,7 @@ class PurchaseCard extends StatelessWidget {
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width -
-                                              250,
+                                              240,
                                           child: Text(
                                             e.eventName,
                                             style: const TextStyle(
@@ -339,27 +339,29 @@ class PurchaseCard extends StatelessWidget {
                                           ),
                                         ),
                                         const Spacer(),
-                                        CachedNetworkImage(
-                                            imageUrl: currencyIcon,
-                                            width: 16,
-                                            height: 16),
-                                        const SizedBox(
-                                          width: 4,
-                                        ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
                                           children: [
-                                            SizedBox(
-                                              width: 80,
-                                              child: Text(
-                                                ' ${e.payoutAmountConverted.numeral(digits: 2)} $currencyName',
-                                                style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 12),
-                                                textAlign: TextAlign.end,
-                                              ),
+                                            Row(
+                                              children: [
+                                                CachedNetworkImage(
+                                                    imageUrl: currencyIcon,
+                                                    width: 16,
+                                                    height: 16),
+                                                const SizedBox(
+                                                  width: 1,
+                                                ),
+                                                Text(
+                                                  ' ${e.payoutAmountConverted.numeral(digits: 2)} $currencyName',
+                                                  style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 12),
+                                                  textAlign: TextAlign.end,
+                                                ),
+                                              ],
                                             ),
                                             // Padding(
                                             //   padding: const EdgeInsets.only(
@@ -378,14 +380,14 @@ class PurchaseCard extends StatelessWidget {
                                     ),
                                   ),
                                   if (e.maxTimeRemainSeconds > 0 ||
-                                      e.conversionStatus.toLowerCase() ==
-                                          'rejected' ||
-                                      e.conversionStatus.toLowerCase() ==
-                                          'pending' ||
-                                      e.conversionStatus.toLowerCase() ==
-                                          'completed' 
-                                        //  || e.timeUp
-                                     
+                                          e.conversionStatus.toLowerCase() ==
+                                              'rejected' ||
+                                          e.conversionStatus.toLowerCase() ==
+                                              'pending' ||
+                                          e.conversionStatus.toLowerCase() ==
+                                              'approved'
+                                      //  || e.timeUp
+
                                       )
                                     Container(
                                       height: 24,
@@ -433,7 +435,7 @@ class PurchaseCard extends StatelessWidget {
                                           //   )
                                           else if (e.conversionStatus
                                                   .toLowerCase() ==
-                                              'completed')
+                                              'approved')
                                             const Center(
                                               child: Text(
                                                 'Completed',
@@ -457,8 +459,9 @@ class PurchaseCard extends StatelessWidget {
                                                       fontSize: 10),
                                                 ),
                                                 AcmoComponentCountdown(
-                                                  seconds:
-                                                      e.maxTimeRemainSeconds.toInt(),
+                                                  seconds: e
+                                                      .maxTimeRemainSeconds
+                                                      .toInt(),
                                                   style: const TextStyle(
                                                       color: Colors.black,
                                                       fontWeight:
@@ -499,22 +502,26 @@ class PurchaseCard extends StatelessWidget {
                                       fontSize: 12),
                                 ),
                                 const Spacer(),
-                                CachedNetworkImage(
-                                    imageUrl: currencyIcon,
-                                    width: 16,
-                                    height: 16),
-                                const SizedBox(
-                                  width: 4,
-                                ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      '${e.payoutAmountConverted.numeral(digits: 2)} $currencyName',
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12),
+                                    Row(
+                                      children: [
+                                        CachedNetworkImage(
+                                            imageUrl: currencyIcon,
+                                            width: 16,
+                                            height: 16),
+                                        const SizedBox(
+                                          width: 1,
+                                        ),
+                                        Text(
+                                          '${e.payoutAmountConverted.numeral(digits: 2)} $currencyName',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12),
+                                        ),
+                                      ],
                                     ),
                                     // const SizedBox(
                                     //   height: 4,
@@ -531,14 +538,14 @@ class PurchaseCard extends StatelessWidget {
                               ],
                             ),
                           ),
-                           Padding(
+                          Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
                             child: AcmoCustomBarWithColor(
                               circularRadius: BorderRadius.circular(4),
                               title: e.eventName,
-                              total:1,// e.dailyLimit,
-                              completed: 0,//e.todayCompleted,
+                              total: 1, // e.dailyLimit,
+                              completed: 0, //e.todayCompleted,
                               progressBarColor: const Color(0xff26A1C8),
                             ),
                           )
@@ -566,22 +573,26 @@ class PurchaseCard extends StatelessWidget {
                                       fontSize: 12),
                                 ),
                                 const Spacer(),
-                                CachedNetworkImage(
-                                    imageUrl: currencyIcon,
-                                    width: 16,
-                                    height: 16),
-                                const SizedBox(
-                                  width: 4,
-                                ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      '${e.payoutAmountConverted.numeral(digits: 2)} $currencyName',
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12),
+                                    Row(
+                                      children: [
+                                        CachedNetworkImage(
+                                            imageUrl: currencyIcon,
+                                            width: 16,
+                                            height: 16),
+                                        const SizedBox(
+                                          width: 1,
+                                        ),
+                                        Text(
+                                          '${e.payoutAmountConverted.numeral(digits: 2)} $currencyName',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12),
+                                        ),
+                                      ],
                                     ),
                                     // const SizedBox(
                                     //   height: 4,
@@ -604,8 +615,8 @@ class PurchaseCard extends StatelessWidget {
                             child: AcmoCustomBarWithColor(
                               circularRadius: BorderRadius.circular(4),
                               title: e.eventName,
-                              total: 1,// e.dailyLimit,
-                              completed: 0,// e.todayCompleted,
+                              total: 1, // e.dailyLimit,
+                              completed: 0, // e.todayCompleted,
                               progressBarColor: const Color(0xff26A1C8),
                             ),
                           )

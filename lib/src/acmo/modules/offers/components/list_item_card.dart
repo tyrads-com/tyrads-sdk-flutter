@@ -148,7 +148,7 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                               width: 16,
                               height: 16),
                           const SizedBox(
-                            width: 4,
+                            width: 1,
                           ),
                           Text(
                             item.campaignPayout.totalPayoutConverted.numeral(digits: 2),

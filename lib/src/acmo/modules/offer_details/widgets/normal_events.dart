@@ -82,7 +82,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                       children: [
                         AcmoEventCard(
                           isActive: false,
-                          isCompleted: item.conversionStatus.toLowerCase() == "completed",
+                          isCompleted: item.conversionStatus.toLowerCase() == "approved",
                           isFuture: false,
                           isPending: item.conversionStatus.toLowerCase() == "pending",
                           isRejected: item.conversionStatus.toLowerCase() == "rejected",
@@ -166,7 +166,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                               color: AcmoConfig.SECONDARY_COLOR),
                         AcmoEventCard(
                           isActive: index == 0,
-                          isCompleted: item.conversionStatus.toLowerCase() == "completed",
+                          isCompleted: item.conversionStatus.toLowerCase() == "approved",
                           isFuture: false,
                           isPending: item.conversionStatus.toLowerCase() == "pending",
                           isRejected: item.conversionStatus.toLowerCase() == "rejected",

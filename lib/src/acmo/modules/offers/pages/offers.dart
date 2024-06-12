@@ -18,76 +18,118 @@ class AcmoOffersPage extends StatefulWidget {
 
 class _AcmoOffersPageState extends State<AcmoOffersPage> {
   final _controller = AcmoOffersController();
-
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  late final _futureData = _controller.loadOffers();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AcmoAppBarOfferwall(titleText: "Offers"),
       body: FutureBuilder(
-          future: _controller.loadOffers(),
+          future: _futureData,
           builder: (context, snapshot) {
             if (!snapshot.hasData) return const AcmoComponentLoading();
-            return Stack(
+            return  AcmoOffersBody(controller: _controller);
+          }),
+    );
+  }
+}
+
+class AcmoOffersBody extends StatefulWidget {
+  const AcmoOffersBody({super.key, required this.controller});
+
+  final AcmoOffersController controller;
+  @override
+  State<AcmoOffersBody> createState() => _AcmoOffersBodyState();
+}
+
+class _AcmoOffersBodyState extends State<AcmoOffersBody> with WidgetsBindingObserver {
+  final _refreshController = RefreshController(initialRefresh: false);
+  late final _controller = widget.controller;
+
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _refreshController.requestRefresh();
+        break;
+      default:
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        SmartRefresher(
+          controller: _refreshController,
+          header: const WaterDropMaterialHeader(),
+          enablePullDown: true,
+          enablePullUp: false,
+          onRefresh: () async {
+            await _controller.loadOffers();
+            _refreshController.refreshCompleted();
+            setState(() {});
+          },
+          child: SingleChildScrollView(
+            child: Column(
               children: [
-                SmartRefresher(
-                  controller: _refreshController,
-                  header: const WaterDropMaterialHeader(),
-                  enablePullDown: true,
-                  enablePullUp: false,
-                  onRefresh: () async {
-                    await _controller.loadOffers();
-                    _refreshController.refreshCompleted();
-                    setState(() {});
-                  },
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children:[ ..._controller.items
-                          .map((e) => InkWell(
-                              onTap: () {
-                                Tyrads.instance.to(AcmoOfferDetailsPage(
-                                  id: e.campaignId,
-                                ));
-                              },
-                              child: AcmoComponentOfferItemCard(
-                                item: e,
-                              )))
-                          .toList(),
-                          const SizedBox(height: 100,)
-                          ],
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: InkWell(
-                    onTap: (() {
-                      Tyrads.instance.to(const AcmoActiveOffersPage());
-                    }),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 40,
-                            color: AcmoConfig.SECONDARY_COLOR,
-                            child: const Center(
-                                child: Text(
-                              'Active offers',
-                              // _controller.activeItems.length.toString() +
-                              //     " ${AppTextKeys.ACTIVE_OFFERS.tr}!",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 14),
-                            )),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                ..._controller.items
+                    .map((e) => InkWell(
+                        onTap: () {
+                          Tyrads.instance.to(AcmoOfferDetailsPage(
+                            id: e.campaignId,
+                          ));
+                        },
+                        child: AcmoComponentOfferItemCard(
+                          item: e,
+                        )))
+                    .toList(),
+                const SizedBox(
+                  height: 100,
                 )
               ],
-            );
-          }),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: InkWell(
+            onTap: (() {
+              Tyrads.instance.to(const AcmoActiveOffersPage());
+            }),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 40,
+                    color: AcmoConfig.SECONDARY_COLOR,
+                    child: const Center(
+                        child: Text(
+                      'Active offers',
+                      // _controller.activeItems.length.toString() +
+                      //     " ${AppTextKeys.ACTIVE_OFFERS.tr}!",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    )),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 }

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:custom_platform_device_id/platform_device_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:safe_device/safe_device.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 
 class AcmoDeviceDetailsController {
@@ -33,12 +32,12 @@ class AcmoDeviceDetailsController {
     fd['hardware'] = androidInfo.hardware;
     fd['serialNumber'] = androidInfo.serialNumber;
     fd['display'] = androidInfo.display;
-    fd['heightInches'] = androidInfo.displayMetrics.heightInches;
-    fd['widthInches'] = androidInfo.displayMetrics.widthInches;
-    fd['heightPx'] = androidInfo.displayMetrics.heightPx;
-    fd['widthPx'] = androidInfo.displayMetrics.widthPx;
-    fd['xdpi'] = androidInfo.displayMetrics.xDpi;
-    fd['ydpi'] = androidInfo.displayMetrics.yDpi;
+    // fd['heightInches'] = androidInfo.displayMetrics.heightInches;
+    // fd['widthInches'] = androidInfo.displayMetrics.widthInches;
+    // fd['heightPx'] = androidInfo.displayMetrics.heightPx;
+    // fd['widthPx'] = androidInfo.displayMetrics.widthPx;
+    // fd['xdpi'] = androidInfo.displayMetrics.xDpi;
+    // fd['ydpi'] = androidInfo.displayMetrics.yDpi;
     fd['baseOs'] = androidInfo.version.baseOS;
     fd['codename'] = androidInfo.version.codename;
     fd['sdkVersion'] = androidInfo.version.sdkInt;
@@ -52,8 +51,8 @@ class AcmoDeviceDetailsController {
     fd["platform"] = acmoGetPlatformName();
     fd["installerStore"] = packageInfo.installerStore;
     fd["osLang"] = Platform.localeName.toString().split('_')[0];
-    fd['rooted'] = await SafeDevice.isJailBroken;
-    fd['virtual'] = !await SafeDevice.isRealDevice;
+    // fd['rooted'] = await SafeDevice.isJailBroken;
+    // fd['virtual'] = !await SafeDevice.isRealDevice;
     return fd;
   }
 
@@ -79,8 +78,8 @@ class AcmoDeviceDetailsController {
     fd["platform"] = acmoGetPlatformName();
     fd["installerStore"] = packageInfo.installerStore;
     fd["osLang"] = Platform.localeName.toString().split('_')[0];
-    fd['rooted'] = await SafeDevice.isJailBroken;
-    fd['virtual'] = !await SafeDevice.isRealDevice;
+    // fd['rooted'] = await SafeDevice.isJailBroken;
+    // fd['virtual'] = !await SafeDevice.isRealDevice;
     return fd;
   }
 }

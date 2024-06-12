@@ -334,7 +334,7 @@ class TPointsWithIcon extends StatelessWidget {
         CachedNetworkImage(
             imageUrl: currencyIconUrl, width: 16, height: 16),
         const SizedBox(
-          width: 4,
+          width: 1,
         ),
         Text(
           '$tPoints $currencyName',
@@ -371,21 +371,23 @@ class EventTypeText extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Text(
-          eventName.length > 20
-              ? '${eventName.substring(0, 17)}...'
-              : eventName,
-          style: TextStyle(
-              color: isCompleted && isSuperCharged ||
-                      isActive && isSuperCharged ||
-                      isFuture && isSuperCharged ||
-                      isPending && isSuperCharged ||
-                      isRejected && isSuperCharged
-                  ? const Color(0xff9426C8)
-                  : const Color(0xff2CB388),
-              fontWeight: FontWeight.w700,
-              fontSize: 14),
-          textAlign: TextAlign.center,
+        child: SizedBox(
+          height :38,
+          child: Text(
+              eventName,
+              maxLines: 2,              
+            style: TextStyle(
+                color: isCompleted && isSuperCharged ||
+                        isActive && isSuperCharged ||
+                        isFuture && isSuperCharged ||
+                        isPending && isSuperCharged ||
+                        isRejected && isSuperCharged
+                    ? const Color(0xff9426C8)
+                    : const Color(0xff2CB388),
+                fontWeight: FontWeight.w700,
+                fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

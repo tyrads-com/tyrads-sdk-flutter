@@ -55,7 +55,7 @@ class AcmoOffersDetailsController {
             purchaseEvents.add(element);
           }
         } else {
-          if (element.conversionStatus.toLowerCase() == "success") {
+          if (element.conversionStatus.toLowerCase() == "approved") {
             allCompletedEvents.add(element);
           } else {
             allActiveEvents.add(element);

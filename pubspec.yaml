@@ -1,11 +1,11 @@
 name: tyrads_sdk
 description: Show TyrAds offer wall.
-version: 0.0.4
+version: 0.2.6
 homepage: https://github.com/tyrads-com/tyrads-sdk-flutter
 
 
 environment:
-  sdk: ">=3.1.0 <4.0.0"
+  sdk: ">=3.3.0 <4.0.0"
   flutter: ">=3.13.0"
 
 dependencies:
@@ -14,7 +14,7 @@ dependencies:
   equatable: ^2.0.5
   json_annotation: ^4.8.1
   freezed_annotation: ^2.4.1
-  dio: ^5.1.1
+  dio: ^5.4.2+1
   url_launcher: ^6.0.3
   cached_network_image: ^3.0.0
   pull_to_refresh: ^2.0.0
@@ -29,9 +29,9 @@ dependencies:
   back_button_interceptor: ^7.0.0
   custom_platform_device_id: ^1.0.8
   advertising_id: ^2.6.0
-  safe_device: ^1.1.4
-  device_info_plus: ^9.1.2
-  package_info_plus: ^4.2.0
+  #safe_device: ^1.1.4
+  device_info_plus: ^10.1.0
+  package_info_plus: ^6.0.0
   flutter_inappwebview: ^6.0.0
 
 dev_dependencies:

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/loading.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoWebSdk extends StatefulWidget {
@@ -15,7 +16,7 @@ class AcmoWebSdk extends StatefulWidget {
 
 class _AcmoWebSdkState extends State<AcmoWebSdk> {
   late var url =
-      'https://tyradssdk.acmosoft.com/?apiKey=${Tyrads.instance.apiKey}&apiSecret=${Tyrads.instance.apiSecret}&userID=${Tyrads.instance.publisherUserID}&newUser=${Tyrads.instance.newUser}';
+      'https://websdk.tyrads.com/?apiKey=${Tyrads.instance.apiKey}&apiSecret=${Tyrads.instance.apiSecret}&userID=${Tyrads.instance.publisherUserID}&newUser=${Tyrads.instance.newUser}&platform=${acmoGetPlatformName()}';
 
   InAppWebViewController? webViewController;
   var isLoading = true;
@@ -30,9 +31,8 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
         }
         return true;
       },
-      child: SafeArea(
-        bottom: false,
-        child: Stack(
+      child: Scaffold(
+        body: Stack(
           children: [
             Column(
               children: [
@@ -58,7 +58,7 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
                             return NavigationActionPolicy.CANCEL;
                           }
                         } else {
-                          if ((url.toString()).contains('acmosoft.com')) {
+                          if ((url.toString()).contains('websdk.tyrads.com')) {
                             return NavigationActionPolicy.ALLOW;
                           } else {
                             acmoLaunchURLForce(url);

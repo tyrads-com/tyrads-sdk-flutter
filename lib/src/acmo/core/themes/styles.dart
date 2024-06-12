@@ -73,7 +73,9 @@ class AcmoStyleThemes {
       )),
       cardTheme: ThemeData.light().cardTheme.copyWith(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+              surfaceTintColor: Colors.white
+              ),
       colorScheme: ColorScheme.fromSwatch().copyWith(
         primary: AcmoConfig.PRIMARY_COLOR,
         secondary: AcmoConfig.SECONDARY_COLOR,
@@ -89,7 +91,7 @@ class AcmoStyleThemes {
           // Status bar color
           statusBarColor: AcmoConfig.APPBAR_BG,
           statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
       ));
 }

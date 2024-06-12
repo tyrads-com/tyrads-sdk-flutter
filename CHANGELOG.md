@@ -1,3 +1,46 @@
+## 0.2.6
+
+- added reload content on app resume
+
+## 0.2.5
+
+- fixed event completed status in offer details
+- fixed submit ticket failure moves to success page
+
+## 0.2.4
+
+- removed safe_device package dependency  
+
+## 0.2.3
+
+- added sending platform in web websdk URL
+- changed websdk url
+- fixed material 3 card color
+- fixed native status bar icons colour
+- fixed safe area
+- fixed minor UI padding issues
+- fixed details screen being called multiple times
+- fixed help icon visibe to non active offer details
+
+## 0.2.2
+
+- fixed event name in event cards widget 
+
+## 0.2.1
+
+- updated dio package to 5.4.2
+- updated device_info_plus package to 10.1.0
+
+## 0.2.0
+
+- updated flutter version to 3.19.x
+- updated dart version to 3.3.x
+- updated package_info_plus to version 6.0.0
+
+## 0.1.0
+
+- updated flutter version to 3.16.x
+
 ## 0.0.4
 
 - updgraded package dependencies 
