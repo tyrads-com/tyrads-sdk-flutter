@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:custom_platform_device_id/platform_device_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:platform_device_id_plus/platform_device_id.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 
 class AcmoDeviceDetailsController {

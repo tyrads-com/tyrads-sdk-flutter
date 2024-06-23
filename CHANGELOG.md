@@ -1,6 +1,7 @@
 ## 0.2.6
 
 - added reload content on app resume
+- fixed compatibility with Gradle 8.0
 
 ## 0.2.5
 

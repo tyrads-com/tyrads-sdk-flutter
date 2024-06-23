@@ -1,6 +1,6 @@
 name: tyrads_sdk
 description: Show TyrAds offer wall.
-version: 0.2.6
+version: 0.2.6-beta.1
 homepage: https://github.com/tyrads-com/tyrads-sdk-flutter
 
 
@@ -27,7 +27,7 @@ dependencies:
   styled_text: ^8.1.0
   numeral: ^3.0.0
   back_button_interceptor: ^7.0.0
-  custom_platform_device_id: ^1.0.8
+  platform_device_id_plus: ^1.0.3
   advertising_id: ^2.6.0
   #safe_device: ^1.1.4
   device_info_plus: ^10.1.0

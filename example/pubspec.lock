@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.4.1"
+  android_id:
+    dependency: transitive
+    description:
+      name: android_id
+      sha256: "748ba5f93dd5c497e675d8eaa1404346ce4d1794464ea654576ff192d153b92a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   args:
     dependency: transitive
     description:
@@ -209,14 +217,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
-  custom_platform_device_id:
-    dependency: transitive
-    description:
-      name: custom_platform_device_id
-      sha256: "4ea447c43daaa0ecad690950c90777a28654088305ec8752658807d3d2a5753f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.8"
   custom_timer:
     dependency: transitive
     description:
@@ -233,22 +233,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.6"
-  device_info:
-    dependency: transitive
-    description:
-      name: device_info
-      sha256: f4a8156cb7b7480d969cb734907d18b333c8f0bc0b1ad0b342cdcecf30d62c48
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.3"
-  device_info_platform_interface:
-    dependency: transitive
-    description:
-      name: device_info_platform_interface
-      sha256: b148e0bf9640145d09a4f8dea96614076f889e7f7f8b5ecab1c7e5c2dbc73c1b
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
   device_info_plus:
     dependency: transitive
     description:
@@ -660,10 +644,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "9c96da072b421e98183f9ea7464898428e764bc0ce5567f27ec8693442e72514"
+      sha256: bca87b0165ffd7cdb9cad8edd22d18d2201e886d9a9f19b4fb3452ea7df3a72a
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.5"
+    version: "2.2.6"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -728,6 +712,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  platform_device_id_plus:
+    dependency: transitive
+    description:
+      name: platform_device_id_plus
+      sha256: "85d362dbf028c0a2d907b3f1edada71e14518bf848bc851aaf9417837cf6b0df"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   platform_device_id_web:
     dependency: transitive
     description:
