@@ -6,4 +6,6 @@ class AcmoEndpointNames {
   static const String ACTIVE_OFFERS = 'activated-campaigns';
   static const String UPDATE_USER = 'update-user';
   static const String DEVICE_DETAILS = 'user-device';
+  static const String USAGE_STATS = 'usage-stats';
+  static const String USER_ACTIVITIES = 'user-activities';
 }

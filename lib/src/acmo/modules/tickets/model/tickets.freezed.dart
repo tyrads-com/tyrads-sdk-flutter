@@ -342,8 +342,13 @@ mixin _$AcmoTicketEventsModel {
   String get identifier => throw _privateConstructorUsedError;
   String get eventName => throw _privateConstructorUsedError;
   String get payoutType => throw _privateConstructorUsedError;
-  int get payoutAmountConverted => throw _privateConstructorUsedError;
+  String get eventCategory => throw _privateConstructorUsedError;
+  double get payoutAmountConverted => throw _privateConstructorUsedError;
   bool get isTicketSubmitted => throw _privateConstructorUsedError;
+  String get ticketStatus => throw _privateConstructorUsedError;
+  String get conversionStatus => throw _privateConstructorUsedError;
+  String get currencyIcon => throw _privateConstructorUsedError;
+  String get currencyName => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -362,8 +367,13 @@ abstract class $AcmoTicketEventsModelCopyWith<$Res> {
       String identifier,
       String eventName,
       String payoutType,
-      int payoutAmountConverted,
-      bool isTicketSubmitted});
+      String eventCategory,
+      double payoutAmountConverted,
+      bool isTicketSubmitted,
+      String ticketStatus,
+      String conversionStatus,
+      String currencyIcon,
+      String currencyName});
 }
 
 /// @nodoc
@@ -384,8 +394,13 @@ class _$AcmoTicketEventsModelCopyWithImpl<$Res,
     Object? identifier = null,
     Object? eventName = null,
     Object? payoutType = null,
+    Object? eventCategory = null,
     Object? payoutAmountConverted = null,
     Object? isTicketSubmitted = null,
+    Object? ticketStatus = null,
+    Object? conversionStatus = null,
+    Object? currencyIcon = null,
+    Object? currencyName = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -404,14 +419,34 @@ class _$AcmoTicketEventsModelCopyWithImpl<$Res,
           ? _value.payoutType
           : payoutType // ignore: cast_nullable_to_non_nullable
               as String,
+      eventCategory: null == eventCategory
+          ? _value.eventCategory
+          : eventCategory // ignore: cast_nullable_to_non_nullable
+              as String,
       payoutAmountConverted: null == payoutAmountConverted
           ? _value.payoutAmountConverted
           : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       isTicketSubmitted: null == isTicketSubmitted
           ? _value.isTicketSubmitted
           : isTicketSubmitted // ignore: cast_nullable_to_non_nullable
               as bool,
+      ticketStatus: null == ticketStatus
+          ? _value.ticketStatus
+          : ticketStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      conversionStatus: null == conversionStatus
+          ? _value.conversionStatus
+          : conversionStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyIcon: null == currencyIcon
+          ? _value.currencyIcon
+          : currencyIcon // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyName: null == currencyName
+          ? _value.currencyName
+          : currencyName // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -430,8 +465,13 @@ abstract class _$$AcmoTicketEventsModelImplCopyWith<$Res>
       String identifier,
       String eventName,
       String payoutType,
-      int payoutAmountConverted,
-      bool isTicketSubmitted});
+      String eventCategory,
+      double payoutAmountConverted,
+      bool isTicketSubmitted,
+      String ticketStatus,
+      String conversionStatus,
+      String currencyIcon,
+      String currencyName});
 }
 
 /// @nodoc
@@ -450,8 +490,13 @@ class __$$AcmoTicketEventsModelImplCopyWithImpl<$Res>
     Object? identifier = null,
     Object? eventName = null,
     Object? payoutType = null,
+    Object? eventCategory = null,
     Object? payoutAmountConverted = null,
     Object? isTicketSubmitted = null,
+    Object? ticketStatus = null,
+    Object? conversionStatus = null,
+    Object? currencyIcon = null,
+    Object? currencyName = null,
   }) {
     return _then(_$AcmoTicketEventsModelImpl(
       id: null == id
@@ -470,14 +515,34 @@ class __$$AcmoTicketEventsModelImplCopyWithImpl<$Res>
           ? _value.payoutType
           : payoutType // ignore: cast_nullable_to_non_nullable
               as String,
+      eventCategory: null == eventCategory
+          ? _value.eventCategory
+          : eventCategory // ignore: cast_nullable_to_non_nullable
+              as String,
       payoutAmountConverted: null == payoutAmountConverted
           ? _value.payoutAmountConverted
           : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       isTicketSubmitted: null == isTicketSubmitted
           ? _value.isTicketSubmitted
           : isTicketSubmitted // ignore: cast_nullable_to_non_nullable
               as bool,
+      ticketStatus: null == ticketStatus
+          ? _value.ticketStatus
+          : ticketStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      conversionStatus: null == conversionStatus
+          ? _value.conversionStatus
+          : conversionStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyIcon: null == currencyIcon
+          ? _value.currencyIcon
+          : currencyIcon // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyName: null == currencyName
+          ? _value.currencyName
+          : currencyName // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -490,8 +555,13 @@ class _$AcmoTicketEventsModelImpl implements _AcmoTicketEventsModel {
       this.identifier = '',
       this.eventName = '',
       this.payoutType = '',
+      this.eventCategory = '',
       this.payoutAmountConverted = 0,
-      this.isTicketSubmitted = false});
+      this.isTicketSubmitted = false,
+      this.ticketStatus = "",
+      this.conversionStatus = "",
+      this.currencyIcon = "",
+      this.currencyName = ""});
 
   factory _$AcmoTicketEventsModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$AcmoTicketEventsModelImplFromJson(json);
@@ -509,14 +579,29 @@ class _$AcmoTicketEventsModelImpl implements _AcmoTicketEventsModel {
   final String payoutType;
   @override
   @JsonKey()
-  final int payoutAmountConverted;
+  final String eventCategory;
+  @override
+  @JsonKey()
+  final double payoutAmountConverted;
   @override
   @JsonKey()
   final bool isTicketSubmitted;
+  @override
+  @JsonKey()
+  final String ticketStatus;
+  @override
+  @JsonKey()
+  final String conversionStatus;
+  @override
+  @JsonKey()
+  final String currencyIcon;
+  @override
+  @JsonKey()
+  final String currencyName;
 
   @override
   String toString() {
-    return 'AcmoTicketEventsModel(id: $id, identifier: $identifier, eventName: $eventName, payoutType: $payoutType, payoutAmountConverted: $payoutAmountConverted, isTicketSubmitted: $isTicketSubmitted)';
+    return 'AcmoTicketEventsModel(id: $id, identifier: $identifier, eventName: $eventName, payoutType: $payoutType, eventCategory: $eventCategory, payoutAmountConverted: $payoutAmountConverted, isTicketSubmitted: $isTicketSubmitted, ticketStatus: $ticketStatus, conversionStatus: $conversionStatus, currencyIcon: $currencyIcon, currencyName: $currencyName)';
   }
 
   @override
@@ -531,16 +616,37 @@ class _$AcmoTicketEventsModelImpl implements _AcmoTicketEventsModel {
                 other.eventName == eventName) &&
             (identical(other.payoutType, payoutType) ||
                 other.payoutType == payoutType) &&
+            (identical(other.eventCategory, eventCategory) ||
+                other.eventCategory == eventCategory) &&
             (identical(other.payoutAmountConverted, payoutAmountConverted) ||
                 other.payoutAmountConverted == payoutAmountConverted) &&
             (identical(other.isTicketSubmitted, isTicketSubmitted) ||
-                other.isTicketSubmitted == isTicketSubmitted));
+                other.isTicketSubmitted == isTicketSubmitted) &&
+            (identical(other.ticketStatus, ticketStatus) ||
+                other.ticketStatus == ticketStatus) &&
+            (identical(other.conversionStatus, conversionStatus) ||
+                other.conversionStatus == conversionStatus) &&
+            (identical(other.currencyIcon, currencyIcon) ||
+                other.currencyIcon == currencyIcon) &&
+            (identical(other.currencyName, currencyName) ||
+                other.currencyName == currencyName));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, identifier, eventName,
-      payoutType, payoutAmountConverted, isTicketSubmitted);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      identifier,
+      eventName,
+      payoutType,
+      eventCategory,
+      payoutAmountConverted,
+      isTicketSubmitted,
+      ticketStatus,
+      conversionStatus,
+      currencyIcon,
+      currencyName);
 
   @JsonKey(ignore: true)
   @override
@@ -563,8 +669,13 @@ abstract class _AcmoTicketEventsModel implements AcmoTicketEventsModel {
       final String identifier,
       final String eventName,
       final String payoutType,
-      final int payoutAmountConverted,
-      final bool isTicketSubmitted}) = _$AcmoTicketEventsModelImpl;
+      final String eventCategory,
+      final double payoutAmountConverted,
+      final bool isTicketSubmitted,
+      final String ticketStatus,
+      final String conversionStatus,
+      final String currencyIcon,
+      final String currencyName}) = _$AcmoTicketEventsModelImpl;
 
   factory _AcmoTicketEventsModel.fromJson(Map<String, dynamic> json) =
       _$AcmoTicketEventsModelImpl.fromJson;
@@ -578,9 +689,19 @@ abstract class _AcmoTicketEventsModel implements AcmoTicketEventsModel {
   @override
   String get payoutType;
   @override
-  int get payoutAmountConverted;
+  String get eventCategory;
+  @override
+  double get payoutAmountConverted;
   @override
   bool get isTicketSubmitted;
+  @override
+  String get ticketStatus;
+  @override
+  String get conversionStatus;
+  @override
+  String get currencyIcon;
+  @override
+  String get currencyName;
   @override
   @JsonKey(ignore: true)
   _$$AcmoTicketEventsModelImplCopyWith<_$AcmoTicketEventsModelImpl>

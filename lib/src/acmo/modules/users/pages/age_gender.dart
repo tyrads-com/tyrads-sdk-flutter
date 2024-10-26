@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/pages/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/components/gender_select.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/controller.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import '../../../../gen/assets.gen.dart';
@@ -10,7 +9,7 @@ import '../../offers/components/button_primary.dart';
 import '../components/age_select.dart';
 
 class AcmoUsersUpdatePage extends StatefulWidget {
-  const AcmoUsersUpdatePage({Key? key}) : super(key: key);
+  const AcmoUsersUpdatePage({super.key});
 
   @override
   State<AcmoUsersUpdatePage> createState() => _AcmoUsersUpdatePageState();
@@ -48,15 +47,15 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge!
-                              .copyWith(color: AcmoConfig.SECONDARY_COLOR),
+                              .copyWith(color: Theme.of(context).colorScheme.secondary),
                         ),
                         const SizedBox(
                           height: 56,
                         ),
-                        const Text(
+                         Text(
                           'Choose Your Gender',
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: AcmoConfig.SECONDARY_COLOR),
+                          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         ),
                         const SizedBox(
                           height: 25,
@@ -71,10 +70,10 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                         const SizedBox(
                           height: 56,
                         ),
-                        const Text(
+                         Text(
                           'Choose Your Age',
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: AcmoConfig.SECONDARY_COLOR),
+                          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         ),
                         const SizedBox(
                           height: 25,
@@ -98,12 +97,14 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                         onTap: _controller.submiting
                             ? null
                             : () {
+                              if(mounted){
                                 setState(() {
                                   _controller.submiting = true;
                                 });
+                              }
                                 _controller.updateUser(
                                     Tyrads.instance.publisherUserID);
-                                Tyrads.instance.to(const AcmoOffersPage());
+                                Tyrads.instance.to(const AcmoOffersPage(),replace: true);
                               },
                       ),
                     ),

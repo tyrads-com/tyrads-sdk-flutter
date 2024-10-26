@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
 
 class AcmoComponentButtonPrimary extends StatelessWidget {
   const AcmoComponentButtonPrimary({
-    Key? key,
+    super.key,
     this.onTap,
     required this.titleText,
     this.isLoading = false,
-  }) : super(key: key);
+  });
 
   final Function()? onTap;
   final String titleText;
@@ -18,7 +17,7 @@ class AcmoComponentButtonPrimary extends StatelessWidget {
       children: [
         Expanded(
           child: ElevatedButton(
-            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll( AcmoConfig.SECONDARY_COLOR)),
+            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll( Theme.of(context).colorScheme.secondary)),
               onPressed: onTap,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

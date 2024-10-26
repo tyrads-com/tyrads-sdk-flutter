@@ -1,16 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:numeral/numeral.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/button_3.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/widgets/countdown.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/models/offers.dart';
+import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 import 'chip_category.dart';
 import 'chip_channel.dart';
 
 class AcmoComponentOfferItemCard extends StatelessWidget {
   const AcmoComponentOfferItemCard({
-    Key? key,
+    super.key,
     required this.item,
-  }) : super(key: key);
+  });
 
   final AcmoOffersModel item;
 
@@ -58,7 +60,9 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (item.expiring_after != 0)
+                if (item.expiredOn != null &&
+                   (( item.expiredOn!.millisecondsSinceEpoch -
+                                  DateTime.now().millisecondsSinceEpoch) > 0))
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 10),
@@ -72,14 +76,15 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
-                              'Ending in',
+                              'Ending in ',
                               style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             ),
                             AcmoComponentCountdown(
-                              seconds: item.expiring_after,
+                              seconds:(item.expiredOn!.millisecondsSinceEpoch -
+                                  DateTime.now().millisecondsSinceEpoch)~/1000,
                               style: const TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
@@ -103,7 +108,29 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                           width: 2,
                         ),
                         AcmoChipOfferChannel(
-                            item.targeting.reward?.rewardDifficulty ?? "")
+                            item.targeting.reward?.rewardDifficulty ?? ""),
+                        const Spacer(),
+                        if(item.hasPlaytimeEvents)
+                        Container(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFB527),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4,vertical: 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Assets.images.playtimeIcon
+                                    .image(height: 11, width: 11),
+                                const SizedBox(width: 2),
+                                const Text("Playtime", style: TextStyle(fontSize: 8)),
+                              ],
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -147,10 +174,11 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                               width: 16,
                               height: 16),
                           const SizedBox(
-                            width: 4,
+                            width: 1,
                           ),
                           Text(
-                            item.campaignPayout.totalPayout.toString(),
+                            item.campaignPayout.totalPayoutConverted
+                                .numeral(digits: 2),
                             style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 10,
@@ -159,9 +187,9 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                           const SizedBox(
                             width: 4,
                           ),
-                          const Text(
-                            "TPoints",
-                            style: TextStyle(
+                          Text(
+                            item.currency.adUnitCurrencyName,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.normal,
                                 fontSize: 10),
@@ -186,7 +214,7 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                         width: 74,
                         height: 31,
                         child: AcmoButton_3(
-                          label: "Play",
+                          label: "Play Now",
                           onTap: null,
                         )),
                   ),

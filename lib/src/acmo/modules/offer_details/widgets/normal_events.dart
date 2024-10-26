@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:numeral/numeral.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/controller.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
 
 import 'event_card.dart';
 
@@ -34,7 +33,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
       footerBuilder: () => CustomFooter(
         builder: (c, r) => Container(),
       ),
-      headerTriggerDistance: 20.0,
+      headerTriggerDistance: 1.0,
       child: PageView(
         controller: pageController,
         children: [
@@ -43,7 +42,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
             controller: completedRefreshController,
             onRefresh: () {
               pageController.animateToPage(1,
-                  duration: const Duration(seconds: 1), curve: Curves.easeIn);
+                  duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
             },
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -69,8 +68,8 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                                 left: 24, right: 5, top: 5),
                             child: Text(
                               titleText,
-                              style: const TextStyle(
-                                  color: AcmoConfig.SECONDARY_COLOR,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.secondary,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700),
                             ),
@@ -82,20 +81,21 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                       children: [
                         AcmoEventCard(
                           isActive: false,
-                          isCompleted: item.conversionStatus == "completed",
+                          isCompleted: item.conversionStatus.toLowerCase() == "approved",
                           isFuture: false,
-                          isPending: item.conversionStatus == "pending",
-                          isRejected: item.conversionStatus == "rejected",
+                          isPending: item.conversionStatus.toLowerCase() == "pending",
+                          isRejected: item.conversionStatus.toLowerCase() == "rejected",
                           isSuperCharged: false,
                           difcultyLevelLabel: item.eventCategory,
-                          tPoints: numeral(item.payoutAmountConverted),
+                          tPoints: item.payoutAmountConverted.numeral(digits: 2),
                           eventName: item.eventName,
-                          isOfferActive: _controller.item.status == "active",
-                          remainingTime: 0,
+                          isOfferActive: _controller.item.status.toLowerCase() == "active" || _controller.item.status.toLowerCase() == "paused" || _controller.item.status.toLowerCase() == "suspended",                          
+                          remainingTime: item.maxTimeRemainSeconds.toInt(),
                           timeUp: false,
-                          isPlaytime: false,
-                          totalPlaytime: 0,
+                          isPlaytime: item.isPlaytime,
+                          totalPlaytime: item.totalPlaytime,
                           playedPlaytime: 0,
+                          item: _controller.item,
                         ),
                         if (index == 0)
                           Padding(
@@ -118,7 +118,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
             controller: activeRefreshController,
             onRefresh: () {
               pageController.animateToPage(0,
-                  duration: const Duration(seconds: 1), curve: Curves.easeIn);
+                  duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
             },
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -129,7 +129,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                 var titleText = "";
                 if (_controller.allActiveEvents.isNotEmpty &&
                     _controller.allActiveEvents.first.id == item.id) {
-                  if (_controller.item.status == "active") {
+                  if (_controller.item.status.toLowerCase() == "active") {
                     titleText = 'Active Tasks';
                   } else {
                     titleText = 'Available Tasks';
@@ -148,8 +148,8 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                                 left: 24, right: 5, top: 5),
                             child: Text(
                               titleText,
-                              style: const TextStyle(
-                                  color: AcmoConfig.SECONDARY_COLOR,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.secondary,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700),
                             ),
@@ -161,24 +161,25 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                       children: [
                         if (index == 0 &&
                             _controller.allCompletedEvents.isNotEmpty)
-                          const Icon(Icons.chevron_left,
-                              color: AcmoConfig.SECONDARY_COLOR),
+                           Icon(Icons.chevron_left,
+                              color: Theme.of(context).colorScheme.secondary),
                         AcmoEventCard(
-                          isActive: index == 0,
-                          isCompleted: item.conversionStatus == "completed",
+                          isActive: index == 0 && !_controller.item.capReached,
+                          isCompleted: item.conversionStatus.toLowerCase() == "approved",
                           isFuture: false,
-                          isPending: item.conversionStatus == "pending",
-                          isRejected: item.conversionStatus == "rejected",
+                          isPending: item.conversionStatus.toLowerCase() == "pending",
+                          isRejected: item.conversionStatus.toLowerCase() == "rejected",
                           isSuperCharged: false,
                           difcultyLevelLabel: item.eventCategory,
-                          tPoints: numeral(item.payoutAmountConverted),
+                          tPoints: item.payoutAmountConverted.numeral(digits: 2),
                           eventName: item.eventName,
-                          isOfferActive: _controller.item.status == "active",
-                          remainingTime: 0,
+                          isOfferActive: _controller.item.status.toLowerCase() == "active" || _controller.item.status.toLowerCase() == "paused" || _controller.item.status.toLowerCase() == "suspended",
+                          remainingTime: item.maxTimeRemainSeconds.toInt(),
                           timeUp: false,
-                          isPlaytime: false,
-                          totalPlaytime: 0,
+                          isPlaytime: item.isPlaytime,
+                          totalPlaytime: item.totalPlaytime,
                           playedPlaytime: 0,
+                          item: _controller.item,
                         ),
                       ],
                     ),

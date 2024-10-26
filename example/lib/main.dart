@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:example/env/env.dart';
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
@@ -5,9 +7,32 @@ import 'package:tyrads_sdk/tyrads_sdk.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Tyrads.instance
-      .init(apiKey: Env.TYRADS_SDK_KEY, apiSecret: Env.TYRADS_SDK_SECRET);
+      .init(
+        apiKey: Env.TYRADS_SDK_KEY,
+        apiSecret: Env.TYRADS_SDK_SECRET,
+        userInfo: TyradsUserInfo(
+          email: "example@tyrads.com",
+          phoneNumber: "001234567890",
+          userGroup: "High purchase user",
+        ),
+        mediaSourceInfo: TyradsMediaSourceInfo(
+          mediaSourceName: "Facebook",
+          mediaCampaignName: "Summer2023Promo",
+          mediaSourceId: "FB001",
+          mediaSubSourceId: "FB001_Stories",
+          incentivized: false,
+          mediaAdsetName: "YoungAdults25-34",
+          mediaAdsetId: "AD001",
+          mediaCreativeName: "SummerSale_Video",
+          mediaCreativeId: "CR001",
+          sub1: "ReferralCode123",
+          sub2: "OrganicInstall",
+          sub3: "HighValueUser",
+          sub4: "FirstTimeUser",
+          sub5: "iOSDevice",
+        ),
+        );
 
-  await Tyrads.instance.loginUser();
   runApp(const MyApp());
 }
 
@@ -37,8 +62,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String? userID;
   void _showOfferwall() async {
-    Tyrads.instance.showOffers(context);
+    var isLoginSuccessful = await Tyrads.instance.loginUser(userID: userID);
+    if(!isLoginSuccessful){
+      //re-initialize 
+    }
+    
+   // or you can login without waiting for the future
+   
+  //  Tyrads.instance.loginUser(userID: userID);
+  //   if(!Tyrads.instance.initializationWait.isCompleted){
+  //      await Tyrads.instance.initializationWait.future;
+  //   }
+  //   if(!Tyrads.instance.isLoginSuccessful){
+  //     //re-initialize
+  //   }
+
+    Tyrads.instance.showOffers(context
+   // ,campaignID: 00,route: TyradsDeepRoutes.CAMPAIGN_TICKETS
+    );
   }
 
   @override
@@ -52,9 +95,21 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            SizedBox(
+              width: 300,
+              child: TextField(
+                onChanged: (v) {
+                  userID = v;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "Custom user Id or empty for anonymous user",
+                )
+              ),
+            ),
+            const SizedBox(height: 10),
             OutlinedButton(
-                onPressed: _showOfferwall,
-                child: const Text("Show offerwall"))
+                onPressed: _showOfferwall, child: const Text("Show offerwall"))
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.

@@ -11,6 +11,7 @@ class AcmoStyleThemes {
       primaryColorDark: AcmoConfig.PRIMARY_COLOR_DARK,
       inputDecorationTheme: const InputDecorationTheme(
           focusColor: AcmoConfig.SECONDARY_COLOR,
+          enabledBorder: OutlineInputBorder(),
           //contentPadding: EdgeInsets.zero,
           isDense: true,
           isCollapsed: true,
@@ -73,12 +74,21 @@ class AcmoStyleThemes {
       )),
       cardTheme: ThemeData.light().cardTheme.copyWith(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+              surfaceTintColor: Colors.white
+              ),
+      dialogTheme: ThemeData.light().dialogTheme.copyWith(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent
+              ),
       colorScheme: ColorScheme.fromSwatch().copyWith(
         primary: AcmoConfig.PRIMARY_COLOR,
         secondary: AcmoConfig.SECONDARY_COLOR,
         background: AcmoConfig.SECONDARY_COLOR,
         onBackground: Colors.black,
+        outline: Colors.transparent
       ),
       appBarTheme:  const AppBarTheme(
         iconTheme: IconThemeData(color: Colors.white),
@@ -89,7 +99,7 @@ class AcmoStyleThemes {
           // Status bar color
           statusBarColor: AcmoConfig.APPBAR_BG,
           statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
       ));
 }

@@ -1,30 +1,31 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/offer_details.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/widgets/countdown.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
 import '../../../../gen/assets.gen.dart';
 import 'custom_bar.dart';
 
 class AcmoEventCard extends StatelessWidget {
-  AcmoEventCard({
-    Key? key,
-    required this.isRejected,
-    required this.isActive,
-    required this.isCompleted,
-    required this.isPending,
-    required this.isFuture,
-    required this.isSuperCharged,
-    required this.difcultyLevelLabel,
-    required this.tPoints,
-    required this.eventName,
-    required this.isOfferActive,
-    required this.remainingTime,
-    required this.timeUp,
-    required this.isPlaytime,
-    required this.totalPlaytime,
-    required this.playedPlaytime,
-  }) : super(key: key);
+  AcmoEventCard(
+      {super.key,
+      required this.isRejected,
+      required this.isActive,
+      required this.isCompleted,
+      required this.isPending,
+      required this.isFuture,
+      required this.isSuperCharged,
+      required this.difcultyLevelLabel,
+      required this.tPoints,
+      required this.eventName,
+      required this.isOfferActive,
+      required this.remainingTime,
+      required this.timeUp,
+      required this.isPlaytime,
+      required this.totalPlaytime,
+      required this.playedPlaytime,
+      required this.item});
   bool isRejected;
   bool isActive;
   bool isCompleted;
@@ -40,6 +41,7 @@ class AcmoEventCard extends StatelessWidget {
   final String difcultyLevelLabel;
   final String tPoints;
   final String eventName;
+  final AcmoOfferDetailsModel item;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -64,15 +66,15 @@ class AcmoEventCard extends StatelessWidget {
                                 color: const Color(0xff9426C8), width: 3)
                             : isActive
                                 ? Border.all(
-                                    color: const Color(0xff2CB388), width: 3)
+                                    color: Theme.of(context).colorScheme.secondary, width: 3)
                                 : null;
                       }
                     }(),
                     borderRadius: BorderRadius.circular(15),
                     gradient: RadialGradient(
                       colors: [
-                        const Color(0xff2CB388).withOpacity(0.0),
-                        const Color(0xff2CB388).withOpacity(0.1),
+                        Theme.of(context).colorScheme.secondary.withOpacity(0.0),
+                        Theme.of(context).colorScheme.secondary.withOpacity(0.1),
                       ],
                     ),
                   ),
@@ -98,13 +100,27 @@ class AcmoEventCard extends StatelessWidget {
                               return Assets.images.clock.image(
                                   height: 80,
                                   color: isCompleted
-                                      ? AcmoConfig.SECONDARY_COLOR
+                                      ? Theme.of(context).colorScheme.secondary
                                       : null);
                             } else {
-                              return isOfferActive &&
-                                      (isCompleted || isRejected || isPending)
-                                  ? Assets.images.goldenStar.image(height: 80)
-                                  : Assets.images.silverStar.image(height: 80);
+                              return Assets.images.silverStar.image(
+                                  height: 80,
+                                  color: () {
+                                    var color = Colors.grey.shade300;
+                                    if (isCompleted) {
+                                      color = const Color(0xffFED402);
+                                    }
+                                    if (isSuperCharged) {
+                                      color = const Color(0xff9426C8);
+                                    }
+                                    if (isRejected) {
+                                      color = const Color(0xffD45151);
+                                    }
+                                    if (isPending) {
+                                      color = const Color(0xffFED402);
+                                    }
+                                    return color;
+                                  }());
                             }
                           }(),
                         ),
@@ -123,7 +139,7 @@ class AcmoEventCard extends StatelessWidget {
                         height: 8,
                       ),
                       //Tpoints widget with icon and tpoints
-                      TPointsWithIcon(tPoints: tPoints),
+                      TPointsWithIcon(tPoints: tPoints, currencyIconUrl: item.currency.adUnitCurrencyIcon,currencyName: item.currency.adUnitCurrencyName,),
                       //Bottom Widget
                       const SizedBox(
                         height: 6,
@@ -189,10 +205,13 @@ class BottomWidgetWIthTitle extends StatelessWidget {
           color: () {
             var color = Colors.grey.shade300;
             if (isCompleted) {
-              color = const Color(0xff2CB388);
+              color = Theme.of(context).colorScheme.secondary;
             }
             if (isSuperCharged) {
               color = const Color(0xff9426C8);
+            }
+            if (isRejected) {
+              color = const Color(0xffD45151);
             }
             if (isPending) {
               color = const Color(0xffF4921F);
@@ -228,6 +247,15 @@ class BottomWidgetWIthTitle extends StatelessWidget {
               if (!isOfferActive) {
                 return widget;
               }
+              if (isActive) {
+                widget = const Text(
+                  'Complete this to continue',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 10),
+                );
+              }
               if (isPlaytime) {
                 widget = Text(
                   '$playedPlaytime minutes played',
@@ -256,15 +284,6 @@ class BottomWidgetWIthTitle extends StatelessWidget {
                           fontSize: 10),
                     )
                   ],
-                );
-              }
-              if (isActive) {
-                widget = const Text(
-                  'Complete this to continue',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 10),
                 );
               }
               if (isCompleted) {
@@ -315,22 +334,25 @@ class BottomWidgetWIthTitle extends StatelessWidget {
 class TPointsWithIcon extends StatelessWidget {
   const TPointsWithIcon({
     Key? key,
-    required this.tPoints,
+    required this.tPoints, required this.currencyIconUrl, required this.currencyName,
   }) : super(key: key);
 
   final String tPoints;
+  final String currencyIconUrl;
+  final String currencyName;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Assets.images.tPoints.image(height: 14),
+        CachedNetworkImage(
+            imageUrl: currencyIconUrl, width: 16, height: 16),
         const SizedBox(
-          width: 6,
+          width: 1,
         ),
         Text(
-          '$tPoints TPoints',
+          '$tPoints $currencyName',
           style: const TextStyle(
               color: Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
         ),
@@ -364,19 +386,23 @@ class EventTypeText extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Text(
-          eventName.length > 20 ? '${eventName.substring(0,17)}...' : eventName,
-          style: TextStyle(
-              color: isCompleted && isSuperCharged ||
-                      isActive && isSuperCharged ||
-                      isFuture && isSuperCharged ||
-                      isPending && isSuperCharged ||
-                      isRejected && isSuperCharged
-                  ? const Color(0xff9426C8)
-                  : const Color(0xff2CB388),
-              fontWeight: FontWeight.w700,
-              fontSize: 14),
-          textAlign: TextAlign.center,
+        child: SizedBox(
+          height :38,
+          child: Text(
+              eventName,
+              maxLines: 2,              
+            style: TextStyle(
+                color: isCompleted && isSuperCharged ||
+                        isActive && isSuperCharged ||
+                        isFuture && isSuperCharged ||
+                        isPending && isSuperCharged ||
+                        isRejected && isSuperCharged
+                    ? const Color(0xff9426C8)
+                    : Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.w700,
+                fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
@@ -419,7 +445,7 @@ class TopWidgetWithTitle extends StatelessWidget {
               ? const Color(0xff9426C8)
               : isPending && isSuperCharged
                   ? const Color(0xff9426C8)
-                  : const Color(0xff2CB388),
+                  : Theme.of(context).colorScheme.secondary,
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(12.0),
               bottomRight: Radius.circular(15.0))),

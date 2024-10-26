@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'package:flutter/material.dart';
 
 class AcmoButton_3 extends StatelessWidget {
@@ -19,7 +21,7 @@ class AcmoButton_3 extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(4)),
-          color: color ?? const Color(0xff2CB388),
+          color: color ?? Theme.of(context).colorScheme.secondary,
         ),
         // onPressed: ()=>callback(),
         child: SizedBox(

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:tyrads_sdk/src/acmo/modules/policy_terms/page.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
+
 @protected
 class AcmoAppBarOfferwall extends StatefulWidget
     implements PreferredSizeWidget {
   const AcmoAppBarOfferwall({
-    Key? key,
+    super.key,
     required this.titleText,
     this.onBack,
     this.onTap,
     this.showLeading = true,
-  }) : super(key: key);
+  });
   final String titleText;
   final Function()? onBack;
   final Function()? onTap;
@@ -42,6 +44,22 @@ class _AcmoAppBarOfferwallState extends State<AcmoAppBarOfferwall> {
                   }
                 },
               ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Tyrads.instance.to(const AcmoPrivacyTermsPage());
+            },
+            child: Row(
+              children: [
+                Icon(Icons.menu,
+                    size: 24, color: Tyrads.instance.colorHeaderFg),
+              ],
+            ),
+          ),
+          const SizedBox(
+            width: 16,
+          )
+        ],
         title: Text(widget.titleText));
   }
 }

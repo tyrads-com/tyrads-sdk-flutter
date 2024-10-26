@@ -22,7 +22,7 @@ Map<String, dynamic> _$$AcmoOfferDetailsResponseModelImplToJson(
 _$AcmoOfferDetailsModelImpl _$$AcmoOfferDetailsModelImplFromJson(
         Map<String, dynamic> json) =>
     _$AcmoOfferDetailsModelImpl(
-      campaignId: json['campaignId'] as int,
+      campaignId: (json['campaignId'] as num).toInt(),
       campaignName: json['campaignName'] as String? ?? '',
       campaignDescription: json['campaignDescription'] as String? ?? '',
       active: json['active'] as String? ?? '',
@@ -34,15 +34,26 @@ _$AcmoOfferDetailsModelImpl _$$AcmoOfferDetailsModelImplFromJson(
       tracking: Tracking.fromJson(json['tracking'] as Map<String, dynamic>),
       targeting: Targeting.fromJson(json['targeting'] as Map<String, dynamic>),
       creative: Creative.fromJson(json['creative'] as Map<String, dynamic>),
-      is_active: json['is_active'] as String? ?? '0',
-      is_completed: json['is_completed'] as String? ?? '0',
-      is_expiring: json['is_expiring'] as String? ?? '0',
-      expiring_after: json['expiring_after'] as int? ?? 0,
+      microCharge:
+          MicroCharge.fromJson(json['microCharge'] as Map<String, dynamic>),
+      microChargeEvents: (json['microChargeEvents'] as List<dynamic>?)
+              ?.map(
+                  (e) => MicroChargeEvents.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      hasPlaytimeEvents: json['hasPlaytimeEvents'] as bool? ?? false,
+      expiredOn: acmoConverterStringToDatetime(json['expiredOn'] as String?),
       isInstalled: json['isInstalled'] as bool? ?? false,
+      playtimeEvents: (json['playtimeEvents'] as List<dynamic>?)
+              ?.map((e) => PlaytimeEvents.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       payoutEvents: (json['payoutEvents'] as List<dynamic>?)
               ?.map((e) => PayoutEvents.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      isRetryDownload: json['isRetryDownload'] as bool? ?? false,
+      capReached: json['capReached'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$AcmoOfferDetailsModelImplToJson(
@@ -59,12 +70,15 @@ Map<String, dynamic> _$$AcmoOfferDetailsModelImplToJson(
       'tracking': instance.tracking,
       'targeting': instance.targeting,
       'creative': instance.creative,
-      'is_active': instance.is_active,
-      'is_completed': instance.is_completed,
-      'is_expiring': instance.is_expiring,
-      'expiring_after': instance.expiring_after,
+      'microCharge': instance.microCharge,
+      'microChargeEvents': instance.microChargeEvents,
+      'hasPlaytimeEvents': instance.hasPlaytimeEvents,
+      'expiredOn': instance.expiredOn?.toIso8601String(),
       'isInstalled': instance.isInstalled,
+      'playtimeEvents': instance.playtimeEvents,
       'payoutEvents': instance.payoutEvents,
+      'isRetryDownload': instance.isRetryDownload,
+      'capReached': instance.capReached,
     };
 
 _$CreativeImpl _$$CreativeImplFromJson(Map<String, dynamic> json) =>
@@ -122,21 +136,25 @@ Map<String, dynamic> _$$TargetingImplToJson(_$TargetingImpl instance) =>
 
 _$PayoutEventsImpl _$$PayoutEventsImplFromJson(Map<String, dynamic> json) =>
     _$PayoutEventsImpl(
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       conversionStatus: json['conversionStatus'] as String? ?? '',
       identifier: json['identifier'] as String? ?? '',
       eventName: json['eventName'] as String? ?? '',
       eventDescription: json['eventDescription'] as String? ?? '',
       eventCategory: json['eventCategory'] as String? ?? '',
       payoutAmount: (json['payoutAmount'] as num?)?.toDouble() ?? 0,
-      payoutAmountConverted: json['payoutAmountConverted'] as int? ?? 0,
+      payoutAmountConverted:
+          (json['payoutAmountConverted'] as num?)?.toDouble() ?? 0,
       payoutType: json['payoutType'] as String? ?? '',
       allowDuplicateEvents: json['allowDuplicateEvents'] as bool? ?? false,
-      maxTime: json['maxTime'] as int? ?? 0,
+      maxTime: (json['maxTime'] as num?)?.toInt() ?? 0,
       maxTimeMetric: json['maxTimeMetric'] as String? ?? '',
-      maxTimeRemainSeconds: json['maxTimeRemainSeconds'] as String? ?? '',
+      maxTimeRemainSeconds:
+          (json['maxTimeRemainSeconds'] as num?)?.toDouble() ?? 0,
       enforceMaxTimeCompletion:
           json['enforceMaxTimeCompletion'] as bool? ?? false,
+      isPlaytime: json['isPlaytime'] as bool? ?? false,
+      totalPlaytime: (json['totalPlaytime'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$PayoutEventsImplToJson(_$PayoutEventsImpl instance) =>
@@ -155,6 +173,8 @@ Map<String, dynamic> _$$PayoutEventsImplToJson(_$PayoutEventsImpl instance) =>
       'maxTimeMetric': instance.maxTimeMetric,
       'maxTimeRemainSeconds': instance.maxTimeRemainSeconds,
       'enforceMaxTimeCompletion': instance.enforceMaxTimeCompletion,
+      'isPlaytime': instance.isPlaytime,
+      'totalPlaytime': instance.totalPlaytime,
     };
 
 _$TrackingImpl _$$TrackingImplFromJson(Map<String, dynamic> json) =>
@@ -173,7 +193,7 @@ Map<String, dynamic> _$$TrackingImplToJson(_$TrackingImpl instance) =>
 
 _$CampaignPayoutImpl _$$CampaignPayoutImplFromJson(Map<String, dynamic> json) =>
     _$CampaignPayoutImpl(
-      totalEvents: json['totalEvents'] as int? ?? 0,
+      totalEvents: (json['totalEvents'] as num?)?.toInt() ?? 0,
       totalPayout: (json['totalPayout'] as num?)?.toDouble() ?? 0,
       totalPayoutConverted:
           (json['totalPayoutConverted'] as num?)?.toDouble() ?? 0,
@@ -194,7 +214,8 @@ _$CurrencyImpl _$$CurrencyImplFromJson(Map<String, dynamic> json) =>
       adUnitName: json['adUnitName'] as String? ?? '',
       adUnitCurrencyName: json['adUnitCurrencyName'] as String? ?? '',
       adUnitCurrencyIcon: json['adUnitCurrencyIcon'] as String? ?? '',
-      adUnitCurrencyConversion: json['adUnitCurrencyConversion'] as int? ?? 0,
+      adUnitCurrencyConversion:
+          (json['adUnitCurrencyConversion'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$$CurrencyImplToJson(_$CurrencyImpl instance) =>
@@ -208,7 +229,7 @@ Map<String, dynamic> _$$CurrencyImplToJson(_$CurrencyImpl instance) =>
     };
 
 _$AppImpl _$$AppImplFromJson(Map<String, dynamic> json) => _$AppImpl(
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String? ?? '',
       packageName: json['packageName'] as String? ?? '',
       shortDescription: json['shortDescription'] as String? ?? '',
@@ -236,4 +257,91 @@ _$RewardImpl _$$RewardImplFromJson(Map<String, dynamic> json) => _$RewardImpl(
 Map<String, dynamic> _$$RewardImplToJson(_$RewardImpl instance) =>
     <String, dynamic>{
       'rewardDifficulty': instance.rewardDifficulty,
+    };
+
+_$MicroChargeImpl _$$MicroChargeImplFromJson(Map<String, dynamic> json) =>
+    _$MicroChargeImpl(
+      earned: (json['earned'] as num?)?.toDouble() ?? 0,
+      earnedConversion: (json['earnedConversion'] as num?)?.toDouble() ?? 0,
+      total: (json['total'] as num?)?.toDouble() ?? 0,
+      totalConversion: (json['totalConversion'] as num?)?.toDouble() ?? 0,
+    );
+
+Map<String, dynamic> _$$MicroChargeImplToJson(_$MicroChargeImpl instance) =>
+    <String, dynamic>{
+      'earned': instance.earned,
+      'earnedConversion': instance.earnedConversion,
+      'total': instance.total,
+      'totalConversion': instance.totalConversion,
+    };
+
+_$MicroChargeEventsImpl _$$MicroChargeEventsImplFromJson(
+        Map<String, dynamic> json) =>
+    _$MicroChargeEventsImpl(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      conversionStatus: json['conversionStatus'] as String? ?? '',
+      identifier: json['identifier'] as String? ?? '',
+      eventName: json['eventName'] as String? ?? '',
+      eventDescription: json['eventDescription'] as String? ?? '',
+      eventCategory: json['eventCategory'] as String? ?? '',
+      payoutAmount: (json['payoutAmount'] as num?)?.toDouble() ?? 0,
+      payoutAmountConverted:
+          (json['payoutAmountConverted'] as num?)?.toDouble() ?? 0,
+      payoutTypeId: (json['payoutTypeId'] as num?)?.toInt() ?? 0,
+      payoutType: json['payoutType'] as String? ?? '',
+      allowDuplicateEvents: json['allowDuplicateEvents'] as bool? ?? false,
+      maxTime: (json['maxTime'] as num?)?.toInt() ?? 0,
+      maxTimeMetric: json['maxTimeMetric'] as String? ?? '',
+      maxTimeRemainSeconds:
+          (json['maxTimeRemainSeconds'] as num?)?.toDouble() ?? 0,
+      enforceMaxTimeCompletion:
+          json['enforceMaxTimeCompletion'] as bool? ?? false,
+      dailyCount: (json['dailyCount'] as num?)?.toInt() ?? 0,
+      dailyLimit: (json['dailyLimit'] as num?)?.toInt() ?? 0,
+      count: (json['count'] as num?)?.toInt() ?? 0,
+      limit: (json['limit'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$$MicroChargeEventsImplToJson(
+        _$MicroChargeEventsImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'conversionStatus': instance.conversionStatus,
+      'identifier': instance.identifier,
+      'eventName': instance.eventName,
+      'eventDescription': instance.eventDescription,
+      'eventCategory': instance.eventCategory,
+      'payoutAmount': instance.payoutAmount,
+      'payoutAmountConverted': instance.payoutAmountConverted,
+      'payoutTypeId': instance.payoutTypeId,
+      'payoutType': instance.payoutType,
+      'allowDuplicateEvents': instance.allowDuplicateEvents,
+      'maxTime': instance.maxTime,
+      'maxTimeMetric': instance.maxTimeMetric,
+      'maxTimeRemainSeconds': instance.maxTimeRemainSeconds,
+      'enforceMaxTimeCompletion': instance.enforceMaxTimeCompletion,
+      'dailyCount': instance.dailyCount,
+      'dailyLimit': instance.dailyLimit,
+      'count': instance.count,
+      'limit': instance.limit,
+    };
+
+_$PlaytimeEventsImpl _$$PlaytimeEventsImplFromJson(Map<String, dynamic> json) =>
+    _$PlaytimeEventsImpl(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      conversionStatus: json['conversionStatus'] as String? ?? '',
+      payoutAmount: (json['payoutAmount'] as num?)?.toDouble() ?? 0,
+      payoutAmountConverted:
+          (json['payoutAmountConverted'] as num?)?.toDouble() ?? 0,
+      timePlayedSeconds: (json['timePlayedSeconds'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$$PlaytimeEventsImplToJson(
+        _$PlaytimeEventsImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'conversionStatus': instance.conversionStatus,
+      'payoutAmount': instance.payoutAmount,
+      'payoutAmountConverted': instance.payoutAmountConverted,
+      'timePlayedSeconds': instance.timePlayedSeconds,
     };

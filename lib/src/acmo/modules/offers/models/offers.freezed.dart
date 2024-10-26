@@ -182,10 +182,12 @@ mixin _$AcmoOffersModel {
   Tracking get tracking => throw _privateConstructorUsedError;
   Targeting get targeting => throw _privateConstructorUsedError;
   Creative get creative => throw _privateConstructorUsedError;
-  String get is_active => throw _privateConstructorUsedError;
-  String get is_completed => throw _privateConstructorUsedError;
-  String get is_expiring => throw _privateConstructorUsedError;
-  int get expiring_after => throw _privateConstructorUsedError;
+  bool get hasPlaytimeEvents => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  DateTime? get expiredOn => throw _privateConstructorUsedError;
+  num get sortingScore => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  DateTime? get createdOn => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -211,10 +213,10 @@ abstract class $AcmoOffersModelCopyWith<$Res> {
       Tracking tracking,
       Targeting targeting,
       Creative creative,
-      String is_active,
-      String is_completed,
-      String is_expiring,
-      int expiring_after});
+      bool hasPlaytimeEvents,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
+      num sortingScore,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? createdOn});
 
   $AppCopyWith<$Res> get app;
   $CurrencyCopyWith<$Res> get currency;
@@ -248,10 +250,10 @@ class _$AcmoOffersModelCopyWithImpl<$Res, $Val extends AcmoOffersModel>
     Object? tracking = null,
     Object? targeting = null,
     Object? creative = null,
-    Object? is_active = null,
-    Object? is_completed = null,
-    Object? is_expiring = null,
-    Object? expiring_after = null,
+    Object? hasPlaytimeEvents = null,
+    Object? expiredOn = freezed,
+    Object? sortingScore = null,
+    Object? createdOn = freezed,
   }) {
     return _then(_value.copyWith(
       campaignId: null == campaignId
@@ -298,22 +300,22 @@ class _$AcmoOffersModelCopyWithImpl<$Res, $Val extends AcmoOffersModel>
           ? _value.creative
           : creative // ignore: cast_nullable_to_non_nullable
               as Creative,
-      is_active: null == is_active
-          ? _value.is_active
-          : is_active // ignore: cast_nullable_to_non_nullable
-              as String,
-      is_completed: null == is_completed
-          ? _value.is_completed
-          : is_completed // ignore: cast_nullable_to_non_nullable
-              as String,
-      is_expiring: null == is_expiring
-          ? _value.is_expiring
-          : is_expiring // ignore: cast_nullable_to_non_nullable
-              as String,
-      expiring_after: null == expiring_after
-          ? _value.expiring_after
-          : expiring_after // ignore: cast_nullable_to_non_nullable
-              as int,
+      hasPlaytimeEvents: null == hasPlaytimeEvents
+          ? _value.hasPlaytimeEvents
+          : hasPlaytimeEvents // ignore: cast_nullable_to_non_nullable
+              as bool,
+      expiredOn: freezed == expiredOn
+          ? _value.expiredOn
+          : expiredOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      sortingScore: null == sortingScore
+          ? _value.sortingScore
+          : sortingScore // ignore: cast_nullable_to_non_nullable
+              as num,
+      createdOn: freezed == createdOn
+          ? _value.createdOn
+          : createdOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 
@@ -386,10 +388,10 @@ abstract class _$$AcmoOffersModelImplCopyWith<$Res>
       Tracking tracking,
       Targeting targeting,
       Creative creative,
-      String is_active,
-      String is_completed,
-      String is_expiring,
-      int expiring_after});
+      bool hasPlaytimeEvents,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
+      num sortingScore,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? createdOn});
 
   @override
   $AppCopyWith<$Res> get app;
@@ -427,10 +429,10 @@ class __$$AcmoOffersModelImplCopyWithImpl<$Res>
     Object? tracking = null,
     Object? targeting = null,
     Object? creative = null,
-    Object? is_active = null,
-    Object? is_completed = null,
-    Object? is_expiring = null,
-    Object? expiring_after = null,
+    Object? hasPlaytimeEvents = null,
+    Object? expiredOn = freezed,
+    Object? sortingScore = null,
+    Object? createdOn = freezed,
   }) {
     return _then(_$AcmoOffersModelImpl(
       campaignId: null == campaignId
@@ -477,22 +479,22 @@ class __$$AcmoOffersModelImplCopyWithImpl<$Res>
           ? _value.creative
           : creative // ignore: cast_nullable_to_non_nullable
               as Creative,
-      is_active: null == is_active
-          ? _value.is_active
-          : is_active // ignore: cast_nullable_to_non_nullable
-              as String,
-      is_completed: null == is_completed
-          ? _value.is_completed
-          : is_completed // ignore: cast_nullable_to_non_nullable
-              as String,
-      is_expiring: null == is_expiring
-          ? _value.is_expiring
-          : is_expiring // ignore: cast_nullable_to_non_nullable
-              as String,
-      expiring_after: null == expiring_after
-          ? _value.expiring_after
-          : expiring_after // ignore: cast_nullable_to_non_nullable
-              as int,
+      hasPlaytimeEvents: null == hasPlaytimeEvents
+          ? _value.hasPlaytimeEvents
+          : hasPlaytimeEvents // ignore: cast_nullable_to_non_nullable
+              as bool,
+      expiredOn: freezed == expiredOn
+          ? _value.expiredOn
+          : expiredOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      sortingScore: null == sortingScore
+          ? _value.sortingScore
+          : sortingScore // ignore: cast_nullable_to_non_nullable
+              as num,
+      createdOn: freezed == createdOn
+          ? _value.createdOn
+          : createdOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -512,10 +514,10 @@ class _$AcmoOffersModelImpl implements _AcmoOffersModel {
       required this.tracking,
       required this.targeting,
       required this.creative,
-      this.is_active = '0',
-      this.is_completed = '0',
-      this.is_expiring = '0',
-      this.expiring_after = 0});
+      this.hasPlaytimeEvents = false,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) this.expiredOn,
+      this.sortingScore = 0,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) this.createdOn});
 
   factory _$AcmoOffersModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$AcmoOffersModelImplFromJson(json);
@@ -547,20 +549,20 @@ class _$AcmoOffersModelImpl implements _AcmoOffersModel {
   final Creative creative;
   @override
   @JsonKey()
-  final String is_active;
+  final bool hasPlaytimeEvents;
+  @override
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  final DateTime? expiredOn;
   @override
   @JsonKey()
-  final String is_completed;
+  final num sortingScore;
   @override
-  @JsonKey()
-  final String is_expiring;
-  @override
-  @JsonKey()
-  final int expiring_after;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  final DateTime? createdOn;
 
   @override
   String toString() {
-    return 'AcmoOffersModel(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, active: $active, status: $status, app: $app, currency: $currency, campaignPayout: $campaignPayout, tracking: $tracking, targeting: $targeting, creative: $creative, is_active: $is_active, is_completed: $is_completed, is_expiring: $is_expiring, expiring_after: $expiring_after)';
+    return 'AcmoOffersModel(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, active: $active, status: $status, app: $app, currency: $currency, campaignPayout: $campaignPayout, tracking: $tracking, targeting: $targeting, creative: $creative, hasPlaytimeEvents: $hasPlaytimeEvents, expiredOn: $expiredOn, sortingScore: $sortingScore, createdOn: $createdOn)';
   }
 
   @override
@@ -587,14 +589,14 @@ class _$AcmoOffersModelImpl implements _AcmoOffersModel {
                 other.targeting == targeting) &&
             (identical(other.creative, creative) ||
                 other.creative == creative) &&
-            (identical(other.is_active, is_active) ||
-                other.is_active == is_active) &&
-            (identical(other.is_completed, is_completed) ||
-                other.is_completed == is_completed) &&
-            (identical(other.is_expiring, is_expiring) ||
-                other.is_expiring == is_expiring) &&
-            (identical(other.expiring_after, expiring_after) ||
-                other.expiring_after == expiring_after));
+            (identical(other.hasPlaytimeEvents, hasPlaytimeEvents) ||
+                other.hasPlaytimeEvents == hasPlaytimeEvents) &&
+            (identical(other.expiredOn, expiredOn) ||
+                other.expiredOn == expiredOn) &&
+            (identical(other.sortingScore, sortingScore) ||
+                other.sortingScore == sortingScore) &&
+            (identical(other.createdOn, createdOn) ||
+                other.createdOn == createdOn));
   }
 
   @JsonKey(ignore: true)
@@ -612,10 +614,10 @@ class _$AcmoOffersModelImpl implements _AcmoOffersModel {
       tracking,
       targeting,
       creative,
-      is_active,
-      is_completed,
-      is_expiring,
-      expiring_after);
+      hasPlaytimeEvents,
+      expiredOn,
+      sortingScore,
+      createdOn);
 
   @JsonKey(ignore: true)
   @override
@@ -645,10 +647,12 @@ abstract class _AcmoOffersModel implements AcmoOffersModel {
       required final Tracking tracking,
       required final Targeting targeting,
       required final Creative creative,
-      final String is_active,
-      final String is_completed,
-      final String is_expiring,
-      final int expiring_after}) = _$AcmoOffersModelImpl;
+      final bool hasPlaytimeEvents,
+      @JsonKey(fromJson: acmoConverterStringToDatetime)
+      final DateTime? expiredOn,
+      final num sortingScore,
+      @JsonKey(fromJson: acmoConverterStringToDatetime)
+      final DateTime? createdOn}) = _$AcmoOffersModelImpl;
 
   factory _AcmoOffersModel.fromJson(Map<String, dynamic> json) =
       _$AcmoOffersModelImpl.fromJson;
@@ -676,13 +680,15 @@ abstract class _AcmoOffersModel implements AcmoOffersModel {
   @override
   Creative get creative;
   @override
-  String get is_active;
+  bool get hasPlaytimeEvents;
   @override
-  String get is_completed;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  DateTime? get expiredOn;
   @override
-  String get is_expiring;
+  num get sortingScore;
   @override
-  int get expiring_after;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  DateTime? get createdOn;
   @override
   @JsonKey(ignore: true)
   _$$AcmoOffersModelImplCopyWith<_$AcmoOffersModelImpl> get copyWith =>
@@ -1691,7 +1697,7 @@ mixin _$Currency {
   String get adUnitName => throw _privateConstructorUsedError;
   String get adUnitCurrencyName => throw _privateConstructorUsedError;
   String get adUnitCurrencyIcon => throw _privateConstructorUsedError;
-  int get adUnitCurrencyConversion => throw _privateConstructorUsedError;
+  double get adUnitCurrencyConversion => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -1710,7 +1716,7 @@ abstract class $CurrencyCopyWith<$Res> {
       String adUnitName,
       String adUnitCurrencyName,
       String adUnitCurrencyIcon,
-      int adUnitCurrencyConversion});
+      double adUnitCurrencyConversion});
 }
 
 /// @nodoc
@@ -1757,7 +1763,7 @@ class _$CurrencyCopyWithImpl<$Res, $Val extends Currency>
       adUnitCurrencyConversion: null == adUnitCurrencyConversion
           ? _value.adUnitCurrencyConversion
           : adUnitCurrencyConversion // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
     ) as $Val);
   }
 }
@@ -1776,7 +1782,7 @@ abstract class _$$CurrencyImplCopyWith<$Res>
       String adUnitName,
       String adUnitCurrencyName,
       String adUnitCurrencyIcon,
-      int adUnitCurrencyConversion});
+      double adUnitCurrencyConversion});
 }
 
 /// @nodoc
@@ -1821,7 +1827,7 @@ class __$$CurrencyImplCopyWithImpl<$Res>
       adUnitCurrencyConversion: null == adUnitCurrencyConversion
           ? _value.adUnitCurrencyConversion
           : adUnitCurrencyConversion // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
     ));
   }
 }
@@ -1857,7 +1863,7 @@ class _$CurrencyImpl implements _Currency {
   final String adUnitCurrencyIcon;
   @override
   @JsonKey()
-  final int adUnitCurrencyConversion;
+  final double adUnitCurrencyConversion;
 
   @override
   String toString() {
@@ -1908,7 +1914,7 @@ abstract class _Currency implements Currency {
       final String adUnitName,
       final String adUnitCurrencyName,
       final String adUnitCurrencyIcon,
-      final int adUnitCurrencyConversion}) = _$CurrencyImpl;
+      final double adUnitCurrencyConversion}) = _$CurrencyImpl;
 
   factory _Currency.fromJson(Map<String, dynamic> json) =
       _$CurrencyImpl.fromJson;
@@ -1924,7 +1930,7 @@ abstract class _Currency implements Currency {
   @override
   String get adUnitCurrencyIcon;
   @override
-  int get adUnitCurrencyConversion;
+  double get adUnitCurrencyConversion;
   @override
   @JsonKey(ignore: true)
   _$$CurrencyImplCopyWith<_$CurrencyImpl> get copyWith =>

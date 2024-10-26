@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
 
 import '../../../gen/assets.gen.dart';
 
@@ -28,7 +27,7 @@ class AcmoButtonOfferView extends StatelessWidget {
       child: Card(
         child: Container(
           decoration: BoxDecoration(
-              color: isDisabled ? Colors.black38 : AcmoConfig.SECONDARY_COLOR,
+              color: isDisabled ? Colors.black38 : Theme.of(context).colorScheme.secondary,
               borderRadius: const BorderRadius.all(Radius.circular(5)),
               boxShadow: const [
                 BoxShadow(

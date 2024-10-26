@@ -39,12 +39,18 @@ Map<String, dynamic> _$$AcmoTicketsModelImplToJson(
 _$AcmoTicketEventsModelImpl _$$AcmoTicketEventsModelImplFromJson(
         Map<String, dynamic> json) =>
     _$AcmoTicketEventsModelImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       identifier: json['identifier'] as String? ?? '',
       eventName: json['eventName'] as String? ?? '',
       payoutType: json['payoutType'] as String? ?? '',
-      payoutAmountConverted: json['payoutAmountConverted'] as int? ?? 0,
+      eventCategory: json['eventCategory'] as String? ?? '',
+      payoutAmountConverted:
+          (json['payoutAmountConverted'] as num?)?.toDouble() ?? 0,
       isTicketSubmitted: json['isTicketSubmitted'] as bool? ?? false,
+      ticketStatus: json['ticketStatus'] as String? ?? "",
+      conversionStatus: json['conversionStatus'] as String? ?? "",
+      currencyIcon: json['currencyIcon'] as String? ?? "",
+      currencyName: json['currencyName'] as String? ?? "",
     );
 
 Map<String, dynamic> _$$AcmoTicketEventsModelImplToJson(
@@ -54,6 +60,11 @@ Map<String, dynamic> _$$AcmoTicketEventsModelImplToJson(
       'identifier': instance.identifier,
       'eventName': instance.eventName,
       'payoutType': instance.payoutType,
+      'eventCategory': instance.eventCategory,
       'payoutAmountConverted': instance.payoutAmountConverted,
       'isTicketSubmitted': instance.isTicketSubmitted,
+      'ticketStatus': instance.ticketStatus,
+      'conversionStatus': instance.conversionStatus,
+      'currencyIcon': instance.currencyIcon,
+      'currencyName': instance.currencyName,
     };

@@ -23,7 +23,7 @@ Map<String, dynamic> _$$AcmoOffersResponseModelImplToJson(
 _$AcmoOffersModelImpl _$$AcmoOffersModelImplFromJson(
         Map<String, dynamic> json) =>
     _$AcmoOffersModelImpl(
-      campaignId: json['campaignId'] as int,
+      campaignId: (json['campaignId'] as num).toInt(),
       campaignName: json['campaignName'] as String,
       campaignDescription: json['campaignDescription'] as String? ?? '',
       active: json['active'] as String? ?? '',
@@ -35,10 +35,10 @@ _$AcmoOffersModelImpl _$$AcmoOffersModelImplFromJson(
       tracking: Tracking.fromJson(json['tracking'] as Map<String, dynamic>),
       targeting: Targeting.fromJson(json['targeting'] as Map<String, dynamic>),
       creative: Creative.fromJson(json['creative'] as Map<String, dynamic>),
-      is_active: json['is_active'] as String? ?? '0',
-      is_completed: json['is_completed'] as String? ?? '0',
-      is_expiring: json['is_expiring'] as String? ?? '0',
-      expiring_after: json['expiring_after'] as int? ?? 0,
+      hasPlaytimeEvents: json['hasPlaytimeEvents'] as bool? ?? false,
+      expiredOn: acmoConverterStringToDatetime(json['expiredOn'] as String?),
+      sortingScore: json['sortingScore'] as num? ?? 0,
+      createdOn: acmoConverterStringToDatetime(json['createdOn'] as String?),
     );
 
 Map<String, dynamic> _$$AcmoOffersModelImplToJson(
@@ -55,10 +55,10 @@ Map<String, dynamic> _$$AcmoOffersModelImplToJson(
       'tracking': instance.tracking,
       'targeting': instance.targeting,
       'creative': instance.creative,
-      'is_active': instance.is_active,
-      'is_completed': instance.is_completed,
-      'is_expiring': instance.is_expiring,
-      'expiring_after': instance.expiring_after,
+      'hasPlaytimeEvents': instance.hasPlaytimeEvents,
+      'expiredOn': instance.expiredOn?.toIso8601String(),
+      'sortingScore': instance.sortingScore,
+      'createdOn': instance.createdOn?.toIso8601String(),
     };
 
 _$CreativeImpl _$$CreativeImplFromJson(Map<String, dynamic> json) =>
@@ -132,7 +132,7 @@ Map<String, dynamic> _$$TrackingImplToJson(_$TrackingImpl instance) =>
 
 _$CampaignPayoutImpl _$$CampaignPayoutImplFromJson(Map<String, dynamic> json) =>
     _$CampaignPayoutImpl(
-      totalEvents: json['totalEvents'] as int? ?? 0,
+      totalEvents: (json['totalEvents'] as num?)?.toInt() ?? 0,
       totalPayout: (json['totalPayout'] as num?)?.toDouble() ?? 0,
       totalPayoutConverted:
           (json['totalPayoutConverted'] as num?)?.toDouble() ?? 0,
@@ -153,7 +153,8 @@ _$CurrencyImpl _$$CurrencyImplFromJson(Map<String, dynamic> json) =>
       adUnitName: json['adUnitName'] as String? ?? '',
       adUnitCurrencyName: json['adUnitCurrencyName'] as String? ?? '',
       adUnitCurrencyIcon: json['adUnitCurrencyIcon'] as String? ?? '',
-      adUnitCurrencyConversion: json['adUnitCurrencyConversion'] as int? ?? 0,
+      adUnitCurrencyConversion:
+          (json['adUnitCurrencyConversion'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$$CurrencyImplToJson(_$CurrencyImpl instance) =>
@@ -167,7 +168,7 @@ Map<String, dynamic> _$$CurrencyImplToJson(_$CurrencyImpl instance) =>
     };
 
 _$AppImpl _$$AppImplFromJson(Map<String, dynamic> json) => _$AppImpl(
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String? ?? '',
       packageName: json['packageName'] as String? ?? '',
       shortDescription: json['shortDescription'] as String? ?? '',

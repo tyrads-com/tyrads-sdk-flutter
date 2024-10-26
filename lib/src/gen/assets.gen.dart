@@ -19,6 +19,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/clock.png
   AssetGenImage get clock => const AssetGenImage('assets/images/clock.png');
 
+  /// File path: assets/images/empty_icon.png
+  AssetGenImage get emptyIcon =>
+      const AssetGenImage('assets/images/empty_icon.png');
+
   /// File path: assets/images/faqs.png
   AssetGenImage get faqs => const AssetGenImage('assets/images/faqs.png');
 
@@ -40,9 +44,28 @@ class $AssetsImagesGen {
   AssetGenImage get pendingIcon =>
       const AssetGenImage('assets/images/pending_icon.png');
 
+  /// File path: assets/images/playtime_icon.png
+  AssetGenImage get playtimeIcon =>
+      const AssetGenImage('assets/images/playtime_icon.png');
+
+  /// File path: assets/images/playtime_tracking.png
+  AssetGenImage get playtimeTracking =>
+      const AssetGenImage('assets/images/playtime_tracking.png');
+
+  /// File path: assets/images/privacy.png
+  AssetGenImage get privacy => const AssetGenImage('assets/images/privacy.png');
+
+  /// File path: assets/images/privacy_banner.png
+  AssetGenImage get privacyBanner =>
+      const AssetGenImage('assets/images/privacy_banner.png');
+
   /// File path: assets/images/sad_face.png
   AssetGenImage get sadFace =>
       const AssetGenImage('assets/images/sad_face.png');
+
+  /// File path: assets/images/sample_proof.png
+  AssetGenImage get sampleProof =>
+      const AssetGenImage('assets/images/sample_proof.png');
 
   /// File path: assets/images/silver-star.png
   AssetGenImage get silverStar =>
@@ -60,26 +83,31 @@ class $AssetsImagesGen {
   AssetGenImage get superChargeCan =>
       const AssetGenImage('assets/images/super-charge-can.png');
 
-  /// File path: assets/images/t_points.png
-  AssetGenImage get tPoints =>
-      const AssetGenImage('assets/images/t_points.png');
+  /// File path: assets/images/terms.png
+  AssetGenImage get terms => const AssetGenImage('assets/images/terms.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
         chargeCan,
         clock,
+        emptyIcon,
         faqs,
         fire,
         goldenStar,
         helpIcon,
         padlock,
         pendingIcon,
+        playtimeIcon,
+        playtimeTracking,
+        privacy,
+        privacyBanner,
         sadFace,
+        sampleProof,
         silverStar,
         singupBg,
         submitComplete,
         superChargeCan,
-        tPoints
+        terms
       ];
 }
 
@@ -92,11 +120,18 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName);
+  const AssetGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  });
 
   final String _assetName;
 
   static const String package = 'tyrads_sdk';
+
+  final Size? size;
+  final Set<String> flavors;
 
   Image image({
     Key? key,

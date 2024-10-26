@@ -22,7 +22,7 @@ class _AcmoComponentCountdownState extends State<AcmoComponentCountdown>
       begin: Duration(seconds: widget.seconds),
       end: const Duration(),
       initialState: CustomTimerState.reset,
-      interval: CustomTimerInterval.milliseconds);
+      interval: CustomTimerInterval.seconds);
   @override
   void dispose() {
     cd_controller.dispose();

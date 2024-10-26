@@ -1,10 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
 
 class AcmoComponentAgeSelector extends StatefulWidget {
-  const AcmoComponentAgeSelector({Key? key, required this.onChanged, this.init = 18, this.min = 13})
-      : super(key: key);
+  const AcmoComponentAgeSelector({super.key, required this.onChanged, this.init = 18, this.min = 13});
   final Function(int) onChanged;
   final int init;
   final int min;
@@ -26,9 +24,11 @@ class _AcmoComponentAgeSelectorState extends State<AcmoComponentAgeSelector> {
   }
 
   onChange() {
-    setState(() {
-      _selectedItem = _scrollController.selectedItem;
-    });
+    if (mounted) {
+      setState(() {
+        _selectedItem = _scrollController.selectedItem;
+      });
+    }
     widget.onChanged(_selectedItem + widget.min);
   }
 
@@ -70,7 +70,7 @@ class _AcmoComponentAgeSelectorState extends State<AcmoComponentAgeSelector> {
                                     (i + widget.min).toString(),
                                     style: TextStyle(
                                         color: isSelected
-                                            ? AcmoConfig.SECONDARY_COLOR
+                                            ? Theme.of(context).colorScheme.secondary
                                             : Colors.black54,
                                         fontSize: 24,
                                         fontWeight: isSelected

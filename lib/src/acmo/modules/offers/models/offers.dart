@@ -1,4 +1,7 @@
+// ignore_for_file: invalid_annotation_target
+
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/converters.dart';
 
 part 'offers.freezed.dart';
 part 'offers.g.dart';
@@ -25,10 +28,12 @@ class AcmoOffersModel with _$AcmoOffersModel {
     required Tracking tracking,
     required Targeting targeting,
     required Creative creative,
-    @Default('0') String is_active,
-    @Default('0') String is_completed,
-    @Default('0') String is_expiring,
-    @Default(0) int expiring_after,
+    @Default(false) bool hasPlaytimeEvents,
+    @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
+    @Default(0) num sortingScore,
+    @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? createdOn
+
+
   }) = _AcmoOffersModel;
 
   factory AcmoOffersModel.fromJson(Map<String, dynamic> json) =>
@@ -108,7 +113,7 @@ class Currency with _$Currency {
     @Default('') String adUnitName,
     @Default('') String adUnitCurrencyName,
     @Default('') String adUnitCurrencyIcon,
-    @Default(0) int adUnitCurrencyConversion,
+    @Default(0) double adUnitCurrencyConversion,
   }) = _Currency;
 
   factory Currency.fromJson(Map<String, dynamic> json) =>

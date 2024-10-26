@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
 
 acmoGetPlatformName() {
   var platformName = '';
@@ -23,3 +24,9 @@ acmoGetPlatformName() {
   }
   return platformName;
 }
+
+  bool get acmoIsTablet {
+    final firstView = WidgetsBinding.instance.platformDispatcher.views.first;
+    final logicalShortestSide = firstView.physicalSize.shortestSide / firstView.devicePixelRatio;
+    return logicalShortestSide > 600;
+  }

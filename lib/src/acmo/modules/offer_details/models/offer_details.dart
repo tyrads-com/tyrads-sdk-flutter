@@ -1,17 +1,20 @@
+// ignore_for_file: invalid_annotation_target
+
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/converters.dart';
 
 part 'offer_details.freezed.dart';
 part 'offer_details.g.dart';
 
 @freezed
 class AcmoOfferDetailsResponseModel with _$AcmoOfferDetailsResponseModel {
+  factory AcmoOfferDetailsResponseModel({required AcmoOfferDetailsModel data}) =
+      _AcmoOfferDetailsResponseModel;
 
-  factory AcmoOfferDetailsResponseModel({
-    required AcmoOfferDetailsModel data
-  }) = _AcmoOfferDetailsResponseModel;
-
-  factory AcmoOfferDetailsResponseModel.fromJson(Map<String, dynamic> json) => _$AcmoOfferDetailsResponseModelFromJson(json);
+  factory AcmoOfferDetailsResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$AcmoOfferDetailsResponseModelFromJson(json);
 }
+
 @freezed
 class AcmoOfferDetailsModel with _$AcmoOfferDetailsModel {
   factory AcmoOfferDetailsModel(
@@ -19,19 +22,22 @@ class AcmoOfferDetailsModel with _$AcmoOfferDetailsModel {
       @Default('') String campaignName,
       @Default('') String campaignDescription,
       @Default('') String active,
-    @Default('') String status,
+      @Default('') String status,
       required App app,
       required Currency currency,
       required CampaignPayout campaignPayout,
       required Tracking tracking,
       required Targeting targeting,
       required Creative creative,
-      @Default('0') String is_active,
-      @Default('0') String is_completed,
-      @Default('0') String is_expiring,
-      @Default(0) int expiring_after,
+      required MicroCharge microCharge,
+      @Default([]) List<MicroChargeEvents> microChargeEvents,
+      @Default(false) bool hasPlaytimeEvents,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
       @Default(false) bool isInstalled,
-      @Default([]) List<PayoutEvents> payoutEvents
+      @Default([]) List<PlaytimeEvents> playtimeEvents,
+      @Default([]) List<PayoutEvents> payoutEvents,
+      @Default(false) bool isRetryDownload,
+      @Default(false) bool capReached
       }) = _AcmoOfferDetailsModel;
 
   factory AcmoOfferDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -86,13 +92,15 @@ class PayoutEvents with _$PayoutEvents {
     @Default('') String eventDescription,
     @Default('') String eventCategory,
     @Default(0) double payoutAmount,
-    @Default(0) int payoutAmountConverted,
+    @Default(0) double payoutAmountConverted,
     @Default('') String payoutType,
     @Default(false) bool allowDuplicateEvents,
     @Default(0) int maxTime,
     @Default('') String maxTimeMetric,
-    @Default('') String maxTimeRemainSeconds,
+    @Default(0) double maxTimeRemainSeconds,
     @Default(false) bool enforceMaxTimeCompletion,
+    @Default(false) bool isPlaytime,
+    @Default(0) int totalPlaytime,
   }) = _PayoutEvents;
 
   factory PayoutEvents.fromJson(Map<String, dynamic> json) =>
@@ -131,7 +139,7 @@ class Currency with _$Currency {
     @Default('') String adUnitName,
     @Default('') String adUnitCurrencyName,
     @Default('') String adUnitCurrencyIcon,
-    @Default(0) int adUnitCurrencyConversion,
+    @Default(0) double adUnitCurrencyConversion,
   }) = _Currency;
 
   factory Currency.fromJson(Map<String, dynamic> json) =>
@@ -159,4 +167,59 @@ class Reward with _$Reward {
   factory Reward({@Default('') String rewardDifficulty}) = _Reward;
 
   factory Reward.fromJson(Map<String, dynamic> json) => _$RewardFromJson(json);
+}
+
+@freezed
+class MicroCharge with _$MicroCharge {
+  factory MicroCharge({
+    @Default(0) double earned,
+    @Default(0) double earnedConversion,
+    @Default(0) double total,
+    @Default(0) double totalConversion,
+  }) = _MicroCharge;
+
+  factory MicroCharge.fromJson(Map<String, dynamic> json) =>
+      _$MicroChargeFromJson(json);
+}
+
+@freezed
+class MicroChargeEvents with _$MicroChargeEvents {
+  factory MicroChargeEvents({
+    @Default(0) int id,
+    @Default('') String conversionStatus,
+    @Default('') String identifier,
+    @Default('') String eventName,
+    @Default('') String eventDescription,
+    @Default('') String eventCategory,
+    @Default(0) double payoutAmount,
+    @Default(0) double payoutAmountConverted,
+    @Default(0) int payoutTypeId,
+    @Default('') String payoutType,
+    @Default(false) bool allowDuplicateEvents,
+    @Default(0) int maxTime,
+    @Default('') String maxTimeMetric,
+    @Default(0) double maxTimeRemainSeconds,
+    @Default(false) bool enforceMaxTimeCompletion,
+    @Default(0) int dailyCount,
+    @Default(0) int dailyLimit,
+    @Default(0) int count,
+    @Default(0) int limit,
+  }) = _MicroChargeEvents;
+
+  factory MicroChargeEvents.fromJson(Map<String, dynamic> json) =>
+      _$MicroChargeEventsFromJson(json);
+}
+
+@freezed
+class PlaytimeEvents with _$PlaytimeEvents {
+  factory PlaytimeEvents({
+    @Default(0) int id,
+    @Default('') String conversionStatus,
+    @Default(0) double payoutAmount,
+    @Default(0) double payoutAmountConverted,
+    @Default(0) int timePlayedSeconds,
+  }) = _PlaytimeEvents;
+
+  factory PlaytimeEvents.fromJson(Map<String, dynamic> json) =>
+      _$PlaytimeEventsFromJson(json);
 }

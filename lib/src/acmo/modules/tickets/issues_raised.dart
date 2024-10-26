@@ -12,7 +12,7 @@ class AcmoTicketRaisedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
         appBar: AcmoAppBar(
-          titleText: 'I didn’t receive my TPoints',
+          titleText: 'I didn’t receive my points',
         ),
         body: AcmoBodyOfferIssues());
   }
@@ -52,7 +52,7 @@ class _AcmoBodyOfferIssuesState extends State<AcmoBodyOfferIssues> {
                     SizedBox(
                         width: 250,
                         child: FittedBox(
-                            child: Assets.images.submitComplete.image())),
+                            child: Assets.images.submitComplete.image(width: 250, height: 400))),
                     const SizedBox(
                       height: 22,
                     ),

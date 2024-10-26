@@ -88,17 +88,21 @@ class _AcmoAppBarWithSearchState extends State<AcmoAppBarWithSearch> {
         if (isSearching)
           IconButton(
               onPressed: () {
-                setState(() {
-                  isSearching = false;
-                });
+                if (mounted) {
+                  setState(() {
+                    isSearching = false;
+                  });
+                }
               },
               icon: const Icon(Icons.close)),
         if (!isSearching)
           IconButton(
               onPressed: () {
-                setState(() {
-                  isSearching = true;
-                });
+                if (mounted) {
+                  setState(() {
+                    isSearching = true;
+                  });
+                }
               },
               icon: const Icon(
                 Icons.search,

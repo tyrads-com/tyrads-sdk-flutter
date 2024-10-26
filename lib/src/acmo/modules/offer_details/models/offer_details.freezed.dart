@@ -196,12 +196,17 @@ mixin _$AcmoOfferDetailsModel {
   Tracking get tracking => throw _privateConstructorUsedError;
   Targeting get targeting => throw _privateConstructorUsedError;
   Creative get creative => throw _privateConstructorUsedError;
-  String get is_active => throw _privateConstructorUsedError;
-  String get is_completed => throw _privateConstructorUsedError;
-  String get is_expiring => throw _privateConstructorUsedError;
-  int get expiring_after => throw _privateConstructorUsedError;
+  MicroCharge get microCharge => throw _privateConstructorUsedError;
+  List<MicroChargeEvents> get microChargeEvents =>
+      throw _privateConstructorUsedError;
+  bool get hasPlaytimeEvents => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  DateTime? get expiredOn => throw _privateConstructorUsedError;
   bool get isInstalled => throw _privateConstructorUsedError;
+  List<PlaytimeEvents> get playtimeEvents => throw _privateConstructorUsedError;
   List<PayoutEvents> get payoutEvents => throw _privateConstructorUsedError;
+  bool get isRetryDownload => throw _privateConstructorUsedError;
+  bool get capReached => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -227,12 +232,15 @@ abstract class $AcmoOfferDetailsModelCopyWith<$Res> {
       Tracking tracking,
       Targeting targeting,
       Creative creative,
-      String is_active,
-      String is_completed,
-      String is_expiring,
-      int expiring_after,
+      MicroCharge microCharge,
+      List<MicroChargeEvents> microChargeEvents,
+      bool hasPlaytimeEvents,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
       bool isInstalled,
-      List<PayoutEvents> payoutEvents});
+      List<PlaytimeEvents> playtimeEvents,
+      List<PayoutEvents> payoutEvents,
+      bool isRetryDownload,
+      bool capReached});
 
   $AppCopyWith<$Res> get app;
   $CurrencyCopyWith<$Res> get currency;
@@ -240,6 +248,7 @@ abstract class $AcmoOfferDetailsModelCopyWith<$Res> {
   $TrackingCopyWith<$Res> get tracking;
   $TargetingCopyWith<$Res> get targeting;
   $CreativeCopyWith<$Res> get creative;
+  $MicroChargeCopyWith<$Res> get microCharge;
 }
 
 /// @nodoc
@@ -267,12 +276,15 @@ class _$AcmoOfferDetailsModelCopyWithImpl<$Res,
     Object? tracking = null,
     Object? targeting = null,
     Object? creative = null,
-    Object? is_active = null,
-    Object? is_completed = null,
-    Object? is_expiring = null,
-    Object? expiring_after = null,
+    Object? microCharge = null,
+    Object? microChargeEvents = null,
+    Object? hasPlaytimeEvents = null,
+    Object? expiredOn = freezed,
     Object? isInstalled = null,
+    Object? playtimeEvents = null,
     Object? payoutEvents = null,
+    Object? isRetryDownload = null,
+    Object? capReached = null,
   }) {
     return _then(_value.copyWith(
       campaignId: null == campaignId
@@ -319,30 +331,42 @@ class _$AcmoOfferDetailsModelCopyWithImpl<$Res,
           ? _value.creative
           : creative // ignore: cast_nullable_to_non_nullable
               as Creative,
-      is_active: null == is_active
-          ? _value.is_active
-          : is_active // ignore: cast_nullable_to_non_nullable
-              as String,
-      is_completed: null == is_completed
-          ? _value.is_completed
-          : is_completed // ignore: cast_nullable_to_non_nullable
-              as String,
-      is_expiring: null == is_expiring
-          ? _value.is_expiring
-          : is_expiring // ignore: cast_nullable_to_non_nullable
-              as String,
-      expiring_after: null == expiring_after
-          ? _value.expiring_after
-          : expiring_after // ignore: cast_nullable_to_non_nullable
-              as int,
+      microCharge: null == microCharge
+          ? _value.microCharge
+          : microCharge // ignore: cast_nullable_to_non_nullable
+              as MicroCharge,
+      microChargeEvents: null == microChargeEvents
+          ? _value.microChargeEvents
+          : microChargeEvents // ignore: cast_nullable_to_non_nullable
+              as List<MicroChargeEvents>,
+      hasPlaytimeEvents: null == hasPlaytimeEvents
+          ? _value.hasPlaytimeEvents
+          : hasPlaytimeEvents // ignore: cast_nullable_to_non_nullable
+              as bool,
+      expiredOn: freezed == expiredOn
+          ? _value.expiredOn
+          : expiredOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       isInstalled: null == isInstalled
           ? _value.isInstalled
           : isInstalled // ignore: cast_nullable_to_non_nullable
               as bool,
+      playtimeEvents: null == playtimeEvents
+          ? _value.playtimeEvents
+          : playtimeEvents // ignore: cast_nullable_to_non_nullable
+              as List<PlaytimeEvents>,
       payoutEvents: null == payoutEvents
           ? _value.payoutEvents
           : payoutEvents // ignore: cast_nullable_to_non_nullable
               as List<PayoutEvents>,
+      isRetryDownload: null == isRetryDownload
+          ? _value.isRetryDownload
+          : isRetryDownload // ignore: cast_nullable_to_non_nullable
+              as bool,
+      capReached: null == capReached
+          ? _value.capReached
+          : capReached // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -393,6 +417,14 @@ class _$AcmoOfferDetailsModelCopyWithImpl<$Res,
       return _then(_value.copyWith(creative: value) as $Val);
     });
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $MicroChargeCopyWith<$Res> get microCharge {
+    return $MicroChargeCopyWith<$Res>(_value.microCharge, (value) {
+      return _then(_value.copyWith(microCharge: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -416,12 +448,15 @@ abstract class _$$AcmoOfferDetailsModelImplCopyWith<$Res>
       Tracking tracking,
       Targeting targeting,
       Creative creative,
-      String is_active,
-      String is_completed,
-      String is_expiring,
-      int expiring_after,
+      MicroCharge microCharge,
+      List<MicroChargeEvents> microChargeEvents,
+      bool hasPlaytimeEvents,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
       bool isInstalled,
-      List<PayoutEvents> payoutEvents});
+      List<PlaytimeEvents> playtimeEvents,
+      List<PayoutEvents> payoutEvents,
+      bool isRetryDownload,
+      bool capReached});
 
   @override
   $AppCopyWith<$Res> get app;
@@ -435,6 +470,8 @@ abstract class _$$AcmoOfferDetailsModelImplCopyWith<$Res>
   $TargetingCopyWith<$Res> get targeting;
   @override
   $CreativeCopyWith<$Res> get creative;
+  @override
+  $MicroChargeCopyWith<$Res> get microCharge;
 }
 
 /// @nodoc
@@ -460,12 +497,15 @@ class __$$AcmoOfferDetailsModelImplCopyWithImpl<$Res>
     Object? tracking = null,
     Object? targeting = null,
     Object? creative = null,
-    Object? is_active = null,
-    Object? is_completed = null,
-    Object? is_expiring = null,
-    Object? expiring_after = null,
+    Object? microCharge = null,
+    Object? microChargeEvents = null,
+    Object? hasPlaytimeEvents = null,
+    Object? expiredOn = freezed,
     Object? isInstalled = null,
+    Object? playtimeEvents = null,
     Object? payoutEvents = null,
+    Object? isRetryDownload = null,
+    Object? capReached = null,
   }) {
     return _then(_$AcmoOfferDetailsModelImpl(
       campaignId: null == campaignId
@@ -512,30 +552,42 @@ class __$$AcmoOfferDetailsModelImplCopyWithImpl<$Res>
           ? _value.creative
           : creative // ignore: cast_nullable_to_non_nullable
               as Creative,
-      is_active: null == is_active
-          ? _value.is_active
-          : is_active // ignore: cast_nullable_to_non_nullable
-              as String,
-      is_completed: null == is_completed
-          ? _value.is_completed
-          : is_completed // ignore: cast_nullable_to_non_nullable
-              as String,
-      is_expiring: null == is_expiring
-          ? _value.is_expiring
-          : is_expiring // ignore: cast_nullable_to_non_nullable
-              as String,
-      expiring_after: null == expiring_after
-          ? _value.expiring_after
-          : expiring_after // ignore: cast_nullable_to_non_nullable
-              as int,
+      microCharge: null == microCharge
+          ? _value.microCharge
+          : microCharge // ignore: cast_nullable_to_non_nullable
+              as MicroCharge,
+      microChargeEvents: null == microChargeEvents
+          ? _value._microChargeEvents
+          : microChargeEvents // ignore: cast_nullable_to_non_nullable
+              as List<MicroChargeEvents>,
+      hasPlaytimeEvents: null == hasPlaytimeEvents
+          ? _value.hasPlaytimeEvents
+          : hasPlaytimeEvents // ignore: cast_nullable_to_non_nullable
+              as bool,
+      expiredOn: freezed == expiredOn
+          ? _value.expiredOn
+          : expiredOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       isInstalled: null == isInstalled
           ? _value.isInstalled
           : isInstalled // ignore: cast_nullable_to_non_nullable
               as bool,
+      playtimeEvents: null == playtimeEvents
+          ? _value._playtimeEvents
+          : playtimeEvents // ignore: cast_nullable_to_non_nullable
+              as List<PlaytimeEvents>,
       payoutEvents: null == payoutEvents
           ? _value._payoutEvents
           : payoutEvents // ignore: cast_nullable_to_non_nullable
               as List<PayoutEvents>,
+      isRetryDownload: null == isRetryDownload
+          ? _value.isRetryDownload
+          : isRetryDownload // ignore: cast_nullable_to_non_nullable
+              as bool,
+      capReached: null == capReached
+          ? _value.capReached
+          : capReached // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -555,13 +607,18 @@ class _$AcmoOfferDetailsModelImpl implements _AcmoOfferDetailsModel {
       required this.tracking,
       required this.targeting,
       required this.creative,
-      this.is_active = '0',
-      this.is_completed = '0',
-      this.is_expiring = '0',
-      this.expiring_after = 0,
+      required this.microCharge,
+      final List<MicroChargeEvents> microChargeEvents = const [],
+      this.hasPlaytimeEvents = false,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) this.expiredOn,
       this.isInstalled = false,
-      final List<PayoutEvents> payoutEvents = const []})
-      : _payoutEvents = payoutEvents;
+      final List<PlaytimeEvents> playtimeEvents = const [],
+      final List<PayoutEvents> payoutEvents = const [],
+      this.isRetryDownload = false,
+      this.capReached = false})
+      : _microChargeEvents = microChargeEvents,
+        _playtimeEvents = playtimeEvents,
+        _payoutEvents = payoutEvents;
 
   factory _$AcmoOfferDetailsModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$AcmoOfferDetailsModelImplFromJson(json);
@@ -593,20 +650,35 @@ class _$AcmoOfferDetailsModelImpl implements _AcmoOfferDetailsModel {
   @override
   final Creative creative;
   @override
-  @JsonKey()
-  final String is_active;
+  final MicroCharge microCharge;
+  final List<MicroChargeEvents> _microChargeEvents;
   @override
   @JsonKey()
-  final String is_completed;
+  List<MicroChargeEvents> get microChargeEvents {
+    if (_microChargeEvents is EqualUnmodifiableListView)
+      return _microChargeEvents;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_microChargeEvents);
+  }
+
   @override
   @JsonKey()
-  final String is_expiring;
+  final bool hasPlaytimeEvents;
   @override
-  @JsonKey()
-  final int expiring_after;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  final DateTime? expiredOn;
   @override
   @JsonKey()
   final bool isInstalled;
+  final List<PlaytimeEvents> _playtimeEvents;
+  @override
+  @JsonKey()
+  List<PlaytimeEvents> get playtimeEvents {
+    if (_playtimeEvents is EqualUnmodifiableListView) return _playtimeEvents;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_playtimeEvents);
+  }
+
   final List<PayoutEvents> _payoutEvents;
   @override
   @JsonKey()
@@ -617,8 +689,15 @@ class _$AcmoOfferDetailsModelImpl implements _AcmoOfferDetailsModel {
   }
 
   @override
+  @JsonKey()
+  final bool isRetryDownload;
+  @override
+  @JsonKey()
+  final bool capReached;
+
+  @override
   String toString() {
-    return 'AcmoOfferDetailsModel(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, active: $active, status: $status, app: $app, currency: $currency, campaignPayout: $campaignPayout, tracking: $tracking, targeting: $targeting, creative: $creative, is_active: $is_active, is_completed: $is_completed, is_expiring: $is_expiring, expiring_after: $expiring_after, isInstalled: $isInstalled, payoutEvents: $payoutEvents)';
+    return 'AcmoOfferDetailsModel(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, active: $active, status: $status, app: $app, currency: $currency, campaignPayout: $campaignPayout, tracking: $tracking, targeting: $targeting, creative: $creative, microCharge: $microCharge, microChargeEvents: $microChargeEvents, hasPlaytimeEvents: $hasPlaytimeEvents, expiredOn: $expiredOn, isInstalled: $isInstalled, playtimeEvents: $playtimeEvents, payoutEvents: $payoutEvents, isRetryDownload: $isRetryDownload, capReached: $capReached)';
   }
 
   @override
@@ -645,41 +724,51 @@ class _$AcmoOfferDetailsModelImpl implements _AcmoOfferDetailsModel {
                 other.targeting == targeting) &&
             (identical(other.creative, creative) ||
                 other.creative == creative) &&
-            (identical(other.is_active, is_active) ||
-                other.is_active == is_active) &&
-            (identical(other.is_completed, is_completed) ||
-                other.is_completed == is_completed) &&
-            (identical(other.is_expiring, is_expiring) ||
-                other.is_expiring == is_expiring) &&
-            (identical(other.expiring_after, expiring_after) ||
-                other.expiring_after == expiring_after) &&
+            (identical(other.microCharge, microCharge) ||
+                other.microCharge == microCharge) &&
+            const DeepCollectionEquality()
+                .equals(other._microChargeEvents, _microChargeEvents) &&
+            (identical(other.hasPlaytimeEvents, hasPlaytimeEvents) ||
+                other.hasPlaytimeEvents == hasPlaytimeEvents) &&
+            (identical(other.expiredOn, expiredOn) ||
+                other.expiredOn == expiredOn) &&
             (identical(other.isInstalled, isInstalled) ||
                 other.isInstalled == isInstalled) &&
             const DeepCollectionEquality()
-                .equals(other._payoutEvents, _payoutEvents));
+                .equals(other._playtimeEvents, _playtimeEvents) &&
+            const DeepCollectionEquality()
+                .equals(other._payoutEvents, _payoutEvents) &&
+            (identical(other.isRetryDownload, isRetryDownload) ||
+                other.isRetryDownload == isRetryDownload) &&
+            (identical(other.capReached, capReached) ||
+                other.capReached == capReached));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      campaignId,
-      campaignName,
-      campaignDescription,
-      active,
-      status,
-      app,
-      currency,
-      campaignPayout,
-      tracking,
-      targeting,
-      creative,
-      is_active,
-      is_completed,
-      is_expiring,
-      expiring_after,
-      isInstalled,
-      const DeepCollectionEquality().hash(_payoutEvents));
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        campaignId,
+        campaignName,
+        campaignDescription,
+        active,
+        status,
+        app,
+        currency,
+        campaignPayout,
+        tracking,
+        targeting,
+        creative,
+        microCharge,
+        const DeepCollectionEquality().hash(_microChargeEvents),
+        hasPlaytimeEvents,
+        expiredOn,
+        isInstalled,
+        const DeepCollectionEquality().hash(_playtimeEvents),
+        const DeepCollectionEquality().hash(_payoutEvents),
+        isRetryDownload,
+        capReached
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -709,12 +798,16 @@ abstract class _AcmoOfferDetailsModel implements AcmoOfferDetailsModel {
       required final Tracking tracking,
       required final Targeting targeting,
       required final Creative creative,
-      final String is_active,
-      final String is_completed,
-      final String is_expiring,
-      final int expiring_after,
+      required final MicroCharge microCharge,
+      final List<MicroChargeEvents> microChargeEvents,
+      final bool hasPlaytimeEvents,
+      @JsonKey(fromJson: acmoConverterStringToDatetime)
+      final DateTime? expiredOn,
       final bool isInstalled,
-      final List<PayoutEvents> payoutEvents}) = _$AcmoOfferDetailsModelImpl;
+      final List<PlaytimeEvents> playtimeEvents,
+      final List<PayoutEvents> payoutEvents,
+      final bool isRetryDownload,
+      final bool capReached}) = _$AcmoOfferDetailsModelImpl;
 
   factory _AcmoOfferDetailsModel.fromJson(Map<String, dynamic> json) =
       _$AcmoOfferDetailsModelImpl.fromJson;
@@ -742,17 +835,24 @@ abstract class _AcmoOfferDetailsModel implements AcmoOfferDetailsModel {
   @override
   Creative get creative;
   @override
-  String get is_active;
+  MicroCharge get microCharge;
   @override
-  String get is_completed;
+  List<MicroChargeEvents> get microChargeEvents;
   @override
-  String get is_expiring;
+  bool get hasPlaytimeEvents;
   @override
-  int get expiring_after;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  DateTime? get expiredOn;
   @override
   bool get isInstalled;
   @override
+  List<PlaytimeEvents> get playtimeEvents;
+  @override
   List<PayoutEvents> get payoutEvents;
+  @override
+  bool get isRetryDownload;
+  @override
+  bool get capReached;
   @override
   @JsonKey(ignore: true)
   _$$AcmoOfferDetailsModelImplCopyWith<_$AcmoOfferDetailsModelImpl>
@@ -1408,13 +1508,15 @@ mixin _$PayoutEvents {
   String get eventDescription => throw _privateConstructorUsedError;
   String get eventCategory => throw _privateConstructorUsedError;
   double get payoutAmount => throw _privateConstructorUsedError;
-  int get payoutAmountConverted => throw _privateConstructorUsedError;
+  double get payoutAmountConverted => throw _privateConstructorUsedError;
   String get payoutType => throw _privateConstructorUsedError;
   bool get allowDuplicateEvents => throw _privateConstructorUsedError;
   int get maxTime => throw _privateConstructorUsedError;
   String get maxTimeMetric => throw _privateConstructorUsedError;
-  String get maxTimeRemainSeconds => throw _privateConstructorUsedError;
+  double get maxTimeRemainSeconds => throw _privateConstructorUsedError;
   bool get enforceMaxTimeCompletion => throw _privateConstructorUsedError;
+  bool get isPlaytime => throw _privateConstructorUsedError;
+  int get totalPlaytime => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -1436,13 +1538,15 @@ abstract class $PayoutEventsCopyWith<$Res> {
       String eventDescription,
       String eventCategory,
       double payoutAmount,
-      int payoutAmountConverted,
+      double payoutAmountConverted,
       String payoutType,
       bool allowDuplicateEvents,
       int maxTime,
       String maxTimeMetric,
-      String maxTimeRemainSeconds,
-      bool enforceMaxTimeCompletion});
+      double maxTimeRemainSeconds,
+      bool enforceMaxTimeCompletion,
+      bool isPlaytime,
+      int totalPlaytime});
 }
 
 /// @nodoc
@@ -1472,6 +1576,8 @@ class _$PayoutEventsCopyWithImpl<$Res, $Val extends PayoutEvents>
     Object? maxTimeMetric = null,
     Object? maxTimeRemainSeconds = null,
     Object? enforceMaxTimeCompletion = null,
+    Object? isPlaytime = null,
+    Object? totalPlaytime = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -1505,7 +1611,7 @@ class _$PayoutEventsCopyWithImpl<$Res, $Val extends PayoutEvents>
       payoutAmountConverted: null == payoutAmountConverted
           ? _value.payoutAmountConverted
           : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       payoutType: null == payoutType
           ? _value.payoutType
           : payoutType // ignore: cast_nullable_to_non_nullable
@@ -1525,11 +1631,19 @@ class _$PayoutEventsCopyWithImpl<$Res, $Val extends PayoutEvents>
       maxTimeRemainSeconds: null == maxTimeRemainSeconds
           ? _value.maxTimeRemainSeconds
           : maxTimeRemainSeconds // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       enforceMaxTimeCompletion: null == enforceMaxTimeCompletion
           ? _value.enforceMaxTimeCompletion
           : enforceMaxTimeCompletion // ignore: cast_nullable_to_non_nullable
               as bool,
+      isPlaytime: null == isPlaytime
+          ? _value.isPlaytime
+          : isPlaytime // ignore: cast_nullable_to_non_nullable
+              as bool,
+      totalPlaytime: null == totalPlaytime
+          ? _value.totalPlaytime
+          : totalPlaytime // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -1550,13 +1664,15 @@ abstract class _$$PayoutEventsImplCopyWith<$Res>
       String eventDescription,
       String eventCategory,
       double payoutAmount,
-      int payoutAmountConverted,
+      double payoutAmountConverted,
       String payoutType,
       bool allowDuplicateEvents,
       int maxTime,
       String maxTimeMetric,
-      String maxTimeRemainSeconds,
-      bool enforceMaxTimeCompletion});
+      double maxTimeRemainSeconds,
+      bool enforceMaxTimeCompletion,
+      bool isPlaytime,
+      int totalPlaytime});
 }
 
 /// @nodoc
@@ -1584,6 +1700,8 @@ class __$$PayoutEventsImplCopyWithImpl<$Res>
     Object? maxTimeMetric = null,
     Object? maxTimeRemainSeconds = null,
     Object? enforceMaxTimeCompletion = null,
+    Object? isPlaytime = null,
+    Object? totalPlaytime = null,
   }) {
     return _then(_$PayoutEventsImpl(
       id: null == id
@@ -1617,7 +1735,7 @@ class __$$PayoutEventsImplCopyWithImpl<$Res>
       payoutAmountConverted: null == payoutAmountConverted
           ? _value.payoutAmountConverted
           : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       payoutType: null == payoutType
           ? _value.payoutType
           : payoutType // ignore: cast_nullable_to_non_nullable
@@ -1637,11 +1755,19 @@ class __$$PayoutEventsImplCopyWithImpl<$Res>
       maxTimeRemainSeconds: null == maxTimeRemainSeconds
           ? _value.maxTimeRemainSeconds
           : maxTimeRemainSeconds // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       enforceMaxTimeCompletion: null == enforceMaxTimeCompletion
           ? _value.enforceMaxTimeCompletion
           : enforceMaxTimeCompletion // ignore: cast_nullable_to_non_nullable
               as bool,
+      isPlaytime: null == isPlaytime
+          ? _value.isPlaytime
+          : isPlaytime // ignore: cast_nullable_to_non_nullable
+              as bool,
+      totalPlaytime: null == totalPlaytime
+          ? _value.totalPlaytime
+          : totalPlaytime // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -1662,8 +1788,10 @@ class _$PayoutEventsImpl implements _PayoutEvents {
       this.allowDuplicateEvents = false,
       this.maxTime = 0,
       this.maxTimeMetric = '',
-      this.maxTimeRemainSeconds = '',
-      this.enforceMaxTimeCompletion = false});
+      this.maxTimeRemainSeconds = 0,
+      this.enforceMaxTimeCompletion = false,
+      this.isPlaytime = false,
+      this.totalPlaytime = 0});
 
   factory _$PayoutEventsImpl.fromJson(Map<String, dynamic> json) =>
       _$$PayoutEventsImplFromJson(json);
@@ -1691,7 +1819,7 @@ class _$PayoutEventsImpl implements _PayoutEvents {
   final double payoutAmount;
   @override
   @JsonKey()
-  final int payoutAmountConverted;
+  final double payoutAmountConverted;
   @override
   @JsonKey()
   final String payoutType;
@@ -1706,14 +1834,20 @@ class _$PayoutEventsImpl implements _PayoutEvents {
   final String maxTimeMetric;
   @override
   @JsonKey()
-  final String maxTimeRemainSeconds;
+  final double maxTimeRemainSeconds;
   @override
   @JsonKey()
   final bool enforceMaxTimeCompletion;
+  @override
+  @JsonKey()
+  final bool isPlaytime;
+  @override
+  @JsonKey()
+  final int totalPlaytime;
 
   @override
   String toString() {
-    return 'PayoutEvents(id: $id, conversionStatus: $conversionStatus, identifier: $identifier, eventName: $eventName, eventDescription: $eventDescription, eventCategory: $eventCategory, payoutAmount: $payoutAmount, payoutAmountConverted: $payoutAmountConverted, payoutType: $payoutType, allowDuplicateEvents: $allowDuplicateEvents, maxTime: $maxTime, maxTimeMetric: $maxTimeMetric, maxTimeRemainSeconds: $maxTimeRemainSeconds, enforceMaxTimeCompletion: $enforceMaxTimeCompletion)';
+    return 'PayoutEvents(id: $id, conversionStatus: $conversionStatus, identifier: $identifier, eventName: $eventName, eventDescription: $eventDescription, eventCategory: $eventCategory, payoutAmount: $payoutAmount, payoutAmountConverted: $payoutAmountConverted, payoutType: $payoutType, allowDuplicateEvents: $allowDuplicateEvents, maxTime: $maxTime, maxTimeMetric: $maxTimeMetric, maxTimeRemainSeconds: $maxTimeRemainSeconds, enforceMaxTimeCompletion: $enforceMaxTimeCompletion, isPlaytime: $isPlaytime, totalPlaytime: $totalPlaytime)';
   }
 
   @override
@@ -1747,7 +1881,11 @@ class _$PayoutEventsImpl implements _PayoutEvents {
                 other.maxTimeRemainSeconds == maxTimeRemainSeconds) &&
             (identical(
                     other.enforceMaxTimeCompletion, enforceMaxTimeCompletion) ||
-                other.enforceMaxTimeCompletion == enforceMaxTimeCompletion));
+                other.enforceMaxTimeCompletion == enforceMaxTimeCompletion) &&
+            (identical(other.isPlaytime, isPlaytime) ||
+                other.isPlaytime == isPlaytime) &&
+            (identical(other.totalPlaytime, totalPlaytime) ||
+                other.totalPlaytime == totalPlaytime));
   }
 
   @JsonKey(ignore: true)
@@ -1767,7 +1905,9 @@ class _$PayoutEventsImpl implements _PayoutEvents {
       maxTime,
       maxTimeMetric,
       maxTimeRemainSeconds,
-      enforceMaxTimeCompletion);
+      enforceMaxTimeCompletion,
+      isPlaytime,
+      totalPlaytime);
 
   @JsonKey(ignore: true)
   @override
@@ -1792,13 +1932,15 @@ abstract class _PayoutEvents implements PayoutEvents {
       final String eventDescription,
       final String eventCategory,
       final double payoutAmount,
-      final int payoutAmountConverted,
+      final double payoutAmountConverted,
       final String payoutType,
       final bool allowDuplicateEvents,
       final int maxTime,
       final String maxTimeMetric,
-      final String maxTimeRemainSeconds,
-      final bool enforceMaxTimeCompletion}) = _$PayoutEventsImpl;
+      final double maxTimeRemainSeconds,
+      final bool enforceMaxTimeCompletion,
+      final bool isPlaytime,
+      final int totalPlaytime}) = _$PayoutEventsImpl;
 
   factory _PayoutEvents.fromJson(Map<String, dynamic> json) =
       _$PayoutEventsImpl.fromJson;
@@ -1818,7 +1960,7 @@ abstract class _PayoutEvents implements PayoutEvents {
   @override
   double get payoutAmount;
   @override
-  int get payoutAmountConverted;
+  double get payoutAmountConverted;
   @override
   String get payoutType;
   @override
@@ -1828,9 +1970,13 @@ abstract class _PayoutEvents implements PayoutEvents {
   @override
   String get maxTimeMetric;
   @override
-  String get maxTimeRemainSeconds;
+  double get maxTimeRemainSeconds;
   @override
   bool get enforceMaxTimeCompletion;
+  @override
+  bool get isPlaytime;
+  @override
+  int get totalPlaytime;
   @override
   @JsonKey(ignore: true)
   _$$PayoutEventsImplCopyWith<_$PayoutEventsImpl> get copyWith =>
@@ -2204,7 +2350,7 @@ mixin _$Currency {
   String get adUnitName => throw _privateConstructorUsedError;
   String get adUnitCurrencyName => throw _privateConstructorUsedError;
   String get adUnitCurrencyIcon => throw _privateConstructorUsedError;
-  int get adUnitCurrencyConversion => throw _privateConstructorUsedError;
+  double get adUnitCurrencyConversion => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -2223,7 +2369,7 @@ abstract class $CurrencyCopyWith<$Res> {
       String adUnitName,
       String adUnitCurrencyName,
       String adUnitCurrencyIcon,
-      int adUnitCurrencyConversion});
+      double adUnitCurrencyConversion});
 }
 
 /// @nodoc
@@ -2270,7 +2416,7 @@ class _$CurrencyCopyWithImpl<$Res, $Val extends Currency>
       adUnitCurrencyConversion: null == adUnitCurrencyConversion
           ? _value.adUnitCurrencyConversion
           : adUnitCurrencyConversion // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
     ) as $Val);
   }
 }
@@ -2289,7 +2435,7 @@ abstract class _$$CurrencyImplCopyWith<$Res>
       String adUnitName,
       String adUnitCurrencyName,
       String adUnitCurrencyIcon,
-      int adUnitCurrencyConversion});
+      double adUnitCurrencyConversion});
 }
 
 /// @nodoc
@@ -2334,7 +2480,7 @@ class __$$CurrencyImplCopyWithImpl<$Res>
       adUnitCurrencyConversion: null == adUnitCurrencyConversion
           ? _value.adUnitCurrencyConversion
           : adUnitCurrencyConversion // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
     ));
   }
 }
@@ -2370,7 +2516,7 @@ class _$CurrencyImpl implements _Currency {
   final String adUnitCurrencyIcon;
   @override
   @JsonKey()
-  final int adUnitCurrencyConversion;
+  final double adUnitCurrencyConversion;
 
   @override
   String toString() {
@@ -2421,7 +2567,7 @@ abstract class _Currency implements Currency {
       final String adUnitName,
       final String adUnitCurrencyName,
       final String adUnitCurrencyIcon,
-      final int adUnitCurrencyConversion}) = _$CurrencyImpl;
+      final double adUnitCurrencyConversion}) = _$CurrencyImpl;
 
   factory _Currency.fromJson(Map<String, dynamic> json) =
       _$CurrencyImpl.fromJson;
@@ -2437,7 +2583,7 @@ abstract class _Currency implements Currency {
   @override
   String get adUnitCurrencyIcon;
   @override
-  int get adUnitCurrencyConversion;
+  double get adUnitCurrencyConversion;
   @override
   @JsonKey(ignore: true)
   _$$CurrencyImplCopyWith<_$CurrencyImpl> get copyWith =>
@@ -2861,5 +3007,1000 @@ abstract class _Reward implements Reward {
   @override
   @JsonKey(ignore: true)
   _$$RewardImplCopyWith<_$RewardImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+MicroCharge _$MicroChargeFromJson(Map<String, dynamic> json) {
+  return _MicroCharge.fromJson(json);
+}
+
+/// @nodoc
+mixin _$MicroCharge {
+  double get earned => throw _privateConstructorUsedError;
+  double get earnedConversion => throw _privateConstructorUsedError;
+  double get total => throw _privateConstructorUsedError;
+  double get totalConversion => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $MicroChargeCopyWith<MicroCharge> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $MicroChargeCopyWith<$Res> {
+  factory $MicroChargeCopyWith(
+          MicroCharge value, $Res Function(MicroCharge) then) =
+      _$MicroChargeCopyWithImpl<$Res, MicroCharge>;
+  @useResult
+  $Res call(
+      {double earned,
+      double earnedConversion,
+      double total,
+      double totalConversion});
+}
+
+/// @nodoc
+class _$MicroChargeCopyWithImpl<$Res, $Val extends MicroCharge>
+    implements $MicroChargeCopyWith<$Res> {
+  _$MicroChargeCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? earned = null,
+    Object? earnedConversion = null,
+    Object? total = null,
+    Object? totalConversion = null,
+  }) {
+    return _then(_value.copyWith(
+      earned: null == earned
+          ? _value.earned
+          : earned // ignore: cast_nullable_to_non_nullable
+              as double,
+      earnedConversion: null == earnedConversion
+          ? _value.earnedConversion
+          : earnedConversion // ignore: cast_nullable_to_non_nullable
+              as double,
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as double,
+      totalConversion: null == totalConversion
+          ? _value.totalConversion
+          : totalConversion // ignore: cast_nullable_to_non_nullable
+              as double,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$MicroChargeImplCopyWith<$Res>
+    implements $MicroChargeCopyWith<$Res> {
+  factory _$$MicroChargeImplCopyWith(
+          _$MicroChargeImpl value, $Res Function(_$MicroChargeImpl) then) =
+      __$$MicroChargeImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {double earned,
+      double earnedConversion,
+      double total,
+      double totalConversion});
+}
+
+/// @nodoc
+class __$$MicroChargeImplCopyWithImpl<$Res>
+    extends _$MicroChargeCopyWithImpl<$Res, _$MicroChargeImpl>
+    implements _$$MicroChargeImplCopyWith<$Res> {
+  __$$MicroChargeImplCopyWithImpl(
+      _$MicroChargeImpl _value, $Res Function(_$MicroChargeImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? earned = null,
+    Object? earnedConversion = null,
+    Object? total = null,
+    Object? totalConversion = null,
+  }) {
+    return _then(_$MicroChargeImpl(
+      earned: null == earned
+          ? _value.earned
+          : earned // ignore: cast_nullable_to_non_nullable
+              as double,
+      earnedConversion: null == earnedConversion
+          ? _value.earnedConversion
+          : earnedConversion // ignore: cast_nullable_to_non_nullable
+              as double,
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as double,
+      totalConversion: null == totalConversion
+          ? _value.totalConversion
+          : totalConversion // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$MicroChargeImpl implements _MicroCharge {
+  _$MicroChargeImpl(
+      {this.earned = 0,
+      this.earnedConversion = 0,
+      this.total = 0,
+      this.totalConversion = 0});
+
+  factory _$MicroChargeImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MicroChargeImplFromJson(json);
+
+  @override
+  @JsonKey()
+  final double earned;
+  @override
+  @JsonKey()
+  final double earnedConversion;
+  @override
+  @JsonKey()
+  final double total;
+  @override
+  @JsonKey()
+  final double totalConversion;
+
+  @override
+  String toString() {
+    return 'MicroCharge(earned: $earned, earnedConversion: $earnedConversion, total: $total, totalConversion: $totalConversion)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$MicroChargeImpl &&
+            (identical(other.earned, earned) || other.earned == earned) &&
+            (identical(other.earnedConversion, earnedConversion) ||
+                other.earnedConversion == earnedConversion) &&
+            (identical(other.total, total) || other.total == total) &&
+            (identical(other.totalConversion, totalConversion) ||
+                other.totalConversion == totalConversion));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, earned, earnedConversion, total, totalConversion);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$MicroChargeImplCopyWith<_$MicroChargeImpl> get copyWith =>
+      __$$MicroChargeImplCopyWithImpl<_$MicroChargeImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$MicroChargeImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _MicroCharge implements MicroCharge {
+  factory _MicroCharge(
+      {final double earned,
+      final double earnedConversion,
+      final double total,
+      final double totalConversion}) = _$MicroChargeImpl;
+
+  factory _MicroCharge.fromJson(Map<String, dynamic> json) =
+      _$MicroChargeImpl.fromJson;
+
+  @override
+  double get earned;
+  @override
+  double get earnedConversion;
+  @override
+  double get total;
+  @override
+  double get totalConversion;
+  @override
+  @JsonKey(ignore: true)
+  _$$MicroChargeImplCopyWith<_$MicroChargeImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+MicroChargeEvents _$MicroChargeEventsFromJson(Map<String, dynamic> json) {
+  return _MicroChargeEvents.fromJson(json);
+}
+
+/// @nodoc
+mixin _$MicroChargeEvents {
+  int get id => throw _privateConstructorUsedError;
+  String get conversionStatus => throw _privateConstructorUsedError;
+  String get identifier => throw _privateConstructorUsedError;
+  String get eventName => throw _privateConstructorUsedError;
+  String get eventDescription => throw _privateConstructorUsedError;
+  String get eventCategory => throw _privateConstructorUsedError;
+  double get payoutAmount => throw _privateConstructorUsedError;
+  double get payoutAmountConverted => throw _privateConstructorUsedError;
+  int get payoutTypeId => throw _privateConstructorUsedError;
+  String get payoutType => throw _privateConstructorUsedError;
+  bool get allowDuplicateEvents => throw _privateConstructorUsedError;
+  int get maxTime => throw _privateConstructorUsedError;
+  String get maxTimeMetric => throw _privateConstructorUsedError;
+  double get maxTimeRemainSeconds => throw _privateConstructorUsedError;
+  bool get enforceMaxTimeCompletion => throw _privateConstructorUsedError;
+  int get dailyCount => throw _privateConstructorUsedError;
+  int get dailyLimit => throw _privateConstructorUsedError;
+  int get count => throw _privateConstructorUsedError;
+  int get limit => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $MicroChargeEventsCopyWith<MicroChargeEvents> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $MicroChargeEventsCopyWith<$Res> {
+  factory $MicroChargeEventsCopyWith(
+          MicroChargeEvents value, $Res Function(MicroChargeEvents) then) =
+      _$MicroChargeEventsCopyWithImpl<$Res, MicroChargeEvents>;
+  @useResult
+  $Res call(
+      {int id,
+      String conversionStatus,
+      String identifier,
+      String eventName,
+      String eventDescription,
+      String eventCategory,
+      double payoutAmount,
+      double payoutAmountConverted,
+      int payoutTypeId,
+      String payoutType,
+      bool allowDuplicateEvents,
+      int maxTime,
+      String maxTimeMetric,
+      double maxTimeRemainSeconds,
+      bool enforceMaxTimeCompletion,
+      int dailyCount,
+      int dailyLimit,
+      int count,
+      int limit});
+}
+
+/// @nodoc
+class _$MicroChargeEventsCopyWithImpl<$Res, $Val extends MicroChargeEvents>
+    implements $MicroChargeEventsCopyWith<$Res> {
+  _$MicroChargeEventsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? conversionStatus = null,
+    Object? identifier = null,
+    Object? eventName = null,
+    Object? eventDescription = null,
+    Object? eventCategory = null,
+    Object? payoutAmount = null,
+    Object? payoutAmountConverted = null,
+    Object? payoutTypeId = null,
+    Object? payoutType = null,
+    Object? allowDuplicateEvents = null,
+    Object? maxTime = null,
+    Object? maxTimeMetric = null,
+    Object? maxTimeRemainSeconds = null,
+    Object? enforceMaxTimeCompletion = null,
+    Object? dailyCount = null,
+    Object? dailyLimit = null,
+    Object? count = null,
+    Object? limit = null,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      conversionStatus: null == conversionStatus
+          ? _value.conversionStatus
+          : conversionStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      identifier: null == identifier
+          ? _value.identifier
+          : identifier // ignore: cast_nullable_to_non_nullable
+              as String,
+      eventName: null == eventName
+          ? _value.eventName
+          : eventName // ignore: cast_nullable_to_non_nullable
+              as String,
+      eventDescription: null == eventDescription
+          ? _value.eventDescription
+          : eventDescription // ignore: cast_nullable_to_non_nullable
+              as String,
+      eventCategory: null == eventCategory
+          ? _value.eventCategory
+          : eventCategory // ignore: cast_nullable_to_non_nullable
+              as String,
+      payoutAmount: null == payoutAmount
+          ? _value.payoutAmount
+          : payoutAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      payoutAmountConverted: null == payoutAmountConverted
+          ? _value.payoutAmountConverted
+          : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
+              as double,
+      payoutTypeId: null == payoutTypeId
+          ? _value.payoutTypeId
+          : payoutTypeId // ignore: cast_nullable_to_non_nullable
+              as int,
+      payoutType: null == payoutType
+          ? _value.payoutType
+          : payoutType // ignore: cast_nullable_to_non_nullable
+              as String,
+      allowDuplicateEvents: null == allowDuplicateEvents
+          ? _value.allowDuplicateEvents
+          : allowDuplicateEvents // ignore: cast_nullable_to_non_nullable
+              as bool,
+      maxTime: null == maxTime
+          ? _value.maxTime
+          : maxTime // ignore: cast_nullable_to_non_nullable
+              as int,
+      maxTimeMetric: null == maxTimeMetric
+          ? _value.maxTimeMetric
+          : maxTimeMetric // ignore: cast_nullable_to_non_nullable
+              as String,
+      maxTimeRemainSeconds: null == maxTimeRemainSeconds
+          ? _value.maxTimeRemainSeconds
+          : maxTimeRemainSeconds // ignore: cast_nullable_to_non_nullable
+              as double,
+      enforceMaxTimeCompletion: null == enforceMaxTimeCompletion
+          ? _value.enforceMaxTimeCompletion
+          : enforceMaxTimeCompletion // ignore: cast_nullable_to_non_nullable
+              as bool,
+      dailyCount: null == dailyCount
+          ? _value.dailyCount
+          : dailyCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      dailyLimit: null == dailyLimit
+          ? _value.dailyLimit
+          : dailyLimit // ignore: cast_nullable_to_non_nullable
+              as int,
+      count: null == count
+          ? _value.count
+          : count // ignore: cast_nullable_to_non_nullable
+              as int,
+      limit: null == limit
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as int,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$MicroChargeEventsImplCopyWith<$Res>
+    implements $MicroChargeEventsCopyWith<$Res> {
+  factory _$$MicroChargeEventsImplCopyWith(_$MicroChargeEventsImpl value,
+          $Res Function(_$MicroChargeEventsImpl) then) =
+      __$$MicroChargeEventsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      String conversionStatus,
+      String identifier,
+      String eventName,
+      String eventDescription,
+      String eventCategory,
+      double payoutAmount,
+      double payoutAmountConverted,
+      int payoutTypeId,
+      String payoutType,
+      bool allowDuplicateEvents,
+      int maxTime,
+      String maxTimeMetric,
+      double maxTimeRemainSeconds,
+      bool enforceMaxTimeCompletion,
+      int dailyCount,
+      int dailyLimit,
+      int count,
+      int limit});
+}
+
+/// @nodoc
+class __$$MicroChargeEventsImplCopyWithImpl<$Res>
+    extends _$MicroChargeEventsCopyWithImpl<$Res, _$MicroChargeEventsImpl>
+    implements _$$MicroChargeEventsImplCopyWith<$Res> {
+  __$$MicroChargeEventsImplCopyWithImpl(_$MicroChargeEventsImpl _value,
+      $Res Function(_$MicroChargeEventsImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? conversionStatus = null,
+    Object? identifier = null,
+    Object? eventName = null,
+    Object? eventDescription = null,
+    Object? eventCategory = null,
+    Object? payoutAmount = null,
+    Object? payoutAmountConverted = null,
+    Object? payoutTypeId = null,
+    Object? payoutType = null,
+    Object? allowDuplicateEvents = null,
+    Object? maxTime = null,
+    Object? maxTimeMetric = null,
+    Object? maxTimeRemainSeconds = null,
+    Object? enforceMaxTimeCompletion = null,
+    Object? dailyCount = null,
+    Object? dailyLimit = null,
+    Object? count = null,
+    Object? limit = null,
+  }) {
+    return _then(_$MicroChargeEventsImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      conversionStatus: null == conversionStatus
+          ? _value.conversionStatus
+          : conversionStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      identifier: null == identifier
+          ? _value.identifier
+          : identifier // ignore: cast_nullable_to_non_nullable
+              as String,
+      eventName: null == eventName
+          ? _value.eventName
+          : eventName // ignore: cast_nullable_to_non_nullable
+              as String,
+      eventDescription: null == eventDescription
+          ? _value.eventDescription
+          : eventDescription // ignore: cast_nullable_to_non_nullable
+              as String,
+      eventCategory: null == eventCategory
+          ? _value.eventCategory
+          : eventCategory // ignore: cast_nullable_to_non_nullable
+              as String,
+      payoutAmount: null == payoutAmount
+          ? _value.payoutAmount
+          : payoutAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      payoutAmountConverted: null == payoutAmountConverted
+          ? _value.payoutAmountConverted
+          : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
+              as double,
+      payoutTypeId: null == payoutTypeId
+          ? _value.payoutTypeId
+          : payoutTypeId // ignore: cast_nullable_to_non_nullable
+              as int,
+      payoutType: null == payoutType
+          ? _value.payoutType
+          : payoutType // ignore: cast_nullable_to_non_nullable
+              as String,
+      allowDuplicateEvents: null == allowDuplicateEvents
+          ? _value.allowDuplicateEvents
+          : allowDuplicateEvents // ignore: cast_nullable_to_non_nullable
+              as bool,
+      maxTime: null == maxTime
+          ? _value.maxTime
+          : maxTime // ignore: cast_nullable_to_non_nullable
+              as int,
+      maxTimeMetric: null == maxTimeMetric
+          ? _value.maxTimeMetric
+          : maxTimeMetric // ignore: cast_nullable_to_non_nullable
+              as String,
+      maxTimeRemainSeconds: null == maxTimeRemainSeconds
+          ? _value.maxTimeRemainSeconds
+          : maxTimeRemainSeconds // ignore: cast_nullable_to_non_nullable
+              as double,
+      enforceMaxTimeCompletion: null == enforceMaxTimeCompletion
+          ? _value.enforceMaxTimeCompletion
+          : enforceMaxTimeCompletion // ignore: cast_nullable_to_non_nullable
+              as bool,
+      dailyCount: null == dailyCount
+          ? _value.dailyCount
+          : dailyCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      dailyLimit: null == dailyLimit
+          ? _value.dailyLimit
+          : dailyLimit // ignore: cast_nullable_to_non_nullable
+              as int,
+      count: null == count
+          ? _value.count
+          : count // ignore: cast_nullable_to_non_nullable
+              as int,
+      limit: null == limit
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$MicroChargeEventsImpl implements _MicroChargeEvents {
+  _$MicroChargeEventsImpl(
+      {this.id = 0,
+      this.conversionStatus = '',
+      this.identifier = '',
+      this.eventName = '',
+      this.eventDescription = '',
+      this.eventCategory = '',
+      this.payoutAmount = 0,
+      this.payoutAmountConverted = 0,
+      this.payoutTypeId = 0,
+      this.payoutType = '',
+      this.allowDuplicateEvents = false,
+      this.maxTime = 0,
+      this.maxTimeMetric = '',
+      this.maxTimeRemainSeconds = 0,
+      this.enforceMaxTimeCompletion = false,
+      this.dailyCount = 0,
+      this.dailyLimit = 0,
+      this.count = 0,
+      this.limit = 0});
+
+  factory _$MicroChargeEventsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MicroChargeEventsImplFromJson(json);
+
+  @override
+  @JsonKey()
+  final int id;
+  @override
+  @JsonKey()
+  final String conversionStatus;
+  @override
+  @JsonKey()
+  final String identifier;
+  @override
+  @JsonKey()
+  final String eventName;
+  @override
+  @JsonKey()
+  final String eventDescription;
+  @override
+  @JsonKey()
+  final String eventCategory;
+  @override
+  @JsonKey()
+  final double payoutAmount;
+  @override
+  @JsonKey()
+  final double payoutAmountConverted;
+  @override
+  @JsonKey()
+  final int payoutTypeId;
+  @override
+  @JsonKey()
+  final String payoutType;
+  @override
+  @JsonKey()
+  final bool allowDuplicateEvents;
+  @override
+  @JsonKey()
+  final int maxTime;
+  @override
+  @JsonKey()
+  final String maxTimeMetric;
+  @override
+  @JsonKey()
+  final double maxTimeRemainSeconds;
+  @override
+  @JsonKey()
+  final bool enforceMaxTimeCompletion;
+  @override
+  @JsonKey()
+  final int dailyCount;
+  @override
+  @JsonKey()
+  final int dailyLimit;
+  @override
+  @JsonKey()
+  final int count;
+  @override
+  @JsonKey()
+  final int limit;
+
+  @override
+  String toString() {
+    return 'MicroChargeEvents(id: $id, conversionStatus: $conversionStatus, identifier: $identifier, eventName: $eventName, eventDescription: $eventDescription, eventCategory: $eventCategory, payoutAmount: $payoutAmount, payoutAmountConverted: $payoutAmountConverted, payoutTypeId: $payoutTypeId, payoutType: $payoutType, allowDuplicateEvents: $allowDuplicateEvents, maxTime: $maxTime, maxTimeMetric: $maxTimeMetric, maxTimeRemainSeconds: $maxTimeRemainSeconds, enforceMaxTimeCompletion: $enforceMaxTimeCompletion, dailyCount: $dailyCount, dailyLimit: $dailyLimit, count: $count, limit: $limit)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$MicroChargeEventsImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.conversionStatus, conversionStatus) ||
+                other.conversionStatus == conversionStatus) &&
+            (identical(other.identifier, identifier) ||
+                other.identifier == identifier) &&
+            (identical(other.eventName, eventName) ||
+                other.eventName == eventName) &&
+            (identical(other.eventDescription, eventDescription) ||
+                other.eventDescription == eventDescription) &&
+            (identical(other.eventCategory, eventCategory) ||
+                other.eventCategory == eventCategory) &&
+            (identical(other.payoutAmount, payoutAmount) ||
+                other.payoutAmount == payoutAmount) &&
+            (identical(other.payoutAmountConverted, payoutAmountConverted) ||
+                other.payoutAmountConverted == payoutAmountConverted) &&
+            (identical(other.payoutTypeId, payoutTypeId) ||
+                other.payoutTypeId == payoutTypeId) &&
+            (identical(other.payoutType, payoutType) ||
+                other.payoutType == payoutType) &&
+            (identical(other.allowDuplicateEvents, allowDuplicateEvents) ||
+                other.allowDuplicateEvents == allowDuplicateEvents) &&
+            (identical(other.maxTime, maxTime) || other.maxTime == maxTime) &&
+            (identical(other.maxTimeMetric, maxTimeMetric) ||
+                other.maxTimeMetric == maxTimeMetric) &&
+            (identical(other.maxTimeRemainSeconds, maxTimeRemainSeconds) ||
+                other.maxTimeRemainSeconds == maxTimeRemainSeconds) &&
+            (identical(
+                    other.enforceMaxTimeCompletion, enforceMaxTimeCompletion) ||
+                other.enforceMaxTimeCompletion == enforceMaxTimeCompletion) &&
+            (identical(other.dailyCount, dailyCount) ||
+                other.dailyCount == dailyCount) &&
+            (identical(other.dailyLimit, dailyLimit) ||
+                other.dailyLimit == dailyLimit) &&
+            (identical(other.count, count) || other.count == count) &&
+            (identical(other.limit, limit) || other.limit == limit));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        conversionStatus,
+        identifier,
+        eventName,
+        eventDescription,
+        eventCategory,
+        payoutAmount,
+        payoutAmountConverted,
+        payoutTypeId,
+        payoutType,
+        allowDuplicateEvents,
+        maxTime,
+        maxTimeMetric,
+        maxTimeRemainSeconds,
+        enforceMaxTimeCompletion,
+        dailyCount,
+        dailyLimit,
+        count,
+        limit
+      ]);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$MicroChargeEventsImplCopyWith<_$MicroChargeEventsImpl> get copyWith =>
+      __$$MicroChargeEventsImplCopyWithImpl<_$MicroChargeEventsImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$MicroChargeEventsImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _MicroChargeEvents implements MicroChargeEvents {
+  factory _MicroChargeEvents(
+      {final int id,
+      final String conversionStatus,
+      final String identifier,
+      final String eventName,
+      final String eventDescription,
+      final String eventCategory,
+      final double payoutAmount,
+      final double payoutAmountConverted,
+      final int payoutTypeId,
+      final String payoutType,
+      final bool allowDuplicateEvents,
+      final int maxTime,
+      final String maxTimeMetric,
+      final double maxTimeRemainSeconds,
+      final bool enforceMaxTimeCompletion,
+      final int dailyCount,
+      final int dailyLimit,
+      final int count,
+      final int limit}) = _$MicroChargeEventsImpl;
+
+  factory _MicroChargeEvents.fromJson(Map<String, dynamic> json) =
+      _$MicroChargeEventsImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get conversionStatus;
+  @override
+  String get identifier;
+  @override
+  String get eventName;
+  @override
+  String get eventDescription;
+  @override
+  String get eventCategory;
+  @override
+  double get payoutAmount;
+  @override
+  double get payoutAmountConverted;
+  @override
+  int get payoutTypeId;
+  @override
+  String get payoutType;
+  @override
+  bool get allowDuplicateEvents;
+  @override
+  int get maxTime;
+  @override
+  String get maxTimeMetric;
+  @override
+  double get maxTimeRemainSeconds;
+  @override
+  bool get enforceMaxTimeCompletion;
+  @override
+  int get dailyCount;
+  @override
+  int get dailyLimit;
+  @override
+  int get count;
+  @override
+  int get limit;
+  @override
+  @JsonKey(ignore: true)
+  _$$MicroChargeEventsImplCopyWith<_$MicroChargeEventsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+PlaytimeEvents _$PlaytimeEventsFromJson(Map<String, dynamic> json) {
+  return _PlaytimeEvents.fromJson(json);
+}
+
+/// @nodoc
+mixin _$PlaytimeEvents {
+  int get id => throw _privateConstructorUsedError;
+  String get conversionStatus => throw _privateConstructorUsedError;
+  double get payoutAmount => throw _privateConstructorUsedError;
+  double get payoutAmountConverted => throw _privateConstructorUsedError;
+  int get timePlayedSeconds => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $PlaytimeEventsCopyWith<PlaytimeEvents> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PlaytimeEventsCopyWith<$Res> {
+  factory $PlaytimeEventsCopyWith(
+          PlaytimeEvents value, $Res Function(PlaytimeEvents) then) =
+      _$PlaytimeEventsCopyWithImpl<$Res, PlaytimeEvents>;
+  @useResult
+  $Res call(
+      {int id,
+      String conversionStatus,
+      double payoutAmount,
+      double payoutAmountConverted,
+      int timePlayedSeconds});
+}
+
+/// @nodoc
+class _$PlaytimeEventsCopyWithImpl<$Res, $Val extends PlaytimeEvents>
+    implements $PlaytimeEventsCopyWith<$Res> {
+  _$PlaytimeEventsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? conversionStatus = null,
+    Object? payoutAmount = null,
+    Object? payoutAmountConverted = null,
+    Object? timePlayedSeconds = null,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      conversionStatus: null == conversionStatus
+          ? _value.conversionStatus
+          : conversionStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      payoutAmount: null == payoutAmount
+          ? _value.payoutAmount
+          : payoutAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      payoutAmountConverted: null == payoutAmountConverted
+          ? _value.payoutAmountConverted
+          : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
+              as double,
+      timePlayedSeconds: null == timePlayedSeconds
+          ? _value.timePlayedSeconds
+          : timePlayedSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$PlaytimeEventsImplCopyWith<$Res>
+    implements $PlaytimeEventsCopyWith<$Res> {
+  factory _$$PlaytimeEventsImplCopyWith(_$PlaytimeEventsImpl value,
+          $Res Function(_$PlaytimeEventsImpl) then) =
+      __$$PlaytimeEventsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      String conversionStatus,
+      double payoutAmount,
+      double payoutAmountConverted,
+      int timePlayedSeconds});
+}
+
+/// @nodoc
+class __$$PlaytimeEventsImplCopyWithImpl<$Res>
+    extends _$PlaytimeEventsCopyWithImpl<$Res, _$PlaytimeEventsImpl>
+    implements _$$PlaytimeEventsImplCopyWith<$Res> {
+  __$$PlaytimeEventsImplCopyWithImpl(
+      _$PlaytimeEventsImpl _value, $Res Function(_$PlaytimeEventsImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? conversionStatus = null,
+    Object? payoutAmount = null,
+    Object? payoutAmountConverted = null,
+    Object? timePlayedSeconds = null,
+  }) {
+    return _then(_$PlaytimeEventsImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      conversionStatus: null == conversionStatus
+          ? _value.conversionStatus
+          : conversionStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      payoutAmount: null == payoutAmount
+          ? _value.payoutAmount
+          : payoutAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      payoutAmountConverted: null == payoutAmountConverted
+          ? _value.payoutAmountConverted
+          : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
+              as double,
+      timePlayedSeconds: null == timePlayedSeconds
+          ? _value.timePlayedSeconds
+          : timePlayedSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$PlaytimeEventsImpl implements _PlaytimeEvents {
+  _$PlaytimeEventsImpl(
+      {this.id = 0,
+      this.conversionStatus = '',
+      this.payoutAmount = 0,
+      this.payoutAmountConverted = 0,
+      this.timePlayedSeconds = 0});
+
+  factory _$PlaytimeEventsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PlaytimeEventsImplFromJson(json);
+
+  @override
+  @JsonKey()
+  final int id;
+  @override
+  @JsonKey()
+  final String conversionStatus;
+  @override
+  @JsonKey()
+  final double payoutAmount;
+  @override
+  @JsonKey()
+  final double payoutAmountConverted;
+  @override
+  @JsonKey()
+  final int timePlayedSeconds;
+
+  @override
+  String toString() {
+    return 'PlaytimeEvents(id: $id, conversionStatus: $conversionStatus, payoutAmount: $payoutAmount, payoutAmountConverted: $payoutAmountConverted, timePlayedSeconds: $timePlayedSeconds)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PlaytimeEventsImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.conversionStatus, conversionStatus) ||
+                other.conversionStatus == conversionStatus) &&
+            (identical(other.payoutAmount, payoutAmount) ||
+                other.payoutAmount == payoutAmount) &&
+            (identical(other.payoutAmountConverted, payoutAmountConverted) ||
+                other.payoutAmountConverted == payoutAmountConverted) &&
+            (identical(other.timePlayedSeconds, timePlayedSeconds) ||
+                other.timePlayedSeconds == timePlayedSeconds));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, conversionStatus,
+      payoutAmount, payoutAmountConverted, timePlayedSeconds);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PlaytimeEventsImplCopyWith<_$PlaytimeEventsImpl> get copyWith =>
+      __$$PlaytimeEventsImplCopyWithImpl<_$PlaytimeEventsImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$PlaytimeEventsImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _PlaytimeEvents implements PlaytimeEvents {
+  factory _PlaytimeEvents(
+      {final int id,
+      final String conversionStatus,
+      final double payoutAmount,
+      final double payoutAmountConverted,
+      final int timePlayedSeconds}) = _$PlaytimeEventsImpl;
+
+  factory _PlaytimeEvents.fromJson(Map<String, dynamic> json) =
+      _$PlaytimeEventsImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get conversionStatus;
+  @override
+  double get payoutAmount;
+  @override
+  double get payoutAmountConverted;
+  @override
+  int get timePlayedSeconds;
+  @override
+  @JsonKey(ignore: true)
+  _$$PlaytimeEventsImplCopyWith<_$PlaytimeEventsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

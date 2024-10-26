@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
 
 class AcmoComponentGenderSelect extends StatefulWidget {
   final Function(int) onChanged;
 
-  const AcmoComponentGenderSelect({Key? key, required this.onChanged})
-      : super(key: key);
+  const AcmoComponentGenderSelect({super.key, required this.onChanged});
   @override
   _AcmoComponentGenderSelectState createState() =>
       _AcmoComponentGenderSelectState();
@@ -32,12 +30,15 @@ class _AcmoComponentGenderSelectState extends State<AcmoComponentGenderSelect> {
           return InkWell(
             //splashColor: Theme.of(context).colorScheme.secondary,
             onTap: () {
-              setState(() {
-                for (var gender in genders) {
-                  gender.isSelected = false;
-                }
-                genders[index].isSelected = true;
-              });
+              if (mounted) {
+                setState(() {
+                  for (var gender in genders) {
+                    gender.isSelected = false;
+                  }
+                  genders[index].isSelected = true;
+                });
+              }
+              
               widget.onChanged(index == 0 ? 1 : 2);
             },
             child: GenderListItem(genders[index]),
@@ -55,7 +56,7 @@ class GenderListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         color: _gender.isSelected
-            ? AcmoConfig.SECONDARY_COLOR
+            ? Theme.of(context).colorScheme.secondary
             : Colors.white,
         child: Container(
           height: 100,

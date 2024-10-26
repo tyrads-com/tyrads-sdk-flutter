@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/models/offers.dart';
 
-import '../../../../gen/assets.gen.dart';
 import 'chip_category.dart';
 import 'chip_channel.dart';
 import 'chip_offer_type.dart';
@@ -65,7 +64,13 @@ class AcmoComponentOfferItemTile extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Assets.images.tPoints.image(width: 16, height: 16),
+                  CachedNetworkImage(
+                      imageUrl: item.currency.adUnitCurrencyIcon,
+                      width: 16,
+                      height: 16),
+                  const SizedBox(
+                    width: 4,
+                  ),
                   Text(
                     item.campaignPayout.totalPayout.toString(),
                     style: const TextStyle(
@@ -74,9 +79,9 @@ class AcmoComponentOfferItemTile extends StatelessWidget {
                 ],
               ),
             ),
-            const Text(
-              "TPoints",
-              style: TextStyle(
+             Text(
+              item.currency.adUnitCurrencyName,
+              style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.normal,
                   fontSize: 10),

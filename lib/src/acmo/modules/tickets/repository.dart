@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tickets/model/tickets.dart';
 
 import '../../core/constants/endpoint_name.dart';
@@ -12,10 +13,10 @@ class AcmoTicketsRepository {
     return AcmoTicketsResponseModel.fromJson(responseData);
   }
 
-  submitTicket({offerID, eventID}) async {
+  submitTicket({offerID, eventID, Map<String, dynamic>? fd}) async {
     var response = await NetworkCommon()
         .dio
-        .post("${AcmoEndpointNames.OFFERS}/$offerID/tickets/$eventID");
+        .post("${AcmoEndpointNames.OFFERS}/$offerID/tickets/$eventID", data: FormData.fromMap(fd ?? {}));
     var temp = response.data;
     return temp['data'];
   }
