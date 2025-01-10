@@ -53,8 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             OutlinedButton(
-                onPressed: _showOfferwall,
-                child: const Text("Show offerwall"))
+                onPressed: _showOfferwall, child: const Text("Show offerwall"))
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.

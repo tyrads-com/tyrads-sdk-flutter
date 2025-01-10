@@ -82,15 +82,20 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                       children: [
                         AcmoEventCard(
                           isActive: false,
-                          isCompleted: item.conversionStatus.toLowerCase() == "approved",
+                          isCompleted:
+                              item.conversionStatus.toLowerCase() == "approved",
                           isFuture: false,
-                          isPending: item.conversionStatus.toLowerCase() == "pending",
-                          isRejected: item.conversionStatus.toLowerCase() == "rejected",
+                          isPending:
+                              item.conversionStatus.toLowerCase() == "pending",
+                          isRejected:
+                              item.conversionStatus.toLowerCase() == "rejected",
                           isSuperCharged: false,
                           difcultyLevelLabel: item.eventCategory,
-                          tPoints: item.payoutAmountConverted.numeral(digits: 2),
+                          tPoints:
+                              item.payoutAmountConverted.numeral(digits: 2),
                           eventName: item.eventName,
-                          isOfferActive: _controller.item.status.toLowerCase() == "active",
+                          isOfferActive:
+                              _controller.item.status.toLowerCase() == "active",
                           remainingTime: 0,
                           timeUp: false,
                           isPlaytime: false,
@@ -166,15 +171,20 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                               color: AcmoConfig.SECONDARY_COLOR),
                         AcmoEventCard(
                           isActive: index == 0,
-                          isCompleted: item.conversionStatus.toLowerCase() == "approved",
+                          isCompleted:
+                              item.conversionStatus.toLowerCase() == "approved",
                           isFuture: false,
-                          isPending: item.conversionStatus.toLowerCase() == "pending",
-                          isRejected: item.conversionStatus.toLowerCase() == "rejected",
+                          isPending:
+                              item.conversionStatus.toLowerCase() == "pending",
+                          isRejected:
+                              item.conversionStatus.toLowerCase() == "rejected",
                           isSuperCharged: false,
                           difcultyLevelLabel: item.eventCategory,
-                          tPoints: item.payoutAmountConverted.numeral(digits: 2),
+                          tPoints:
+                              item.payoutAmountConverted.numeral(digits: 2),
                           eventName: item.eventName,
-                          isOfferActive: _controller.item.status.toLowerCase() == "active",
+                          isOfferActive:
+                              _controller.item.status.toLowerCase() == "active",
                           remainingTime: 0,
                           timeUp: false,
                           isPlaytime: false,

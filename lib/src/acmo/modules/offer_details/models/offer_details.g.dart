@@ -22,7 +22,7 @@ Map<String, dynamic> _$$AcmoOfferDetailsResponseModelImplToJson(
 _$AcmoOfferDetailsModelImpl _$$AcmoOfferDetailsModelImplFromJson(
         Map<String, dynamic> json) =>
     _$AcmoOfferDetailsModelImpl(
-      campaignId: json['campaignId'] as int,
+      campaignId: (json['campaignId'] as num).toInt(),
       campaignName: json['campaignName'] as String? ?? '',
       campaignDescription: json['campaignDescription'] as String? ?? '',
       active: json['active'] as String? ?? '',
@@ -37,7 +37,7 @@ _$AcmoOfferDetailsModelImpl _$$AcmoOfferDetailsModelImplFromJson(
       is_active: json['is_active'] as String? ?? '0',
       is_completed: json['is_completed'] as String? ?? '0',
       is_expiring: json['is_expiring'] as String? ?? '0',
-      expiring_after: json['expiring_after'] as int? ?? 0,
+      expiring_after: (json['expiring_after'] as num?)?.toInt() ?? 0,
       isInstalled: json['isInstalled'] as bool? ?? false,
       payoutEvents: (json['payoutEvents'] as List<dynamic>?)
               ?.map((e) => PayoutEvents.fromJson(e as Map<String, dynamic>))
@@ -122,7 +122,7 @@ Map<String, dynamic> _$$TargetingImplToJson(_$TargetingImpl instance) =>
 
 _$PayoutEventsImpl _$$PayoutEventsImplFromJson(Map<String, dynamic> json) =>
     _$PayoutEventsImpl(
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       conversionStatus: json['conversionStatus'] as String? ?? '',
       identifier: json['identifier'] as String? ?? '',
       eventName: json['eventName'] as String? ?? '',
@@ -133,7 +133,7 @@ _$PayoutEventsImpl _$$PayoutEventsImplFromJson(Map<String, dynamic> json) =>
           (json['payoutAmountConverted'] as num?)?.toDouble() ?? 0,
       payoutType: json['payoutType'] as String? ?? '',
       allowDuplicateEvents: json['allowDuplicateEvents'] as bool? ?? false,
-      maxTime: json['maxTime'] as int? ?? 0,
+      maxTime: (json['maxTime'] as num?)?.toInt() ?? 0,
       maxTimeMetric: json['maxTimeMetric'] as String? ?? '',
       maxTimeRemainSeconds:
           (json['maxTimeRemainSeconds'] as num?)?.toDouble() ?? 0,
@@ -175,7 +175,7 @@ Map<String, dynamic> _$$TrackingImplToJson(_$TrackingImpl instance) =>
 
 _$CampaignPayoutImpl _$$CampaignPayoutImplFromJson(Map<String, dynamic> json) =>
     _$CampaignPayoutImpl(
-      totalEvents: json['totalEvents'] as int? ?? 0,
+      totalEvents: (json['totalEvents'] as num?)?.toInt() ?? 0,
       totalPayout: (json['totalPayout'] as num?)?.toDouble() ?? 0,
       totalPayoutConverted:
           (json['totalPayoutConverted'] as num?)?.toDouble() ?? 0,
@@ -211,7 +211,7 @@ Map<String, dynamic> _$$CurrencyImplToJson(_$CurrencyImpl instance) =>
     };
 
 _$AppImpl _$$AppImplFromJson(Map<String, dynamic> json) => _$AppImpl(
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String? ?? '',
       packageName: json['packageName'] as String? ?? '',
       shortDescription: json['shortDescription'] as String? ?? '',

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/microcharge/microcharge.dart';
+import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/microcharge/microcharge_data.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/offer_details.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/repository.dart';
 
@@ -12,12 +14,14 @@ class AcmoOffersDetailsController {
   var purchaseEvents = <PayoutEvents>[];
   var duplicateEvents = <PayoutEvents>[];
   var dailyPurchaseEvents = <PayoutEvents>[];
+  var allPayoutEvents = <PayoutEvents>[];
   var maxPoints = 0;
   var maxPurchasePoints = 0;
   var earnedPurchasePoints = 0;
   var playClicked = false;
   var offerLoading = false;
   var fd = <String, dynamic>{};
+  late MicroCharge microCharge;
 
   late int id;
   final _repo = AcmoOfferDetailsRepository();
@@ -35,6 +39,8 @@ class AcmoOffersDetailsController {
       purchaseEvents.clear();
       duplicateEvents.clear();
       dailyPurchaseEvents.clear();
+      allPayoutEvents = item.payoutEvents;
+      microCharge = microChargeData;
       item.payoutEvents.forEach((element) async {
         if (element.payoutAmount == 0) return;
         maxPoints += element.payoutAmountConverted.toInt();

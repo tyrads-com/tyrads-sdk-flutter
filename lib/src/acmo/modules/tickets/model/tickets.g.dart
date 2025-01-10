@@ -39,7 +39,7 @@ Map<String, dynamic> _$$AcmoTicketsModelImplToJson(
 _$AcmoTicketEventsModelImpl _$$AcmoTicketEventsModelImplFromJson(
         Map<String, dynamic> json) =>
     _$AcmoTicketEventsModelImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       identifier: json['identifier'] as String? ?? '',
       eventName: json['eventName'] as String? ?? '',
       payoutType: json['payoutType'] as String? ?? '',

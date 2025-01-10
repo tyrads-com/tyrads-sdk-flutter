@@ -12,6 +12,10 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/boost_blub.png
+  AssetGenImage get boostBlub =>
+      const AssetGenImage('assets/images/boost_blub.png');
+
   /// File path: assets/images/charge-can.png
   AssetGenImage get chargeCan =>
       const AssetGenImage('assets/images/charge-can.png');
@@ -19,11 +23,23 @@ class $AssetsImagesGen {
   /// File path: assets/images/clock.png
   AssetGenImage get clock => const AssetGenImage('assets/images/clock.png');
 
+  /// File path: assets/images/dartboard.png
+  AssetGenImage get dartboard =>
+      const AssetGenImage('assets/images/dartboard.png');
+
   /// File path: assets/images/faqs.png
   AssetGenImage get faqs => const AssetGenImage('assets/images/faqs.png');
 
   /// File path: assets/images/fire.png
   AssetGenImage get fire => const AssetGenImage('assets/images/fire.png');
+
+  /// File path: assets/images/flash_golden.png
+  AssetGenImage get flashGolden =>
+      const AssetGenImage('assets/images/flash_golden.png');
+
+  /// File path: assets/images/flash_sliver.png
+  AssetGenImage get flashSliver =>
+      const AssetGenImage('assets/images/flash_sliver.png');
 
   /// File path: assets/images/golden-star.png
   AssetGenImage get goldenStar =>
@@ -32,6 +48,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/help_icon.png
   AssetGenImage get helpIcon =>
       const AssetGenImage('assets/images/help_icon.png');
+
+  /// File path: assets/images/inner_rounded_corner.png
+  AssetGenImage get innerRoundedCorner =>
+      const AssetGenImage('assets/images/inner_rounded_corner.png');
 
   /// File path: assets/images/padlock.png
   AssetGenImage get padlock => const AssetGenImage('assets/images/padlock.png');
@@ -60,21 +80,30 @@ class $AssetsImagesGen {
   AssetGenImage get superChargeCan =>
       const AssetGenImage('assets/images/super-charge-can.png');
 
+  /// File path: assets/images/trophy.png
+  AssetGenImage get trophy => const AssetGenImage('assets/images/trophy.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
+        boostBlub,
         chargeCan,
         clock,
+        dartboard,
         faqs,
         fire,
+        flashGolden,
+        flashSliver,
         goldenStar,
         helpIcon,
+        innerRoundedCorner,
         padlock,
         pendingIcon,
         sadFace,
         silverStar,
         singupBg,
         submitComplete,
-        superChargeCan
+        superChargeCan,
+        trophy
       ];
 }
 
@@ -87,11 +116,18 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName);
+  const AssetGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  });
 
   final String _assetName;
 
   static const String package = 'tyrads_sdk';
+
+  final Size? size;
+  final Set<String> flavors;
 
   Image image({
     Key? key,
@@ -111,7 +147,7 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = false,
+    bool gaplessPlayback = true,
     bool isAntiAlias = false,
     @Deprecated('Do not specify package for a generated library asset')
     String? package = package,

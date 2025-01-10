@@ -6,7 +6,6 @@ class AcmoOfferDetailsRepository {
   Future<AcmoOfferDetailsResponseModel> getOfferDetails(id) async {
     var response =
         await NetworkCommon().dio.get("${AcmoEndpointNames.OFFERS}/$id");
-    //  log(response.toString());
     return AcmoOfferDetailsResponseModel.fromJson(response.data);
   }
 
