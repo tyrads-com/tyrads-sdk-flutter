@@ -32,3 +32,4 @@ build/
 .flutter-plugins-dependencies
 .packages
 .pub-cache/
+.puro.json

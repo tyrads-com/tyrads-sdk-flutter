@@ -37,11 +37,11 @@ class AcmoTicketsController {
 
   submitTicket() async {
     if (!submiting) {
-      submiting = true;
       if (submitEventIds.isEmpty) {
         acmoSnackbar("Please select an event");
         return;
       }
+      submiting = true;
       try {
         await _repository.submitTicket(
             offerID: id, eventID: submitEventIds.first, fd: fd);

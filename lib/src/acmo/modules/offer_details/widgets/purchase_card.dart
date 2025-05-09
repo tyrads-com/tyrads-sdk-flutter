@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:numeral/numeral.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/offer_details.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 
 import '../../../../gen/assets.gen.dart';
 import '../../offers/components/custom_progress_bar.dart';
@@ -28,7 +29,7 @@ class PurchaseCard extends StatelessWidget {
       required this.maxPoints,
       required this.earnedPoints,
       required this.currencyIcon,
-      required this.currencyName, 
+      required this.currencyName,
       required this.controller})
       : super(key: key);
 
@@ -59,9 +60,9 @@ class PurchaseCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'MICRO CHARGE',
-                              style: TextStyle(
+                            Text(
+                              t.offerDetails.purchase.microCharge,
+                              style: const TextStyle(
                                   color: Color(0xff26A1C8),
                                   fontWeight: FontWeight.w700,
                                   fontSize: 17),
@@ -69,7 +70,11 @@ class PurchaseCard extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4),
                               child: Text(
-                                'you earned: $earnedPoints $currencyName',
+                                t.offerDetails.purchase.earned(
+                                  points: earnedPoints.numeral(digits: 2),
+                                  currency: currencyName,
+                                ),
+                                // 'you earned: $earnedPoints $currencyName',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w400,
@@ -77,7 +82,11 @@ class PurchaseCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              'from total $maxPoints $currencyName',
+                              t.offerDetails.purchase.total(
+                                points: maxPoints.numeral(digits: 2),
+                                currency: currencyName,
+                              ),
+                              // 'from total $maxPoints $currencyName',
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w700,
@@ -395,9 +404,15 @@ class PurchaseCard extends StatelessWidget {
                                     Container(
                                       height: 24,
                                       width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
                                       color:
                                           const Color.fromRGBO(158, 158, 158, 1)
                                               .withOpacity(0.3),
+                                          borderRadius: const BorderRadius.only(
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          )
+                                      ),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -405,10 +420,10 @@ class PurchaseCard extends StatelessWidget {
                                           if (e.conversionStatus
                                                   .toLowerCase() ==
                                               'rejected')
-                                            const Center(
+                                             Center(
                                               child: Text(
-                                                'Rejected',
-                                                style: TextStyle(
+                                                t.offerDetails.eventStatus.rejected,
+                                                style: const TextStyle(
                                                     color: Colors.black,
                                                     fontWeight: FontWeight.w500,
                                                     fontSize: 12),
@@ -417,10 +432,10 @@ class PurchaseCard extends StatelessWidget {
                                           else if (e.conversionStatus
                                                   .toLowerCase() ==
                                               'pending')
-                                            const Center(
+                                            Center(
                                               child: Text(
-                                                'Pending',
-                                                style: TextStyle(
+                                                t.offerDetails.eventStatus.pending,
+                                                style: const TextStyle(
                                                     color: Colors.black,
                                                     fontWeight: FontWeight.w500,
                                                     fontSize: 12),
@@ -439,10 +454,10 @@ class PurchaseCard extends StatelessWidget {
                                           else if (e.conversionStatus
                                                   .toLowerCase() ==
                                               'approved')
-                                            const Center(
+                                            Center(
                                               child: Text(
-                                                'Completed',
-                                                style: TextStyle(
+                                                t.offerDetails.eventStatus.completed,
+                                                style: const TextStyle(
                                                     color: Colors.black,
                                                     fontWeight: FontWeight.w500,
                                                     fontSize: 12),
@@ -453,8 +468,8 @@ class PurchaseCard extends StatelessWidget {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                const Text(
-                                                  'Complete within ',
+                                                Text(
+                                                  '${t.offerDetails.eventStatus.completeToContinue} ',
                                                   style: TextStyle(
                                                       color: Colors.black,
                                                       fontWeight:
@@ -497,8 +512,9 @@ class PurchaseCard extends StatelessWidget {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "Daily Purchase Reward",
+                                Text(
+                                  t.offerDetails.purchase
+                                      .dailyPurchase, // "Daily Purchase Reward",
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w600,
@@ -544,14 +560,45 @@ class PurchaseCard extends StatelessWidget {
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: AcmoCustomBarWithColor(
-                              circularRadius: BorderRadius.circular(4),
-                              title: e.eventName,
-                              total:  e.dailyLimit != 0 ? e.dailyLimit : e.limit,
-                              completed: e.dailyLimit != 0 ? e.dailyCount : e.count,
-                              progressBarColor: const Color(0xff26A1C8),
+                            child: Column(
+                              children: [
+                                AcmoCustomBarWithColor(
+                                  circularRadius: BorderRadius.circular(4),
+                                  title: e.eventName,
+                                  total: e.dailyLimit,
+                                  completed: e.dailyCount,
+                                  progressBarColor: const Color(0xff26A1C8),
+                                ),
+                                Card(
+                                  margin: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(4),
+                                        bottomRight: Radius.circular(4)),
+                                  ),
+                                  color: const Color(0xffE4E4E4),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 16,
+                                        top: 2,
+                                        bottom: 2,
+                                      ),
+                                      child: Text(
+                                        'Total Limit: ${e.count} / ${e.limit}',
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 9,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          )
+                          ),
                         ],
                       ),
                     )
@@ -615,12 +662,43 @@ class PurchaseCard extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(
                                 right: 16.0, bottom: 16.0, left: 16.0),
-                            child: AcmoCustomBarWithColor(
-                              circularRadius: BorderRadius.circular(4),
-                              title: e.eventName,
-                              total:  e.dailyLimit != 0 ? e.dailyLimit : e.limit,
-                              completed: e.dailyLimit != 0 ? e.dailyCount : e.count,
-                              progressBarColor: const Color(0xff26A1C8),
+                            child: Column(
+                              children: [
+                                AcmoCustomBarWithColor(
+                                  circularRadius: BorderRadius.circular(4),
+                                  title: e.eventName,
+                                  total: e.dailyLimit,
+                                  completed: e.dailyCount,
+                                  progressBarColor: const Color(0xff26A1C8),
+                                ),
+                                Card(
+                                  margin: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(4),
+                                        bottomRight: Radius.circular(4)),
+                                  ),
+                                  color: const Color(0xffE4E4E4),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 16,
+                                        top: 2,
+                                        bottom: 2,
+                                      ),
+                                      child: Text(
+                                        'Total Limit: ${e.count} / ${e.limit}',
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 9,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           )
                         ],

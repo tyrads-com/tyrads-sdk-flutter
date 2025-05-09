@@ -29,6 +29,9 @@ class AcmoOffersModel with _$AcmoOffersModel {
     required Targeting targeting,
     required Creative creative,
     @Default(false) bool hasPlaytimeEvents,
+    @Default(false) bool premium,
+    @Default(false) bool isRetryDownload,
+    @Default(false) bool isInstalled,
     @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
     @Default(0) num sortingScore,
     @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? createdOn
@@ -42,7 +45,7 @@ class AcmoOffersModel with _$AcmoOffersModel {
 
 @freezed
 class Creative with _$Creative {
-  factory Creative({required String creativeUrl, required List<CreativePacks> creativePacks}) = _Creative;
+  factory Creative({@Default('') String creativeUrl, required List<CreativePacks> creativePacks}) = _Creative;
 
   factory Creative.fromJson(Map<String, dynamic> json) =>
       _$CreativeFromJson(json);
@@ -87,6 +90,7 @@ class Tracking with _$Tracking {
     String? attributionTool,
     String? clickUrl,
     String? impressionUrl,
+    String? s2sClickUrl
   }) = _Tracking;
 
   factory Tracking.fromJson(Map<String, dynamic> json) =>
@@ -99,6 +103,10 @@ class CampaignPayout with _$CampaignPayout {
     @Default(0) int totalEvents,
     @Default(0) double totalPayout,
     @Default(0) double totalPayoutConverted,
+    @Default(0) double totalPlayablePayout,
+    @Default(0) double totalMicrochargePayout,
+    @Default(0) double totalPlayablePayoutConverted,
+    @Default(0) double totalMicrochargePayoutConverted,
   }) = _CampaignPayout;
 
   factory CampaignPayout.fromJson(Map<String, dynamic> json) =>

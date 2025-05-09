@@ -1,15 +1,29 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:example/env/env.dart';
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Tyrads.instance
+  initializeTyrads();
+  runApp(const MyApp());
+}
+
+void initializeTyrads({
+  String? apiKey,
+  String? apiSecret,
+  String? encKey,
+  String? userID,
+}) async {
+  log("initializeTyrads $apiKey,  $apiSecret,  $userID");
+  await Tyrads.instance
       .init(
-        apiKey: Env.TYRADS_SDK_KEY,
-        apiSecret: Env.TYRADS_SDK_SECRET,
+        apiKey:apiKey ?? Env.TYRADS_SDK_KEY,
+        apiSecret: apiSecret ?? Env.TYRADS_SDK_SECRET,
+        encryptionKey: encKey ?? Env.TYRADS_SDK_ENC_KEY,
         userInfo: TyradsUserInfo(
           email: "example@tyrads.com",
           phoneNumber: "001234567890",
@@ -32,8 +46,7 @@ void main() async {
           sub5: "iOSDevice",
         ),
         );
-
-  runApp(const MyApp());
+       await Tyrads.instance.loginUser(userID: userID ?? "112312");
 }
 
 class MyApp extends StatelessWidget {
@@ -62,12 +75,43 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String? userID;
+
+  late TextEditingController apiKeyController;
+  late TextEditingController apiSecretController;
+  late TextEditingController encKeyController;
+  late TextEditingController userIDController;
+  @override
+  void initState() {
+    super.initState();
+    apiKeyController = TextEditingController();
+    apiSecretController = TextEditingController();
+    encKeyController = TextEditingController();
+    userIDController = TextEditingController();
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    apiKeyController.dispose();
+    apiSecretController.dispose();
+    encKeyController.dispose();
+    userIDController.dispose();
+  }
   void _showOfferwall() async {
-    var isLoginSuccessful = await Tyrads.instance.loginUser(userID: userID);
-    if(!isLoginSuccessful){
-      //re-initialize 
+    if((apiKeyController.text.isNotEmpty && apiSecretController.text.isNotEmpty) || userIDController.text.isNotEmpty){
+      
+        await Tyrads.instance.initializationWait.future;
+      
+      initializeTyrads(
+        apiKey: apiKeyController.text.isEmpty ? null : apiKeyController.text,
+        apiSecret: apiSecretController.text.isEmpty ? null : apiSecretController.text,
+        encKey: encKeyController.text.isEmpty ? null : encKeyController.text,
+        userID: userIDController.text.isEmpty? null : userIDController.text,
+      );
     }
+    // var isLoginSuccessful = await Tyrads.instance.loginUser(userID: userID);
+    // if(!isLoginSuccessful){
+    //   //re-initialize 
+    // }
     
    // or you can login without waiting for the future
    
@@ -79,8 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
   //     //re-initialize
   //   }
 
-    Tyrads.instance.showOffers(context
+    Tyrads.instance.showOffers(context,
    // ,campaignID: 00,route: TyradsDeepRoutes.CAMPAIGN_TICKETS
+      launchMode: 2,
     );
   }
 
@@ -91,26 +136,60 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              width: 300,
-              child: TextField(
-                onChanged: (v) {
-                  userID = v;
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Custom user Id or empty for anonymous user",
-                )
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Tyrads.instance.topOffersWidget(context),
+              SizedBox(
+                width: 300,
+                child: TextField(
+                  controller: apiKeyController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Api_Key (Optional)",
+                  )
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            OutlinedButton(
-                onPressed: _showOfferwall, child: const Text("Show offerwall"))
-          ],
+              const SizedBox(height: 10),
+              SizedBox(
+                width: 300,
+                child: TextField(
+                  controller: apiSecretController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Api_Secret (Optional)",
+                  )
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: 300,
+                child: TextField(
+                  controller: encKeyController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Encryption Key (Optional)",
+                  )
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: 300,
+                child: TextField(
+                  controller: userIDController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Custom user Id or empty for anonymous user",
+                  )
+                ),
+              ),
+              const SizedBox(height: 10),
+              OutlinedButton(
+                  onPressed: _showOfferwall, child: const Text("Show offerwall"))
+            ],
+          ),
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

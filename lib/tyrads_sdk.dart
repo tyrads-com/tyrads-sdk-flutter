@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tyrads_sdk/src/acmo/core/aes_encrypt.dart';
 import 'package:tyrads_sdk/src/acmo/core/app.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/endpoint_name.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
@@ -24,8 +25,13 @@ import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/models/init.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/repository.dart';
 import 'package:tyrads_sdk/src/acmo/core/extensions/colors.dart';
+import 'package:tyrads_sdk/src/app_config.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
+import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
+import 'src/acmo/modules/dashboard/top_offers.dart';
 import 'src/acmo/modules/tracking/activities.dart';
 import 'src/acmo/modules/tracking/controller.dart';
 
@@ -40,11 +46,14 @@ class Tyrads {
   var newUser = false;
   var apiKey;
   var apiSecret;
+  var encryptionKey;
   var publisherUserID;
   late AcmoInitModel loginData;
   Color? colorHeaderBg;
   Color? colorHeaderFg;
   Color? colorMain;
+  Color? colorPremium;
+  Color? colorPremiumFg;
   BuildContext? parentContext;
   late Dio dio;
   int? campaignID;
@@ -57,31 +66,49 @@ class Tyrads {
   var _isInitCalled = false;
   var _isLoginCalled = false;
   var isLoginSuccessful = false;
+  late SharedPreferences prefs;
+  int? launchMode;
 
   Tyrads._internal();
   static Tyrads get instance {
     return _singleton;
   }
 
-  init(
-      {required apiKey,
-      required apiSecret,
-      TyradsMediaSourceInfo? mediaSourceInfo,
-      TyradsUserInfo? userInfo}) async {
+  late String selectedLanguage;
+
+  init({
+    required apiKey,
+    required apiSecret,
+    String? encryptionKey,
+    TyradsMediaSourceInfo? mediaSourceInfo,
+    TyradsUserInfo? userInfo,
+    int? launchMode,
+  }) async {
     _isInitCalled = true;
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
+    this.encryptionKey = encryptionKey;
     this.userInfo = userInfo;
     this.mediaSourceInfo = mediaSourceInfo;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    this.launchMode = launchMode;
+    prefs = await SharedPreferences.getInstance();
+    if(Platform.isAndroid) {
+      final integrityToken = await TyradsSdkPlatform.instance.getPlayIntegrityToken();
+      await prefs.setString(AcmoKeyNames.PLAY_INTEGRITY_TOKEN, integrityToken);
+    }
     await prefs.setString(AcmoKeyNames.API_KEY, apiKey);
     await prefs.setString(AcmoKeyNames.API_SECRET, apiSecret);
+    await prefs.setString(AcmoKeyNames.ENCRYPTION_KEY, encryptionKey ?? "");
     dio = NetworkCommon().dio;
+    selectedLanguage = prefs.getString(AcmoKeyNames.LANGUAGE) ??
+        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    //LocaleSettings.useDeviceLocale();
+    LocaleSettings.setLocaleRaw(selectedLanguage, listenToDeviceLocale: true);
   }
 
   Future<bool> loginUser({String? userID = ""}) async {
     try {
-      if(!_isInitCalled){
+      if (!_isInitCalled) {
         log("Make sure init method is called first");
         return false;
       }
@@ -174,21 +201,28 @@ class Tyrads {
       if (userInfo?.userGroup != null) {
         fd["userGroup"] = userInfo?.userGroup;
       }
-
-      var response = await dio.post(AcmoEndpointNames.INITIALIZE, data: fd);
-
+      final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
+      final encData = await AcmoEncrypt(encKey).encryptDataAESGCM(fd);
+      var response = await dio.post(AcmoEndpointNames.INITIALIZE,
+          data: AcmoConfig.SECURE ? encData : fd);
       if (response.statusCode == 200) {
         loginData = AcmoInitModel.fromJson(response.data);
         publisherUserID = loginData.data.user.publisherUserId;
         await prefs.setString(AcmoKeyNames.USER_ID, publisherUserID);
         newUser = loginData.data.newRegisteredUser;
-        colorHeaderBg = loginData.data.publisherApp.headerColor.toColor();
         colorMain = loginData.data.publisherApp.mainColor.toColor();
+
+        colorHeaderBg = loginData.data.publisherApp.headerColor.toColor();
         colorHeaderFg = acmoGetFontColorForBackground(colorHeaderBg);
+
+        colorPremium = loginData.data.publisherApp.premiumColor.toColor() ??
+            const Color(0xff02B5BE);
+        colorPremiumFg = acmoGetFontColorForBackground(colorPremium);
 
         var privacyAccepted = prefs.getBool(
                 AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
-                    Tyrads.instance.publisherUserID) ?? false;
+                    Tyrads.instance.publisherUserID) ??
+            false;
         if (privacyAccepted) {
           var usageStatsController = AcmoControllerUsageStats();
           usageStatsController.saveUsageStats();
@@ -212,6 +246,14 @@ class Tyrads {
     prefs.setString(AcmoKeyNames.USER_ID, publisherUserID);
   }
 
+  setLaunchMode(int launchMode) {
+    this.launchMode = launchMode;
+  }
+
+  setNewUser(bool newUser) {
+    this.newUser = newUser;
+  }
+
   updateUser(String userId, {int? age, int? gender}) async {
     var fd = <String, dynamic>{};
     var repo = AcmoUsersRepository();
@@ -224,45 +266,67 @@ class Tyrads {
     await repo.updateUser(userId, fd);
   }
 
-  showOffers(context, {int? campaignID, String? route}) async {
-   
-    if (!_isLoginCalled) {
-      log("Make sure loginUser method is called first");
-      return;
-    }
+  showOffers(context,
+      {int? campaignID,
+      String? route,
+      int? launchMode}) async {
+    try {
+      if (_isLoginCalled) {
+        log("Make sure login method is called first");
+      }
+      if (await waitAndCheck() == false) {
+        return;
+      }
+      this.campaignID = campaignID;
+      this.route = route ?? TyradsDeepRoutes.CAMPAIGNS;
+      webUrl =
+          'https://websdk.tyrads.com/?apiKey=${Tyrads.instance.apiKey}&apiSecret=${Tyrads.instance.apiSecret}&userID=${Tyrads.instance.publisherUserID}&newUser=${Tyrads.instance.newUser}&platform=${acmoGetPlatformName()}&hc=${loginData.data.publisherApp.headerColor}&mc=${loginData.data.publisherApp.mainColor}&launchMode=2&route=$route&campaignID=$campaignID&av=3&sdkVersion=${AcmoConfig.SDK_VERSION}&pc=${loginData.data.publisherApp.premiumColor}&lang=${Tyrads.instance.selectedLanguage}';
+      if (launchMode == null) {
+        if (this.launchMode == null) {
+          if (Platform.isIOS) {
+            launchMode = 3;
+          } else {
+            launchMode = 1;
+          }
+        } else {
+          launchMode = this.launchMode;
+        }
+      }
+      this.launchMode = launchMode;
+      if (launchMode != 2 || launchMode != 3) {
+        log("launchMode must be 2 or 3");
+      }
+      if (launchMode != 1) {
+        Tyrads.instance.newUser =
+            false; //to be sure that browser would not show it again
+      }
 
-    if (!initializationWait.isCompleted) {
-      acmoSnackbar("Loading...");
+      if (Platform.isIOS && launchMode != 2) {
+        var mode = LaunchMode.externalApplication;
+        acmoLaunchURLForce(webUrl, mode: mode);
+      } else {
+        runZonedGuarded(() {
+          parentContext = context;
+          Navigator.of(parentContext!)
+              .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
+        }, (error, stack) {});
+      }
+      track(TyradsActivity.opened);
+    } catch (e) {
+      log("Exiting");
     }
-    await initializationWait.future;
-    if(!isLoginSuccessful){
-      log("initialisation failed");
-      acmoSnackbar("Please try back later.");
-      return;
-    }
-    this.campaignID = campaignID;
-    this.route = route ?? TyradsDeepRoutes.CAMPAIGNS;
-    webUrl =
-          'https://websdk.tyrads.com/?apiKey=${Tyrads.instance.apiKey}&apiSecret=${Tyrads.instance.apiSecret}&userID=${Tyrads.instance.publisherUserID}&newUser=${Tyrads.instance.newUser}&platform=${acmoGetPlatformName()}&hc=${loginData.data.publisherApp.headerColor}&mc=${loginData.data.publisherApp.mainColor}&launchMode=3&route=$route&campaignID=$campaignID';
-    if (Platform.isIOS) {
-      acmoLaunchURLForce(webUrl);
-    } else {
-      runZonedGuarded(() {
-        parentContext = context;
-        Navigator.of(parentContext!)
-            .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
-      }, (error, stack) {});
-    }
-    track(TyradsActivity.opened);
   }
 
-  to(Widget page, {bool replace = false}) {
+  to(Widget page, {bool replace = false}) async {
+    dynamic result;
     if (replace) {
-      navKey.currentState!
+      result = await navKey.currentState!
           .pushReplacement(MaterialPageRoute(builder: (context) => page));
     } else {
-      navKey.currentState!.push(MaterialPageRoute(builder: (context) => page));
+      result = await navKey.currentState!
+          .push(MaterialPageRoute(builder: (context) => page));
     }
+    return result;
   }
 
   dialog(Widget dialog) async {
@@ -291,5 +355,49 @@ class Tyrads {
 
   track(String activity) {
     tracker.trackUser(activity);
+  }
+
+  Future<bool> waitAndCheck() async {
+    if (!initializationWait.isCompleted) {
+      acmoSnackbar("Loading...");
+    }
+    await initializationWait.future;
+    if (!isLoginSuccessful) {
+      log("initialisation failed");
+      acmoSnackbar("Please try back later.");
+      return false;
+    }
+    return true;
+  }
+
+  Widget topOffersWidget(
+    BuildContext context,
+      {showMore = true,
+      showMyOffers = true,
+      showMyOffersEmptyView = false,
+      widgetStyle = 4}) {
+    parentContext = context;
+    return TopOffersWidget(
+      key: TopOffersWidget.globalKey,
+      showMore: showMore,
+      showMyOffers: showMyOffers,
+      showMyOffersEmptyView: showMyOffersEmptyView,
+      widgetStyle: widgetStyle,
+    );
+  }
+
+  void changeLanguage(String languageCode) async {
+    prefs = await SharedPreferences.getInstance();
+    if (languageCode == "device") {
+      selectedLanguage =
+          WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+      LocaleSettings.useDeviceLocale();
+      prefs.remove(AcmoKeyNames.LANGUAGE);
+    } else {
+      selectedLanguage = languageCode;
+      LocaleSettings.setLocaleRaw(selectedLanguage, listenToDeviceLocale: true);
+      prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
+    }
+    TopOffersWidget.globalKey.currentState?.forceRebuild();
   }
 }

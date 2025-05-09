@@ -25,8 +25,8 @@
 
 - Android SDK 21 or higher using Google Play Services
 - iOS version 11.0 or higher
-- Flutter version 1.20.0 or higher
-- Dart SDK version 2.12.0 or higher
+- Flutter version 3.22.0 or higher
+- Dart SDK version 3.4.0 or higher
 - CocoaPods version 1.10.0 or higher
 
 ### Installation
@@ -34,7 +34,7 @@
 Just open the terminal with project root working and type below command
 
 ```bash
-flutter pub get tyrads_sdk
+flutter pub add tyrads_sdk
 ```
 
 Integrating the Tyrads offerwall functionality into your application is a straightforward process that involves a few key steps. By following these integration steps, you can seamlessly incorporate the offerwall feature, enhancing user engagement and potentially generating revenue for your application.

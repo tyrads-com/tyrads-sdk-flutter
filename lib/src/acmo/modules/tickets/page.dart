@@ -11,6 +11,7 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tickets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tickets/model/tickets.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tickets/sample_proof.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import '../../core/components/appbar.dart';
 import '../../core/components/button_3_cta.dart';
@@ -33,8 +34,8 @@ class _AcmoTicketsPageState extends State<AcmoTicketsPage> {
   Widget build(BuildContext context) {
     // if (_controller.loading.isTrue) return AcmoComponentPageLoading();
     return Scaffold(
-        appBar: const AcmoAppBar(
-          titleText: "I didn't receive my points",
+        appBar: AcmoAppBar(
+          titleText: t.tickets.title,
         ),
         body: FutureBuilder(
             future: _futureData,
@@ -78,7 +79,7 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
                 setState(() {
                   _refreshController.refreshCompleted();
                 });
-              }              
+              }
             },
             child: SingleChildScrollView(
               child: Column(
@@ -120,11 +121,11 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
               padding: const EdgeInsets.all(16.0),
               child: AcmoButton_3_Cta(
                 isLoading: _controller.submiting,
-                label: "Submit",
+                label: t.tickets.submit,
                 onTap: () async {
                   _formKey.currentState!.save();
                   if (_formKey.currentState!.validate()) {
-                    acmoSnackbar("Submitting ticket");
+                    acmoSnackbar(t.tickets.submitting);
                     await _controller.submitTicket();
                   }
                 },
@@ -137,23 +138,23 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
   }
 
   Padding _titleTexts() {
-    return const Padding(
-      padding: EdgeInsets.all(32.0),
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'We are more than happy to help!',
-            style: TextStyle(
+            t.tickets.header,
+            style: const TextStyle(
               fontSize: 17,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 4,
           ),
           Text(
-            'Please select which task(s) that you think you achieved but you didn’t get the points',
-            style: TextStyle(fontSize: 11, color: Colors.black54),
+            t.tickets.subheader,
+            style: const TextStyle(fontSize: 11, color: Colors.black54),
           ),
         ],
       ),
@@ -186,21 +187,21 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
                 width: 38,
               )
             else if (e.ticketStatus.toLowerCase() == 'rejected')
-               SizedBox(
+              SizedBox(
                 width: 38,
-                 child: Center(
-                   child: Container(
+                child: Center(
+                  child: Container(
                     width: 16,
                     height: 16,
                     color: const Color.fromRGBO(220, 41, 41, 0.7),
                     child: const Icon(
                       Icons.close_rounded,
                       size: 16,
-                      color: Colors.white ,
+                      color: Colors.white,
                     ),
-                                 ),
-                 ),
-               )
+                  ),
+                ),
+              )
             else if (e.isTicketSubmitted)
               SizedBox(
                 width: 38,
@@ -237,7 +238,10 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
           ],
         ),
         if (_controller.submitEventIds.contains(e.id))
-          _gamePlayerIdRow(context, e, item)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: _gamePlayerIdRow(context, e, item),
+          )
       ],
     );
   }
@@ -329,55 +333,54 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
       BuildContext context, AcmoTicketEventsModel e, AcmoTicketsModel item) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  const Text('Game Player ID:',
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-                  const SizedBox(
-                    width: 3,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 165,
-                    child: TextFormField(
-                      onChanged: (v) {
-                        _controller.fd["gamePlayerId"] = v;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a valid game player ID';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                          isDense: true,
-                          border: OutlineInputBorder(),
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 3, horizontal: 3)),
-                    ),
-                  )
-                ],
+        Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Text(t.tickets.gamePlayerId,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 12)),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Expanded(
+              flex: 3,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width - 165,
+                child: TextFormField(
+                  onChanged: (v) {
+                    _controller.fd["gamePlayerId"] = v;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return t.tickets.gamePlayerValidation;
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                      isDense: true,
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 3, horizontal: 3)),
+                ),
               ),
-              if (_controller.submitEventIds.contains(e.id) &&
-                  item.category.toLowerCase() == "microcharge")
-                _orderIdRow(context),
-              const SizedBox(
-                height: 4,
-              ),
-              //if(e.eventCategory.toLowerCase() == "purchase")
-              _screenShotRow(context, e),
-            ],
-          ),
+            )
+          ],
         ),
+        if (_controller.submitEventIds.contains(e.id) &&
+            item.category.toLowerCase() == "microcharge")
+          _orderIdRow(context),
+        const SizedBox(
+          height: 4,
+        ),
+        //if(e.eventCategory.toLowerCase() == "purchase")
+        _screenShotRow(context, e),
       ],
     );
   }
 
-  Column _orderIdRow(BuildContext context) {
+  Widget _orderIdRow(BuildContext context) {
     return Column(
       children: [
         const SizedBox(
@@ -385,28 +388,35 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
         ),
         Row(
           children: [
-            const Text('Order ID:',
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-            const SizedBox(
-              width: 40,
+            Expanded(
+              flex: 2,
+              child: Text(t.tickets.orderId,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 12)),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 165,
-              child: TextFormField(
-                onChanged: (v) {
-                  _controller.fd["orderId"] = v;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter order id';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                    isDense: true,
-                    border: OutlineInputBorder(),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 3, horizontal: 3)),
+            const SizedBox(
+              width: 8,
+            ),
+            Expanded(
+              flex: 3,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width - 165,
+                child: TextFormField(
+                  onChanged: (v) {
+                    _controller.fd["orderId"] = v;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return t.tickets.orderValidation;
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                      isDense: true,
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 3, horizontal: 3)),
+                ),
               ),
             )
           ],
@@ -420,51 +430,59 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
       children: [
         Row(
           children: [
-            const Text(
-              'Screenshot:',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+            Expanded(
+              flex: 2,
+              child: Text(
+                t.tickets.screenshot,
+                style:
+                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+              ),
             ),
             const SizedBox(
-              width: 24,
+              width: 8,
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 165,
-              child: TextFormField(
-                readOnly: true,
-                controller: TextEditingController(text: fileName),
-                validator: (v) {
-                  if (v == null || v.isEmpty) {
-                    return "Please select a screenshot";
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                    isDense: true,
-                    border: const OutlineInputBorder(),
-                    suffixIcon: InkWell(
-                      onTap: () async {
-                        final XFile? pFile = await _picker.pickImage(
-                            source: ImageSource.gallery);
-                        onImageChange(pFile, e.id);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondary,
-                              borderRadius: BorderRadius.circular(2)),
-                          child: const Center(
-                              child: Text(
-                            "Browse",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          )),
+            Expanded(
+              flex: 3,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width - 165,
+                child: TextFormField(
+                  readOnly: true,
+                  controller: TextEditingController(text: fileName),
+                  validator: (v) {
+                    if (v == null || v.isEmpty) {
+                      return t.tickets.screenshotValidation;
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                      isDense: true,
+                      border: const OutlineInputBorder(),
+                      suffixIcon: InkWell(
+                        onTap: () async {
+                          final XFile? pFile = await _picker.pickImage(
+                              source: ImageSource.gallery);
+                          onImageChange(pFile, e.id);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.secondary,
+                                borderRadius: BorderRadius.circular(2)),
+                            child: Center(
+                                child: Text(
+                              t.tickets.browse,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 12),
+                            )),
+                          ),
                         ),
                       ),
-                    ),
-                    suffixIconConstraints:
-                        BoxConstraints.tight(const Size(70, 24)),
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 3, horizontal: 3)),
+                      suffixIconConstraints:
+                          BoxConstraints.tight(const Size(70, 24)),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 3)),
+                ),
               ),
             )
           ],
@@ -482,12 +500,14 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
         ),
         Row(
           children: [
-            const Text('Not sure what to attach? Click here for see example',
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 9,
-                    fontStyle: FontStyle.italic)),
+            Expanded(
+              child: Text(t.tickets.helperText,
+                  style: const TextStyle(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 9,
+                      fontStyle: FontStyle.italic)),
+            ),
             const Spacer(),
             SizedBox(
               width: 70,
@@ -499,7 +519,7 @@ class _AcmoTicketsBodyState extends State<AcmoTicketsBody>
                     Tyrads.instance
                         .to(const AcmoPageOfferIssuesSamplePurchase());
                   },
-                  labelText: "Prev"),
+                  labelText: t.tickets.prev),
             )
           ],
         ),

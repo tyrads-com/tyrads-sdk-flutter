@@ -54,6 +54,7 @@ _$AcmoOfferDetailsModelImpl _$$AcmoOfferDetailsModelImplFromJson(
           const [],
       isRetryDownload: json['isRetryDownload'] as bool? ?? false,
       capReached: json['capReached'] as bool? ?? false,
+      premium: json['premium'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$AcmoOfferDetailsModelImplToJson(
@@ -79,6 +80,7 @@ Map<String, dynamic> _$$AcmoOfferDetailsModelImplToJson(
       'payoutEvents': instance.payoutEvents,
       'isRetryDownload': instance.isRetryDownload,
       'capReached': instance.capReached,
+      'premium': instance.premium,
     };
 
 _$CreativeImpl _$$CreativeImplFromJson(Map<String, dynamic> json) =>
@@ -182,6 +184,7 @@ _$TrackingImpl _$$TrackingImplFromJson(Map<String, dynamic> json) =>
       attributionTool: json['attributionTool'] as String?,
       clickUrl: json['clickUrl'] as String?,
       impressionUrl: json['impressionUrl'] as String?,
+      s2sClickUrl: json['s2sClickUrl'] as String?,
     );
 
 Map<String, dynamic> _$$TrackingImplToJson(_$TrackingImpl instance) =>
@@ -189,6 +192,7 @@ Map<String, dynamic> _$$TrackingImplToJson(_$TrackingImpl instance) =>
       'attributionTool': instance.attributionTool,
       'clickUrl': instance.clickUrl,
       'impressionUrl': instance.impressionUrl,
+      's2sClickUrl': instance.s2sClickUrl,
     };
 
 _$CampaignPayoutImpl _$$CampaignPayoutImplFromJson(Map<String, dynamic> json) =>

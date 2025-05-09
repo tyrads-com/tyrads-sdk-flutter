@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import '../../core/components/button_3_cta.dart';
 
@@ -43,11 +44,11 @@ class _AcmoBodyOfferIssuesState extends State<AcmoBodyOfferIssues> {
                     const SizedBox(
                       height: 22,
                     ),
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
+                     Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "Please attach Order ID and Screenshot like shown above.",
-                        style: TextStyle(
+                        t.tickets.instructions,
+                        style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
                             fontWeight: FontWeight.bold),
@@ -67,7 +68,7 @@ class _AcmoBodyOfferIssuesState extends State<AcmoBodyOfferIssues> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: AcmoButton_3_Cta(
-              label: "I Understand",
+              label:t.tickets.understand,
               onTap: () async {
                 Tyrads.instance.back();
               },

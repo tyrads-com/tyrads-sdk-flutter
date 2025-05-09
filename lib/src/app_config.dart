@@ -3,9 +3,11 @@
 import 'package:flutter/material.dart';
 
 class AcmoConfig {
-  static const API_VERSION = "1.1";
+  static const API_VERSION = "2.0";
   static const BUILD_VERSION = "1";
   static const SDK_VERSION = "$API_VERSION.$BUILD_VERSION";
+  static const SECURE = true; // for encryption
+  static const SECURE_MODE = SECURE ? "BASIC" : "PLAIN";
   static const SDK_PLATFORM = "Flutter";
   static const BASE_URL = "https://api.tyrads.com/v$API_VERSION/";
   static const PRIMARY_COLOR =
@@ -15,7 +17,8 @@ class AcmoConfig {
   static const PRIMARY_COLOR_DARK =
       Color.fromARGB(255, 0, 0, 0); //  Color(0xCC149CD4);
 
-  static const SECONDARY_COLOR = Color.fromARGB(255, 44, 179, 136);
+  // static const SECONDARY_COLOR = Color.fromARGB(255, 44, 179, 136);
+  static const SECONDARY_COLOR = Color(0xFF02B5BE);
   static const SECONDARY_COLOR_LIGHT = Color.fromARGB(255, 203, 235, 207);
   static const SIDEBAR_BACKGROUND_COLOR_LIGHT = Colors.white54;
   static const SIDEBAR_BACKGROUND_COLOR_DARK = Color.fromRGBO(17, 45, 30, 1);

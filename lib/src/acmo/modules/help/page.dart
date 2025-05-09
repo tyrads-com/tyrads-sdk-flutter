@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tickets/page.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import '../../core/components/appbar.dart';
 import '../../../gen/assets.gen.dart';
@@ -11,26 +12,27 @@ class AcmoHelpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AcmoAppBar(
-        titleText: 'Get Help',
+      appBar: AcmoAppBar(
+        titleText: t.help.title,
       ),
       body: Column(children: [
         AcmoHelpItemComponent(
-          icon: Assets.images.sadFace.image(
-            color: Theme.of(context).colorScheme.secondary
-          ),
-          title: "I didn’t receive my points",
+          icon: Assets.images.sadFace
+              .image(color: Theme.of(context).colorScheme.secondary),
+          title: t.help.title,
           onTap: () async {
-            Tyrads.instance.to(AcmoTicketsPage(
-              id: id,
-            ));
+            Tyrads.instance.to(
+              AcmoTicketsPage(
+                id: id,
+              ),
+            );
           },
         ),
         // AcmoHelpItemComponent(
         //   icon: Assets.images.faqs.image(
         //     color: Theme.of(context).colorScheme.secondary
         //     ),
-        //   title: "FAQs",
+        //   title: t.help.items.faqs.title,
         //   onTap: () {
         //     acmoLaunchURLForce('https://support.tyrrewards.com/');
         //   },

@@ -9,6 +9,55 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsIconsGen {
+  const $AssetsIconsGen();
+
+  /// File path: assets/icons/angle_down.png
+  AssetGenImage get angleDown =>
+      const AssetGenImage('assets/icons/angle_down.png');
+
+  /// File path: assets/icons/angle_left.png
+  AssetGenImage get angleLeft =>
+      const AssetGenImage('assets/icons/angle_left.png');
+
+  /// File path: assets/icons/angle_up.png
+  AssetGenImage get angleUp =>
+      const AssetGenImage('assets/icons/angle_up.png');
+
+  /// File path: assets/icons/diamond.png
+  AssetGenImage get diamond =>
+      const AssetGenImage('assets/icons/diamond.png');
+
+  /// File path: assets/icons/female.png
+  AssetGenImage get female => const AssetGenImage('assets/icons/female.png');
+
+  /// File path: assets/icons/language.png
+  AssetGenImage get language =>
+      const AssetGenImage('assets/icons/language.png');
+
+  /// File path: assets/icons/male.png
+  AssetGenImage get male => const AssetGenImage('assets/icons/male.png');
+
+  /// File path: assets/icons/privacy.png
+  AssetGenImage get privacy => const AssetGenImage('assets/icons/privacy.png');
+
+  /// File path: assets/icons/terms.png
+  AssetGenImage get terms => const AssetGenImage('assets/icons/terms.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        angleDown,
+        angleLeft,
+        angleUp,
+        diamond,
+        female,
+        language,
+        male,
+        privacy,
+        terms,
+      ];
+}
+
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
@@ -29,6 +78,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/fire.png
   AssetGenImage get fire => const AssetGenImage('assets/images/fire.png');
 
+  /// File path: assets/images/gift_box.png
+  AssetGenImage get giftBox =>
+      const AssetGenImage('assets/images/gift_box.png');
+
   /// File path: assets/images/golden-star.png
   AssetGenImage get goldenStar =>
       const AssetGenImage('assets/images/golden-star.png');
@@ -36,6 +89,22 @@ class $AssetsImagesGen {
   /// File path: assets/images/help_icon.png
   AssetGenImage get helpIcon =>
       const AssetGenImage('assets/images/help_icon.png');
+
+  /// File path: assets/images/info_icon.png
+  AssetGenImage get infoIcon =>
+      const AssetGenImage('assets/images/info_icon.png');
+
+  /// File path: assets/images/lightening.png
+  AssetGenImage get lightening =>
+      const AssetGenImage('assets/images/lightening.png');
+
+  /// File path: assets/images/lightening_bg.png
+  AssetGenImage get lighteningBg =>
+      const AssetGenImage('assets/images/lightening_bg.png');
+
+  /// File path: assets/images/loading_coins.gif
+  AssetGenImage get loadingCoins =>
+      const AssetGenImage('assets/images/loading_coins.webp');
 
   /// File path: assets/images/padlock.png
   AssetGenImage get padlock => const AssetGenImage('assets/images/padlock.png');
@@ -52,8 +121,9 @@ class $AssetsImagesGen {
   AssetGenImage get playtimeTracking =>
       const AssetGenImage('assets/images/playtime_tracking.png');
 
-  /// File path: assets/images/privacy.png
-  AssetGenImage get privacy => const AssetGenImage('assets/images/privacy.png');
+  /// File path: assets/images/premium_star.png
+  AssetGenImage get premiumStar =>
+      const AssetGenImage('assets/images/premium_star.png');
 
   /// File path: assets/images/privacy_banner.png
   AssetGenImage get privacyBanner =>
@@ -83,9 +153,6 @@ class $AssetsImagesGen {
   AssetGenImage get superChargeCan =>
       const AssetGenImage('assets/images/super-charge-can.png');
 
-  /// File path: assets/images/terms.png
-  AssetGenImage get terms => const AssetGenImage('assets/images/terms.png');
-
   /// List of all assets
   List<AssetGenImage> get values => [
         chargeCan,
@@ -93,13 +160,18 @@ class $AssetsImagesGen {
         emptyIcon,
         faqs,
         fire,
+        giftBox,
         goldenStar,
         helpIcon,
+        infoIcon,
+        lightening,
+        lighteningBg,
+        loadingCoins,
         padlock,
         pendingIcon,
         playtimeIcon,
         playtimeTracking,
-        privacy,
+        premiumStar,
         privacyBanner,
         sadFace,
         sampleProof,
@@ -107,24 +179,20 @@ class $AssetsImagesGen {
         singupBg,
         submitComplete,
         superChargeCan,
-        terms
       ];
 }
 
 class Assets {
-  Assets._();
+  const Assets._();
 
   static const String package = 'tyrads_sdk';
 
+  static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
 
   final String _assetName;
 
@@ -151,11 +219,11 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = false,
+    bool gaplessPlayback = true,
     bool isAntiAlias = false,
     @Deprecated('Do not specify package for a generated library asset')
     String? package = package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {
@@ -192,11 +260,7 @@ class AssetGenImage {
     @Deprecated('Do not specify package for a generated library asset')
     String? package = package,
   }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;

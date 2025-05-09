@@ -1,10 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/usage_permissions.dart';
+import 'package:tyrads_sdk/src/app_config.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoPrivacyPolicyPage extends StatelessWidget {
@@ -67,7 +68,11 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
                     TwoButtons(
                       acceptOnTap: () {
                         Tyrads.instance
-                            .to(const AcmoUsagePermissionsPage(), replace: true);
+                            .to( AcmoUsagePermissionsPage(
+                              closeButtononTap: () {
+                                Tyrads.instance.back();
+                              },
+                            ), replace: true);
                       },
                       rejectOntap: () {
                         Tyrads.instance.back();
@@ -101,11 +106,11 @@ class Info2 extends StatelessWidget {
               fontSize: 14),
         ),
         children: [
-          const TextSpan(
-            text: 'I have read and agree to the\n',
+           TextSpan(
+            text: t.privacyPolicy.agreementPrefix,
           ),
           TextSpan(
-            text: 'Terms of Service',
+            text: t.privacyPolicy.privacyText,
             style: GoogleFonts.inter(
               textStyle:  TextStyle(
                   fontWeight: FontWeight.w400,
@@ -114,15 +119,14 @@ class Info2 extends StatelessWidget {
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                acmoLaunchURLForce(
-                    "https://tyrads.com/tyrsdk-terms-of-service/");
+                acmoLaunchURLForce(AcmoConfig.PRIVACY_POLICY);
               },
           ),
-          const TextSpan(
-            text: ' and ',
+           TextSpan(
+            text: t.privacyPolicy.and,
           ),
           TextSpan(
-            text: 'Privacy Policy',
+            text: t.privacyPolicy.termsText,
             style: GoogleFonts.inter(
               textStyle:  TextStyle(
                   fontWeight: FontWeight.w400,
@@ -131,8 +135,7 @@ class Info2 extends StatelessWidget {
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                acmoLaunchURLForce(
-                    "https://tyrads.com/tyrsdk-privacy-policy/");
+                acmoLaunchURLForce(AcmoConfig.TERMS_OF_SERVICE);
               },
           ),
         ],
@@ -169,7 +172,7 @@ class TwoButtons extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    "Accept",
+                    t.privacyPolicy.accept,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lexend(
                       textStyle: const TextStyle(
@@ -190,7 +193,7 @@ class TwoButtons extends StatelessWidget {
                 decoration: const BoxDecoration(),
                 child: Center(
                   child: Text(
-                    "Reject",
+                    t.privacyPolicy.reject,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lexend(
                       textStyle: const TextStyle(
@@ -228,20 +231,8 @@ class Info extends StatelessWidget {
           ),
         ),
         children: [
-          const TextSpan(
-            text: """We hereby inform you that Tyrads Pte. Ltd. processes the following personal data within the framework of the use of TyrSDK:
-Installed apps (including the use duration and use history)
-The data is linked to your device via the device ID (GAID or IDFA) transmitted to our servers in encrypted form. So that app providers can finance our app suggestions, we must send them the device ID for billing purposes.
-
-The processing of the above data is necessary to be able to recommend apps via system messages, the installation of apps available in TyrSDK that matches your interest and calculate the rewards acquired as a result of your use of the corresponding apps.
-
-Consent
-
-By clicking on ''Accept'' I give Tyrads Pte. Ltd my consent to process above mentioned personal data and transmit it to other apps so that i can use TyrSDK as explained.
-
-I am aware that the above data results in an interest profile, which, depending on the type of apps I use, may contain particularly sensitive personal data (such as health data or data on my sexual orientation as well as any other data from special categories defined in Art. 9 para. 1 of the European General Data Protection Regulation (GDPR).
-
-This data will be processed by Tyrads Pte. Ltd, TyrSDK. For more information """,
+          TextSpan(
+            text: t.privacyPolicy.consentInfo,
           ),
           TextSpan(
             text: "https://tyrads.com/tyrsdk-privacy-policy/",
@@ -271,7 +262,7 @@ class Body extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "You're So Close To Earning\nYour First Reward!",
+            t.privacyPolicy.title,
             style: GoogleFonts.lexend(
                 textStyle: const TextStyle(
                     fontWeight: FontWeight.w500, fontSize: 16)),
@@ -281,7 +272,7 @@ class Body extends StatelessWidget {
             height: 180,
           ),
           Text(
-            "Play Your Favorite Games!\nAnd Earn Your Rewards!",
+            t.privacyPolicy.subtitle,
             textAlign: TextAlign.center,
             style: GoogleFonts.lexend(
               textStyle: const TextStyle(
@@ -293,7 +284,6 @@ class Body extends StatelessWidget {
     );
   }
 }
-
 class CloseonTap extends StatelessWidget {
   const CloseonTap({
     super.key,
@@ -303,18 +293,12 @@ class CloseonTap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: const SizedBox(
-        height: 70,
-        width: 70,
-        child:  Center(
-          child: Icon(
-            Icons.close,
-            color: Color.fromRGBO(196, 196, 196, 1),
-            size: 24,
-          ),
-        ),
+    return IconButton(
+      onPressed: onTap,
+      icon: const Icon(
+        Icons.close,
+        color: Color.fromRGBO(196, 196, 196, 1),
+        size: 24,
       ),
     );
   }  

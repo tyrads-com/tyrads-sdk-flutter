@@ -23,8 +23,12 @@ AcmoTicketsResponseModel _$AcmoTicketsResponseModelFromJson(
 mixin _$AcmoTicketsResponseModel {
   List<AcmoTicketsModel> get data => throw _privateConstructorUsedError;
 
+  /// Serializes this AcmoTicketsResponseModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AcmoTicketsResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AcmoTicketsResponseModelCopyWith<AcmoTicketsResponseModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +53,8 @@ class _$AcmoTicketsResponseModelCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AcmoTicketsResponseModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -85,6 +91,8 @@ class __$$AcmoTicketsResponseModelImplCopyWithImpl<$Res>
       $Res Function(_$AcmoTicketsResponseModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AcmoTicketsResponseModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -129,12 +137,14 @@ class _$AcmoTicketsResponseModelImpl implements _AcmoTicketsResponseModel {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AcmoTicketsResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AcmoTicketsResponseModelImplCopyWith<_$AcmoTicketsResponseModelImpl>
@@ -159,8 +169,11 @@ abstract class _AcmoTicketsResponseModel implements AcmoTicketsResponseModel {
 
   @override
   List<AcmoTicketsModel> get data;
+
+  /// Create a copy of AcmoTicketsResponseModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AcmoTicketsResponseModelImplCopyWith<_$AcmoTicketsResponseModelImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -174,8 +187,12 @@ mixin _$AcmoTicketsModel {
   String get category => throw _privateConstructorUsedError;
   List<AcmoTicketEventsModel> get events => throw _privateConstructorUsedError;
 
+  /// Serializes this AcmoTicketsModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AcmoTicketsModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AcmoTicketsModelCopyWith<AcmoTicketsModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -199,6 +216,8 @@ class _$AcmoTicketsModelCopyWithImpl<$Res, $Val extends AcmoTicketsModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AcmoTicketsModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -237,6 +256,8 @@ class __$$AcmoTicketsModelImplCopyWithImpl<$Res>
       $Res Function(_$AcmoTicketsModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AcmoTicketsModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -292,12 +313,14 @@ class _$AcmoTicketsModelImpl implements _AcmoTicketsModel {
             const DeepCollectionEquality().equals(other._events, _events));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, category, const DeepCollectionEquality().hash(_events));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AcmoTicketsModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AcmoTicketsModelImplCopyWith<_$AcmoTicketsModelImpl> get copyWith =>
@@ -325,8 +348,11 @@ abstract class _AcmoTicketsModel implements AcmoTicketsModel {
   String get category;
   @override
   List<AcmoTicketEventsModel> get events;
+
+  /// Create a copy of AcmoTicketsModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AcmoTicketsModelImplCopyWith<_$AcmoTicketsModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -350,8 +376,12 @@ mixin _$AcmoTicketEventsModel {
   String get currencyIcon => throw _privateConstructorUsedError;
   String get currencyName => throw _privateConstructorUsedError;
 
+  /// Serializes this AcmoTicketEventsModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AcmoTicketEventsModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AcmoTicketEventsModelCopyWith<AcmoTicketEventsModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -387,6 +417,8 @@ class _$AcmoTicketEventsModelCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AcmoTicketEventsModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -483,6 +515,8 @@ class __$$AcmoTicketEventsModelImplCopyWithImpl<$Res>
       $Res Function(_$AcmoTicketEventsModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AcmoTicketEventsModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -632,7 +666,7 @@ class _$AcmoTicketEventsModelImpl implements _AcmoTicketEventsModel {
                 other.currencyName == currencyName));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -648,7 +682,9 @@ class _$AcmoTicketEventsModelImpl implements _AcmoTicketEventsModel {
       currencyIcon,
       currencyName);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AcmoTicketEventsModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AcmoTicketEventsModelImplCopyWith<_$AcmoTicketEventsModelImpl>
@@ -702,8 +738,11 @@ abstract class _AcmoTicketEventsModel implements AcmoTicketEventsModel {
   String get currencyIcon;
   @override
   String get currencyName;
+
+  /// Create a copy of AcmoTicketEventsModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AcmoTicketEventsModelImplCopyWith<_$AcmoTicketEventsModelImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

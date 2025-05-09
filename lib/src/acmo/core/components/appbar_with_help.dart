@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import '../../../gen/assets.gen.dart';
@@ -41,7 +43,13 @@ class _AcmoAppBarWithHelpState extends State<AcmoAppBarWithHelp> {
           }
         },
       ),
-      title: Text(widget.titleText),
+      title: Text(
+        widget.titleText,
+        style: GoogleFonts.poppins(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
       actions: [
         ValueListenableBuilder<bool>(
             valueListenable: widget.showHelp,
@@ -51,15 +59,19 @@ class _AcmoAppBarWithHelpState extends State<AcmoAppBarWithHelp> {
                   onTap: widget.onTap,
                   child: Row(
                     children: [
-                      Assets.images.helpIcon
-                          .image(height: 16, width: 16, color: Tyrads.instance.colorHeaderFg),
+                      Assets.images.helpIcon.image(
+                          height: 16,
+                          width: 16,
+                          color: Tyrads.instance.colorHeaderFg),
                       const SizedBox(
                         width: 4,
                       ),
-                      const Text(
-                        "Help",
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
+                      Text(
+                        t.help.title, //"Help",
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
                       )
                     ],
                   ),

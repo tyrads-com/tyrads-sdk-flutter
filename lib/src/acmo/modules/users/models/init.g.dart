@@ -43,10 +43,12 @@ _$PublisherAppImpl _$$PublisherAppImplFromJson(Map<String, dynamic> json) =>
     _$PublisherAppImpl(
       headerColor: json['headerColor'] as String? ?? '',
       mainColor: json['mainColor'] as String? ?? '',
+      premiumColor: json['premiumColor'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$PublisherAppImplToJson(_$PublisherAppImpl instance) =>
     <String, dynamic>{
       'headerColor': instance.headerColor,
       'mainColor': instance.mainColor,
+      'premiumColor': instance.premiumColor,
     };

@@ -40,6 +40,7 @@ class PublisherApp with _$PublisherApp {
   factory PublisherApp({
     @Default('') String headerColor,
     @Default('') String mainColor,
+    @Default('') String premiumColor,
   }) = _PublisherApp;
 
   factory PublisherApp.fromJson(Map<String, dynamic> json) => _$PublisherAppFromJson(json);

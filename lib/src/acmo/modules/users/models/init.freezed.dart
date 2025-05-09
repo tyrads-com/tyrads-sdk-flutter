@@ -22,8 +22,12 @@ AcmoInitModel _$AcmoInitModelFromJson(Map<String, dynamic> json) {
 mixin _$AcmoInitModel {
   Data get data => throw _privateConstructorUsedError;
 
+  /// Serializes this AcmoInitModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AcmoInitModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AcmoInitModelCopyWith<AcmoInitModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +53,8 @@ class _$AcmoInitModelCopyWithImpl<$Res, $Val extends AcmoInitModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AcmoInitModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -62,6 +68,8 @@ class _$AcmoInitModelCopyWithImpl<$Res, $Val extends AcmoInitModel>
     ) as $Val);
   }
 
+  /// Create a copy of AcmoInitModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DataCopyWith<$Res> get data {
@@ -93,6 +101,8 @@ class __$$AcmoInitModelImplCopyWithImpl<$Res>
       _$AcmoInitModelImpl _value, $Res Function(_$AcmoInitModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AcmoInitModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -131,11 +141,13 @@ class _$AcmoInitModelImpl implements _AcmoInitModel {
             (identical(other.data, data) || other.data == data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, data);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AcmoInitModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AcmoInitModelImplCopyWith<_$AcmoInitModelImpl> get copyWith =>
@@ -157,8 +169,11 @@ abstract class _AcmoInitModel implements AcmoInitModel {
 
   @override
   Data get data;
+
+  /// Create a copy of AcmoInitModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AcmoInitModelImplCopyWith<_$AcmoInitModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -173,8 +188,12 @@ mixin _$Data {
   User get user => throw _privateConstructorUsedError;
   PublisherApp get publisherApp => throw _privateConstructorUsedError;
 
+  /// Serializes this Data to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Data
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $DataCopyWith<Data> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -199,6 +218,8 @@ class _$DataCopyWithImpl<$Res, $Val extends Data>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Data
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -222,6 +243,8 @@ class _$DataCopyWithImpl<$Res, $Val extends Data>
     ) as $Val);
   }
 
+  /// Create a copy of Data
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserCopyWith<$Res> get user {
@@ -230,6 +253,8 @@ class _$DataCopyWithImpl<$Res, $Val extends Data>
     });
   }
 
+  /// Create a copy of Data
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PublisherAppCopyWith<$Res> get publisherApp {
@@ -261,6 +286,8 @@ class __$$DataImplCopyWithImpl<$Res>
   __$$DataImplCopyWithImpl(_$DataImpl _value, $Res Function(_$DataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Data
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -321,12 +348,14 @@ class _$DataImpl implements _Data {
                 other.publisherApp == publisherApp));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, newRegisteredUser, user, publisherApp);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Data
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$DataImplCopyWith<_$DataImpl> get copyWith =>
@@ -354,8 +383,11 @@ abstract class _Data implements Data {
   User get user;
   @override
   PublisherApp get publisherApp;
+
+  /// Create a copy of Data
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DataImplCopyWith<_$DataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -368,8 +400,12 @@ User _$UserFromJson(Map<String, dynamic> json) {
 mixin _$User {
   String get publisherUserId => throw _privateConstructorUsedError;
 
+  /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $UserCopyWith<User> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -391,6 +427,8 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -422,6 +460,8 @@ class __$$UserImplCopyWithImpl<$Res>
   __$$UserImplCopyWithImpl(_$UserImpl _value, $Res Function(_$UserImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -461,11 +501,13 @@ class _$UserImpl implements _User {
                 other.publisherUserId == publisherUserId));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, publisherUserId);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>
@@ -486,8 +528,11 @@ abstract class _User implements User {
 
   @override
   String get publisherUserId;
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -500,9 +545,14 @@ PublisherApp _$PublisherAppFromJson(Map<String, dynamic> json) {
 mixin _$PublisherApp {
   String get headerColor => throw _privateConstructorUsedError;
   String get mainColor => throw _privateConstructorUsedError;
+  String get premiumColor => throw _privateConstructorUsedError;
 
+  /// Serializes this PublisherApp to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PublisherApp
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PublisherAppCopyWith<PublisherApp> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -513,7 +563,7 @@ abstract class $PublisherAppCopyWith<$Res> {
           PublisherApp value, $Res Function(PublisherApp) then) =
       _$PublisherAppCopyWithImpl<$Res, PublisherApp>;
   @useResult
-  $Res call({String headerColor, String mainColor});
+  $Res call({String headerColor, String mainColor, String premiumColor});
 }
 
 /// @nodoc
@@ -526,11 +576,14 @@ class _$PublisherAppCopyWithImpl<$Res, $Val extends PublisherApp>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PublisherApp
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? headerColor = null,
     Object? mainColor = null,
+    Object? premiumColor = null,
   }) {
     return _then(_value.copyWith(
       headerColor: null == headerColor
@@ -540,6 +593,10 @@ class _$PublisherAppCopyWithImpl<$Res, $Val extends PublisherApp>
       mainColor: null == mainColor
           ? _value.mainColor
           : mainColor // ignore: cast_nullable_to_non_nullable
+              as String,
+      premiumColor: null == premiumColor
+          ? _value.premiumColor
+          : premiumColor // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
@@ -553,7 +610,7 @@ abstract class _$$PublisherAppImplCopyWith<$Res>
       __$$PublisherAppImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String headerColor, String mainColor});
+  $Res call({String headerColor, String mainColor, String premiumColor});
 }
 
 /// @nodoc
@@ -564,11 +621,14 @@ class __$$PublisherAppImplCopyWithImpl<$Res>
       _$PublisherAppImpl _value, $Res Function(_$PublisherAppImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PublisherApp
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? headerColor = null,
     Object? mainColor = null,
+    Object? premiumColor = null,
   }) {
     return _then(_$PublisherAppImpl(
       headerColor: null == headerColor
@@ -579,6 +639,10 @@ class __$$PublisherAppImplCopyWithImpl<$Res>
           ? _value.mainColor
           : mainColor // ignore: cast_nullable_to_non_nullable
               as String,
+      premiumColor: null == premiumColor
+          ? _value.premiumColor
+          : premiumColor // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -586,7 +650,8 @@ class __$$PublisherAppImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$PublisherAppImpl implements _PublisherApp {
-  _$PublisherAppImpl({this.headerColor = '', this.mainColor = ''});
+  _$PublisherAppImpl(
+      {this.headerColor = '', this.mainColor = '', this.premiumColor = ''});
 
   factory _$PublisherAppImpl.fromJson(Map<String, dynamic> json) =>
       _$$PublisherAppImplFromJson(json);
@@ -597,10 +662,13 @@ class _$PublisherAppImpl implements _PublisherApp {
   @override
   @JsonKey()
   final String mainColor;
+  @override
+  @JsonKey()
+  final String premiumColor;
 
   @override
   String toString() {
-    return 'PublisherApp(headerColor: $headerColor, mainColor: $mainColor)';
+    return 'PublisherApp(headerColor: $headerColor, mainColor: $mainColor, premiumColor: $premiumColor)';
   }
 
   @override
@@ -611,14 +679,19 @@ class _$PublisherAppImpl implements _PublisherApp {
             (identical(other.headerColor, headerColor) ||
                 other.headerColor == headerColor) &&
             (identical(other.mainColor, mainColor) ||
-                other.mainColor == mainColor));
+                other.mainColor == mainColor) &&
+            (identical(other.premiumColor, premiumColor) ||
+                other.premiumColor == premiumColor));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, headerColor, mainColor);
+  int get hashCode =>
+      Object.hash(runtimeType, headerColor, mainColor, premiumColor);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PublisherApp
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PublisherAppImplCopyWith<_$PublisherAppImpl> get copyWith =>
@@ -633,8 +706,10 @@ class _$PublisherAppImpl implements _PublisherApp {
 }
 
 abstract class _PublisherApp implements PublisherApp {
-  factory _PublisherApp({final String headerColor, final String mainColor}) =
-      _$PublisherAppImpl;
+  factory _PublisherApp(
+      {final String headerColor,
+      final String mainColor,
+      final String premiumColor}) = _$PublisherAppImpl;
 
   factory _PublisherApp.fromJson(Map<String, dynamic> json) =
       _$PublisherAppImpl.fromJson;
@@ -644,7 +719,12 @@ abstract class _PublisherApp implements PublisherApp {
   @override
   String get mainColor;
   @override
-  @JsonKey(ignore: true)
+  String get premiumColor;
+
+  /// Create a copy of PublisherApp
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PublisherAppImplCopyWith<_$PublisherAppImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

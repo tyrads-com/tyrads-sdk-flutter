@@ -51,9 +51,12 @@ class NetworkCommon {
           prefs.getString(AcmoKeyNames.API_SECRET);
       options.headers["X-SDK-Platform"] = AcmoConfig.SDK_PLATFORM;
       options.headers["X-SDK-Version"] = AcmoConfig.SDK_VERSION;
+      options.headers["X-Secure-Mode"] = AcmoConfig.SECURE_MODE;
+      options.headers["X-Play-Integrity"] = prefs.getString(AcmoKeyNames.PLAY_INTEGRITY_TOKEN);
       debugPrint(
           "Pre request:${options.method},${options.baseUrl}${options.path}${options.queryParameters}");
       debugPrint("Pre request:${options.headers.toString()}");
+      debugPrint("Pre request data:${options.data}");
       return handler.next(options); //continue
       //return options;
     }, onResponse: (Response response, handler) async {

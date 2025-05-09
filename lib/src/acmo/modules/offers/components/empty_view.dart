@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
+import 'package:styled_text/styled_text.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 
 class AcmoEmptyView extends StatelessWidget {
   const AcmoEmptyView({
@@ -15,32 +17,25 @@ class AcmoEmptyView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Assets.images.emptyIcon.image(height: 128),
-            RichText(
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .75,
+            child: StyledText(
               textAlign: TextAlign.center,
-              text: const TextSpan(
-                style: TextStyle(
-                  fontSize: 14,
-                  height: 16.94 / 14,
-                  color: Colors.black,
-                ),
-                children: [
-                  TextSpan(
-                    text: "No offers ",
-                    style: TextStyle(fontWeight: FontWeight.w400),
-                  ),
-                  TextSpan(
-                    text: "available",
-                    style: TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                  TextSpan(
-                    text: " right now\nPlease try again later!",
-                    style: TextStyle(fontWeight: FontWeight.w400),
-                  ),
-                ],
+              style: const TextStyle(
+                fontSize: 14,
+                height: 16.94 / 14,
+                color: Colors.black,
               ),
+              text: t.offers.emptyMessage,
+              tags: {
+                'b': StyledTextTag(
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              },
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 }

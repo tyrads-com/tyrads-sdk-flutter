@@ -4,6 +4,7 @@ import 'package:tyrads_sdk/src/acmo/modules/offers/pages/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/widgets/usage_stats_tile.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import 'privacy_policy.dart';
@@ -71,10 +72,13 @@ class Body extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: Text(
-            "Allow TyrSDK To Track Usage Data\nTo Enable Your Earning Potential",
+            t.usagePermissions.title,
             style: GoogleFonts.lexend(
-                textStyle:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w500, 
+                fontSize: 16
+              )
+            ),
             textAlign: TextAlign.center,
           ),
         ),

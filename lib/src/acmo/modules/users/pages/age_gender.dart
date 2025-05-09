@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/pages/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/components/gender_select.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/controller.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import '../../../../gen/assets.gen.dart';
@@ -42,7 +43,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Last step..\nYou’re almost there!',
+                          t.userProfile.title,
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
@@ -53,7 +54,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                           height: 56,
                         ),
                          Text(
-                          'Choose Your Gender',
+                          t.userProfile.genderTitle,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         ),
@@ -71,7 +72,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                           height: 56,
                         ),
                          Text(
-                          'Choose Your Age',
+                          t.userProfile.ageTitle,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         ),
@@ -93,7 +94,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: AcmoComponentButtonPrimary(
                         isLoading: _controller.submiting,
-                        titleText: "Continue",
+                        titleText: t.userProfile.continueCta,
                         onTap: _controller.submiting
                             ? null
                             : () {

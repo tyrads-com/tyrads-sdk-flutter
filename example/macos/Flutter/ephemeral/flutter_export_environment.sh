@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/ibnShamas/Projects/flutter/flutter_sdks/flutter_322"
-export "FLUTTER_APPLICATION_PATH=/Users/ibnShamas/Projects/flutter/Tyr Rewards/gitlab_projects/tyrads_sdk_gitlab/example"
+export "FLUTTER_ROOT=/Users/acmonetwork/.puro/envs/stable/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/acmonetwork/Projects/flutter_projects/tyrads-sdk/example"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"

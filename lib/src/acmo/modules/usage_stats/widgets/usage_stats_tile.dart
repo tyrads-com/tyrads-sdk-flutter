@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tracking/activities.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import 'package:usage_stats_new/usage_stats.dart';
 
 class AcmoAppUsageStatsTile extends StatefulWidget {
-  const AcmoAppUsageStatsTile(
-      {super.key, required this.onGrant});
+  const AcmoAppUsageStatsTile({super.key, required this.onGrant});
 
   final Function onGrant;
   @override
@@ -58,9 +58,9 @@ class _AcmoAppUsageStatsTileState extends State<AcmoAppUsageStatsTile>
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 2,
-                  child: const Text(
-                    'Permit Usage Access',
-                    style: TextStyle(fontSize: 16),
+                  child: Text(
+                    t.usagePermissions.permitTitle,
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
                 const Spacer(),
@@ -117,8 +117,7 @@ class _AcmoAppUsageStatsTileState extends State<AcmoAppUsageStatsTile>
                 )
               ],
             ),
-            const Text(
-                'usage access allows TyrSDK to track which other apps you are using and how often, as well as your operator, language setting and other details.'),
+            Text(t.usagePermissions.description),
           ],
         ),
       ),

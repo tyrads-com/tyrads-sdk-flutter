@@ -1,5 +1,8 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
-import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/offer_details.dart';
+import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/microcharge/microcharge.dart';
+import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/offer_details.dart' hide MicroCharge;
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/repository.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tickets/page.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tracking/activities.dart';
@@ -7,6 +10,7 @@ import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import '../../core/helpers/common.dart';
+import 'models/microcharge/microcharge_data.dart';
 
 class AcmoOffersDetailsController {
   AcmoOffersDetailsController(this.id);
@@ -15,14 +19,15 @@ class AcmoOffersDetailsController {
   var purchaseEvents = <MicroChargeEvents>[];
   var duplicateEvents = <MicroChargeEvents>[];
   var dailyPurchaseEvents = <MicroChargeEvents>[];
-  // var maxPoints = 0;
-  // var maxPurchasePoints = 0;
-  // var earnedPurchasePoints = 0;
+  var allPayoutEvents = <PayoutEvents>[];
+  var maxPoints = 0;
+  var maxPurchasePoints = 0;
+  var earnedPurchasePoints = 0;
   var playClicked = false;
   var launched = false;
   var offerLoading = false;
   var fd = <String, dynamic>{};
-
+  late MicroCharge microCharge;
   late int id;
   final _repo = AcmoOfferDetailsRepository();
   late AcmoOfferDetailsModel item;
@@ -45,21 +50,23 @@ class AcmoOffersDetailsController {
         Tyrads.instance.route = null;
         Tyrads.instance.campaignID = null;
       }
-      // maxPoints = 0;
-      // maxPurchasePoints = 0;
-      // earnedPurchasePoints = 0;
+      maxPoints = 0;
+      maxPurchasePoints = 0;
+      earnedPurchasePoints = 0;
       allCompletedEvents.clear();
       allActiveEvents.clear();
       purchaseEvents.clear();
       duplicateEvents.clear();
       dailyPurchaseEvents.clear();
+      allPayoutEvents = item.payoutEvents;
+      microCharge = microChargeData;
       playtimeEvent = null;
       item.payoutEvents.forEach((element) async {
         if (element.payoutAmount == 0) return;
         if (element.identifier.toLowerCase() == 'install') return;
         if (element.conversionStatus.toLowerCase() == "approved"
-        || element.conversionStatus.toLowerCase() == "rejected"
-        || element.conversionStatus.toLowerCase() == "pending"
+            || element.conversionStatus.toLowerCase() == "rejected"
+            || element.conversionStatus.toLowerCase() == "pending"
         ) {
           allCompletedEvents.add(element);
         } else {
@@ -68,11 +75,11 @@ class AcmoOffersDetailsController {
       });
       item.microChargeEvents.forEach((element) async {
         if (element.payoutAmount == 0) return;
-        // maxPoints += element.payoutAmountConverted.toInt();
-        // maxPurchasePoints += element.payoutAmountConverted.toInt();
-        // if (element.conversionStatus.isNotEmpty) {
-        //   earnedPurchasePoints += element.payoutAmountConverted.toInt();
-        // }
+        maxPoints += element.payoutAmountConverted.toInt();
+        maxPurchasePoints += element.payoutAmountConverted.toInt();
+        if (element.conversionStatus.isNotEmpty) {
+          earnedPurchasePoints += element.payoutAmountConverted.toInt();
+        }
         if (element.allowDuplicateEvents) {
           if (element.eventCategory.toLowerCase() == "purchase") {
             dailyPurchaseEvents.add(element);
@@ -118,6 +125,7 @@ class AcmoOffersDetailsController {
     if (offerLoading) return;
     offerLoading = true;
 
+    // Commented out code for playtime event handling
     // if (isPlaytimeEvent && Platform.isAndroid) {
     //   var prefs = await SharedPreferences.getInstance();
     //   var pkgs =
@@ -135,6 +143,7 @@ class AcmoOffersDetailsController {
     //     return;
     //   }
     // }
+
     String url = item.tracking.clickUrl ?? '';
     if (item.isInstalled || launched) {
       url = item.app.previewUrl;
@@ -145,6 +154,14 @@ class AcmoOffersDetailsController {
         Tyrads.instance.track(TyradsActivity.campaignActivated);
       }
       await _repo.activateOffer(id: id);
+    }
+    if(item.tracking.s2sClickUrl != null){
+      final res = await Dio().get(item.tracking.s2sClickUrl!);
+      if (res.statusCode != 200) {
+        acmoSnackbar("Error while sending click");
+        offerLoading = false;
+        return;
+      }
     }
 
     launched = true;

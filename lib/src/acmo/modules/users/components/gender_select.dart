@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
+import '../../../../gen/assets.gen.dart';
 
 class AcmoComponentGenderSelect extends StatefulWidget {
   final Function(int) onChanged;
@@ -16,8 +17,8 @@ class _AcmoComponentGenderSelectState extends State<AcmoComponentGenderSelect> {
   @override
   void initState() {
     super.initState();
-    genders.add(Gender("Male", MdiIcons.genderMale, false));
-    genders.add(Gender("Female", MdiIcons.genderFemale, false));
+    genders.add(Gender(t.userProfile.male, null, false, maleImage: true));
+    genders.add(Gender(t.userProfile.female, null, false, femaleImage: true));
   }
 
   @override
@@ -28,7 +29,6 @@ class _AcmoComponentGenderSelectState extends State<AcmoComponentGenderSelect> {
         itemCount: genders.length,
         itemBuilder: (context, index) {
           return InkWell(
-            //splashColor: Theme.of(context).colorScheme.secondary,
             onTap: () {
               if (mounted) {
                 setState(() {
@@ -38,7 +38,7 @@ class _AcmoComponentGenderSelectState extends State<AcmoComponentGenderSelect> {
                   genders[index].isSelected = true;
                 });
               }
-              
+
               widget.onChanged(index == 0 ? 1 : 2);
             },
             child: GenderListItem(genders[index]),
@@ -67,7 +67,17 @@ class GenderListItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Icon(
+              _gender.maleImage
+                  ? Assets.icons.male.image(
+                color: _gender.isSelected ? Colors.white : Colors.grey,
+                height: 40,
+              )
+                  : _gender.femaleImage
+                  ? Assets.icons.female.image(
+                color: _gender.isSelected ? Colors.white : Colors.grey,
+                height: 40,
+              )
+                  : Icon(
                 _gender.icon,
                 color: _gender.isSelected ? Colors.white : Colors.grey,
                 size: 40,
@@ -86,8 +96,10 @@ class GenderListItem extends StatelessWidget {
 
 class Gender {
   String name;
-  IconData icon;
+  IconData? icon;
   bool isSelected;
+  bool maleImage;
+  bool femaleImage;
 
-  Gender(this.name, this.icon, this.isSelected);
+  Gender(this.name, this.icon, this.isSelected, {this.maleImage = false, this.femaleImage = false});
 }

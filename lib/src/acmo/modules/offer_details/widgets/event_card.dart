@@ -1,12 +1,11 @@
 // ignore_for_file: must_be_immutable
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/offer_details.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/widgets/countdown.dart';
 import '../../../../gen/assets.gen.dart';
 import 'custom_bar.dart';
-
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 class AcmoEventCard extends StatelessWidget {
   AcmoEventCard(
       {super.key,
@@ -89,6 +88,7 @@ class AcmoEventCard extends StatelessWidget {
                           isFuture: isFuture,
                           isRejected: isRejected,
                           isPending: isPending,
+                          timeUp:timeUp,
                           difcultyLevelLabel: difcultyLevelLabel),
                       //center widget with image of start
                       Padding(
@@ -119,6 +119,9 @@ class AcmoEventCard extends StatelessWidget {
                                     if (isPending) {
                                       color = const Color(0xffFED402);
                                     }
+                                     if (timeUp) {
+                                      color = const Color(0xffD45151);
+                                    }
                                     return color;
                                   }());
                             }
@@ -134,6 +137,7 @@ class AcmoEventCard extends StatelessWidget {
                         isPending: isPending,
                         isRejected: isRejected,
                         eventName: eventName,
+                        timeUp:timeUp,
                       ),
                       const SizedBox(
                         height: 8,
@@ -216,6 +220,9 @@ class BottomWidgetWIthTitle extends StatelessWidget {
             if (isPending) {
               color = const Color(0xffF4921F);
             }
+            if (timeUp) {
+              color = const Color(0xffD45151);
+            }
             return color;
           }(),
           borderRadius: const BorderRadius.only(
@@ -237,9 +244,9 @@ class BottomWidgetWIthTitle extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Center(child: () {
-              Widget widget = const Text(
-                'Not available yet',
-                style: TextStyle(
+              Widget widget =  Text(
+               t.offerDetails.eventStatus.notAvailable,
+                style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
                     fontSize: 10),
@@ -248,9 +255,9 @@ class BottomWidgetWIthTitle extends StatelessWidget {
                 return widget;
               }
               if (isActive) {
-                widget = const Text(
-                  'Complete this to continue',
-                  style: TextStyle(
+                widget =  Text(
+                  t.offerDetails.eventStatus.completeToContinue,
+                  style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: 10),
@@ -269,9 +276,9 @@ class BottomWidgetWIthTitle extends StatelessWidget {
                 widget = Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Complete within ',
-                      style: TextStyle(
+                     Text(
+                      t.offerDetails.eventStatus.completeWithin,
+                      style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w500,
                           fontSize: 10),
@@ -287,37 +294,37 @@ class BottomWidgetWIthTitle extends StatelessWidget {
                 );
               }
               if (isCompleted) {
-                widget = const Text(
-                  'Completed',
-                  style: TextStyle(
+                widget =  Text(
+                  t.offerDetails.eventStatus.completed,
+                  style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 10),
                 );
               }
               if (isPending) {
-                widget = const Text(
-                  'Pending',
-                  style: TextStyle(
+                widget =  Text(
+                  t.offerDetails.eventStatus.pending,
+                  style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 10),
                 );
               }
               if (timeUp) {
-                widget = const Text(
-                  'Rejected, time limit reached',
-                  style: TextStyle(
-                      color: Colors.black,
+                widget =  Text(
+                  t.offerDetails.eventStatus.rejectedTime,
+                  style: const TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 10),
                 );
               }
               if (isRejected) {
-                widget = const Text(
-                  'Rejected, please continue',
-                  style: TextStyle(
-                      color: Colors.black,
+                widget =  Text(
+                  t.offerDetails.eventStatus.rejected,
+                  style: const TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 10),
                 );
@@ -371,6 +378,7 @@ class EventTypeText extends StatelessWidget {
     required this.isPending,
     required this.isRejected,
     required this.eventName,
+    required this.timeUp,
   }) : super(key: key);
 
   final bool isCompleted;
@@ -380,6 +388,7 @@ class EventTypeText extends StatelessWidget {
   final bool isPending;
   final bool isRejected;
   final String eventName;
+  final bool timeUp;
 
   @override
   Widget build(BuildContext context) {
@@ -396,8 +405,9 @@ class EventTypeText extends StatelessWidget {
                         isActive && isSuperCharged ||
                         isFuture && isSuperCharged ||
                         isPending && isSuperCharged ||
-                        isRejected && isSuperCharged
-                    ? const Color(0xff9426C8)
+                        isRejected && isSuperCharged 
+                    ? const Color(0xff9426C8) 
+                    : isRejected || timeUp ? const Color(0xffD45151)
                     : Theme.of(context).colorScheme.secondary,
                 fontWeight: FontWeight.w700,
                 fontSize: 14),
@@ -408,7 +418,6 @@ class EventTypeText extends StatelessWidget {
     );
   }
 }
-
 class TopWidgetWithTitle extends StatelessWidget {
   const TopWidgetWithTitle({
     Key? key,
@@ -419,6 +428,7 @@ class TopWidgetWithTitle extends StatelessWidget {
     required this.isRejected,
     required this.isPending,
     required this.difcultyLevelLabel,
+    required this.timeUp,
   }) : super(key: key);
 
   final bool isCompleted;
@@ -428,6 +438,7 @@ class TopWidgetWithTitle extends StatelessWidget {
   final bool isRejected;
   final bool isPending;
   final String difcultyLevelLabel;
+  final bool timeUp;
 
   @override
   Widget build(BuildContext context) {
@@ -441,8 +452,8 @@ class TopWidgetWithTitle extends StatelessWidget {
           color: isCompleted && isSuperCharged ||
                   isActive && isSuperCharged ||
                   isFuture && isSuperCharged ||
-                  isRejected && isSuperCharged
-              ? const Color(0xff9426C8)
+                  isRejected && isSuperCharged || isRejected || timeUp
+              ? const Color(0xffD45151)
               : isPending && isSuperCharged
                   ? const Color(0xff9426C8)
                   : Theme.of(context).colorScheme.secondary,

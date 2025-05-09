@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:numeral/numeral.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/controller.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 
 import 'event_card.dart';
 
@@ -26,18 +27,12 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshConfiguration(
-      headerBuilder: () => CustomHeader(
-        builder: (c, r) => Container(),
-      ),
-      footerBuilder: () => CustomFooter(
-        builder: (c, r) => Container(),
-      ),
-      headerTriggerDistance: 1.0,
-      child: PageView(
-        controller: pageController,
-        children: [
-          SmartRefresher(
+    List<Widget> pages = [];
+
+    
+    if(_controller.allCompletedEvents.isNotEmpty){
+      pages.add(
+        SmartRefresher(
             scrollDirection: Axis.horizontal,
             controller: completedRefreshController,
             onRefresh: () {
@@ -53,7 +48,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                 var item = _controller.allCompletedEvents[index];
                 var titleText = "";
                 if (index == 0) {
-                  titleText = 'Completed Tasks';
+                  titleText = t.offerDetails.completedTasks;
                 }
 
                 return Column(
@@ -91,7 +86,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                           eventName: item.eventName,
                           isOfferActive: _controller.item.status.toLowerCase() == "active" || _controller.item.status.toLowerCase() == "paused" || _controller.item.status.toLowerCase() == "suspended",                          
                           remainingTime: item.maxTimeRemainSeconds.toInt(),
-                          timeUp: false,
+                          timeUp: item.maxTimeRemainSeconds<0,
                           isPlaytime: item.isPlaytime,
                           totalPlaytime: item.totalPlaytime,
                           playedPlaytime: 0,
@@ -113,7 +108,12 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
               },
             ),
           ),
-          SmartRefresher(
+      );
+    }
+
+    if(_controller.allActiveEvents.isNotEmpty){
+      pages.add(
+        SmartRefresher(
             scrollDirection: Axis.horizontal,
             controller: activeRefreshController,
             onRefresh: () {
@@ -130,9 +130,9 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                 if (_controller.allActiveEvents.isNotEmpty &&
                     _controller.allActiveEvents.first.id == item.id) {
                   if (_controller.item.status.toLowerCase() == "active") {
-                    titleText = 'Active Tasks';
+                    titleText = t.offerDetails.activeTasks;
                   } else {
-                    titleText = 'Available Tasks';
+                    titleText = t.offerDetails.availableTasks;
                   }
                 }
 
@@ -175,7 +175,7 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
                           eventName: item.eventName,
                           isOfferActive: _controller.item.status.toLowerCase() == "active" || _controller.item.status.toLowerCase() == "paused" || _controller.item.status.toLowerCase() == "suspended",
                           remainingTime: item.maxTimeRemainSeconds.toInt(),
-                          timeUp: false,
+                          timeUp: item.maxTimeRemainSeconds < 0,
                           isPlaytime: item.isPlaytime,
                           totalPlaytime: item.totalPlaytime,
                           playedPlaytime: 0,
@@ -188,7 +188,21 @@ class _AcmoOfferEventsNormalState extends State<AcmoOfferEventsNormal> {
               },
             ),
           ),
-        ],
+      );
+    }
+
+
+    return RefreshConfiguration(
+      headerBuilder: () => CustomHeader(
+        builder: (c, r) => Container(),
+      ),
+      footerBuilder: () => CustomFooter(
+        builder: (c, r) => Container(),
+      ),
+      headerTriggerDistance: 1.0,
+      child: PageView(
+        controller: pageController,
+        children: pages,
       ),
     );
   }

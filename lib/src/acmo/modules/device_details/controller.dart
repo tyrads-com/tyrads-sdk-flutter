@@ -5,13 +5,15 @@ import 'package:flutter_security_checker/flutter_security_checker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform_device_id_plus/platform_device_id.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
+import 'package:tyrads_sdk/src/acmo/modules/device_details/device_metrics.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/app_config.dart';
-
+import 'package:tyrads_sdk/src/acmo/modules/device_details/network_details.dart';
 import '../../../plugin/tyrads_sdk_platform_interface.dart';
 
 class AcmoDeviceDetailsController {
-  //
+  final _networkController = AcmoNetworkDetailsController();
+  final _deviceMetricsController = AcmoDeviceMetricsController();
   getDeviceDetails() {
     if (Platform.isAndroid) {
       return _getAndroidDeviceDetails();
@@ -27,7 +29,9 @@ class AcmoDeviceDetailsController {
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
     var usageController = AcmoControllerUsageStats();
+    var networkDetails = await _networkController.getNetworkDetails();
     var trackingInfo = await TyradsSdkPlatform.instance.getTrackingInfo();
+    final deviceMetrics = await _deviceMetricsController.getDeviceMetrics();
     fd['deviceAge'] = await usageController.getDeviceAgeTime();
     fd['deviceId'] = await PlatformDeviceId.getDeviceId;
     fd['androidId'] = fd['deviceId'];
@@ -105,6 +109,16 @@ class AcmoDeviceDetailsController {
     fd['screenDensity'] = trackingInfo.screenDensity;
     fd['screenWidth'] = trackingInfo.screenWidth;
     fd['screenHeight'] = trackingInfo.screenHeight;
+    
+    //Network Details
+    fd['connectionType'] = networkDetails['connectionType'];
+    fd['networkSpeed'] = networkDetails['networkSpeed'];
+    fd['isVpnActive'] = networkDetails['isVpnActive'];
+    fd['deviceUpTime'] = deviceMetrics.uptime;
+    fd['deviceBootTime'] = deviceMetrics.bootTime;
+    fd['timeZone'] = DateTime.now().timeZoneName;
+    fd['timeZoneOffset'] = DateTime.now().timeZoneOffset.inSeconds;
+    fd['systemTime'] = DateTime.now().millisecondsSinceEpoch.toString();
     return fd;
   }
 

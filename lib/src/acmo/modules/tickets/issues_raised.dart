@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/appbar.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/button_3_cta.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 
 import '../../../gen/assets.gen.dart';
 
@@ -10,11 +11,11 @@ class AcmoTicketRaisedPage extends StatelessWidget {
   final bottomNavigationIndex = 1;
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
         appBar: AcmoAppBar(
-          titleText: 'I didn’t receive my points',
+          titleText: t.ticketSubmitted.title,
         ),
-        body: AcmoBodyOfferIssues());
+        body: const AcmoBodyOfferIssues());
   }
 }
 
@@ -42,9 +43,9 @@ class _AcmoBodyOfferIssuesState extends State<AcmoBodyOfferIssues> {
                     const SizedBox(
                       height: 56,
                     ),
-                    const Text(
-                      'We’re on it..',
-                      style: TextStyle(color: Colors.black, fontSize: 41),
+                     Text(
+                      t.ticketSubmitted.header,
+                      style: const TextStyle(color: Colors.black, fontSize: 41),
                     ),
                     const SizedBox(
                       height: 22,
@@ -56,16 +57,16 @@ class _AcmoBodyOfferIssuesState extends State<AcmoBodyOfferIssues> {
                     const SizedBox(
                       height: 22,
                     ),
-                    const Text(
-                      'We know what we’re doing',
-                      style: TextStyle(color: Colors.black, fontSize: 21),
+                     Text(
+                      t.ticketSubmitted.subheader,
+                      style: const TextStyle(color: Colors.black, fontSize: 21),
                     ),
                     const SizedBox(
                       height: 22,
                     ),
-                    const Text(
-                      'trust me.',
-                      style: TextStyle(color: Colors.black, fontSize: 9),
+                     Text(
+                      t.ticketSubmitted.footnote,
+                      style: const TextStyle(color: Colors.black, fontSize: 9),
                     ),
                     const SizedBox(
                       height: 100,
@@ -81,7 +82,7 @@ class _AcmoBodyOfferIssuesState extends State<AcmoBodyOfferIssues> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: AcmoButton_3_Cta(
-              label: "Back to offer page",
+              label: t.ticketSubmitted.back,
               onTap: () async {
                 Navigator.of(context)
                   ..pop()

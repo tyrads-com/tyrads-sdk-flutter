@@ -36,6 +36,9 @@ _$AcmoOffersModelImpl _$$AcmoOffersModelImplFromJson(
       targeting: Targeting.fromJson(json['targeting'] as Map<String, dynamic>),
       creative: Creative.fromJson(json['creative'] as Map<String, dynamic>),
       hasPlaytimeEvents: json['hasPlaytimeEvents'] as bool? ?? false,
+      premium: json['premium'] as bool? ?? false,
+      isRetryDownload: json['isRetryDownload'] as bool? ?? false,
+      isInstalled: json['isInstalled'] as bool? ?? false,
       expiredOn: acmoConverterStringToDatetime(json['expiredOn'] as String?),
       sortingScore: json['sortingScore'] as num? ?? 0,
       createdOn: acmoConverterStringToDatetime(json['createdOn'] as String?),
@@ -56,6 +59,9 @@ Map<String, dynamic> _$$AcmoOffersModelImplToJson(
       'targeting': instance.targeting,
       'creative': instance.creative,
       'hasPlaytimeEvents': instance.hasPlaytimeEvents,
+      'premium': instance.premium,
+      'isRetryDownload': instance.isRetryDownload,
+      'isInstalled': instance.isInstalled,
       'expiredOn': instance.expiredOn?.toIso8601String(),
       'sortingScore': instance.sortingScore,
       'createdOn': instance.createdOn?.toIso8601String(),
@@ -63,7 +69,7 @@ Map<String, dynamic> _$$AcmoOffersModelImplToJson(
 
 _$CreativeImpl _$$CreativeImplFromJson(Map<String, dynamic> json) =>
     _$CreativeImpl(
-      creativeUrl: json['creativeUrl'] as String,
+      creativeUrl: json['creativeUrl'] as String? ?? '',
       creativePacks: (json['creativePacks'] as List<dynamic>)
           .map((e) => CreativePacks.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -121,6 +127,7 @@ _$TrackingImpl _$$TrackingImplFromJson(Map<String, dynamic> json) =>
       attributionTool: json['attributionTool'] as String?,
       clickUrl: json['clickUrl'] as String?,
       impressionUrl: json['impressionUrl'] as String?,
+      s2sClickUrl: json['s2sClickUrl'] as String?,
     );
 
 Map<String, dynamic> _$$TrackingImplToJson(_$TrackingImpl instance) =>
@@ -128,6 +135,7 @@ Map<String, dynamic> _$$TrackingImplToJson(_$TrackingImpl instance) =>
       'attributionTool': instance.attributionTool,
       'clickUrl': instance.clickUrl,
       'impressionUrl': instance.impressionUrl,
+      's2sClickUrl': instance.s2sClickUrl,
     };
 
 _$CampaignPayoutImpl _$$CampaignPayoutImplFromJson(Map<String, dynamic> json) =>
@@ -136,6 +144,14 @@ _$CampaignPayoutImpl _$$CampaignPayoutImplFromJson(Map<String, dynamic> json) =>
       totalPayout: (json['totalPayout'] as num?)?.toDouble() ?? 0,
       totalPayoutConverted:
           (json['totalPayoutConverted'] as num?)?.toDouble() ?? 0,
+      totalPlayablePayout:
+          (json['totalPlayablePayout'] as num?)?.toDouble() ?? 0,
+      totalMicrochargePayout:
+          (json['totalMicrochargePayout'] as num?)?.toDouble() ?? 0,
+      totalPlayablePayoutConverted:
+          (json['totalPlayablePayoutConverted'] as num?)?.toDouble() ?? 0,
+      totalMicrochargePayoutConverted:
+          (json['totalMicrochargePayoutConverted'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$$CampaignPayoutImplToJson(
@@ -144,6 +160,11 @@ Map<String, dynamic> _$$CampaignPayoutImplToJson(
       'totalEvents': instance.totalEvents,
       'totalPayout': instance.totalPayout,
       'totalPayoutConverted': instance.totalPayoutConverted,
+      'totalPlayablePayout': instance.totalPlayablePayout,
+      'totalMicrochargePayout': instance.totalMicrochargePayout,
+      'totalPlayablePayoutConverted': instance.totalPlayablePayoutConverted,
+      'totalMicrochargePayoutConverted':
+          instance.totalMicrochargePayoutConverted,
     };
 
 _$CurrencyImpl _$$CurrencyImplFromJson(Map<String, dynamic> json) =>

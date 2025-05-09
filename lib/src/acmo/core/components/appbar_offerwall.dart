@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/modules/policy_terms/page.dart';
+import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 @protected
@@ -11,10 +13,12 @@ class AcmoAppBarOfferwall extends StatefulWidget
     this.onBack,
     this.onTap,
     this.showLeading = true,
+    this.onRefresh,
   });
   final String titleText;
   final Function()? onBack;
   final Function()? onTap;
+  final Function()? onRefresh;
   final bool showLeading;
 
   @override
@@ -30,36 +34,44 @@ class _AcmoAppBarOfferwallState extends State<AcmoAppBarOfferwall> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        leading: !widget.showLeading
-            ? null
-            : IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                ),
-                onPressed: () {
-                  if (widget.onBack != null) {
-                    widget.onBack!();
-                  } else {
-                    Tyrads.instance.back();
-                  }
-                },
+      leading: !widget.showLeading
+          ? null
+          : IconButton(
+              icon: Assets.icons.angleLeft.image(
+                height: 16,
+                color: Colors.white,
               ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Tyrads.instance.to(const AcmoPrivacyTermsPage());
-            },
-            child: Row(
-              children: [
-                Icon(Icons.menu,
-                    size: 24, color: Tyrads.instance.colorHeaderFg),
-              ],
+              onPressed: () {
+                if (widget.onBack != null) {
+                  widget.onBack!();
+                } else {
+                  Tyrads.instance.back();
+                }
+              },
             ),
+      actions: [
+        GestureDetector(
+          onTap: () async {
+            await Tyrads.instance.to(const AcmoPrivacyTermsPage());
+            widget.onRefresh?.call();
+          },
+          child: Row(
+            children: [
+              Icon(Icons.menu, size: 22, color: Tyrads.instance.colorHeaderFg),
+            ],
           ),
-          const SizedBox(
-            width: 16,
-          )
-        ],
-        title: Text(widget.titleText));
+        ),
+        const SizedBox(
+          width: 16,
+        )
+      ],
+      title: Text(
+        widget.titleText,
+        style: GoogleFonts.poppins(
+          fontSize: 15.0,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
   }
 }

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/app_config.dart';
-  var appbarNBg = Colors.red;
+
+var appbarNBg = Colors.red;
 
 class AcmoStyleThemes {
-  static final light = ThemeData.light().copyWith(
-      scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
+  static final light = ThemeData(
+    brightness: Brightness.light,
+    fontFamily: GoogleFonts.poppins().fontFamily,
+  ).copyWith(
+      scaffoldBackgroundColor: const Color(0xFFF0F1F3),
       primaryColor: AcmoConfig.PRIMARY_COLOR,
       primaryColorLight: AcmoConfig.PRIMARY_COLOR_LIGHT,
       primaryColorDark: AcmoConfig.PRIMARY_COLOR_DARK,
@@ -46,20 +51,20 @@ class AcmoStyleThemes {
                   ),
                   backgroundColor: Colors.white70)
               .copyWith(
-        textStyle: MaterialStateProperty.resolveWith<TextStyle>(
-            (Set<MaterialState> states) {
-          if (states.contains(MaterialState.pressed)) {
-            return const TextStyle(
+        textStyle: WidgetStateProperty.resolveWith<TextStyle>(
+            (Set<WidgetState> states) {
+          if (states.contains(WidgetState.pressed)) {
+            return GoogleFonts.poppins(
               color: AcmoConfig.SECONDARY_COLOR,
             );
           }
-          return const TextStyle(
+          return GoogleFonts.poppins(
             color: Colors.black38,
           ); //
         }),
-        side: MaterialStateProperty.resolveWith<BorderSide>(
-          (Set<MaterialState> states) {
-            if (states.contains(MaterialState.pressed)) {
+        side: WidgetStateProperty.resolveWith<BorderSide>(
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.pressed)) {
               return const BorderSide(
                 color: AcmoConfig.SECONDARY_COLOR,
                 width: 2,
@@ -73,24 +78,19 @@ class AcmoStyleThemes {
         ),
       )),
       cardTheme: ThemeData.light().cardTheme.copyWith(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-              surfaceTintColor: Colors.white
-              ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          surfaceTintColor: Colors.white),
       dialogTheme: ThemeData.light().dialogTheme.copyWith(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-              backgroundColor: Colors.white,
-              surfaceTintColor: Colors.transparent
-              ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent),
       colorScheme: ColorScheme.fromSwatch().copyWith(
-        primary: AcmoConfig.PRIMARY_COLOR,
-        secondary: AcmoConfig.SECONDARY_COLOR,
-        background: AcmoConfig.SECONDARY_COLOR,
-        onBackground: Colors.black,
-        outline: Colors.transparent
-      ),
-      appBarTheme:  const AppBarTheme(
+          primary: AcmoConfig.PRIMARY_COLOR,
+          secondary: AcmoConfig.SECONDARY_COLOR,
+          background: AcmoConfig.SECONDARY_COLOR,
+          onBackground: Colors.black,
+          outline: Colors.transparent),
+      appBarTheme: const AppBarTheme(
         iconTheme: IconThemeData(color: Colors.white),
         color: AcmoConfig.APPBAR_BG,
         foregroundColor: Colors.white,

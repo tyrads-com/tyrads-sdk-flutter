@@ -37,7 +37,8 @@ class AcmoOfferDetailsModel with _$AcmoOfferDetailsModel {
       @Default([]) List<PlaytimeEvents> playtimeEvents,
       @Default([]) List<PayoutEvents> payoutEvents,
       @Default(false) bool isRetryDownload,
-      @Default(false) bool capReached
+      @Default(false) bool capReached,
+      @Default(false) bool premium
       }) = _AcmoOfferDetailsModel;
 
   factory AcmoOfferDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -113,6 +114,7 @@ class Tracking with _$Tracking {
     String? attributionTool,
     String? clickUrl,
     String? impressionUrl,
+    String? s2sClickUrl,
   }) = _Tracking;
 
   factory Tracking.fromJson(Map<String, dynamic> json) =>

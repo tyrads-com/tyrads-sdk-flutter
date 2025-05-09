@@ -7,12 +7,16 @@ class AcmoButton_3 extends StatelessWidget {
     Key? key,
     required this.onTap,
     this.label = "Edit",
-    this.color 
+    this.color,
+    this.borderRadius,
+    this.labelStyle,
   }) : super(key: key);
 
   final Function()? onTap;
   final String label;
   final Color? color;
+  final double? borderRadius;
+  final TextStyle? labelStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +24,7 @@ class AcmoButton_3 extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          borderRadius: BorderRadius.all(Radius.circular( borderRadius ?? 4)),
           color: color ?? Theme.of(context).colorScheme.secondary,
         ),
         // onPressed: ()=>callback(),
@@ -34,7 +38,7 @@ class AcmoButton_3 extends StatelessWidget {
               child: Center(
                 child: Text(
                   label,
-                  style: const TextStyle(
+                  style: labelStyle ?? const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                       fontSize: 12),

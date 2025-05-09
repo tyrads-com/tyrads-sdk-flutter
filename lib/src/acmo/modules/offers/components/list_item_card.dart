@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:numeral/numeral.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/button_3.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/widgets/countdown.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/models/offers.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
+import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'chip_category.dart';
 import 'chip_channel.dart';
 
@@ -61,8 +63,9 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (item.expiredOn != null &&
-                   (( item.expiredOn!.millisecondsSinceEpoch -
-                                  DateTime.now().millisecondsSinceEpoch) > 0))
+                    ((item.expiredOn!.millisecondsSinceEpoch -
+                            DateTime.now().millisecondsSinceEpoch) >
+                        0))
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 10),
@@ -75,16 +78,17 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              'Ending in ',
-                              style: TextStyle(
+                            Text(
+                              t.offers.endingIn,
+                              style: const TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             ),
                             AcmoComponentCountdown(
-                              seconds:(item.expiredOn!.millisecondsSinceEpoch -
-                                  DateTime.now().millisecondsSinceEpoch)~/1000,
+                              seconds: (item.expiredOn!.millisecondsSinceEpoch -
+                                      DateTime.now().millisecondsSinceEpoch) ~/
+                                  1000,
                               style: const TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
@@ -110,27 +114,29 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                         AcmoChipOfferChannel(
                             item.targeting.reward?.rewardDifficulty ?? ""),
                         const Spacer(),
-                        if(item.hasPlaytimeEvents)
-                        Container(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFB527),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4,vertical: 4),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Assets.images.playtimeIcon
-                                    .image(height: 11, width: 11),
-                                const SizedBox(width: 2),
-                                const Text("Playtime", style: TextStyle(fontSize: 8)),
-                              ],
+                        if (item.hasPlaytimeEvents)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFB527),
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                          ),
-                        )
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 4, vertical: 4),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Assets.images.playtimeIcon
+                                      .image(height: 11, width: 11),
+                                  const SizedBox(width: 2),
+                                  Text(t.offers.playtime,
+                                      style: TextStyle(fontSize: 8)),
+                                ],
+                              ),
+                            ),
+                          )
                       ],
                     ),
                   ),
@@ -152,11 +158,47 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  title: Text(
-                    item.app.title,
-                    maxLines: 1,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w500, color: Colors.white),
+                  title: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final text = item.app.title;
+                      final textStyle = TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      );
+
+                      final textPainter = TextPainter(
+                        text: TextSpan(text: text, style: textStyle),
+                        maxLines: 1,
+                        textDirection: TextDirection.ltr,
+                      )..layout(maxWidth: constraints.maxWidth - 10);
+
+                      if (textPainter.didExceedMaxLines) {
+                        return SizedBox(
+                          height: 20,
+                          child: Marquee(
+                            text: text,
+                            style: textStyle,
+                            scrollAxis: Axis.horizontal,
+                            blankSpace: 20.0,
+                            velocity: 25.0,
+                            pauseAfterRound: Duration(seconds: 1),
+                            startPadding: 10.0,
+                            accelerationDuration: Duration(seconds: 1),
+                            accelerationCurve: Curves.linear,
+                            decelerationDuration: Duration(milliseconds: 500),
+                            decelerationCurve: Curves.easeOut,
+                          ),
+                        );
+                      } else {
+                        return Text(
+                          text,
+                          style: textStyle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                        );
+                      }
+                    },
                   ),
                   subtitle: SizedBox(
                     width: 120,
@@ -198,7 +240,7 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                             width: 8,
                           ),
                           Text(
-                            "${item.campaignPayout.totalEvents} ${item.campaignPayout.totalEvents == 1 ? "Reward" : "Rewards"}",
+                            "${item.campaignPayout.totalEvents} ${t.offers.rewards(n: item.campaignPayout.totalEvents)}",
                             style: const TextStyle(
                                 fontSize: 8,
                                 color: Colors.white70,
@@ -208,13 +250,13 @@ class AcmoComponentOfferItemCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  trailing: const Padding(
-                    padding: EdgeInsets.all(8.0),
+                  trailing: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
                         width: 74,
                         height: 31,
                         child: AcmoButton_3(
-                          label: "Play Now",
+                          label: t.offers.offersCta,
                           onTap: null,
                         )),
                   ),

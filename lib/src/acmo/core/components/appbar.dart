@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AcmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AcmoAppBar({
@@ -23,7 +24,13 @@ class AcmoAppBar extends StatelessWidget implements PreferredSizeWidget {
           }
         },
       ),
-      title: Text(titleText),
+      title: Text(
+        titleText,
+        style: GoogleFonts.poppins(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 

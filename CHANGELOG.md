@@ -1,26 +1,44 @@
+## 2.0.1
+* Fixed namespace missing from build.gradle for android
+* Flutter 3.29 support added
+
+## 2.0.1-beta.0
+* Fixed namespace missing from build.gradle for android
+* Flutter 3.29 support added
+
+## 2.0.0
+
+* added premium colour
+* added top offers widget
+* added premium slider
+
 ## 1.1.7
 
 - fixed remaining time not visible on first card
+- added rejected color to star
+- added expiring on banner  offer details
+- changed app text to TyrSDK in usage stats screen
+- added additional parameters for device details in android
+- added launchMode to chose between native, webview or external browser
 
 ## 1.1.6
 
 - added api to check if the login was successful or not
-- changed color of inactive usage switch 
-- fixed campaign details page issue if tracking link not available 
+- changed color of inactive usage switch
+- fixed campaign details page issue if tracking link not available
 - fixed custom branding colors for ios
-
 
 ## 1.1.5
 
-- used webview flutter instead of in-app-webview library 
+- used webview flutter instead of in-app-webview library
 - fixed privacy legal page overlapping issues on some devices
-- added toast and logging if initialization failed  
+- added toast and logging if initialization failed
 
 ## 1.1.4
 
 - fixed impression tracking
 - added flexible range package_info_plus
-- added caps limit 
+- added caps limit
 - added deeplinking routes
 
 ## 1.1.3

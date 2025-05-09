@@ -45,8 +45,14 @@ android {
         test.java.srcDirs += "src/test/kotlin"
     }
 
+    buildFeatures{
+        buildConfig true
+    }
+
     defaultConfig {
         minSdk = 21
+
+        buildConfigField "String", "CLOUD_PROJECT_NUMBER", "\"${project.findProperty("cloudProjectNumber") ?: ""}\""
     }
 
     dependencies {
@@ -65,4 +71,11 @@ android {
             }
         }
     }
+}
+
+
+dependencies {
+    implementation("com.google.android.play:integrity:1.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 }

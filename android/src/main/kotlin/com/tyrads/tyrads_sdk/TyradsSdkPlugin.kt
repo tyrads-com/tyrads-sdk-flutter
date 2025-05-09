@@ -1,46 +1,127 @@
 package com.tyrads.tyrads_sdk
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.content.Context.TELEPHONY_SERVICE
 import android.os.Build
 import android.telephony.TelephonyManager
-import io.flutter.embedding.android.FlutterActivity
+import android.content.BroadcastReceiver
+import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
-import android.content.Context
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import java.io.File
-import java.io.BufferedReader
-import java.io.FileReader
+import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.EventChannel.EventSink
+import io.flutter.plugin.common.EventChannel.StreamHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 /** TyradsSdkPlugin */
-class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel : MethodChannel
+class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
+  private lateinit var methodChannel : MethodChannel
+  private lateinit var networkEventChannel: EventChannel
+  private lateinit var vpnEventChannel: EventChannel
   private lateinit var context: Context
+  private var networkEventSink: EventSink? = null
+  private var vpnEventSink: EventSink? = null
+  private lateinit var networkChangeReceiver: BroadcastReceiver
 
+  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk")
+    methodChannel.setMethodCallHandler(this)
 
-  override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk")
-    channel.setMethodCallHandler(this)
+    networkEventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk/networkType")
+    networkEventChannel.setStreamHandler(this)
+    
+    vpnEventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk/vpnCheck")
+    vpnEventChannel.setStreamHandler(this)
+
     context = flutterPluginBinding.applicationContext
+
+    networkChangeReceiver = object : BroadcastReceiver() {
+      override fun onReceive(context: Context, intent: Intent) {
+          sendNetworkAndVpnStatus()
+      }
+    }
+
+    val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+    context.registerReceiver(networkChangeReceiver, intentFilter)
+    
+  }
+
+  private fun sendNetworkAndVpnStatus() {
+        val networkType = getNetworkType(context)
+        println("Network type changed to: $networkType")
+        networkEventSink?.success(networkType)
+
+        val vpnStatus = isVpnActive(context)
+        println("VPN status changed to: $vpnStatus")
+        vpnEventSink?.success(vpnStatus)
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
-    if (call.method == "getTrackingInfo") {
-      result.success(getTrackingInfo())
-    } else {
-      result.notImplemented()
+    when (call.method) {
+      "getTrackingInfo" -> result.success(getTrackingInfo())
+      "getDeviceMetrics" -> result.success(getDeviceMetrics())
+      "getNetworkType" -> result.success(getNetworkType(context))
+      "checkVpnStatus" -> result.success(isVpnActive(context))
+      "getPlayIntegrityToken" -> {
+        CoroutineScope(Dispatchers.IO).launch {
+          try {
+              val token = getPlayIntegrityToken(context)
+              Log.d("Integrity Token", token)
+              withContext(Dispatchers.Main) {
+                  result.success(token)
+              }
+          } catch (e: Exception) {
+              withContext(Dispatchers.Main) {
+                  result.error("ERROR", e.message, null)
+              }
+          }
+        }
+      }
+      else -> result.notImplemented()
     }
   }
 
+  override fun onListen(arguments: Any?, events: EventSink?) {
+    when (arguments) {
+      "networkType" -> networkEventSink = events
+      "vpnCheck" -> vpnEventSink = events
+      else -> {
+            
+            println("Unexpected stream argument: $arguments")
+            events?.error("INVALID_ARGUMENT", "Invalid stream argument: $arguments", null)
+        }
+    }
+  }
 
-private fun getTrackingInfo(): Map<String, String> {
+  override fun onCancel(arguments: Any?) {
+    when (arguments) {
+      "networkType" -> networkEventSink = null
+      "vpnCheck" -> vpnEventSink = null
+      else -> {
+             println("Unexpected stream argument: $arguments") // Log the issue
+        }
+    }
+  }
+
+  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    methodChannel.setMethodCallHandler(null)
+    networkEventChannel.setStreamHandler(null)
+    vpnEventChannel.setStreamHandler(null)
+    context.unregisterReceiver(networkChangeReceiver)
+  }
+
+  private fun getTrackingInfo(): Map<String, String> {
         val telephonyManager = context.getSystemService(TELEPHONY_SERVICE) as TelephonyManager
 
         val carrierName = telephonyManager.networkOperatorName ?: "Unknown"
@@ -117,8 +198,4 @@ private fun getTrackingInfo(): Map<String, String> {
     }
 
   } 
-  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
-  }
-
 }

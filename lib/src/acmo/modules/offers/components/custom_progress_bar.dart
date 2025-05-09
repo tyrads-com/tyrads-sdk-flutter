@@ -25,10 +25,10 @@ class AcmoCustomBarWithColor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
- return Stack(
+    return Stack(
       children: [
         ClipRRect(
-          borderRadius: circularRadius,
+          borderRadius: BorderRadius.only(topRight: Radius.circular(circularRadius.topRight.x), topLeft: Radius.circular(circularRadius.topLeft.x)),
           child: Container(
             height: height,
             color: progressBarColor,
