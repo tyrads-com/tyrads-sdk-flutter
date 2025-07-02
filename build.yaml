@@ -1,0 +1,34 @@
+targets:
+  $default:
+    builders:
+      slang_build_runner:
+        options:
+          base_locale: en
+          fallback_strategy: base_locale
+          input_directory: assets/i18n
+          input_file_pattern: .i18n.json
+          output_directory: lib/src/i18n
+          output_file_name: translations.g.dart
+          lazy: true
+          locale_handling: true
+          flutter_integration: true
+          namespaces: false
+          translate_var: t
+          enum_name: AppLocale
+          class_name: Translations
+          translation_class_visibility: private
+          key_case: camel
+          key_map_case: snake
+          param_case: camel
+          string_interpolation: double_braces
+          flat_map: false
+          translation_overrides: false
+          timestamp: true
+          statistics: true
+          maps:
+            - error.codes
+            - category
+            - iconNames
+          pluralization:
+            auto: cardinal
+            default_parameter: n
