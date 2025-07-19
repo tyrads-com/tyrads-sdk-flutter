@@ -249,8 +249,7 @@ class BonusRewardsWidget extends StatelessWidget {
   Widget _buildIndicator(BuildContext context, MicroChargeEvents item,
       MicroChargeEvents? activeItem) {
     if (item.maxTimeRemainSeconds != null &&
-        item.maxTimeRemainSeconds != 0 &&
-        item.id == activeItem?.id) {
+        item.maxTimeRemainSeconds != 0) {
       return DotIndicator(
         size: 16,
         color: Colors.white,
@@ -324,8 +323,7 @@ class BonusRewardsWidget extends StatelessWidget {
         statusColor = const Color(0xFF1E2020);
     }
     if (item.maxTimeRemainSeconds != null &&
-        item.maxTimeRemainSeconds != 0 &&
-        item.id == activeItem?.id) {
+        item.maxTimeRemainSeconds != 0) {
       return Padding(
         padding: const EdgeInsets.only(
           bottom: 24,
