@@ -9,7 +9,7 @@ class AcmoTrackingRepository {
     final encKey =
         Tyrads.instance.prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
     final encData = Tyrads.instance.isSecure
-        ? AcmoEncrypt(encKey).encryptDataAESGCM(fd)
+        ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd)
         : {};
     await NetworkCommon().dio.post(AcmoEndpointNames.USER_ACTIVITIES,
         data: Tyrads.instance.isSecure ? encData : fd);

@@ -10,7 +10,7 @@ class AcmoRepositoryUsageStat {
     final encKey =
         Tyrads.instance.prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
     final encData = Tyrads.instance.isSecure
-        ? AcmoEncrypt(encKey).encryptDataAESGCM(fd)
+        ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd)
         : {};
     var response = await NetworkCommon().dio.post(AcmoEndpointNames.USAGE_STATS,
         data: Tyrads.instance.isSecure ? encData : fd);

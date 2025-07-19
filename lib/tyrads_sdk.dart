@@ -210,7 +210,7 @@ class Tyrads {
       }
       final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
       final encData = _isSecure
-        ? AcmoEncrypt(encKey).encryptDataAESGCM(fd)
+        ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd)
         : {};
       var response = await dio.post(AcmoEndpointNames.INITIALIZE,
           data: _isSecure ? encData : fd);
