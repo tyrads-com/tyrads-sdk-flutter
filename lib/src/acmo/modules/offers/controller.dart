@@ -109,20 +109,14 @@ class AcmoOffersController {
       allDeals.value = r.data
           .where((element) => element.groupName.toLowerCase() == 'all')
           .expand((element) => element.campaigns)
-          .toList()
-          .reversed
           .toList();
       hotDeals.value = r.data
           .where((element) => element.groupName.toLowerCase() == 'hotdeals')
           .expand((element) => element.campaigns)
-          .toList()
-          .reversed
           .toList();
       urgentTasks.value = r.data
           .where((element) => element.groupName.toLowerCase() == 'urgenttask')
           .expand((element) => element.campaigns)
-          .toList()
-          .reversed
           .toList();
       isActiveOffersLoading.value = false;
       if (hotDeals.value.isNotEmpty && tabIndex == null) {

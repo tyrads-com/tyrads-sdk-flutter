@@ -70,6 +70,7 @@ class _AcmoActiveOffersBodyState extends State<AcmoActiveOffersBody>
           _controller.currentCampaignDetails.value!.isRetryDownload &&
           !_controller.currentCampaignDetails.value!.isInstalled;
     });
+    _onTabChanged(_currentIndexNotifier.value);
   }
 
   bool checkIsButtonDisabled(AcmoOfferDetailsModel details) {
@@ -115,9 +116,9 @@ class _AcmoActiveOffersBodyState extends State<AcmoActiveOffersBody>
           onRefresh: () async {
             await _controller.loadActiveOffers();
             if (mounted) {
+              _onTabChanged(_currentIndexNotifier.value);
               setState(() {
                 _refreshController.refreshCompleted();
-                _onTabChanged(_currentIndexNotifier.value);
               });
             }
           },
