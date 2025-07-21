@@ -1,6 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
-import 'package:tyrads_sdk/src/acmo/modules/offers/pages/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/widgets/usage_stats_tile.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';

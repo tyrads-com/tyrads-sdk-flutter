@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
-import 'package:tyrads_sdk/src/acmo/modules/offers/pages/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/components/gender_select.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/controller.dart';
 import 'package:tyrads_sdk/src/i18n/translations.g.dart';

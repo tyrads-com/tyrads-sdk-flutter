@@ -31,7 +31,6 @@ import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
-import 'src/acmo/modules/dashboard/top_offers.dart';
 import 'src/acmo/modules/tracking/activities.dart';
 import 'src/acmo/modules/tracking/controller.dart';
 
@@ -403,20 +402,20 @@ class Tyrads {
     _callbacks[type]?.call(data);
   }
 
-  Widget topOffersWidget(BuildContext context,
-      {showMore = true,
-      showMyOffers = true,
-      showMyOffersEmptyView = false,
-      widgetStyle = 4}) {
-    parentContext = context;
-    return TopOffersWidget(
-      key: TopOffersWidget.globalKey,
-      showMore: showMore,
-      showMyOffers: showMyOffers,
-      showMyOffersEmptyView: showMyOffersEmptyView,
-      widgetStyle: widgetStyle,
-    );
-  }
+  // Widget topOffersWidget(BuildContext context,
+  //     {showMore = true,
+  //     showMyOffers = true,
+  //     showMyOffersEmptyView = false,
+  //     widgetStyle = 4}) {
+  //   parentContext = context;
+  //   return TopOffersWidget(
+  //     key: TopOffersWidget.globalKey,
+  //     showMore: showMore,
+  //     showMyOffers: showMyOffers,
+  //     showMyOffersEmptyView: showMyOffersEmptyView,
+  //     widgetStyle: widgetStyle,
+  //   );
+  // }
 
   Future<void> changeLanguage(String languageCode) async {
     prefs = await SharedPreferences.getInstance();
@@ -430,6 +429,6 @@ class Tyrads {
       LocaleSettings.setLocaleRaw(selectedLanguage, listenToDeviceLocale: true);
       prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
     }
-    TopOffersWidget.globalKey.currentState?.forceRebuild();
+    // TopOffersWidget.globalKey.currentState?.forceRebuild();
   }
 }
