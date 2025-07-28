@@ -185,8 +185,10 @@ Data _$DataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Data {
   bool get newRegisteredUser => throw _privateConstructorUsedError;
+  bool get newDevice => throw _privateConstructorUsedError;
   User get user => throw _privateConstructorUsedError;
   PublisherApp get publisherApp => throw _privateConstructorUsedError;
+  String get token => throw _privateConstructorUsedError;
 
   /// Serializes this Data to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -202,7 +204,12 @@ abstract class $DataCopyWith<$Res> {
   factory $DataCopyWith(Data value, $Res Function(Data) then) =
       _$DataCopyWithImpl<$Res, Data>;
   @useResult
-  $Res call({bool newRegisteredUser, User user, PublisherApp publisherApp});
+  $Res call(
+      {bool newRegisteredUser,
+      bool newDevice,
+      User user,
+      PublisherApp publisherApp,
+      String token});
 
   $UserCopyWith<$Res> get user;
   $PublisherAppCopyWith<$Res> get publisherApp;
@@ -224,13 +231,19 @@ class _$DataCopyWithImpl<$Res, $Val extends Data>
   @override
   $Res call({
     Object? newRegisteredUser = null,
+    Object? newDevice = null,
     Object? user = null,
     Object? publisherApp = null,
+    Object? token = null,
   }) {
     return _then(_value.copyWith(
       newRegisteredUser: null == newRegisteredUser
           ? _value.newRegisteredUser
           : newRegisteredUser // ignore: cast_nullable_to_non_nullable
+              as bool,
+      newDevice: null == newDevice
+          ? _value.newDevice
+          : newDevice // ignore: cast_nullable_to_non_nullable
               as bool,
       user: null == user
           ? _value.user
@@ -240,6 +253,10 @@ class _$DataCopyWithImpl<$Res, $Val extends Data>
           ? _value.publisherApp
           : publisherApp // ignore: cast_nullable_to_non_nullable
               as PublisherApp,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 
@@ -271,7 +288,12 @@ abstract class _$$DataImplCopyWith<$Res> implements $DataCopyWith<$Res> {
       __$$DataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool newRegisteredUser, User user, PublisherApp publisherApp});
+  $Res call(
+      {bool newRegisteredUser,
+      bool newDevice,
+      User user,
+      PublisherApp publisherApp,
+      String token});
 
   @override
   $UserCopyWith<$Res> get user;
@@ -292,13 +314,19 @@ class __$$DataImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? newRegisteredUser = null,
+    Object? newDevice = null,
     Object? user = null,
     Object? publisherApp = null,
+    Object? token = null,
   }) {
     return _then(_$DataImpl(
       newRegisteredUser: null == newRegisteredUser
           ? _value.newRegisteredUser
           : newRegisteredUser // ignore: cast_nullable_to_non_nullable
+              as bool,
+      newDevice: null == newDevice
+          ? _value.newDevice
+          : newDevice // ignore: cast_nullable_to_non_nullable
               as bool,
       user: null == user
           ? _value.user
@@ -308,6 +336,10 @@ class __$$DataImplCopyWithImpl<$Res>
           ? _value.publisherApp
           : publisherApp // ignore: cast_nullable_to_non_nullable
               as PublisherApp,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -317,8 +349,10 @@ class __$$DataImplCopyWithImpl<$Res>
 class _$DataImpl implements _Data {
   _$DataImpl(
       {this.newRegisteredUser = false,
+      this.newDevice = false,
       required this.user,
-      required this.publisherApp});
+      required this.publisherApp,
+      this.token = ''});
 
   factory _$DataImpl.fromJson(Map<String, dynamic> json) =>
       _$$DataImplFromJson(json);
@@ -327,13 +361,19 @@ class _$DataImpl implements _Data {
   @JsonKey()
   final bool newRegisteredUser;
   @override
+  @JsonKey()
+  final bool newDevice;
+  @override
   final User user;
   @override
   final PublisherApp publisherApp;
+  @override
+  @JsonKey()
+  final String token;
 
   @override
   String toString() {
-    return 'Data(newRegisteredUser: $newRegisteredUser, user: $user, publisherApp: $publisherApp)';
+    return 'Data(newRegisteredUser: $newRegisteredUser, newDevice: $newDevice, user: $user, publisherApp: $publisherApp, token: $token)';
   }
 
   @override
@@ -343,15 +383,18 @@ class _$DataImpl implements _Data {
             other is _$DataImpl &&
             (identical(other.newRegisteredUser, newRegisteredUser) ||
                 other.newRegisteredUser == newRegisteredUser) &&
+            (identical(other.newDevice, newDevice) ||
+                other.newDevice == newDevice) &&
             (identical(other.user, user) || other.user == user) &&
             (identical(other.publisherApp, publisherApp) ||
-                other.publisherApp == publisherApp));
+                other.publisherApp == publisherApp) &&
+            (identical(other.token, token) || other.token == token));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, newRegisteredUser, user, publisherApp);
+  int get hashCode => Object.hash(
+      runtimeType, newRegisteredUser, newDevice, user, publisherApp, token);
 
   /// Create a copy of Data
   /// with the given fields replaced by the non-null parameter values.
@@ -372,17 +415,23 @@ class _$DataImpl implements _Data {
 abstract class _Data implements Data {
   factory _Data(
       {final bool newRegisteredUser,
+      final bool newDevice,
       required final User user,
-      required final PublisherApp publisherApp}) = _$DataImpl;
+      required final PublisherApp publisherApp,
+      final String token}) = _$DataImpl;
 
   factory _Data.fromJson(Map<String, dynamic> json) = _$DataImpl.fromJson;
 
   @override
   bool get newRegisteredUser;
   @override
+  bool get newDevice;
+  @override
   User get user;
   @override
   PublisherApp get publisherApp;
+  @override
+  String get token;
 
   /// Create a copy of Data
   /// with the given fields replaced by the non-null parameter values.

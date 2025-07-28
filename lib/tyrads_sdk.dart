@@ -217,13 +217,12 @@ class Tyrads {
           data: _isSecure ? encData : fd);
       if (response.statusCode == 200) {
         loginData = AcmoInitModel.fromJson(response.data);
-        log("Login Data : ${response.data['token']}");
 
         publisherUserID = loginData.data.user.publisherUserId;
         await prefs.setString(AcmoKeyNames.USER_ID, publisherUserID);
 
-        // tokenID = loginData.data.token;
-        // await prefs.setString(AcmoKeyNames.TOKEN,tokenID );
+        token = loginData.data.token;
+        await prefs.setString(AcmoKeyNames.TOKEN, token);
 
         newUser = loginData.data.newRegisteredUser;
         colorMain = loginData.data.publisherApp.mainColor.toColor();
@@ -292,13 +291,13 @@ class Tyrads {
       if (await waitAndCheck() == false) {
         return;
       }
-      final encryptionKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
+      // final encryptionKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
       this.campaignID = campaignID;
       this.route = route ?? TyradsDeepRoutes.CAMPAIGNS;
-      webUrl =
-      'https://websdk.tyrads.com/?apiKey=${Tyrads.instance.apiKey}&apiSecret=${Tyrads.instance.apiSecret}&encKey=$encryptionKey&userID=${Tyrads.instance.publisherUserID}&newUser=${Tyrads.instance.newUser}&platform=${acmoGetPlatformName()}&hc=${loginData.data.publisherApp.headerColor}&mc=${loginData.data.publisherApp.mainColor}&launchMode=2&route=$route&campaignID=$campaignID&av=${AcmoConfig.AV}&sdkVersion=${AcmoConfig.SDK_VERSION}&pc=${loginData.data.publisherApp.premiumColor}&lang=${Tyrads.instance.selectedLanguage}';
+      // webUrl =
+      // 'https://websdk.tyrads.com/?apiKey=${Tyrads.instance.apiKey}&apiSecret=${Tyrads.instance.apiSecret}&encKey=$encryptionKey&userID=${Tyrads.instance.publisherUserID}&newUser=${Tyrads.instance.newUser}&platform=${acmoGetPlatformName()}&hc=${loginData.data.publisherApp.headerColor}&mc=${loginData.data.publisherApp.mainColor}&launchMode=2&route=$route&campaignID=$campaignID&av=${AcmoConfig.AV}&sdkVersion=${AcmoConfig.SDK_VERSION}&pc=${loginData.data.publisherApp.premiumColor}&lang=${Tyrads.instance.selectedLanguage}';
 
-      // 'https://sdk.tyrads.com/?token=${token}';
+      webUrl = 'https://sdk.tyrads.com/?token=${token}';
 
       // Comment out launch mode logic
       // if (launchMode == null) {

@@ -18,16 +18,20 @@ Map<String, dynamic> _$$AcmoInitModelImplToJson(_$AcmoInitModelImpl instance) =>
 
 _$DataImpl _$$DataImplFromJson(Map<String, dynamic> json) => _$DataImpl(
       newRegisteredUser: json['newRegisteredUser'] as bool? ?? false,
+      newDevice: json['newDevice'] as bool? ?? false,
       user: User.fromJson(json['user'] as Map<String, dynamic>),
       publisherApp:
           PublisherApp.fromJson(json['publisherApp'] as Map<String, dynamic>),
+      token: json['token'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$DataImplToJson(_$DataImpl instance) =>
     <String, dynamic>{
       'newRegisteredUser': instance.newRegisteredUser,
+      'newDevice': instance.newDevice,
       'user': instance.user,
       'publisherApp': instance.publisherApp,
+      'token': instance.token,
     };
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(

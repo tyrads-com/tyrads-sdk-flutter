@@ -18,8 +18,10 @@ class Data with _$Data {
 
   factory Data({
     @Default(false) bool newRegisteredUser,
+    @Default(false) bool newDevice,
     required User user,
     required PublisherApp publisherApp,
+    @Default('') String token,
   }) = _Data;
 
   factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
