@@ -13,6 +13,7 @@ import 'package:tyrads_sdk/src/acmo/modules/offers/models/active_offers/active_o
 import 'package:tyrads_sdk/src/acmo/modules/offers/models/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/new_offerwall/models/currency_sale_model.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/repository.dart';
+import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tracking/activities.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
@@ -167,8 +168,14 @@ class AcmoOffersController {
       if (await Tyrads.instance.waitAndCheck() == false) {
         return [];
       }
-      var repo = AcmoOffersRepository();
-      var response = await repo.getOffers();
+      var responses = await Future.wait([
+        _repo.getOffers(),
+        _repo.getEngagement(),
+        _repo.getActivatedOfferSummary(),
+      ]);
+      var response = responses[0] as AcmoOffersResponseModel;
+      currencySales = responses[1] as AcmoOfferCurrencySaleModel;
+      activatedCount.value = responses[2] as int;
       newOffers.clear();
       hotOffers.clear();
       newOffers.addAll(response.data);
@@ -223,6 +230,7 @@ class AcmoOffersController {
         Tyrads.instance.track(TyradsActivity.campaignActivated);
       }
       await _repo.activateOffer(id: campaignId);
+      AcmoPremiumWidgetsController.instance.refresh();
       redirectToActivePage = true;
     }
     if (s2sClickUrl != null) {

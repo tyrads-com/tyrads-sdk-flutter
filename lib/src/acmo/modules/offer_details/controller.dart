@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/models/offer_details.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/repository.dart';
+import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tickets/page.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tracking/activities.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
@@ -229,6 +230,7 @@ class AcmoOffersDetailsController {
         's2sClickUrl': item.tracking.s2sClickUrl,
       });
     }
+    AcmoPremiumWidgetsController.instance.refresh();
     if (item.tracking.s2sClickUrl != null) {
       final res = await Dio().get(item.tracking.s2sClickUrl!);
       if (res.statusCode != 200) {
