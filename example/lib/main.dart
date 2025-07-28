@@ -170,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Tyrads.instance.topOffersWidget(context),
+              // Tyrads.instance.topOffersWidget(context),
               SizedBox(
                 width: 300,
                 child: TextField(
