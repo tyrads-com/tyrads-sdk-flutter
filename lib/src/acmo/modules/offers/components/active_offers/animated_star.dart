@@ -14,6 +14,7 @@ class _AcmoAnimatedStarState extends State<AcmoAnimatedStar>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  bool _isMounted = true;
 
   @override
   void initState() {
@@ -28,13 +29,15 @@ class _AcmoAnimatedStarState extends State<AcmoAnimatedStar>
     _controller.forward();
 
     _controller.addStatusListener((status) {
+      if (!_isMounted) return;
+
       if (status == AnimationStatus.completed) {
         Future.delayed(const Duration(milliseconds: 600), () {
-          _controller.reverse();
+          if (_isMounted && mounted) _controller.reverse();
         });
       } else if (status == AnimationStatus.dismissed) {
         Future.delayed(const Duration(milliseconds: 600), () {
-          _controller.forward();
+          if (_isMounted && mounted) _controller.forward();
         });
       }
     });
@@ -42,6 +45,7 @@ class _AcmoAnimatedStarState extends State<AcmoAnimatedStar>
 
   @override
   void dispose() {
+    _isMounted = false; 
     _controller.dispose();
     super.dispose();
   }
