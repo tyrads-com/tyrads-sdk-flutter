@@ -5,6 +5,7 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/models/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/new_offerwall/models/currency_sale_model.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offers/repository.dart';
+import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/repository.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tracking/activities.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
