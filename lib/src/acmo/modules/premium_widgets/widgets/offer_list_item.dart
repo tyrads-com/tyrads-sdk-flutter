@@ -36,8 +36,7 @@ class AcmoOfferListItem extends StatelessWidget {
         ListTile(
           onTap: () => Tyrads.instance.showOffers(
             context,
-            campaignID: e.campaignId,
-            route: TyradsDeepRoutes.CAMPAIGN_DETAILS,
+            route: 'offers/${e.campaignId}',
             launchMode: Tyrads.instance.launchMode,
           ),
           focusColor: Colors.grey.shade100,

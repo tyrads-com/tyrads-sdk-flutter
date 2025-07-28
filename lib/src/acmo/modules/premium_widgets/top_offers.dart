@@ -249,8 +249,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                         }
                       : () => Tyrads.instance.showOffers(
                             context,
-                            campaignID: e.campaignId,
-                            route: TyradsDeepRoutes.CAMPAIGN_DETAILS,
+                            route: 'offer/${e.campaignId}',
                             launchMode: Tyrads.instance.launchMode,
                           ),
                   e: e,
@@ -277,8 +276,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                   itemBuilder: (context, index) => GestureDetector(
                     onTap: () => Tyrads.instance.showOffers(
                       context,
-                      campaignID: _controller.hotOffers[index].campaignId,
-                      route: TyradsDeepRoutes.CAMPAIGN_DETAILS,
+                      route: 'offers/${_controller.hotOffers[index].campaignId}',
                       launchMode: Tyrads.instance.launchMode,
                     ),
                     child: AcmoNewOfferWallItem(
@@ -306,15 +304,12 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                             }
                           : () => Tyrads.instance.showOffers(
                                 context,
-                                campaignID:
-                                    _controller.hotOffers[index].campaignId,
-                                route: TyradsDeepRoutes.CAMPAIGN_DETAILS,
+                                route: 'offers/${_controller.hotOffers[index].campaignId}',
                                 launchMode: Tyrads.instance.launchMode,
                               ),
                       onTap: () => Tyrads.instance.showOffers(
                         context,
-                        campaignID: _controller.hotOffers[index].campaignId,
-                        route: TyradsDeepRoutes.CAMPAIGN_DETAILS,
+                        route: 'offers/${_controller.hotOffers[index].campaignId}',
                         launchMode: Tyrads.instance.launchMode,
                       ),
                     ),
