@@ -45,7 +45,7 @@ Future<void> initializeTyrads({
       sub5: "iOSDevice",
     ),
   );
-  await Tyrads.instance.loginUser(userID: userID ?? "112312");
+  await Tyrads.instance.loginUser(userID: userID ?? "428");
 }
 
 class MyApp extends StatelessWidget {
@@ -79,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController encKeyController;
   late TextEditingController userIDController;
   bool loading = false;
+  int style = 1;
   @override
   void initState() {
     super.initState();
@@ -105,7 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
     bool hasApiKey = apiKey.isNotEmpty;
     bool hasApiSecret = apiSecret.isNotEmpty;
     bool hasUserID = userID.isNotEmpty;
-
 
     if ((hasApiKey && !hasApiSecret) ||
         (hasApiSecret && !hasApiKey) ||
@@ -166,67 +166,94 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Tyrads.instance.topOffersWidget(context),
-              SizedBox(
-                width: 300,
-                child: TextField(
-                    controller: apiKeyController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Api_Key (Optional)",
-                    )),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 300,
-                child: TextField(
-                    controller: apiSecretController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Api_Secret (Optional)",
-                    )),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 300,
-                child: TextField(
-                    controller: encKeyController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Encryption Key (Optional)",
-                    )),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 300,
-                child: TextField(
-                    controller: userIDController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Custom user Id or empty for anonymous user",
-                    )),
-              ),
-              const SizedBox(height: 10),
-              OutlinedButton(
-                onPressed: loading ? null : _showOfferwall,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 12,
-                  children: [
-                    if (loading)
-                      const SizedBox(
-                          height: 22,
-                          width: 22,
-                          child: CircularProgressIndicator()),
-                    const Text("Show offerwall"),
-                  ],
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Tyrads.instance.topOffersWidget(
+                  context,
+                  widgetStyle: style == 1 ? PremiumWidgetStyles.list : PremiumWidgetStyles.sliderCards,
                 ),
-              )
-            ],
+                const SizedBox(
+                  height: 16,
+                ),
+                DropdownButton(
+                  value: style,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 1,
+                      child: Text("List View"),
+                    ),
+                    DropdownMenuItem(
+                      value: 2,
+                      child: Text("Slide Cards"),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      style = value ?? 1;
+                    });
+                  },
+                ),
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                      controller: apiKeyController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Api_Key (Optional)",
+                      )),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                      controller: apiSecretController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Api_Secret (Optional)",
+                      )),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                      controller: encKeyController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Encryption Key (Optional)",
+                      )),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                      controller: userIDController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Custom user Id or empty for anonymous user",
+                      )),
+                ),
+                const SizedBox(height: 10),
+                OutlinedButton(
+                  onPressed: loading ? null : _showOfferwall,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 12,
+                    children: [
+                      if (loading)
+                        const SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator()),
+                      const Text("Show offerwall"),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
