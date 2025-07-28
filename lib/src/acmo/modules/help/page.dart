@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:tyrads_sdk/src/acmo/modules/tickets/page.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import '../../core/components/appbar.dart';
 import 'components/list_tile.dart';
@@ -26,11 +25,11 @@ class AcmoHelpPage extends StatelessWidget {
               ),
               title: "I didn’t receive my TPoints",
               onTap: () async {
-                Tyrads.instance.to(
-                  AcmoTicketsPage(
-                    id: id,
-                  ),
-                );
+                // Tyrads.instance.to(
+                //   AcmoTicketsPage(
+                //     id: id,
+                //   ),
+                // );
               },
             ),
             // AcmoHelpItemComponent(
