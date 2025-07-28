@@ -47,6 +47,8 @@ class Tyrads {
   var apiKey;
   var apiSecret;
   var publisherUserID;
+  var token;
+
   late AcmoInitModel loginData;
   Color? colorHeaderBg;
   Color? colorHeaderFg;
@@ -215,8 +217,14 @@ class Tyrads {
           data: _isSecure ? encData : fd);
       if (response.statusCode == 200) {
         loginData = AcmoInitModel.fromJson(response.data);
+        log("Login Data : ${response.data['token']}");
+
         publisherUserID = loginData.data.user.publisherUserId;
         await prefs.setString(AcmoKeyNames.USER_ID, publisherUserID);
+
+        // tokenID = loginData.data.token;
+        // await prefs.setString(AcmoKeyNames.TOKEN,tokenID );
+
         newUser = loginData.data.newRegisteredUser;
         colorMain = loginData.data.publisherApp.mainColor.toColor();
 
@@ -288,42 +296,48 @@ class Tyrads {
       this.campaignID = campaignID;
       this.route = route ?? TyradsDeepRoutes.CAMPAIGNS;
       webUrl =
-          'https://websdk.tyrads.com/?apiKey=${Tyrads.instance.apiKey}&apiSecret=${Tyrads.instance.apiSecret}&encKey=$encryptionKey&userID=${Tyrads.instance.publisherUserID}&newUser=${Tyrads.instance.newUser}&platform=${acmoGetPlatformName()}&hc=${loginData.data.publisherApp.headerColor}&mc=${loginData.data.publisherApp.mainColor}&launchMode=2&route=$route&campaignID=$campaignID&av=${AcmoConfig.AV}&sdkVersion=${AcmoConfig.SDK_VERSION}&pc=${loginData.data.publisherApp.premiumColor}&lang=${Tyrads.instance.selectedLanguage}';
-      if (launchMode == null) {
-        if (this.launchMode == null) {
-          if (Platform.isIOS) {
-            launchMode = 3;
-          } else {
-            launchMode = 1;
-          }
-        } else {
-          launchMode = this.launchMode;
-        }
-      }
-      this.launchMode = launchMode;
-      if (launchMode != 2 || launchMode != 3) {
-        log("launchMode must be 2 or 3");
-      }
-      if (launchMode != 1) {
-        Tyrads.instance.newUser =
-            false; //to be sure that browser would not show it again
-      }
+      'https://websdk.tyrads.com/?apiKey=${Tyrads.instance.apiKey}&apiSecret=${Tyrads.instance.apiSecret}&encKey=$encryptionKey&userID=${Tyrads.instance.publisherUserID}&newUser=${Tyrads.instance.newUser}&platform=${acmoGetPlatformName()}&hc=${loginData.data.publisherApp.headerColor}&mc=${loginData.data.publisherApp.mainColor}&launchMode=2&route=$route&campaignID=$campaignID&av=${AcmoConfig.AV}&sdkVersion=${AcmoConfig.SDK_VERSION}&pc=${loginData.data.publisherApp.premiumColor}&lang=${Tyrads.instance.selectedLanguage}';
 
-      if (Platform.isIOS && launchMode != 2) {
-        var mode = LaunchMode.externalApplication;
-        acmoLaunchURLForce(webUrl, mode: mode);
-      } else {
-        runZonedGuarded(() {
-          parentContext = context;
-          Navigator.of(parentContext!)
-              .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
-        }, (error, stack) {});
-      }
+      // 'https://sdk.tyrads.com/?token=${token}';
+
+      // Comment out launch mode logic
+      // if (launchMode == null) {
+      //   if (this.launchMode == null) {
+      //     if (Platform.isIOS) {
+      //       launchMode = 3;
+      //     } else {
+      //       launchMode = 1;
+      //     }
+      //   } else {
+      //     launchMode = this.launchMode;
+      //   }
+      // }
+      // this.launchMode = launchMode;
+      // if (launchMode != 2 || launchMode != 3) {
+      //   log("launchMode must be 2 or 3");
+      // }
+      // if (launchMode != 1) {
+      //   Tyrads.instance.newUser =
+      //       false; //to be sure that browser would not show it again
+      // }
+
+      // if (Platform.isIOS && launchMode != 2) {
+      //   var mode = LaunchMode.externalApplication;
+      //   acmoLaunchURLForce(webUrl, mode: mode);
+      // } else {
+      runZonedGuarded(() {
+        parentContext = context;
+        Navigator.of(parentContext!)
+            .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
+      }, (error, stack) {});
+      // }
+
       track(TyradsActivity.opened);
     } catch (e) {
       log("Exiting");
     }
   }
+
 
   to(Widget page, {bool replace = false}) async {
     dynamic result;
