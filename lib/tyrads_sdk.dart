@@ -38,6 +38,7 @@ part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';
 part 'src/acmo/core/constants/deep_routes.dart';
 part 'src/acmo/core/helpers/callback_types.dart';
+part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
 
 class Tyrads {
   static final Tyrads _singleton = Tyrads._internal();
