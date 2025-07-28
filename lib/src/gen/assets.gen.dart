@@ -96,6 +96,21 @@ class $AssetsIconsGen {
   /// File path: assets/icons/privacy.png
   AssetGenImage get privacy => const AssetGenImage('assets/icons/privacy.png');
 
+  /// File path: assets/icons/rank_1.png
+  AssetGenImage get rank1 => const AssetGenImage('assets/icons/rank_1.png');
+
+  /// File path: assets/icons/rank_2.png
+  AssetGenImage get rank2 => const AssetGenImage('assets/icons/rank_2.png');
+
+  /// File path: assets/icons/rank_3.png
+  AssetGenImage get rank3 => const AssetGenImage('assets/icons/rank_3.png');
+
+  /// File path: assets/icons/rank_4.png
+  AssetGenImage get rank4 => const AssetGenImage('assets/icons/rank_4.png');
+
+  /// File path: assets/icons/rank_5.png
+  AssetGenImage get rank5 => const AssetGenImage('assets/icons/rank_5.png');
+
   /// File path: assets/icons/rotate-square.png
   AssetGenImage get rotateSquare =>
       const AssetGenImage('assets/icons/rotate-square.png');
@@ -155,6 +170,11 @@ class $AssetsIconsGen {
     male,
     pending,
     privacy,
+    rank1,
+    rank2,
+    rank3,
+    rank4,
+    rank5,
     rotateSquare,
     shoppingCart,
     star,
@@ -251,6 +271,10 @@ class $AssetsImagesGen {
   AssetGenImage get playtimeTracking =>
       const AssetGenImage('assets/images/playtime_tracking.png');
 
+  /// File path: assets/images/premium-emptybg.jpeg
+  AssetGenImage get premiumEmptybg =>
+      const AssetGenImage('assets/images/premium-emptybg.jpeg');
+
   /// File path: assets/images/premium_star.png
   AssetGenImage get premiumStar =>
       const AssetGenImage('assets/images/premium_star.png');
@@ -306,6 +330,7 @@ class $AssetsImagesGen {
     pendingIcon,
     playtimeIcon,
     playtimeTracking,
+    premiumEmptybg,
     premiumStar,
     privacyBanner,
     sadFace,

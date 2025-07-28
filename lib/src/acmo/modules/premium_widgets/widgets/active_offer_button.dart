@@ -14,7 +14,7 @@ class ActiveOfferButton extends StatelessWidget {
       onTap: (() {
         Tyrads.instance.showOffers(
           context,
-          route: TyradsDeepRoutes.CAMPAIGNS_ACTIVATED,
+          route: 'active-offers',
           launchMode: Tyrads.instance.launchMode,
         );
       }),

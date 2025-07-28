@@ -128,18 +128,20 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
         }
         return true;
       },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: WebViewWidget(controller: webViewController),
-                ),
-              ],
-            ),
-            isLoading ? const AcmoComponentLoading() : const SizedBox(),
-          ],
+      child: SafeArea(
+        child: Scaffold(
+          body: Stack(
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    child: WebViewWidget(controller: webViewController),
+                  ),
+                ],
+              ),
+              isLoading ? const AcmoComponentLoading() : const SizedBox(),
+            ],
+          ),
         ),
       ),
     );
