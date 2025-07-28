@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/core/themes/styles.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/privacy_policy.dart';
-import 'package:tyrads_sdk/src/acmo/modules/offers/pages/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
 import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
@@ -76,7 +75,7 @@ class _AcmoAppState extends State<AcmoApp> {
                     if (Tyrads.instance.newUser) {
                       page = const AcmoUsersUpdatePage();
                     } else {
-                      page = const AcmoOffersPage();
+                      page = const AcmoWebSdk();
                     }
                   } else {
                     page = const AcmoPrivacyPolicyPage();

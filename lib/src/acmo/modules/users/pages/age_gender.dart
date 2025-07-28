@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/src/acmo/core/components/button_primary.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/components/gender_select.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/controller.dart';
+import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import '../../../../gen/assets.gen.dart';
-import '../../offers/components/button_primary.dart';
 import '../components/age_select.dart';
 
 class AcmoUsersUpdatePage extends StatefulWidget {
@@ -128,7 +129,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                                 _controller.updateUser(
                                     Tyrads.instance.publisherUserID);
                                 Tyrads.instance
-                                    .to(const AcmoOffersPage(), replace: true);
+                                    .to(const AcmoWebSdk(), replace: true);
                               },
                       ),
                     ),

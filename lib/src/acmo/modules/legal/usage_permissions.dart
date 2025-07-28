@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/widgets/usage_stats_tile.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
+import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
@@ -59,7 +60,7 @@ class AcmoUsagePermissionsPage extends StatelessWidget {
                             if (Tyrads.instance.newUser) {
                               page = const AcmoUsersUpdatePage();
                             } else {
-                              page = const AcmoOffersPage();
+                              page = const AcmoWebSdk();
                             }
                             Tyrads.instance.to(page, replace: true);
                           }),
