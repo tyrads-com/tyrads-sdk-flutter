@@ -19,4 +19,7 @@ class AcmoKeyNames {
   static const String PRIVACY_ACCEPTED_FOR_USER_ID = '${PREFIX}privacy_accepted_for_user_id_';
   static const String CUSTOM_AD_ID = '${PREFIX}custom_ad_id';
   static const String LANGUAGE = '${PREFIX}language';
+
+
+  static const String TOKEN = '${PREFIX}token';
 }
