@@ -218,12 +218,13 @@ class ActiveOfferTopSection extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 4,
                 children: [
                   ImageNetwork(
                     image: offerDetails?.currency.adUnitCurrencyIcon ?? "",
-                    width: 12,
-                    height: 12,
+                    width: 14,
+                    height: 14,
                   ),
                   Text(
                     '${totalEarnings.numeral(digits: 2)}/${offerDetails?.engagementOverride.currencySales != null ? ((offerDetails!.engagementOverride.currencySales?.multiplier ?? 1) * offerDetails!.campaignPayout.totalPlayablePayoutConverted).numeral(digits: 2) : offerDetails?.campaignPayout.totalPlayablePayoutConverted.numeral(digits: 2)}',

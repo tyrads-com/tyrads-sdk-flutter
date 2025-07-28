@@ -1,39 +1,49 @@
+import 'package:dio/dio.dart' show Dio;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/modules/offer_details/controller.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 
 // ignore: must_be_immutable
 class ImpressionTracker extends StatefulWidget {
-   const ImpressionTracker({
+  const ImpressionTracker({
     super.key,
     required AcmoOffersDetailsController controller,
-  }) : _controller = controller;
+  }) : controller = controller;
 
-  final AcmoOffersDetailsController _controller;
+  final AcmoOffersDetailsController controller;
 
   @override
-  State<ImpressionTracker> createState() => _ImpressionTrackerState();
+  State<ImpressionTracker> createState() => ImpressionTrackerState();
 }
 
-class _ImpressionTrackerState extends State<ImpressionTracker> {
+class ImpressionTrackerState extends State<ImpressionTracker> {
   var tracked = false;
+  final Dio dio = Dio();
 
- late WebViewController webViewController;
+  // late WebViewController webViewController;
   @override
   void initState() {
-  super.initState();
-  
-   Uri? uri = Uri.tryParse(
-        widget._controller.item.tracking.impressionUrl ?? 'about:blank');
-    webViewController = WebViewController();
-    if (uri != null && uri.toString().isNotEmpty) {
-      webViewController.loadRequest(uri);
-    }
+    super.initState();
+
+    // Uri? uri = Uri.tryParse(
+    //     widget.controller.item.tracking.impressionUrl ?? 'about:blank');
+    // webViewController = WebViewController();
+    // if (uri != null && uri.toString().isNotEmpty) {
+    //   webViewController.loadRequest(uri);
+    // }
   }
 
+  Future<void> trackImpression() async {
+    try {
+      await dio
+          .get(widget.controller.item.tracking.impressionUrl ?? 'about:blank');
+    } catch (e) {
+      print('Error tracking impression: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,27 +55,24 @@ class _ImpressionTrackerState extends State<ImpressionTracker> {
           }
           final prefs = snapshot.data!;
           var trackedCampaigns = prefs.getStringList(
-                  AcmoKeyNames.TRACKED_CAMPAIGNS_FOR_USER_ID +
-                      Tyrads.instance.publisherUserID) ??
+              AcmoKeyNames.TRACKED_CAMPAIGNS_FOR_USER_ID +
+                  Tyrads.instance.publisherUserID) ??
               [];
-          if (widget._controller.item.isInstalled ||
+          if (widget.controller.item.isInstalled ||
               tracked ||
               trackedCampaigns
-                  .contains(widget._controller.item.campaignId.toString())) {
+                  .contains(widget.controller.item.campaignId.toString())) {
             return Container();
           }
           tracked = true;
-          trackedCampaigns.add(widget._controller.item.campaignId.toString());
+          trackedCampaigns.add(widget.controller.item.campaignId.toString());
           prefs.setStringList(
               AcmoKeyNames.TRACKED_CAMPAIGNS_FOR_USER_ID +
                   Tyrads.instance.publisherUserID,
               trackedCampaigns);
-          return SizedBox(
-            width: 1,
-            height: 1,
-            child: WebViewWidget(
-              controller: webViewController),
-          );
+          trackImpression();
+
+          return Container();
         });
   }
 }

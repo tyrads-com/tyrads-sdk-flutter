@@ -38,26 +38,29 @@ class AcmoActiveOfferErrorSection extends StatelessWidget {
       child: Column(
         spacing: 16,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                ImageNetwork(
-                  image: imageUrl,
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              ImageNetwork(
+                image: imageUrl,
+                borderRadius: BorderRadius.circular(16),
+                width: 56,
+                height: 56,
+              ),
+              Positioned(
+                child: Container(
                   width: 56,
                   height: 56,
-                ),
-                Positioned.fill(
-                  child: Container(
+                  decoration: BoxDecoration(
                     color: const Color(0xFF000000).withValues(alpha: 0.35),
-                    child: Center(
-                      child: icon,
-                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Center(
+                    child: icon,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           if (title != null)
             Text(
