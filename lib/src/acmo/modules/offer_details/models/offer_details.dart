@@ -190,20 +190,22 @@ class Reward with _$Reward {
 
 @freezed
 class MicroCharge with _$MicroCharge {
-  factory MicroCharge({
+  const factory MicroCharge({
     @Default(0) double earned,
     @Default(0) double earnedConversion,
     @Default(0) double total,
     @Default(0) double totalConversion,
   }) = _MicroCharge;
 
-  factory MicroCharge.fromJson(Map<String, dynamic> json) =>
-      _$MicroChargeFromJson(json);
+  factory MicroCharge.fromJson(Map<String, dynamic>? json) =>
+      json != null ? _$MicroChargeFromJson(json) : empty;
+
+  static const empty = MicroCharge();
 }
 
 @freezed
 class MicroChargeEvents with _$MicroChargeEvents {
-  factory MicroChargeEvents({
+  const factory MicroChargeEvents({
     @Default(0) int id,
     @Default('') String conversionStatus,
     @Default('') String identifier,
@@ -228,13 +230,15 @@ class MicroChargeEvents with _$MicroChargeEvents {
     @Default(0) double limitedTimeEventRemainingSeconds,
   }) = _MicroChargeEvents;
 
-  factory MicroChargeEvents.fromJson(Map<String, dynamic> json) =>
-      _$MicroChargeEventsFromJson(json);
+  factory MicroChargeEvents.fromJson(Map<String, dynamic>? json) =>
+      json != null ? _$MicroChargeEventsFromJson(json) : empty;
+
+  static const empty = MicroChargeEvents();
 }
 
 @freezed
 class PlaytimeEvents with _$PlaytimeEvents {
-  factory PlaytimeEvents({
+  const factory PlaytimeEvents({
     @Default(0) int id,
     @Default('') String conversionStatus,
     @Default(0) double payoutAmount,
@@ -244,6 +248,8 @@ class PlaytimeEvents with _$PlaytimeEvents {
 
   factory PlaytimeEvents.fromJson(Map<String, dynamic> json) =>
       _$PlaytimeEventsFromJson(json);
+
+  static const empty = PlaytimeEvents();
 }
 
 @freezed
@@ -257,8 +263,8 @@ abstract class EarnedPayout with _$EarnedPayout {
     @Default(0) double earnedPlaytimePayoutConverted,
   }) = _EarnedPayout;
 
-  factory EarnedPayout.fromJson(Map<String, dynamic> json) =>
-      _$EarnedPayoutFromJson(json);
+  factory EarnedPayout.fromJson(Map<String, dynamic>? json) =>
+      json != null ? _$EarnedPayoutFromJson(json) : empty;
 
   static const empty = EarnedPayout();
 }
@@ -269,8 +275,8 @@ class EngagementOverride with _$EngagementOverride {
     @JsonKey(name: 'CurrencySales') CurrencySales? currencySales,
   }) = _EngagementOverride;
 
-  factory EngagementOverride.fromJson(Map<String, dynamic> json) =>
-      _$EngagementOverrideFromJson(json);
+  factory EngagementOverride.fromJson(Map<String, dynamic>? json) =>
+      json != null ? _$EngagementOverrideFromJson(json) : empty;
 
   static const empty = EngagementOverride();
 }

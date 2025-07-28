@@ -3774,7 +3774,7 @@ class __$$MicroChargeImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$MicroChargeImpl implements _MicroCharge {
-  _$MicroChargeImpl(
+  const _$MicroChargeImpl(
       {this.earned = 0,
       this.earnedConversion = 0,
       this.total = 0,
@@ -3836,7 +3836,7 @@ class _$MicroChargeImpl implements _MicroCharge {
 }
 
 abstract class _MicroCharge implements MicroCharge {
-  factory _MicroCharge(
+  const factory _MicroCharge(
       {final double earned,
       final double earnedConversion,
       final double total,
@@ -4229,7 +4229,7 @@ class __$$MicroChargeEventsImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$MicroChargeEventsImpl implements _MicroChargeEvents {
-  _$MicroChargeEventsImpl(
+  const _$MicroChargeEventsImpl(
       {this.id = 0,
       this.conversionStatus = '',
       this.identifier = '',
@@ -4423,7 +4423,7 @@ class _$MicroChargeEventsImpl implements _MicroChargeEvents {
 }
 
 abstract class _MicroChargeEvents implements MicroChargeEvents {
-  factory _MicroChargeEvents(
+  const factory _MicroChargeEvents(
       {final int id,
       final String conversionStatus,
       final String identifier,
@@ -4648,7 +4648,7 @@ class __$$PlaytimeEventsImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$PlaytimeEventsImpl implements _PlaytimeEvents {
-  _$PlaytimeEventsImpl(
+  const _$PlaytimeEventsImpl(
       {this.id = 0,
       this.conversionStatus = '',
       this.payoutAmount = 0,
@@ -4718,7 +4718,7 @@ class _$PlaytimeEventsImpl implements _PlaytimeEvents {
 }
 
 abstract class _PlaytimeEvents implements PlaytimeEvents {
-  factory _PlaytimeEvents(
+  const factory _PlaytimeEvents(
       {final int id,
       final String conversionStatus,
       final double payoutAmount,

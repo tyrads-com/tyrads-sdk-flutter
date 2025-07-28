@@ -35,10 +35,10 @@ _$AcmoOfferDetailsModelImpl _$$AcmoOfferDetailsModelImplFromJson(
       targeting: Targeting.fromJson(json['targeting'] as Map<String, dynamic>),
       creative: Creative.fromJson(json['creative'] as Map<String, dynamic>),
       microCharge:
-          MicroCharge.fromJson(json['microCharge'] as Map<String, dynamic>),
+          MicroCharge.fromJson(json['microCharge'] as Map<String, dynamic>?),
       microChargeEvents: (json['microChargeEvents'] as List<dynamic>?)
               ?.map(
-                  (e) => MicroChargeEvents.fromJson(e as Map<String, dynamic>))
+                  (e) => MicroChargeEvents.fromJson(e as Map<String, dynamic>?))
               .toList() ??
           const [],
       hasPlaytimeEvents: json['hasPlaytimeEvents'] as bool? ?? false,
@@ -55,7 +55,7 @@ _$AcmoOfferDetailsModelImpl _$$AcmoOfferDetailsModelImplFromJson(
       engagementOverride: json['engagementOverride'] == null
           ? EngagementOverride.empty
           : EngagementOverride.fromJson(
-              json['engagementOverride'] as Map<String, dynamic>),
+              json['engagementOverride'] as Map<String, dynamic>?),
       isRetryDownload: json['isRetryDownload'] as bool? ?? false,
       capReached: json['capReached'] as bool? ?? false,
       premium: json['premium'] as bool? ?? false,
@@ -69,7 +69,8 @@ _$AcmoOfferDetailsModelImpl _$$AcmoOfferDetailsModelImplFromJson(
       sortingScore: (json['sortingScore'] as num?)?.toDouble() ?? 0.0,
       earnedPayout: json['earnedPayout'] == null
           ? EarnedPayout.empty
-          : EarnedPayout.fromJson(json['earnedPayout'] as Map<String, dynamic>),
+          : EarnedPayout.fromJson(
+              json['earnedPayout'] as Map<String, dynamic>?),
     );
 
 Map<String, dynamic> _$$AcmoOfferDetailsModelImplToJson(
