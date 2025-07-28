@@ -21,6 +21,7 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
+import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/models/init.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/repository.dart';
@@ -31,7 +32,7 @@ import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
-import 'src/acmo/modules/dashboard/top_offers.dart';
+import 'src/acmo/modules/premium_widgets/top_offers.dart';
 import 'src/acmo/modules/tracking/activities.dart';
 import 'src/acmo/modules/tracking/controller.dart';
 
@@ -39,6 +40,7 @@ part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';
 part 'src/acmo/core/constants/deep_routes.dart';
 part 'src/acmo/core/helpers/callback_types.dart';
+part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
 
 class Tyrads {
   static final Tyrads _singleton = Tyrads._internal();
@@ -209,9 +211,8 @@ class Tyrads {
         fd["userGroup"] = userInfo?.userGroup;
       }
       final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
-      final encData = _isSecure
-        ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd)
-        : {};
+      final encData =
+          _isSecure ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd) : {};
       var response = await dio.post(AcmoEndpointNames.INITIALIZE,
           data: _isSecure ? encData : fd);
       if (response.statusCode == 200) {
@@ -403,14 +404,15 @@ class Tyrads {
     _callbacks[type]?.call(data);
   }
 
-  Widget topOffersWidget(BuildContext context,
-      {showMore = true,
-      showMyOffers = true,
-      showMyOffersEmptyView = false,
-      widgetStyle = 4}) {
+  Widget topOffersWidget(
+    BuildContext context, {
+    bool showMore = true,
+    bool showMyOffers = true,
+    bool showMyOffersEmptyView = false,
+    PremiumWidgetStyles widgetStyle = PremiumWidgetStyles.list,
+  }) {
     parentContext = context;
     return TopOffersWidget(
-      key: TopOffersWidget.globalKey,
       showMore: showMore,
       showMyOffers: showMyOffers,
       showMyOffersEmptyView: showMyOffersEmptyView,
@@ -430,6 +432,6 @@ class Tyrads {
       LocaleSettings.setLocaleRaw(selectedLanguage, listenToDeviceLocale: true);
       prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
     }
-    TopOffersWidget.globalKey.currentState?.forceRebuild();
+    AcmoPremiumWidgetsController.instance.refresh();
   }
 }
