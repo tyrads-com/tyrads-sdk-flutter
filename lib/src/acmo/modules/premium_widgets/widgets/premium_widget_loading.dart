@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/skeleton_loading.dart';
-import 'package:tyrads_sdk/src/acmo/modules/offers/new_offerwall/widgets/card_container.dart';
+import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/card_container.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class PremiumWidgetsLoading extends StatelessWidget {
