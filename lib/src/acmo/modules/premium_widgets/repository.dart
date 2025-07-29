@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:tyrads_sdk/src/acmo/core/constants/endpoint_name.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
-import 'package:tyrads_sdk/src/acmo/modules/offers/models/offers.dart';
-import 'package:tyrads_sdk/src/acmo/modules/offers/new_offerwall/models/currency_sale_model.dart';
+import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/currency_sale_model/currency_sale_model.dart';
+import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoOffersRepository {
