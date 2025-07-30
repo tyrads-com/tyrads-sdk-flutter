@@ -41,7 +41,6 @@ class AcmoCarouselSlider extends StatefulWidget {
 }
 
 class _AcmoCarouselSliderState extends State<AcmoCarouselSlider> {
-  late PageController _pageController;
   Timer? _timer;
   late ValueNotifier<int> _currentIndex;
 
@@ -49,129 +48,160 @@ class _AcmoCarouselSliderState extends State<AcmoCarouselSlider> {
     return ((index % length) + length) % length;
   }
 
+  Map<String, double> _getResponsiveProperties(double screenWidth) {
+    if (screenWidth > 1024) {
+      return {
+        'viewportFraction': 0.3,
+        'scaleFactor': 0.88,
+      };
+    } else if (screenWidth > 600) {
+      return {
+        'viewportFraction': 0.45,
+        'scaleFactor': 0.9,
+      };
+    } else {
+      return {
+        'viewportFraction': widget.viewportFraction,
+        'scaleFactor': widget.scaleFactor,
+      };
+    }
+  }
+
   @override
   void initState() {
     _currentIndex = ValueNotifier<int>(widget.initialPage % widget.itemCount);
-    _pageController = PageController(
-      initialPage: widget.initialPage,
-      viewportFraction: widget.viewportFraction,
-    );
-
-    if (widget.itemCount > 1 && widget.autoPlayInterval > Duration.zero) {
-      _timer = Timer.periodic(widget.autoPlayInterval, (Timer timer) {
-        if (_pageController.hasClients && widget.itemCount > 0) {
-          _animateToNextPage();
-        }
-      });
-    }
     super.initState();
   }
 
-  void _animateToNextPage() {
-    if (widget.itemCount > 0) {
-      _pageController.animateToPage(
-        _pageController.page!.round() + 1,
-        duration: const Duration(milliseconds: 1000),
-        curve: Curves.easeInOut,
-      );
+  void _startAutoPlay(PageController pageController) {
+    _timer?.cancel();
+    if (widget.itemCount > 1 && widget.autoPlayInterval > Duration.zero) {
+      _timer = Timer.periodic(widget.autoPlayInterval, (Timer timer) {
+        if (pageController.hasClients && widget.itemCount > 0) {
+          pageController.animateToPage(
+            pageController.page!.round() + 1,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
     }
   }
 
   @override
   void dispose() {
     _timer?.cancel();
-    _pageController.dispose();
     _currentIndex.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        PageView.builder(
-          controller: _pageController,
-          itemCount: widget.infiniteScroll ? null : widget.itemCount,
-          clipBehavior: Clip.none,
-          itemBuilder: (context, index) {
-            final loopedIndex = _getLoopedIndex(index, widget.itemCount);
-            return AnimatedBuilder(
-              animation: _pageController,
-              builder: (context, child) {
-                double value = 1.0;
-                if (_pageController.position.haveDimensions) {
-                  value = (_pageController.page! - index).abs();
-                  value = Curves.easeOut.transform(min(value, 1.0));
-                  value = widget.scaleFactor +
-                      (1 - widget.scaleFactor) * (1 - value);
-                } else {
-                  value =
-                      index == _currentIndex.value ? 1.0 : widget.scaleFactor;
-                }
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final responsiveProps =
+                  _getResponsiveProperties(constraints.maxWidth);
+              final currentViewportFraction =
+                  responsiveProps['viewportFraction']!;
+              final currentScaleFactor = responsiveProps['scaleFactor']!;
 
-                return Center(
-                  child: SizedBox(
-                    height: Curves.easeOut.transform(value) *
-                        MediaQuery.of(context).size.height *
-                        0.8,
-                    width: Curves.easeOut.transform(value) *
-                        MediaQuery.of(context).size.width *
-                        widget.viewportFraction,
-                    child: Transform.scale(
-                      scale: value,
-                      child: child,
-                    ),
-                  ),
-                );
-              },
-              child: widget.itemBuilder(context, loopedIndex),
-            );
-          },
-          onPageChanged: (index) {
-            final loopedIndex = _getLoopedIndex(index, widget.itemCount);
-            _currentIndex.value = loopedIndex;
-            widget.onPageChanged?.call(loopedIndex);
-          },
-        ),
-        if (widget.showIndicator && widget.itemCount > 0)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ValueListenableBuilder<int>(
-                valueListenable: _currentIndex,
-                builder: (context, value, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(widget.itemCount, (index) {
-                      return TweenAnimationBuilder<double>(
-                        duration: const Duration(milliseconds: 300),
-                        tween: Tween<double>(
-                            begin: 1.0, end: value == index ? 1.2 : 1.0),
-                        builder: (context, double scale, child) {
-                          return Transform.scale(
-                            scale: scale,
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: widget.indicatorSpacing),
-                              width: widget.indicatorSize,
-                              height: widget.indicatorSize,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: value == index
-                                    ? widget.indicatorActiveColor ??
-                                        Tyrads.instance.colorPremiumFg
-                                    : widget.indicatorInactiveColor ??
-                                        Tyrads.instance.colorPremiumFg?.withValues(alpha: 0.3),
-                              ),
-                            ),
-                          );
-                        },
+              final PageController pageController = PageController(
+                initialPage: widget.initialPage,
+                viewportFraction: currentViewportFraction,
+              );
+
+              _startAutoPlay(pageController);
+
+              return PageView.builder(
+                key: ValueKey(currentViewportFraction),
+                controller: pageController,
+                itemCount: widget.infiniteScroll ? null : widget.itemCount,
+                clipBehavior: Clip.none,
+                itemBuilder: (context, index) {
+                  final loopedIndex = _getLoopedIndex(index, widget.itemCount);
+                  return AnimatedBuilder(
+                    animation: pageController,
+                    builder: (context, child) {
+                      double value = 1.0;
+                      if (pageController.position.haveDimensions) {
+                        value = (pageController.page! - index).abs();
+                        value = Curves.easeOut.transform(min(value, 1.0));
+                        value = currentScaleFactor +
+                            (1 - currentScaleFactor) * (1 - value);
+                      } else {
+                        value = index == _currentIndex.value
+                            ? 1.0
+                            : currentScaleFactor;
+                      }
+
+                      return Center(
+                        child: SizedBox(
+                          height: Curves.easeOut.transform(value) *
+                              MediaQuery.of(context).size.height *
+                              0.8,
+                          width: Curves.easeOut.transform(value) *
+                              MediaQuery.of(context).size.width *
+                              currentViewportFraction,
+                          child: Transform.scale(
+                            scale: value,
+                            child: child,
+                          ),
+                        ),
                       );
-                    }),
+                    },
+                    child: widget.itemBuilder(context, loopedIndex),
                   );
                 },
-              ),
+                onPageChanged: (index) {
+                  final loopedIndex = _getLoopedIndex(index, widget.itemCount);
+                  _currentIndex.value = loopedIndex;
+                  widget.onPageChanged?.call(loopedIndex);
+                },
+              );
+            },
+          ),
+        ),
+        if (widget.showIndicator && widget.itemCount > 0)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ValueListenableBuilder<int>(
+              valueListenable: _currentIndex,
+              builder: (context, value, child) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(widget.itemCount, (index) {
+                    return TweenAnimationBuilder<double>(
+                      duration: const Duration(milliseconds: 300),
+                      tween: Tween<double>(
+                          begin: 1.0, end: value == index ? 1.2 : 1.0),
+                      builder: (context, double scale, child) {
+                        return Transform.scale(
+                          scale: scale,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: widget.indicatorSpacing),
+                            width: widget.indicatorSize,
+                            height: widget.indicatorSize,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: value == index
+                                  ? widget.indicatorActiveColor ??
+                                      Tyrads.instance.colorPremiumFg
+                                  : widget.indicatorInactiveColor ??
+                                      Tyrads.instance.colorPremiumFg
+                                          ?.withValues(alpha: 0.3),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }),
+                );
+              },
             ),
           ),
       ],

@@ -4,7 +4,8 @@ import 'package:tyrads_sdk/tyrads_sdk.dart';
 import '../../../core/components/appbar.dart';
 
 class LanguagePage extends StatefulWidget {
-  const LanguagePage({super.key});
+  const LanguagePage({super.key, this.showAppBar = true});
+  final bool showAppBar;
 
   @override
   State<LanguagePage> createState() => _LanguagePageState();
@@ -24,9 +25,9 @@ class _LanguagePageState extends State<LanguagePage> {
     String currentLanguage = Tyrads.instance.selectedLanguage;
 
     return Scaffold(
-      appBar: AcmoAppBar(
+      appBar: widget.showAppBar? AcmoAppBar(
         titleText: t.language,
-      ),
+      ): null,
       body: ListView.separated(
         itemCount: languages.length,
         separatorBuilder: (context, index) => const Divider(height: 1, color: Color(0xFFE0E0E0)),

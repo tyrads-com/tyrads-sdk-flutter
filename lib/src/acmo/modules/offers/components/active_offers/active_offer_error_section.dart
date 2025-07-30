@@ -82,11 +82,9 @@ class AcmoActiveOfferErrorSection extends StatelessWidget {
                 ),
               ),
               'coin': StyledTextWidgetBuilderTag(
-                size: const Size(14, 14),
-                (context, _, text) => ImageNetwork(
-                  image: coinUrl ?? "",
-                  height: 14,
-                  width: 14,
+                (context, _, text) => CachedNetworkImage(
+                  imageUrl: coinUrl ?? "",
+                  width: 15,
                 ),
               )
             },

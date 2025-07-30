@@ -65,6 +65,7 @@ class AcmoPremiumOfferSlider extends StatelessWidget {
                   itemScaleFactor: 2.8,
                   currencySaleModel: _controller.currencySales,
                   item: _controller.hotOffers[index],
+                  width: double.maxFinite,
                   margin: EdgeInsets.zero,
                   onButtonClick: () async {
                     final e = _controller.hotOffers[index];

@@ -29,6 +29,7 @@ class _AcmoOffersPageState extends State<AcmoOffersPage> {
   final _controller = AcmoOffersController();
   late final _futureData = _controller.loadOffers();
   bool initial = true;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -102,6 +103,7 @@ class AcmoOffersBody extends StatefulWidget {
   const AcmoOffersBody({super.key, required this.controller});
 
   final AcmoOffersController controller;
+
   @override
   State<AcmoOffersBody> createState() => _AcmoOffersBodyState();
 }
@@ -145,7 +147,21 @@ class _AcmoOffersBodyState extends State<AcmoOffersBody>
 
   @override
   Widget build(BuildContext context) {
-    var itemHeight = (MediaQuery.of(context).size.width) / 1.91;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    double itemHeight;
+    const double desktopMaxWidth = 1200;
+
+    final isDesktop = screenWidth >= 1024;
+    final isTablet = screenWidth >= 600 && !isDesktop;
+
+    if (isDesktop) {
+      itemHeight = screenWidth / 4.5;
+    } else if (isTablet) {
+      itemHeight = (screenWidth) / 2.5;
+    } else {
+      itemHeight = (screenWidth) / 1.91;
+    }
     return Stack(
       children: [
         SmartRefresher(
@@ -231,7 +247,13 @@ class _AcmoOffersBodyState extends State<AcmoOffersBody>
               if (_controller.items.isNotEmpty)
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: isDesktop
+                        ? EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: screenWidth >= 1200
+                                ? ((screenWidth - desktopMaxWidth) / 2) + 16
+                                : 16)
+                        : const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: Text(
                       'Other Games',
                       style: GoogleFonts.poppins(
@@ -241,59 +263,78 @@ class _AcmoOffersBodyState extends State<AcmoOffersBody>
                     ),
                   ),
                 ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  _controller.currencySales.data?.currencySales != null
-                      ? _controller.allItems
-                          .map((e) => InkWell(
-                                onTap: () {
-                                  Tyrads.instance.to(AcmoOfferDetailsPage(
-                                    id: e.campaignId,
-                                  ));
-                                },
-                                child: AcmoNewOfferWallItem(
-                                  item: e,
-                                  onButtonClick: () async {
-                                    Loading.open();
-                                    await _controller.openOffer(
-                                      clickUrl: e.tracking.clickUrl,
-                                      s2sClickUrl: e.tracking.s2sClickUrl,
-                                      isRetryDownload: e.isRetryDownload,
-                                      isInstalled: e.isInstalled,
-                                      previewUrl: e.app.previewUrl,
-                                      campaignId: e.campaignId,
-                                    );
-                                    Loading.dismiss();
+              SliverPadding(
+                padding: isDesktop
+                    ? EdgeInsets.symmetric(
+                        horizontal: screenWidth >= 1200
+                            ? (screenWidth - desktopMaxWidth) / 2
+                            : 0)
+                    : const EdgeInsets.symmetric(horizontal: 0),
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: isDesktop
+                        ? 3
+                        : isTablet
+                            ? 2
+                            : 1,
+                    crossAxisSpacing: 16,
+                    mainAxisExtent: isDesktop || isTablet ? 270 : 300,
+                  ),
+                  delegate: SliverChildListDelegate(
+                    _controller.currencySales.data?.currencySales != null
+                        ? _controller.allItems
+                            .map((e) => InkWell(
+                                  onTap: () {
+                                    Tyrads.instance.to(AcmoOfferDetailsPage(
+                                      id: e.campaignId,
+                                    ));
                                   },
-                                  currencySaleModel: _controller.currencySales,
-                                ),
-                              ))
-                          .toList()
-                      : _controller.items
-                          .map((e) => GestureDetector(
-                                onTap: () {
-                                  Tyrads.instance.to(AcmoOfferDetailsPage(
-                                    id: e.campaignId,
-                                  ));
-                                },
-                                child: AcmoNewOfferWallItem(
-                                  item: e,
-                                  onButtonClick: () async {
-                                    Loading.open();
-                                    await _controller.openOffer(
-                                      clickUrl: e.tracking.clickUrl,
-                                      s2sClickUrl: e.tracking.s2sClickUrl,
-                                      isRetryDownload: e.isRetryDownload,
-                                      isInstalled: e.isInstalled,
-                                      previewUrl: e.app.previewUrl,
-                                      campaignId: e.campaignId,
-                                    );
-                                    Loading.dismiss();
+                                  child: AcmoNewOfferWallItem(
+                                    item: e,
+                                    onButtonClick: () async {
+                                      Loading.open();
+                                      await _controller.openOffer(
+                                        clickUrl: e.tracking.clickUrl,
+                                        s2sClickUrl: e.tracking.s2sClickUrl,
+                                        isRetryDownload: e.isRetryDownload,
+                                        isInstalled: e.isInstalled,
+                                        previewUrl: e.app.previewUrl,
+                                        campaignId: e.campaignId,
+                                      );
+                                      Loading.dismiss();
+                                    },
+                                    currencySaleModel:
+                                        _controller.currencySales,
+                                  ),
+                                ))
+                            .toList()
+                        : _controller.items
+                            .map((e) => GestureDetector(
+                                  onTap: () {
+                                    Tyrads.instance.to(AcmoOfferDetailsPage(
+                                      id: e.campaignId,
+                                    ));
                                   },
-                                  currencySaleModel: _controller.currencySales,
-                                ),
-                              ))
-                          .toList(),
+                                  child: AcmoNewOfferWallItem(
+                                    item: e,
+                                    onButtonClick: () async {
+                                      Loading.open();
+                                      await _controller.openOffer(
+                                        clickUrl: e.tracking.clickUrl,
+                                        s2sClickUrl: e.tracking.s2sClickUrl,
+                                        isRetryDownload: e.isRetryDownload,
+                                        isInstalled: e.isInstalled,
+                                        previewUrl: e.app.previewUrl,
+                                        campaignId: e.campaignId,
+                                      );
+                                      Loading.dismiss();
+                                    },
+                                    currencySaleModel:
+                                        _controller.currencySales,
+                                  ),
+                                ))
+                            .toList(),
+                  ),
                 ),
               ),
               const SliverToBoxAdapter(
