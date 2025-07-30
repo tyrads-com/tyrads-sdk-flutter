@@ -9,7 +9,7 @@ class ActiveOfferButton extends StatelessWidget {
   final int activatedCount;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {;
     return InkWell(
       onTap: (() {
         Tyrads.instance.showOffers(
@@ -57,7 +57,7 @@ class ActiveOfferButton extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          "$activatedCount+",
+                          activatedCount > 99 ? '99+' : activatedCount.toString(),
                           maxLines: 1,
                           softWrap: false,
                           style: GoogleFonts.poppins(
