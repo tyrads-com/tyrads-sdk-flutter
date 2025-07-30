@@ -14,7 +14,6 @@ import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class TopOffersWidget extends StatefulWidget {
-
   const TopOffersWidget({
     super.key,
     this.showMore = true,
@@ -38,6 +37,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   List<dynamic>? _cachedHotOffers;
   bool _isLoading = true;
   int _activeOffersCount = 1;
+  final Map<int, ValueNotifier<bool>> _itemLoadingNotifiers = {};
 
   @override
   void initState() {
@@ -55,7 +55,17 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
         _cachedHotOffers = _controller.hotOffers;
         _isLoading = false;
         _activeOffersCount = _controller.activatedCount.value;
+        _initializeItemLoadingNotifiers();
       });
+    }
+  }
+
+  void _initializeItemLoadingNotifiers() {
+    _itemLoadingNotifiers.clear(); // Clear existing notifiers
+    for (var offer in _cachedHotOffers!) {
+      if (offer is AcmoOffersModel) {
+        _itemLoadingNotifiers[offer.campaignId] = ValueNotifier(false);
+      }
     }
   }
 
@@ -232,29 +242,36 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
           if (widget.widgetStyle == PremiumWidgetStyles.list)
             ..._cachedHotOffers!.asMap().entries.map((entry) {
               var e = entry.value as AcmoOffersModel;
+              final itemLoadingNotifier = _itemLoadingNotifiers.putIfAbsent(
+                  e.campaignId, () => ValueNotifier(false));
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: AcmoOfferListItem(
-                  key: ValueKey(t.dashboard.myGames),
-                  onButtonTap: privacyAccepted
-                      ? () async {
-                          await _controller.openOffer(
-                            clickUrl: e.tracking.clickUrl,
-                            s2sClickUrl: e.tracking.s2sClickUrl,
-                            isRetryDownload: e.isRetryDownload,
-                            isInstalled: e.isInstalled,
-                            previewUrl: e.app.previewUrl,
-                            campaignId: e.campaignId,
-                          );
-                        }
-                      : () => Tyrads.instance.showOffers(
-                            context,
-                            route: 'offer/${e.campaignId}',
-                            launchMode: Tyrads.instance.launchMode,
-                          ),
-                  e: e,
-                  currencySales: _controller.currencySales.data?.currencySales,
-                  index: entry.key,
+                child: Builder(
+                  builder: (context) {
+                    return AcmoOfferListItem(
+                      key: ValueKey(e.campaignId),
+                      isLoading: itemLoadingNotifier,
+                      onButtonTap:  privacyAccepted
+                          ? () async {
+                              await _controller.openOffer(
+                                clickUrl: e.tracking.clickUrl,
+                                s2sClickUrl: e.tracking.s2sClickUrl,
+                                isRetryDownload: e.isRetryDownload,
+                                isInstalled: e.isInstalled,
+                                previewUrl: e.app.previewUrl,
+                                campaignId: e.campaignId,
+                              );
+                            }
+                          : () => Tyrads.instance.showOffers(
+                                context,
+                                route: 'offer/${e.campaignId}',
+                                launchMode: Tyrads.instance.launchMode,
+                              ),
+                      e: e,
+                      currencySales: _controller.currencySales.data?.currencySales,
+                      index: entry.key,
+                    );
+                  }
                 ),
               );
             }),
@@ -276,7 +293,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                   itemBuilder: (context, index) => GestureDetector(
                     onTap: () => Tyrads.instance.showOffers(
                       context,
-                      route: 'offers/${_controller.hotOffers[index].campaignId}',
+                      route:
+                          'offers/${_controller.hotOffers[index].campaignId}',
                       launchMode: Tyrads.instance.launchMode,
                     ),
                     child: AcmoNewOfferWallItem(
@@ -304,12 +322,14 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                             }
                           : () => Tyrads.instance.showOffers(
                                 context,
-                                route: 'offers/${_controller.hotOffers[index].campaignId}',
+                                route:
+                                    'offers/${_controller.hotOffers[index].campaignId}',
                                 launchMode: Tyrads.instance.launchMode,
                               ),
                       onTap: () => Tyrads.instance.showOffers(
                         context,
-                        route: 'offers/${_controller.hotOffers[index].campaignId}',
+                        route:
+                            'offers/${_controller.hotOffers[index].campaignId}',
                         launchMode: Tyrads.instance.launchMode,
                       ),
                     ),
