@@ -202,7 +202,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                   ),
                 ),
                 const Spacer(),
-                if (widget.showMore && _activeOffersCount > 0)
+                // if (widget.showMore && _activeOffersCount > 0)
+                if (widget.showMore)
                   InkWell(
                     onTap: () {
                       Tyrads.instance.showOffers(
@@ -246,32 +247,28 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                   e.campaignId, () => ValueNotifier(false));
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Builder(
-                  builder: (context) {
-                    return AcmoOfferListItem(
-                      key: ValueKey(e.campaignId),
-                      isLoading: itemLoadingNotifier,
-                      onButtonTap:  privacyAccepted
-                          ? () async {
-                              await _controller.openOffer(
-                                clickUrl: e.tracking.clickUrl,
-                                s2sClickUrl: e.tracking.s2sClickUrl,
-                                isRetryDownload: e.isRetryDownload,
-                                isInstalled: e.isInstalled,
-                                previewUrl: e.app.previewUrl,
-                                campaignId: e.campaignId,
-                              );
-                            }
-                          : () => Tyrads.instance.showOffers(
-                                context,
-                                route: 'offer/${e.campaignId}',
-                                launchMode: Tyrads.instance.launchMode,
-                              ),
-                      e: e,
-                      currencySales: _controller.currencySales.data?.currencySales,
-                      index: entry.key,
-                    );
-                  }
+                child: AcmoOfferListItem(
+                  key: ValueKey(e.campaignId),
+                  isLoading: itemLoadingNotifier,
+                  onButtonTap: privacyAccepted
+                      ? () async {
+                          await _controller.openOffer(
+                            clickUrl: e.tracking.clickUrl,
+                            s2sClickUrl: e.tracking.s2sClickUrl,
+                            isRetryDownload: e.isRetryDownload,
+                            isInstalled: e.isInstalled,
+                            previewUrl: e.app.previewUrl,
+                            campaignId: e.campaignId,
+                          );
+                        }
+                      : () => Tyrads.instance.showOffers(
+                            context,
+                            route: 'offer/${e.campaignId}',
+                            launchMode: Tyrads.instance.launchMode,
+                          ),
+                  e: e,
+                  currencySales: _controller.currencySales.data?.currencySales,
+                  index: entry.key,
                 ),
               );
             }),
@@ -290,7 +287,10 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                               .withValues(alpha: 0.3),
                   indicatorActiveColor: Tyrads.instance.colorPremium ??
                       Theme.of(context).colorScheme.secondary,
-                  itemBuilder: (context, index) => GestureDetector(
+                  itemBuilder: (context, index) {
+                    final itemLoadingNotifier = _itemLoadingNotifiers.putIfAbsent(
+                        _controller.hotOffers[index].campaignId, () => ValueNotifier(false));
+                    return GestureDetector(
                     onTap: () => Tyrads.instance.showOffers(
                       context,
                       route:
@@ -303,6 +303,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                       item: _controller.hotOffers[index],
                       margin: const EdgeInsets.all(16),
                       isPremiumWidget: true,
+                      isLoading: itemLoadingNotifier,
                       onButtonClick: privacyAccepted
                           ? () async {
                               await _controller.openOffer(
@@ -333,29 +334,31 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                         launchMode: Tyrads.instance.launchMode,
                       ),
                     ),
-                  ),
+                  );
+                  },
                 ),
               ),
             ),
-          if (_activeOffersCount == 0)
-            TextButton(
-              onPressed: () {
-                Tyrads.instance.showOffers(
-                  context,
-                  launchMode: Tyrads.instance.launchMode,
-                );
-              },
-              child: Text(
-                'See Other Offers',
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Tyrads.instance.colorPremium ??
-                      Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-            ),
-          if (widget.showMyOffers && _activeOffersCount > 0)
+          // if (_activeOffersCount == 0)
+          //   TextButton(
+          //     onPressed: () {
+          //       Tyrads.instance.showOffers(
+          //         context,
+          //         launchMode: Tyrads.instance.launchMode,
+          //       );
+          //     },
+          //     child: Text(
+          //       'See Other Offers',
+          //       style: GoogleFonts.poppins(
+          //         fontSize: 12,
+          //         fontWeight: FontWeight.w600,
+          //         color: Tyrads.instance.colorPremium ??
+          //             Theme.of(context).colorScheme.secondary,
+          //       ),
+          //     ),
+          //   ),
+          // if (widget.showMyOffers && _activeOffersCount > 0)
+          if (widget.showMyOffers)
             ActiveOfferButton(
               key: ValueKey(t.dashboard.myGames),
               activatedCount: _activeOffersCount,
