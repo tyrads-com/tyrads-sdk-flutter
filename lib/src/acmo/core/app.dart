@@ -72,11 +72,11 @@ class _AcmoAppState extends State<AcmoApp> {
                   var privacyAccepted = 
                   prefs.getBool(AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID + Tyrads.instance.publisherUserID) ?? false;
                   if (privacyAccepted) {
-                    // if (Tyrads.instance.newUser) {
-                    //   page = const AcmoUsersUpdatePage();
-                    // } else {
+                    if (Tyrads.instance.newUser) {
+                      page = const AcmoUsersUpdatePage();
+                    } else {
                       page = const AcmoWebSdk();
-                    // }
+                    }
                   } else {
                     page = const AcmoPrivacyPolicyPage();
                   }

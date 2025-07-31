@@ -57,11 +57,11 @@ class AcmoUsagePermissionsPage extends StatelessWidget {
                                     Tyrads.instance.publisherUserID,
                                 true);
                             Widget page;
-                            // if (Tyrads.instance.newUser) {
-                            //   page = const AcmoUsersUpdatePage();
-                            // } else {
+                            if (Tyrads.instance.newUser) {
+                              page = const AcmoUsersUpdatePage();
+                            } else {
                               page = const AcmoWebSdk();
-                            // }
+                            }
                             Tyrads.instance.to(page, replace: true);
                           }),
                         )
