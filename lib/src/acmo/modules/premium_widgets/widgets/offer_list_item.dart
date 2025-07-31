@@ -19,7 +19,7 @@ class AcmoOfferListItem extends StatelessWidget {
 
   final AcmoOffersModel e;
   final CurrencySales? currencySales;
-  final Future<void>? Function() onButtonTap;
+  final Future<void> Function() onButtonTap;
   final int index;
   final ValueNotifier<bool> isLoading;
 

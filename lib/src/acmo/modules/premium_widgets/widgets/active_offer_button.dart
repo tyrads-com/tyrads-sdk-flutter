@@ -9,7 +9,8 @@ class ActiveOfferButton extends StatelessWidget {
   final int activatedCount;
 
   @override
-  Widget build(BuildContext context) {;
+  Widget build(BuildContext context) {
+    ;
     return InkWell(
       onTap: (() {
         Tyrads.instance.showOffers(
@@ -47,27 +48,30 @@ class ActiveOfferButton extends StatelessWidget {
                         fontSize: 14,
                       ),
                     ),
-                    Container(
-                      height: 20,
-                      width: 20,
-                      margin: const EdgeInsets.only(left: 8),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFFFF554A),
-                      ),
-                      child: Center(
-                        child: Text(
-                          activatedCount > 99 ? '99+' : activatedCount.toString(),
-                          maxLines: 1,
-                          softWrap: false,
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
+                    if (activatedCount > 0)
+                      Container(
+                        height: 20,
+                        width: 20,
+                        margin: const EdgeInsets.only(left: 8),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFFFF554A),
+                        ),
+                        child: Center(
+                          child: Text(
+                            activatedCount > 99
+                                ? '99+'
+                                : activatedCount.toString(),
+                            maxLines: 1,
+                            softWrap: false,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
-                      ),
-                    )
+                      )
                   ],
                 )),
               ),
