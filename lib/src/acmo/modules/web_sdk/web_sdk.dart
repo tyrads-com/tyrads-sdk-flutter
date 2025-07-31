@@ -1,12 +1,10 @@
-// ignore_for_file: must_be_immutable
-
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/loading.dart';
-import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class AcmoWebSdk extends StatefulWidget {
   const AcmoWebSdk({super.key});
@@ -16,8 +14,10 @@ class AcmoWebSdk extends StatefulWidget {
 }
 
 class _AcmoWebSdkState extends State<AcmoWebSdk> {
-  late WebViewController webViewController;
+  late InAppWebViewController _webViewController;
   var isLoading = true;
+
+  final GlobalKey webViewKey = GlobalKey();
 
   void _handleJSMessage(String message) {
     try {
@@ -63,70 +63,30 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
   @override
   void initState() {
     super.initState();
-    webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..addJavaScriptChannel('JSInterface', onMessageReceived: (message) {
-        _handleJSMessage(message.message);
-      })
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageFinished: (String url) async {
-            if (mounted) {
-              setState(() {
-                isLoading = false;
-              });
-            }
-            await webViewController.runJavaScript('''
-              window.addEventListener('message', function(event) {
-                try {
-                  const message = typeof event.data === 'string' 
-                    ? JSON.parse(event.data) 
-                    : event.data;
-                  if (message && message.command === 'webview_command') {
-                    JSInterface.postMessage(JSON.stringify({
-                      command: message.command,
-                      action: message.action,
-                      languageCode: message.languageCode,
-                      data: message.data
-                    }));
-                  }
-                } catch (error) {
-                  console.error('JS Bridge error:', error);
-                }
-              });
-            ''');
-          },
-          onNavigationRequest: (NavigationRequest request) {
-            var url = request.url;
-            if (url.contains("acmo-cmd")) {
-              // if (url.contains("close-app")) {
-              //   Tyrads.instance.back();
-              //   return NavigationDecision.prevent;
-              // }
-            } else {
-              if (url.contains('websdk.tyrads.com')) {
-                return NavigationDecision.navigate;
-              } else {
-                acmoLaunchURLForce(url);
-                return NavigationDecision.prevent;
-              }
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(Tyrads.instance.webUrl));
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (await webViewController.canGoBack()) {
-          webViewController.goBack();
-          return false;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (didPop) {
+          log('Pop already occurred (didPop: true). Result: $result');
+          return;
         }
-        return true;
+        log('Pop invoked (didPop: false). Checking WebView history.');
+
+        if (await _webViewController.canGoBack()) {
+          _webViewController.goBack();
+          log('WebView navigated back.');
+        } else {
+          log('WebView cannot go back. Popping Flutter route.');
+          if (mounted) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pop('WebViewClosed');
+            });
+          }
+        }
       },
       child: SafeArea(
         child: Scaffold(
@@ -135,7 +95,66 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
               Column(
                 children: [
                   Expanded(
-                    child: WebViewWidget(controller: webViewController),
+                    child: InAppWebView(
+                      key: webViewKey,
+                      initialUrlRequest:
+                          URLRequest(url: WebUri(Tyrads.instance.webUrl)),
+                      initialSettings: InAppWebViewSettings(
+                        javaScriptEnabled: true,
+                        javaScriptCanOpenWindowsAutomatically: true,
+                        allowFileAccess: true,
+                        allowContentAccess: true,
+                        mediaPlaybackRequiresUserGesture: false,
+                      ),
+                      onWebViewCreated: (controller) {
+                        _webViewController = controller;
+
+                        _webViewController.addJavaScriptHandler(
+                          handlerName: 'JSInterface',
+                          callback: (args) {
+                            if (args.isNotEmpty) {
+                              _handleJSMessage(args[0].toString());
+                            }
+                          },
+                        );
+                      },
+                      onLoadStart: (controller, url) {},
+                      onLoadStop: (controller, url) async {
+                        if (mounted) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                        await controller.evaluateJavascript(source: '''
+                          window.addEventListener('message', function(event) {
+                            try {
+                              const message = typeof event.data === 'string'
+                                ? JSON.parse(event.data)
+                                : event.data;
+                              if (message && message.command === 'webview_command') {
+                                window.flutter_inappwebview.callHandler('JSInterface', JSON.stringify({
+                                  command: message.command,
+                                  action: message.action,
+                                  languageCode: message.languageCode,
+                                  data: message.data
+                                }));
+                              }
+                            } catch (error) {
+                              console.error('JS Bridge error:', error);
+                            }
+                          });
+                        ''');
+                      },
+                      onProgressChanged: (controller, progress) {},
+                      onReceivedError: (controller, request, error) {
+                        debugPrint('WebView Error: ${error.toString()}');
+                      },
+                      onPermissionRequest: (controller, request) async {
+                        return PermissionResponse(
+                            resources: request.resources,
+                            action: PermissionResponseAction.GRANT);
+                      },
+                    ),
                   ),
                 ],
               ),
