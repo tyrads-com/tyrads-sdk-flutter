@@ -271,7 +271,6 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                           "${currencySaleModel.data?.currencySales?.multiplier?.formatDouble()}x Bonus",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.italic,
                             fontSize: 12,
                             color:
                                 Tyrads.instance.colorPremiumFg ?? Colors.white,
