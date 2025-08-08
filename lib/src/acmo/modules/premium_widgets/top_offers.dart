@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/custom_slider.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/active_offer_button.dart';
@@ -38,6 +39,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   bool _isLoading = true;
   int _activeOffersCount = 1;
   final Map<int, ValueNotifier<bool>> _itemLoadingNotifiers = {};
+  final ValueNotifier<int?> loadingIndex = ValueNotifier(null);
 
   @override
   void initState() {
@@ -243,15 +245,29 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
           if (widget.widgetStyle == PremiumWidgetStyles.list)
             ..._cachedHotOffers!.asMap().entries.map((entry) {
               var e = entry.value as AcmoOffersModel;
-              final itemLoadingNotifier = _itemLoadingNotifiers.putIfAbsent(
-                  e.campaignId, () => ValueNotifier(false));
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: AcmoOfferListItem(
                   key: ValueKey(e.campaignId),
-                  isLoading: itemLoadingNotifier,
-                  onButtonTap: privacyAccepted
-                      ? () async {
+                  loadingIndex: loadingIndex,
+                  onButtonTap: AcmoPlatform.isAndroid
+                      ? privacyAccepted
+                          ? () async {
+                              await _controller.openOffer(
+                                clickUrl: e.tracking.clickUrl,
+                                s2sClickUrl: e.tracking.s2sClickUrl,
+                                isRetryDownload: e.isRetryDownload,
+                                isInstalled: e.isInstalled,
+                                previewUrl: e.app.previewUrl,
+                                campaignId: e.campaignId,
+                              );
+                            }
+                          : () => Tyrads.instance.showOffers(
+                                context,
+                                route: 'offers/${e.campaignId}',
+                                launchMode: Tyrads.instance.launchMode,
+                              )
+                      : () async {
                           await _controller.openOffer(
                             clickUrl: e.tracking.clickUrl,
                             s2sClickUrl: e.tracking.s2sClickUrl,
@@ -260,12 +276,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                             previewUrl: e.app.previewUrl,
                             campaignId: e.campaignId,
                           );
-                        }
-                      : () => Tyrads.instance.showOffers(
-                            context,
-                            route: 'offer/${e.campaignId}',
-                            launchMode: Tyrads.instance.launchMode,
-                          ),
+                        },
                   e: e,
                   currencySales: _controller.currencySales.data?.currencySales,
                   index: entry.key,
@@ -288,53 +299,72 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                   indicatorActiveColor: Tyrads.instance.colorPremium ??
                       Theme.of(context).colorScheme.secondary,
                   itemBuilder: (context, index) {
-                    final itemLoadingNotifier = _itemLoadingNotifiers.putIfAbsent(
-                        _controller.hotOffers[index].campaignId, () => ValueNotifier(false));
+                    final itemLoadingNotifier =
+                        _itemLoadingNotifiers.putIfAbsent(
+                            _controller.hotOffers[index].campaignId,
+                            () => ValueNotifier(false));
                     return GestureDetector(
-                    onTap: () => Tyrads.instance.showOffers(
-                      context,
-                      route:
-                          'offers/${_controller.hotOffers[index].campaignId}',
-                      launchMode: Tyrads.instance.launchMode,
-                    ),
-                    child: AcmoNewOfferWallItem(
-                      itemScaleFactor: 3.1,
-                      currencySaleModel: _controller.currencySales,
-                      item: _controller.hotOffers[index],
-                      margin: const EdgeInsets.all(16),
-                      isPremiumWidget: true,
-                      isLoading: itemLoadingNotifier,
-                      onButtonClick: privacyAccepted
-                          ? () async {
-                              await _controller.openOffer(
-                                clickUrl: _controller
-                                    .hotOffers[index].tracking.clickUrl,
-                                s2sClickUrl: _controller
-                                    .hotOffers[index].tracking.s2sClickUrl,
-                                isRetryDownload: _controller
-                                    .hotOffers[index].isRetryDownload,
-                                isInstalled:
-                                    _controller.hotOffers[index].isInstalled,
-                                previewUrl:
-                                    _controller.hotOffers[index].app.previewUrl,
-                                campaignId:
-                                    _controller.hotOffers[index].campaignId,
-                              );
-                            }
-                          : () => Tyrads.instance.showOffers(
-                                context,
-                                route:
-                                    'offers/${_controller.hotOffers[index].campaignId}',
-                                launchMode: Tyrads.instance.launchMode,
-                              ),
                       onTap: () => Tyrads.instance.showOffers(
                         context,
                         route:
                             'offers/${_controller.hotOffers[index].campaignId}',
                         launchMode: Tyrads.instance.launchMode,
                       ),
-                    ),
-                  );
+                      child: AcmoNewOfferWallItem(
+                        itemScaleFactor: 3.1,
+                        currencySaleModel: _controller.currencySales,
+                        item: _controller.hotOffers[index],
+                        margin: const EdgeInsets.all(16),
+                        isPremiumWidget: true,
+                        isLoading: itemLoadingNotifier,
+                        onButtonClick: AcmoPlatform.isAndroid
+                            ? privacyAccepted
+                                ? () async {
+                                    await _controller.openOffer(
+                                      clickUrl: _controller
+                                          .hotOffers[index].tracking.clickUrl,
+                                      s2sClickUrl: _controller.hotOffers[index]
+                                          .tracking.s2sClickUrl,
+                                      isRetryDownload: _controller
+                                          .hotOffers[index].isRetryDownload,
+                                      isInstalled: _controller
+                                          .hotOffers[index].isInstalled,
+                                      previewUrl: _controller
+                                          .hotOffers[index].app.previewUrl,
+                                      campaignId: _controller
+                                          .hotOffers[index].campaignId,
+                                    );
+                                  }
+                                : () => Tyrads.instance.showOffers(
+                                      context,
+                                      route:
+                                          'offers/${_controller.hotOffers[index].campaignId}',
+                                      launchMode: Tyrads.instance.launchMode,
+                                    )
+                            : () async {
+                                await _controller.openOffer(
+                                  clickUrl: _controller
+                                      .hotOffers[index].tracking.clickUrl,
+                                  s2sClickUrl: _controller
+                                      .hotOffers[index].tracking.s2sClickUrl,
+                                  isRetryDownload: _controller
+                                      .hotOffers[index].isRetryDownload,
+                                  isInstalled:
+                                      _controller.hotOffers[index].isInstalled,
+                                  previewUrl: _controller
+                                      .hotOffers[index].app.previewUrl,
+                                  campaignId:
+                                      _controller.hotOffers[index].campaignId,
+                                );
+                              },
+                        onTap: () => Tyrads.instance.showOffers(
+                          context,
+                          route:
+                              'offers/${_controller.hotOffers[index].campaignId}',
+                          launchMode: Tyrads.instance.launchMode,
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
