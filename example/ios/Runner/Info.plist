@@ -47,5 +47,20 @@
 	<true/>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>We use device identification to personalize your rewards experience, track your progress, and provide tailored offers. This helps us improve our services and ensure you get the most value from our rewards program.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to upload images.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to take photos for upload.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone access to record videos for upload.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
