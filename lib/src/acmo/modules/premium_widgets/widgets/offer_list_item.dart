@@ -14,14 +14,14 @@ class AcmoOfferListItem extends StatelessWidget {
     required this.currencySales,
     required this.onButtonTap,
     required this.index,
-    required this.isLoading,
+    required this.loadingIndex,
   });
 
   final AcmoOffersModel e;
   final CurrencySales? currencySales;
   final Future<void> Function() onButtonTap;
   final int index;
-  final ValueNotifier<bool> isLoading;
+  final ValueNotifier<int?> loadingIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +32,23 @@ class AcmoOfferListItem extends StatelessWidget {
       Assets.icons.rank4,
       Assets.icons.rank5,
     ];
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
         ValueListenableBuilder(
-            valueListenable: isLoading,
-            builder: (context, loading, child) {
+            valueListenable: loadingIndex,
+            builder: (context, currentLoadingIndex, child) {
+              final isLoading = loadingIndex.value == index;
+              final anyLoading = loadingIndex.value != null;
               return ListTile(
-                onTap: loading ? null : () => Tyrads.instance.showOffers(
-                  context,
-                  route: 'offers/${e.campaignId}',
-                  launchMode: Tyrads.instance.launchMode,
-                ),
+                onTap: anyLoading
+                    ? null
+                    : () => Tyrads.instance.showOffers(
+                          context,
+                          route: 'offers/${e.campaignId}',
+                          launchMode: Tyrads.instance.launchMode,
+                        ),
                 focusColor: Colors.grey.shade100,
                 contentPadding: EdgeInsets.zero,
                 leading: ClipRRect(
@@ -118,12 +123,12 @@ class AcmoOfferListItem extends StatelessWidget {
                 ),
                 trailing: InkWell(
                   child: ElevatedButton(
-                    onPressed: loading
+                    onPressed: anyLoading
                         ? null
                         : () async {
-                            isLoading.value = true;
+                            loadingIndex.value = index;
                             await onButtonTap();
-                            isLoading.value = false;
+                            loadingIndex.value = null;
                           },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(75, 42),
@@ -131,7 +136,7 @@ class AcmoOfferListItem extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      backgroundColor: loading
+                      backgroundColor: anyLoading
                           ? const Color(0xFFe0e2e7)
                           : Tyrads.instance.colorPremium ??
                               Theme.of(context).colorScheme.secondary,
@@ -139,7 +144,7 @@ class AcmoOfferListItem extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (loading) ...[
+                        if (isLoading) ...[
                           const SizedBox(
                             width: 16,
                             height: 16,
@@ -156,7 +161,7 @@ class AcmoOfferListItem extends StatelessWidget {
                           'Play',
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
-                            color: loading
+                            color: anyLoading
                                 ? const Color(0xffa3a9b6)
                                 : Tyrads.instance.colorPremiumFg ??
                                     Colors.white,
