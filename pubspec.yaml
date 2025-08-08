@@ -1,6 +1,6 @@
 name: tyrads_sdk
 description: Show TyrAds offer wall.
-version: 3.0.0-beta.0
+version: 3.1.0-beta.0
 homepage: https://github.com/tyrads-com/tyrads-sdk-flutter
 
 
@@ -12,42 +12,31 @@ dependencies:
   flutter:
     sdk: flutter
   equatable: ^2.0.5
-  json_annotation: ^4.8.1
-  freezed_annotation: ^2.4.1
-  dio: ^5.4.2+1
-  url_launcher: ^6.0.3
-  cached_network_image: ^3.0.0
-  pull_to_refresh: ^2.0.0
-  readmore: ^3.0.0
-  shared_preferences: ^2.0.5
-  fluttertoast: ^8.0.9
-  custom_timer: ^0.2.3
+  json_annotation: ^4.9.0
+  freezed_annotation: ^3.1.0
+  dio: ^5.9.0
+  url_launcher: ^6.3.2
+  cached_network_image: ^3.4.1
+  shared_preferences: ^2.5.3
+  fluttertoast: ^8.2.12
 #  material_design_icons_flutter: ^7.0.7296
-  google_fonts: ^6.2.0
-  styled_text: ^8.1.0
-  numeral: ^3.0.0
-  back_button_interceptor: ^7.0.0
+  google_fonts: ^6.3.0
+  numeral: ^3.1.1
+  back_button_interceptor: ^8.0.4
   platform_device_id_plus: ^1.0.7
   advertising_id: ^2.6.0
-  #safe_device: ^1.1.4
   device_info_plus: ^11.3.0
   package_info_plus: ">=6.0.0 <9.0.0"
-  #flutter_inappwebview: ^6.0.0
-  flutter_security_checker: ^3.0.0
-  image_picker: ^1.1.2
-  http_parser: ^4.0.2
+  flutter_security_checker: ^3.2.1
   usage_stats_new: ^2.0.6
   android_package_manager: ^0.7.1
-  uuid: ^4.4.2
-  webview_flutter: ^4.8.0
+  uuid: ^4.5.1
   slang: ^4.1.0
   slang_flutter: ^4.1.0
-  connectivity_plus: ^6.1.1
-  plugin_platform_interface: ^2.1.6
-  awesome_select_plus: ^1.0.0
-  marquee: ^2.2.3
+  connectivity_plus: ^6.1.4
+  plugin_platform_interface: ^2.1.8
   cryptography: ^2.7.0
-  timelines_plus: ^1.0.4
+  flutter_inappwebview: ^6.1.5
 
 
 dev_dependencies:
@@ -55,7 +44,7 @@ dev_dependencies:
     sdk: flutter
   json_serializable: ^6.7.1
   flutter_lints: ^4.0.0
-  freezed: ^2.4.7
+  freezed: ^3.1.0
   ### flutter pub run build_runner build --delete-conflicting-outputs
   build_runner: ^2.4.8
   ### flutter packages pub run build_runner build

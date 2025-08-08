@@ -1,3 +1,7 @@
+## 3.1.0-beta.0
+* New Premium Widgets added.
+* Offer Details Rewards Based on Stage added.
+
 ## 3.0.0-beta.0
 * Implemented currency sale and new ui.
 * Implemented S2S click tracking for accurate conversion measurement.
