@@ -3,8 +3,8 @@
 part of '../../../../tyrads_sdk.dart';
 
 class TyradsDeepRoutes {
-  static const String CAMPAIGNS = 'campaigns';
-  static const String CAMPAIGNS_ACTIVATED = 'campaigns-activated';
-  static const String CAMPAIGN_DETAILS = 'campaign-details';
-  static const String CAMPAIGN_TICKETS = 'campaign-tickets';
+  static const String OFFERS = 'offers';
+  static const String ACTIVE_OFFERS = 'active-offers';
+  static const String SUPPORT = 'support';
+  static const String SETTINGS = 'settings';
 }

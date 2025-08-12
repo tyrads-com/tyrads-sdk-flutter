@@ -290,16 +290,12 @@ class Tyrads {
       if (await waitAndCheck() == false) {
         return;
       }
-      // final encryptionKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
       this.campaignID = campaignID;
-      this.route = route ?? TyradsDeepRoutes.CAMPAIGNS;
-      // webUrl =
-      // 'https://websdk.tyrads.com/?apiKey=${Tyrads.instance.apiKey}&apiSecret=${Tyrads.instance.apiSecret}&encKey=$encryptionKey&userID=${Tyrads.instance.publisherUserID}&newUser=${Tyrads.instance.newUser}&platform=${acmoGetPlatformName()}&hc=${loginData.data.publisherApp.headerColor}&mc=${loginData.data.publisherApp.mainColor}&launchMode=2&route=$route&campaignID=$campaignID&av=${AcmoConfig.AV}&sdkVersion=${AcmoConfig.SDK_VERSION}&pc=${loginData.data.publisherApp.premiumColor}&lang=${Tyrads.instance.selectedLanguage}';
-
+      this.route = route ?? TyradsDeepRoutes.OFFERS;
       webUrl = Uri(
         scheme: 'https',
         host: 'sdk.tyrads.com',
-        path: route,
+        path: campaignID == null ? route : '$route/$campaignID',
         queryParameters: {
           'token': token,
         },
@@ -307,37 +303,11 @@ class Tyrads {
 
       log("Web Url: $webUrl");
 
-      // Comment out launch mode logic
-      // if (launchMode == null) {
-      //   if (this.launchMode == null) {
-      //     if (Platform.isIOS) {
-      //       launchMode = 3;
-      //     } else {
-      //       launchMode = 1;
-      //     }
-      //   } else {
-      //     launchMode = this.launchMode;
-      //   }
-      // }
-      // this.launchMode = launchMode;
-      // if (launchMode != 2 || launchMode != 3) {
-      //   log("launchMode must be 2 or 3");
-      // }
-      // if (launchMode != 1) {
-      //   Tyrads.instance.newUser =
-      //       false; //to be sure that browser would not show it again
-      // }
-
-      // if (Platform.isIOS && launchMode != 2) {
-      //   var mode = LaunchMode.externalApplication;
-      //   acmoLaunchURLForce(webUrl, mode: mode);
-      // } else {
       runZonedGuarded(() {
         parentContext = context;
         Navigator.of(parentContext!)
             .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
       }, (error, stack) {});
-      // }
 
       track(TyradsActivity.opened);
     } catch (e) {
@@ -423,15 +393,10 @@ class Tyrads {
   }
 
   Widget topOffersWidget(BuildContext context,
-      {showMore = true,
-      showMyOffers = true,
-      showMyOffersEmptyView = false,
+      {
       PremiumWidgetStyles widgetStyle = PremiumWidgetStyles.list}) {
     parentContext = context;
     return TopOffersWidget(
-      showMore: showMore,
-      showMyOffers: showMyOffers,
-      showMyOffersEmptyView: showMyOffersEmptyView,
       widgetStyle: widgetStyle,
     );
   }

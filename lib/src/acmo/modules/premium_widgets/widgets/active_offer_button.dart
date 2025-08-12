@@ -10,12 +10,11 @@ class ActiveOfferButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ;
     return InkWell(
       onTap: (() {
         Tyrads.instance.showOffers(
           context,
-          route: 'active-offers',
+          route: TyradsDeepRoutes.ACTIVE_OFFERS,
           launchMode: Tyrads.instance.launchMode,
         );
       }),

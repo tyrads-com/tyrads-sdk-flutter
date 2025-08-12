@@ -46,7 +46,8 @@ class AcmoOfferListItem extends StatelessWidget {
                     ? null
                     : () => Tyrads.instance.showOffers(
                           context,
-                          route: 'offers/${e.campaignId}',
+                          route: TyradsDeepRoutes.OFFERS,
+                          campaignID: e.campaignId,
                           launchMode: Tyrads.instance.launchMode,
                         ),
                 focusColor: Colors.grey.shade100,
