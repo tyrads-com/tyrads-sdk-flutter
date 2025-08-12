@@ -132,6 +132,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
               onPressed: () {
                 Tyrads.instance.showOffers(
                   context,
+                  route: TyradsDeepRoutes.ACTIVE_OFFERS,
                   launchMode: Tyrads.instance.launchMode,
                 );
               },
