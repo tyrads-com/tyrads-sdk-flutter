@@ -295,8 +295,9 @@ class Tyrads {
       webUrl = Uri(
         scheme: 'https',
         host: 'sdk.tyrads.com',
-        path: campaignID == null ? route : '$route/$campaignID',
+        // path: campaignID == null ? route : '$route/$campaignID',
         queryParameters: {
+          'to': campaignID == null ? route : '$route/$campaignID',
           'token': token,
         },
       ).toString();
