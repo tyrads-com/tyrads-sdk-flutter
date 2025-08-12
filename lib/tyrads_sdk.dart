@@ -392,9 +392,10 @@ class Tyrads {
     _callbacks[type]?.call(data);
   }
 
-  Widget topOffersWidget(BuildContext context,
-      {
-      PremiumWidgetStyles widgetStyle = PremiumWidgetStyles.list}) {
+  Widget topOffersWidget(
+    BuildContext context, {
+    PremiumWidgetStyles widgetStyle = PremiumWidgetStyles.list,
+  }) {
     parentContext = context;
     return TopOffersWidget(
       widgetStyle: widgetStyle,

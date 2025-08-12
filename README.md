@@ -108,16 +108,16 @@ Available routes and their usage:
 Tyrads.instance.showOffers(context);
 
 // Explicitly specifying the Campaigns Page
-Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.CAMPAIGNS);
+Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.OFFERS);
 
 // Activated Campaigns Page
-Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.CAMPAIGNS_ACTIVATED);
+Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.ACTIVE_OFFERS);
 
 // Campaign Details Page (requires campaignID)
-Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.CAMPAIGN_DETAILS, campaignID: "your_campaign_id_here");
+Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.OFFERS, campaignID: "your_campaign_id_here");
 
 // Campaign Tickets Page (requires campaignID)
-Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.CAMPAIGN_TICKETS, campaignID: "your_campaign_id_here");
+Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.SUPPORT, campaignID: "your_campaign_id_here");
 ```
 </details>
 
