@@ -17,15 +17,9 @@ import 'package:tyrads_sdk/tyrads_sdk.dart';
 class TopOffersWidget extends StatefulWidget {
   const TopOffersWidget({
     super.key,
-    this.showMore = true,
-    this.showMyOffers = true,
-    this.showMyOffersEmptyView = false,
     this.widgetStyle = PremiumWidgetStyles.list,
   });
 
-  final bool showMore;
-  final bool showMyOffers;
-  final bool showMyOffersEmptyView;
   final PremiumWidgetStyles widgetStyle;
 
   @override
@@ -109,8 +103,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
     }
 
     if (_cachedHotOffers == null ||
-        _cachedHotOffers!.isEmpty ||
-        widget.showMyOffersEmptyView) {
+        _cachedHotOffers!.isEmpty) {
       return Container(
         width: double.maxFinite,
         padding: const EdgeInsets.symmetric(
@@ -168,7 +161,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                 Tyrads.instance.publisherUserID) ??
         false;
     return CardContainer(
-      padding: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
@@ -204,8 +196,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                   ),
                 ),
                 const Spacer(),
-                // if (widget.showMore && _activeOffersCount > 0)
-                if (widget.showMore)
                   InkWell(
                     onTap: () {
                       Tyrads.instance.showOffers(
@@ -264,7 +254,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                             }
                           : () => Tyrads.instance.showOffers(
                                 context,
-                                route: 'offers/${e.campaignId}',
+                                route: TyradsDeepRoutes.OFFERS,
+                                campaignID: e.campaignId,
                                 launchMode: Tyrads.instance.launchMode,
                               )
                       : () async {
@@ -306,8 +297,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                     return GestureDetector(
                       onTap: () => Tyrads.instance.showOffers(
                         context,
-                        route:
-                            'offers/${_controller.hotOffers[index].campaignId}',
+                        route: TyradsDeepRoutes.OFFERS,
+                        campaignID: _controller.hotOffers[index].campaignId,
                         launchMode: Tyrads.instance.launchMode,
                       ),
                       child: AcmoNewOfferWallItem(
@@ -337,8 +328,9 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                                   }
                                 : () => Tyrads.instance.showOffers(
                                       context,
-                                      route:
-                                          'offers/${_controller.hotOffers[index].campaignId}',
+                                      route: TyradsDeepRoutes.OFFERS,
+                                      campaignID: _controller
+                                          .hotOffers[index].campaignId,
                                       launchMode: Tyrads.instance.launchMode,
                                     )
                             : () async {
@@ -359,8 +351,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                               },
                         onTap: () => Tyrads.instance.showOffers(
                           context,
-                          route:
-                              'offers/${_controller.hotOffers[index].campaignId}',
+                          route: TyradsDeepRoutes.OFFERS,
+                          campaignID: _controller.hotOffers[index].campaignId,
                           launchMode: Tyrads.instance.launchMode,
                         ),
                       ),
@@ -388,7 +380,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
           //     ),
           //   ),
           // if (widget.showMyOffers && _activeOffersCount > 0)
-          if (widget.showMyOffers)
             ActiveOfferButton(
               key: ValueKey(t.dashboard.myGames),
               activatedCount: _activeOffersCount,
