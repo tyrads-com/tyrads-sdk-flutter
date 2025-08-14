@@ -122,54 +122,52 @@ class AcmoOfferListItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                trailing: InkWell(
-                  child: ElevatedButton(
-                    onPressed: anyLoading
-                        ? null
-                        : () async {
-                            loadingIndex.value = index;
-                            await onButtonTap();
-                            loadingIndex.value = null;
-                          },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(75, 42),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      backgroundColor: anyLoading
-                          ? const Color(0xFFe0e2e7)
-                          : Tyrads.instance.colorPremium ??
-                              Theme.of(context).colorScheme.secondary,
+                trailing: ElevatedButton(
+                  onPressed: anyLoading
+                      ? null
+                      : () async {
+                          loadingIndex.value = index;
+                          await onButtonTap();
+                          loadingIndex.value = null;
+                        },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(75, 42),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (isLoading) ...[
-                          const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.2,
-                              color: Color(0xffa3a9b6),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                        ],
-                        Text(
-                          'Play',
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            color: anyLoading
-                                ? const Color(0xffa3a9b6)
-                                : Tyrads.instance.colorPremiumFg ??
-                                    Colors.white,
+                    backgroundColor: anyLoading
+                        ? const Color(0xFFe0e2e7)
+                        : Tyrads.instance.colorPremium ??
+                            Theme.of(context).colorScheme.secondary,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (isLoading) ...[
+                        const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.2,
+                            color: Color(0xffa3a9b6),
                           ),
                         ),
+                        const SizedBox(
+                          width: 8,
+                        ),
                       ],
-                    ),
+                      Text(
+                        'Play',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          color: anyLoading
+                              ? const Color(0xffa3a9b6)
+                              : Tyrads.instance.colorPremiumFg ??
+                                  Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );

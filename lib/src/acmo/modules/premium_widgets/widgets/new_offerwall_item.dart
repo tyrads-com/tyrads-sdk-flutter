@@ -251,6 +251,17 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
+                        // gradient: LinearGradient(
+                        //   begin: Alignment.topLeft,
+                        //   end: Alignment.bottomRight,
+                        //   colors: [
+                        //     Tyrads.instance.colorPremium ??
+                        //         Theme.of(context).colorScheme.secondary,
+                        //     Colors.white,
+                        //   ],
+                        //   stops: const [0.4119, 1.8138],
+                        //   transform: const GradientRotation(238.17 * (3.1415926 / 180)),
+                        // ),
                         color: Tyrads.instance.colorPremium ??
                             Theme.of(context).colorScheme.secondary,
                         boxShadow: [

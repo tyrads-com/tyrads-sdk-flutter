@@ -10,9 +10,9 @@ Color acmoGetFontColorForBackground(Color? background) {
 
 
 Color acmoGetDarkerShade(Color color, {double factor = 0.66}) {
-  int darkenedRed = (color.red * factor).toInt().clamp(0, 255);
-  int darkenedGreen = (color.green * factor).toInt().clamp(0, 255);
-  int darkenedBlue = (color.blue * factor).toInt().clamp(0, 255);
+  int darkenedRed = (color.r * factor).toInt().clamp(0, 255);
+  int darkenedGreen = (color.g * factor).toInt().clamp(0, 255);
+  int darkenedBlue = (color.b * factor).toInt().clamp(0, 255);
 
   return Color.fromRGBO(darkenedRed, darkenedGreen, darkenedBlue, 1.0);
 }
