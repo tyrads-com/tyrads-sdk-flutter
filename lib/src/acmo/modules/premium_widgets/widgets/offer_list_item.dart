@@ -1,7 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cors_image/flutter_cors_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numeral/numeral.dart';
+import 'package:tyrads_sdk/src/acmo/core/components/skeleton_loading.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/currency_sale_model/currency_sale_model.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
@@ -54,9 +55,17 @@ class AcmoOfferListItem extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: CachedNetworkImage(
-                    imageUrl: e.app.thumbnail,
+                  child: CustomNetworkImage(
+                    url: e.app.thumbnail,
                     width: 54,
+                    height: 54,
+                    customLoadingBuilder: (ctx, child, progress) {
+                      if (progress == null) return child;
+                      return const AcmoCustomSkeleton(
+                        width: 54,
+                        height: 54,
+                      );
+                    },
                   ),
                 ),
                 title: Column(
@@ -107,9 +116,17 @@ class AcmoOfferListItem extends StatelessWidget {
                           height: 14 / 10,
                         ),
                       ),
-                    CachedNetworkImage(
-                      imageUrl: e.currency.adUnitCurrencyIcon,
+                    CustomNetworkImage(
+                      url: e.currency.adUnitCurrencyIcon,
                       width: 14,
+                      height: 14,
+                      customLoadingBuilder: (ctx, child, progress) {
+                        if (progress == null) return child;
+                        return const AcmoCustomSkeleton(
+                          width: 14,
+                          height: 14,
+                        );
+                      },
                     ),
                     Text(
                       (e.campaignPayout.totalPlayablePayoutConverted *
@@ -163,8 +180,7 @@ class AcmoOfferListItem extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           color: anyLoading
                               ? const Color(0xffa3a9b6)
-                              : Tyrads.instance.colorPremiumFg ??
-                                  Colors.white,
+                              : Tyrads.instance.colorPremiumFg ?? Colors.white,
                         ),
                       ),
                     ],

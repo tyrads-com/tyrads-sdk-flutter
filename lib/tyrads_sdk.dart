@@ -96,7 +96,7 @@ class Tyrads {
     this.mediaSourceInfo = mediaSourceInfo;
     this.launchMode = launchMode;
     prefs = await SharedPreferences.getInstance();
-    if (Platform.isAndroid) {
+    if (AcmoPlatform.isAndroid) {
       final integrityToken =
           await TyradsSdkPlatform.instance.getPlayIntegrityToken();
       await prefs.setString(AcmoKeyNames.PLAY_INTEGRITY_TOKEN, integrityToken);
@@ -140,9 +140,11 @@ class Tyrads {
         identifierType = "IDFA";
       }
       String? advertisingId;
-      try {
-        advertisingId = await AdvertisingId.id(true);
-      } finally {}
+      if (AcmoPlatform.isAndroid) {
+        try {
+          advertisingId = await AdvertisingId.id(true);
+        } finally {}
+      }
       var fd = {
         "publisherUserId": userID,
         "platform": acmoGetPlatformName(),
@@ -157,7 +159,7 @@ class Tyrads {
         }
       }
       fd["identifierType"] = identifierType;
-      fd["identifier"] = advertisingId;
+      fd["identifier"] = advertisingId ?? "NA";
       if (mediaSourceInfo?.sub1 != null) {
         fd["sub1"] = mediaSourceInfo?.sub1;
       }
@@ -210,10 +212,10 @@ class Tyrads {
         fd["userGroup"] = userInfo?.userGroup;
       }
       final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
-      final encData =
-          _isSecure ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd) : {};
+      final body =
+          _isSecure ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd) : fd;
       var response = await dio.post(AcmoEndpointNames.INITIALIZE,
-          data: _isSecure ? encData : fd);
+          data: body);
       if (response.statusCode == 200) {
         loginData = AcmoInitModel.fromJson(response.data);
 

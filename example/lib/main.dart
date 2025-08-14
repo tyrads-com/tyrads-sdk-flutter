@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:example/env/env.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
@@ -22,10 +22,10 @@ Future<void> initializeTyrads({
   log("initializeTyrads $apiKey,  $apiSecret,  $userID");
   await Tyrads.instance.init(
     apiKey: apiKey ??
-        (Platform.isIOS ? Env.TYRADS_SDK_IOS_KEY : Env.TYRADS_SDK_KEY),
+        (defaultTargetPlatform == TargetPlatform.iOS ? Env.TYRADS_SDK_IOS_KEY : Env.TYRADS_SDK_KEY),
     apiSecret: apiSecret ??
-        (Platform.isIOS ? Env.TYRADS_SDK_IOS_SECRET : Env.TYRADS_SDK_SECRET),
-    encryptionKey: Platform.isIOS ? encKey : encKey ?? Env.TYRADS_SDK_ENC_KEY,
+        (defaultTargetPlatform == TargetPlatform.iOS ? Env.TYRADS_SDK_IOS_SECRET : Env.TYRADS_SDK_SECRET),
+    encryptionKey: defaultTargetPlatform == TargetPlatform.iOS ? encKey : encKey ?? Env.TYRADS_SDK_ENC_KEY,
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -49,6 +49,9 @@ Future<void> initializeTyrads({
     ),
   );
   await Tyrads.instance.loginUser(userID: userID ?? "acmo_3424");
+  Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
+    debugPrint("TyradsCallbackType.campaignDetail: $data");
+  });
 }
 
 class MyApp extends StatelessWidget {
