@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:example/env/env.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +21,11 @@ Future<void> initializeTyrads({
 }) async {
   log("initializeTyrads $apiKey,  $apiSecret,  $userID");
   await Tyrads.instance.init(
-    apiKey: apiKey ?? Env.TYRADS_SDK_KEY,
-    apiSecret: apiSecret ?? Env.TYRADS_SDK_SECRET,
-    encryptionKey: encKey ?? Env.TYRADS_SDK_ENC_KEY,
+    apiKey: apiKey ??
+        (Platform.isIOS ? Env.TYRADS_SDK_IOS_KEY : Env.TYRADS_SDK_KEY),
+    apiSecret: apiSecret ??
+        (Platform.isIOS ? Env.TYRADS_SDK_IOS_SECRET : Env.TYRADS_SDK_SECRET),
+    encryptionKey: Platform.isIOS ? encKey : encKey ?? Env.TYRADS_SDK_ENC_KEY,
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -45,7 +48,7 @@ Future<void> initializeTyrads({
       sub5: "iOSDevice",
     ),
   );
-  await Tyrads.instance.loginUser(userID: userID ?? "428");
+  await Tyrads.instance.loginUser(userID: userID ?? "acmo_3424");
 }
 
 class MyApp extends StatelessWidget {
@@ -131,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
-      log("TyradsCallbackType.campaignDetail: $data");
+      debugPrint("TyradsCallbackType.campaignDetail: $data");
     });
 
     // var isLoginSuccessful = await Tyrads.instance.loginUser(userID: userID);
@@ -174,7 +177,9 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Tyrads.instance.topOffersWidget(
                   context,
-                  widgetStyle: style == 1 ? PremiumWidgetStyles.list : PremiumWidgetStyles.sliderCards,
+                  widgetStyle: style == 1
+                      ? PremiumWidgetStyles.list
+                      : PremiumWidgetStyles.sliderCards,
                 ),
                 const SizedBox(
                   height: 16,
