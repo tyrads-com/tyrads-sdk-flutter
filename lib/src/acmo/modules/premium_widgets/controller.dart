@@ -69,14 +69,14 @@ class AcmoPremiumWidgetsController {
     }
   }
 
-  Future<void> openOffer({
-    required String? clickUrl,
-    required String? s2sClickUrl,
-    required bool isRetryDownload,
-    required bool isInstalled,
-    required String previewUrl,
-    required int campaignId,
-  }) async {
+  Future<void> openOffer({required AcmoOffersModel item}) async {
+    final campaignId = item.campaignId;
+    final clickUrl = item.tracking.clickUrl;
+    final s2sClickUrl = item.tracking.s2sClickUrl;
+    final previewUrl = item.app.previewUrl;
+    final isInstalled = item.isInstalled;
+    final isRetryDownload = item.isRetryDownload;
+
     if (offerLoading) return;
     offerLoading = true;
     String url = clickUrl ?? '';
@@ -90,6 +90,15 @@ class AcmoPremiumWidgetsController {
       }
       await _repo.activateOffer(id: campaignId);
       redirectToActivePage = true;
+      Tyrads.instance.triggerCallback(TyradsCallbackType.campaignActivated, {
+        'campaignId': campaignId,
+        'campaignName': item.campaignName,
+        'appId': item.app.id,
+        'appName': item.app.title,
+        'appCategory': item.app.storeCategory,
+        'clickUrl': clickUrl,
+        's2sClickUrl': s2sClickUrl,
+      });
     }
     if (s2sClickUrl != null) {
       final res = await Dio().get(s2sClickUrl);
