@@ -245,12 +245,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                       ? privacyAccepted
                           ? () async {
                               await _controller.openOffer(
-                                clickUrl: e.tracking.clickUrl,
-                                s2sClickUrl: e.tracking.s2sClickUrl,
-                                isRetryDownload: e.isRetryDownload,
-                                isInstalled: e.isInstalled,
-                                previewUrl: e.app.previewUrl,
-                                campaignId: e.campaignId,
+                                item: e,
                               );
                             }
                           : () => Tyrads.instance.showOffers(
@@ -261,12 +256,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                               )
                       : () async {
                           await _controller.openOffer(
-                            clickUrl: e.tracking.clickUrl,
-                            s2sClickUrl: e.tracking.s2sClickUrl,
-                            isRetryDownload: e.isRetryDownload,
-                            isInstalled: e.isInstalled,
-                            previewUrl: e.app.previewUrl,
-                            campaignId: e.campaignId,
+                            item: e,
                           );
                         },
                   e: e,
@@ -313,18 +303,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                             ? privacyAccepted
                                 ? () async {
                                     await _controller.openOffer(
-                                      clickUrl: _controller
-                                          .hotOffers[index].tracking.clickUrl,
-                                      s2sClickUrl: _controller.hotOffers[index]
-                                          .tracking.s2sClickUrl,
-                                      isRetryDownload: _controller
-                                          .hotOffers[index].isRetryDownload,
-                                      isInstalled: _controller
-                                          .hotOffers[index].isInstalled,
-                                      previewUrl: _controller
-                                          .hotOffers[index].app.previewUrl,
-                                      campaignId: _controller
-                                          .hotOffers[index].campaignId,
+                                      item: _controller.hotOffers[index],
                                     );
                                   }
                                 : () => Tyrads.instance.showOffers(
@@ -336,18 +315,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                                     )
                             : () async {
                                 await _controller.openOffer(
-                                  clickUrl: _controller
-                                      .hotOffers[index].tracking.clickUrl,
-                                  s2sClickUrl: _controller
-                                      .hotOffers[index].tracking.s2sClickUrl,
-                                  isRetryDownload: _controller
-                                      .hotOffers[index].isRetryDownload,
-                                  isInstalled:
-                                      _controller.hotOffers[index].isInstalled,
-                                  previewUrl: _controller
-                                      .hotOffers[index].app.previewUrl,
-                                  campaignId:
-                                      _controller.hotOffers[index].campaignId,
+                                  item: _controller.hotOffers[index],
                                 );
                               },
                         onTap: () => Tyrads.instance.showOffers(
