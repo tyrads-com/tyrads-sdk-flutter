@@ -12,13 +12,13 @@ class LocalizationService {
   final _dio = NetworkCommon().dio;
 
   Map<String, dynamic> _translations = {};
-  final prefs = Tyrads.instance.prefs;
+  final _prefs = Tyrads.instance.prefs;
 
   Future<void> init(String locale) async {
     final hasUpdate = await _checkForUpdate(locale);
 
     if (!hasUpdate) {
-      final cachedData = prefs.getString('translations_$locale');
+      final cachedData = _prefs.getString('translations_$locale');
       if (cachedData != null) {
         _translations = jsonDecode(cachedData);
         return;
@@ -41,7 +41,7 @@ class LocalizationService {
         final Map<String, dynamic> jsonResponse = response.data;
         _translations = jsonResponse;
 
-        await prefs.setString(
+        await _prefs.setString(
             'translations_$locale', jsonEncode(response.data));
       } else {
         log('Failed to load translations: ${response.statusCode}');
@@ -67,10 +67,10 @@ class LocalizationService {
           (element) => element['code'] == locale,
           orElse: () => null,
         )['sha256'];
-        final String? cachedVersion = prefs.getString('cached_version_$locale');
+        final String? cachedVersion = _prefs.getString('cached_version_$locale');
         if (currentLocaleSha256 != cachedVersion) {
-          await prefs.remove('cached_version_$locale');
-          await prefs.setString('cached_version_$locale', currentLocaleSha256!);
+          await _prefs.remove('cached_version_$locale');
+          await _prefs.setString('cached_version_$locale', currentLocaleSha256!);
           return true;
         }
       }
@@ -80,7 +80,10 @@ class LocalizationService {
     return false;
   }
 
-  String translate(String key) {
+  String translate(
+    String key, {
+    Map<String, dynamic>? args,
+  }) {
     List<String> keys = key.split('.');
     dynamic currentMap = _translations;
 
@@ -89,18 +92,37 @@ class LocalizationService {
       if (currentMap is Map && currentMap.containsKey(k)) {
         currentMap = currentMap[k];
       } else {
-        return key; 
+        return key;
       }
     }
 
     if (currentMap is String) {
+      if (args != null) {
+        for (final entry in args.entries) {
+          currentMap = currentMap.replaceAll(
+            RegExp('{${entry.key}}', caseSensitive: false),
+            entry.value.toString(),
+          );
+        }
+      }
+
       return currentMap;
     } else {
-      return key; 
+      return key;
     }
   }
 
   Future<void> changeLanguage(String locale, [bool force = false]) async {
+    final hasUpdate = await _checkForUpdate(locale);
+
+    if (!hasUpdate) {
+      final cachedData = _prefs.getString('translations_$locale');
+      if (cachedData != null) {
+        _translations = jsonDecode(cachedData);
+        return;
+      }
+    }
+
     await _fetchTranslations(locale, force);
   }
 }
