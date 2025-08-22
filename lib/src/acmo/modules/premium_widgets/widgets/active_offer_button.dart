@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tyrads_sdk/src/i18n/translations.g.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class ActiveOfferButton extends StatelessWidget {
@@ -39,7 +39,7 @@ class ActiveOfferButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      t.offers.activeOffersCta,
+                      LocalizationService().translate('data.offers.button.activeOffers'),
                       style: TextStyle(
                         color: Tyrads.instance.colorPremium ??
                             Theme.of(context).colorScheme.secondary,

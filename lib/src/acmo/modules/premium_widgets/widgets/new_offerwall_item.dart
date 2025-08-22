@@ -4,13 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:numeral/numeral.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/button_3.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/skeleton_loading.dart';
-import 'package:tyrads_sdk/src/acmo/core/extensions/double.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/colors.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/currency_sale_model/currency_sale_model.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/card_container.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
-import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoNewOfferWallItem extends StatelessWidget {
@@ -187,7 +186,9 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                                               height: 16,
                                               customLoadingBuilder:
                                                   (ctx, child, progress) {
-                                                if (progress == null) return child;
+                                                if (progress == null) {
+                                                  return child;
+                                                }
                                                 return const AcmoCustomSkeleton(
                                                   width: 16,
                                                   height: 16,
@@ -233,7 +234,8 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                                           },
                                     borderRadius: 8.0,
                                     isLoading: loading,
-                                    label: t.offers.offersCta,
+                                    label: LocalizationService()
+                                        .translate('data.shared.cta.playNow'),
                                     labelStyle: GoogleFonts.poppins(
                                       color: loading
                                           ? const Color(0xffa3a9b6)
@@ -302,7 +304,13 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          "${currencySaleModel.data?.currencySales?.multiplier?.formatDouble()}x Bonus",
+                          LocalizationService().translate(
+                            'data.shared.label.bonusTag',
+                            args: {
+                              'multiplier': currencySaleModel
+                                  .data?.currencySales?.multiplier
+                            },
+                          ),
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w700,
                             fontSize: 12,

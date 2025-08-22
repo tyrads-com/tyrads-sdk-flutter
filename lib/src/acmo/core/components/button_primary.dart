@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AcmoComponentButtonPrimary extends StatelessWidget {
   const AcmoComponentButtonPrimary({
-    Key? key,
+    super.key,
     this.onTap,
     required this.titleText,
     this.isLoading = false,
-  }) : super(key: key);
+  });
 
   final Function()? onTap;
   final String titleText;
@@ -18,7 +18,9 @@ class AcmoComponentButtonPrimary extends StatelessWidget {
       children: [
         Expanded(
           child: ElevatedButton(
-              style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll( AcmoConfig.SECONDARY_COLOR)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+              ),
               onPressed: onTap,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -37,8 +39,11 @@ class AcmoComponentButtonPrimary extends StatelessWidget {
                       ),
                     Text(
                       titleText,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.normal, color: Colors.white),
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
                     ),
                   ],
                 ),

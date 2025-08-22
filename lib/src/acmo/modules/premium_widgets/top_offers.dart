@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/custom_slider.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/active_offer_button.dart';
@@ -11,7 +12,6 @@ import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/card_contain
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/new_offerwall_item.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/premium_widget_loading.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
-import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class TopOffersWidget extends StatefulWidget {
@@ -63,10 +63,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
         _itemLoadingNotifiers[offer.campaignId] = ValueNotifier(false);
       }
     }
-  }
-
-  void forceRebuild() {
-    _refreshData();
   }
 
   void _refreshData() async {
@@ -144,7 +140,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                 ),
               ),
               child: Text(
-                'Continue Playing',
+                LocalizationService().translate('data.widget.button.continuePlaying'),
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -189,7 +185,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  'Premium Games',
+                  LocalizationService().translate('data.widget.page.title'),
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     color: Tyrads.instance.colorPremium ??
@@ -208,7 +204,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                       spacing: 4,
                       children: [
                         Text(
-                          t.dashboard.moreOffers,
+                          LocalizationService().translate('data.widget.button.moreOffers'),
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             color: Tyrads.instance.colorPremium ??
@@ -350,7 +346,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
           //   ),
           // if (widget.showMyOffers && _activeOffersCount > 0)
             ActiveOfferButton(
-              key: ValueKey(t.dashboard.myGames),
+              key: ValueKey(LocalizationService().translate("data.widget.button.moreOffers")),
               activatedCount: _activeOffersCount,
             ),
         ],
