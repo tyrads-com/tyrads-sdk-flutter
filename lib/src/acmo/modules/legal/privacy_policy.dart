@@ -1,11 +1,10 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:styled_text/styled_text.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/usage_permissions.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
-import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoPrivacyPolicyPage extends StatelessWidget {
@@ -18,38 +17,44 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: CloseonTap(
-                    onTap: () {
-                      Tyrads.instance.back();
-                    },
-                  ),
-                ),
+            Align(
+              alignment: Alignment.topRight,
+              child: CloseonTap(
+                onTap: () {
+                  Tyrads.instance.back();
+                },
+              ),
+            ),
             Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                 Padding(
+                Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30, top: 30),
                   child: Column(
                     children: [
                       const Body(),
-                      const SizedBox(height: 24,),
-                      SizedBox(height: MediaQuery.sizeOf(context).height - 510,                     
-                        child: const Scrollbar(
-                          thumbVisibility: true,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                  child: Info(),
-                                ),
-                                SizedBox(height:190,)
-                              ],
+                      const SizedBox(
+                        height: 24,
+                      ),
+                      SizedBox(
+                          height: MediaQuery.sizeOf(context).height - 510,
+                          child: const Scrollbar(
+                            thumbVisibility: true,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16),
+                                    child: Info(),
+                                  ),
+                                  SizedBox(
+                                    height: 190,
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        )),
+                          )),
                     ],
                   ),
                 ),
@@ -58,22 +63,21 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                height: 170,
+                height: 190,
                 color: Colors.white,
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  spacing: 16,
                   children: [
-                    const SizedBox(height: 20,),
-                            const Info2(),
-                            const SizedBox(height: 24,),
+                    const Info2(),
                     TwoButtons(
                       acceptOnTap: () {
-                        Tyrads.instance
-                            .to( AcmoUsagePermissionsPage(
-                              closeButtononTap: () {
-                                Tyrads.instance.back();
-                              },
-                            ), replace: true);
+                        Tyrads.instance.to(AcmoUsagePermissionsPage(
+                          closeButtononTap: () {
+                            Tyrads.instance.back();
+                          },
+                        ), replace: true);
                       },
                       rejectOntap: () {
                         Tyrads.instance.back();
@@ -97,49 +101,36 @@ class Info2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        style: GoogleFonts.inter(
-          textStyle: const TextStyle(
-              height: 1.3,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
-              fontSize: 14),
+    final localization = LocalizationService();
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.65,
+      child: StyledText(
+        style: GoogleFonts.poppins(
+          height: 1.3,
+          fontWeight: FontWeight.w400,
+          color: Colors.black,
+          fontSize: 14,
         ),
-        children: [
-           TextSpan(
-            text: t.privacyPolicy.agreementPrefix,
-          ),
-          TextSpan(
-            text: t.privacyPolicy.privacyText,
-            style: GoogleFonts.inter(
-              textStyle:  TextStyle(
-                  fontWeight: FontWeight.w400,
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 14),
+        text:
+            localization.translate('data.initialization.intro.label.iHaveRead'),
+        tags: {
+          "tos": StyledTextActionTag(
+            (text, attributes) => acmoLaunchURLForce(
+              "https://tyrads.com/tyrsdk-privacy-policy/",
             ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                acmoLaunchURLForce(AcmoConfig.PRIVACY_POLICY);
-              },
-          ),
-           TextSpan(
-            text: t.privacyPolicy.and,
-          ),
-          TextSpan(
-            text: t.privacyPolicy.termsText,
-            style: GoogleFonts.inter(
-              textStyle:  TextStyle(
-                  fontWeight: FontWeight.w400,
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 14),
+            style: GoogleFonts.poppins(
+              color: Colors.green,
             ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                acmoLaunchURLForce(AcmoConfig.TERMS_OF_SERVICE);
-              },
           ),
-        ],
+          "pp": StyledTextActionTag(
+            (text, attr) => acmoLaunchURLForce(
+              'https://tyrads.com/tyrsdk-privacy-policy/',
+            ),
+            style: GoogleFonts.poppins(
+              color: Colors.green,
+            ),
+          ),
+        },
       ),
     );
   }
@@ -155,6 +146,7 @@ class TwoButtons extends StatelessWidget {
   final void Function()? rejectOntap;
   @override
   Widget build(BuildContext context) {
+    final localization = LocalizationService();
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
@@ -173,7 +165,8 @@ class TwoButtons extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    t.privacyPolicy.accept,
+                    localization
+                        .translate('data.initialization.intro.cta.accept'),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lexend(
                       textStyle: const TextStyle(
@@ -185,7 +178,7 @@ class TwoButtons extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             GestureDetector(
               onTap: rejectOntap,
               child: Container(
@@ -194,7 +187,8 @@ class TwoButtons extends StatelessWidget {
                 decoration: const BoxDecoration(),
                 child: Center(
                   child: Text(
-                    t.privacyPolicy.reject,
+                    localization
+                        .translate('data.initialization.intro.cta.reject'),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lexend(
                       textStyle: const TextStyle(
@@ -221,33 +215,20 @@ class Info extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
+    final localization = LocalizationService();
+    return StyledText(
       textAlign: TextAlign.left,
-      text: TextSpan(
-        style: GoogleFonts.openSans(
-          textStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: Color.fromRGBO(0, 0, 0, 0.61),
-          ),
-        ),
-        children: [
-          TextSpan(
-            text: t.privacyPolicy.consentInfo,
-          ),
-          TextSpan(
-            text: "\nhttps://tyrads.com/tyrsdk-privacy-policy/",
-            style: const TextStyle(
-              color: Colors.blue,
-              decoration: TextDecoration.underline,
-            ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                acmoLaunchURLForce("https://tyrads.com/tyrsdk-privacy-policy/");
-              },
-          ),
-        ],
+      text: localization.translate('data.initialization.legal.explanation'),
+      style: GoogleFonts.openSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: const Color.fromRGBO(0, 0, 0, 0.61),
       ),
+      tags: {
+        "link": StyledTextActionTag(
+          (_, attrs) => acmoLaunchURLForce(attrs),
+        ),
+      },
     );
   }
 }
@@ -259,25 +240,29 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final localization = LocalizationService();
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.6,
       child: Column(
         children: [
           Text(
-            t.privacyPolicy.title,
-            style: GoogleFonts.lexend(
-                textStyle: const TextStyle(
-                    fontWeight: FontWeight.w500, fontSize: 16)),
+            localization.translate('data.initialization.intro.title'),
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
             textAlign: TextAlign.center,
           ),
           Assets.images.privacyBanner.image(
-            height: 180,
+            height: 160,
           ),
           Text(
-            t.privacyPolicy.subtitle,
+            localization.translate('data.initialization.intro.subtitle'),
             textAlign: TextAlign.center,
-            style: GoogleFonts.lexend(
-              textStyle: const TextStyle(
-                  fontWeight: FontWeight.w400, fontSize: 14, height: 1.6),
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              height: 1.6,
             ),
           ),
         ],
@@ -285,6 +270,7 @@ class Body extends StatelessWidget {
     );
   }
 }
+
 class CloseonTap extends StatelessWidget {
   const CloseonTap({
     super.key,
@@ -302,5 +288,5 @@ class CloseonTap extends StatelessWidget {
         size: 24,
       ),
     );
-  }  
+  }
 }

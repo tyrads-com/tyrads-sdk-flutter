@@ -1,10 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/widgets/usage_stats_tile.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
 import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
-import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import 'privacy_policy.dart';
@@ -35,7 +35,9 @@ class AcmoUsagePermissionsPage extends StatelessWidget {
                     child: Column(
                       children: [
                         const Body(),
-                        const SizedBox(height: 32,),
+                        const SizedBox(
+                          height: 32,
+                        ),
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -85,16 +87,20 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = LocalizationService();
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: Text(
-            t.usagePermissions.title,
-            style: GoogleFonts.lexend(
-                textStyle:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
-            textAlign: TextAlign.center,
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.65,
+            child: Text(
+              localization.translate('data.initialization.usagePermission.title'),
+              style: GoogleFonts.lexend(
+                  textStyle:
+                      const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
         Padding(

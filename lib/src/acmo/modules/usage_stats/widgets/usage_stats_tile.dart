@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/extentions.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/tracking/activities.dart';
-import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import 'package:usage_stats_new/usage_stats.dart';
 
@@ -48,6 +50,7 @@ class _AcmoAppUsageStatsTileState extends State<AcmoAppUsageStatsTile>
 
   @override
   Widget build(BuildContext context) {
+    final localization = LocalizationService();
     return SizedBox(
       height: 170,
       child: Padding(
@@ -59,8 +62,12 @@ class _AcmoAppUsageStatsTileState extends State<AcmoAppUsageStatsTile>
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 2,
                   child: Text(
-                    t.usagePermissions.permitTitle,
-                    style: const TextStyle(fontSize: 16),
+                    localization
+                        .translate('data.initialization.usagePermission.label')
+                        .toTitleCase(),
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                    ),
                   ),
                 ),
                 const Spacer(),
@@ -117,7 +124,12 @@ class _AcmoAppUsageStatsTileState extends State<AcmoAppUsageStatsTile>
                 )
               ],
             ),
-            Text(t.usagePermissions.description),
+            Text(
+              localization
+                  .translate('data.initialization.usagePermission.description'),
+              style: GoogleFonts.poppins(
+                  color: Colors.black.withValues(alpha: 0.61)),
+            ),
           ],
         ),
       ),

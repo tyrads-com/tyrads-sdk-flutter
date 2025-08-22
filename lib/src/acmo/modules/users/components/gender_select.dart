@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tyrads_sdk/src/i18n/translations.g.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import '../../../../gen/assets.gen.dart';
 
 class AcmoComponentGenderSelect extends StatefulWidget {
@@ -14,11 +15,21 @@ class AcmoComponentGenderSelect extends StatefulWidget {
 class _AcmoComponentGenderSelectState extends State<AcmoComponentGenderSelect> {
   List<Gender> genders = <Gender>[];
 
+  final localization = LocalizationService();
+
   @override
   void initState() {
     super.initState();
-    genders.add(Gender(t.userProfile.male, null, false, maleImage: true));
-    genders.add(Gender(t.userProfile.female, null, false, femaleImage: true));
+    genders.add(Gender(
+        localization.translate('data.initialization.userInfo.gender.male'),
+        null,
+        false,
+        maleImage: true));
+    genders.add(Gender(
+        localization.translate('data.initialization.userInfo.gender.female'),
+        null,
+        false,
+        femaleImage: true));
   }
 
   @override
@@ -69,24 +80,28 @@ class GenderListItem extends StatelessWidget {
             children: <Widget>[
               _gender.maleImage
                   ? Assets.icons.male.image(
-                color: _gender.isSelected ? Colors.white : Colors.grey,
-                height: 40,
-              )
+                      color: _gender.isSelected ? Colors.white : Colors.grey,
+                      height: 40,
+                    )
                   : _gender.femaleImage
-                  ? Assets.icons.female.image(
-                color: _gender.isSelected ? Colors.white : Colors.grey,
-                height: 40,
-              )
-                  : Icon(
-                _gender.icon,
-                color: _gender.isSelected ? Colors.white : Colors.grey,
-                size: 40,
-              ),
+                      ? Assets.icons.female.image(
+                          color:
+                              _gender.isSelected ? Colors.white : Colors.grey,
+                          height: 40,
+                        )
+                      : Icon(
+                          _gender.icon,
+                          color:
+                              _gender.isSelected ? Colors.white : Colors.grey,
+                          size: 40,
+                        ),
               const SizedBox(height: 10),
               Text(
                 _gender.name,
-                style: TextStyle(
-                    color: _gender.isSelected ? Colors.white : Colors.grey),
+                style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: _gender.isSelected ? Colors.white : const Color(0xFF667085)),
               )
             ],
           ),
@@ -101,5 +116,6 @@ class Gender {
   bool maleImage;
   bool femaleImage;
 
-  Gender(this.name, this.icon, this.isSelected, {this.maleImage = false, this.femaleImage = false});
+  Gender(this.name, this.icon, this.isSelected,
+      {this.maleImage = false, this.femaleImage = false});
 }

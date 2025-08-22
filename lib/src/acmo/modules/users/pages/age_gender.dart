@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/button_primary.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/components/gender_select.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
-import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import '../../../../gen/assets.gen.dart';
@@ -20,6 +20,7 @@ class AcmoUsersUpdatePage extends StatefulWidget {
 
 class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
   final _controller = AcmoUsersController();
+  final localization = LocalizationService();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          t.userProfile.title,
+                          localization.translate('data.initialization.userInfo.title'),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
                             fontSize: 16,
@@ -59,7 +60,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                           height: 56,
                         ),
                         Text(
-                          t.userProfile.genderTitle,
+                          localization.translate('data.initialization.userInfo.chooseGender.label'),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
                             fontSize: 16,
@@ -82,7 +83,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                           height: 56,
                         ),
                         Text(
-                          t.userProfile.ageTitle,
+                          localization.translate('data.initialization.userInfo.chooseAge.label'),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
                             fontSize: 16,
@@ -109,7 +110,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: AcmoComponentButtonPrimary(
                         isLoading: _controller.submiting,
-                        titleText: t.userProfile.continueCta,
+                        titleText: localization.translate('data.initialization.userInfo.cta.continue'),
                         onTap: _controller.submiting
                             ? null
                             : () {
