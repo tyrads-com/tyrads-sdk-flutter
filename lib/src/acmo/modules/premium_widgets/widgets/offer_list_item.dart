@@ -3,6 +3,7 @@ import 'package:flutter_cors_image/flutter_cors_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numeral/numeral.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/skeleton_loading.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/currency_sale_model/currency_sale_model.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
@@ -82,7 +83,11 @@ class AcmoOfferListItem extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
-                          '${currencySales?.multiplier}x BONUS',
+                          // '${currencySales?.multiplier}x BONUS',
+                          LocalizationService().translate(
+                            'data.shared.label.bonusTagCaps',
+                            args: {'multiplier': currencySales?.multiplier},
+                          ),
                           style: GoogleFonts.poppins(
                             color: Tyrads.instance.colorPremium,
                             fontWeight: FontWeight.w700,
@@ -175,7 +180,8 @@ class AcmoOfferListItem extends StatelessWidget {
                         ),
                       ],
                       Text(
-                        'Play',
+                        LocalizationService()
+                            .translate('data.widget.button.play'),
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           color: anyLoading
