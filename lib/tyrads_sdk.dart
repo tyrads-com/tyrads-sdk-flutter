@@ -19,6 +19,7 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/colors.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/top_offers.dart';
@@ -26,7 +27,6 @@ import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/models/init.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/repository.dart';
 import 'package:tyrads_sdk/src/acmo/core/extensions/colors.dart';
-import 'package:tyrads_sdk/src/i18n/translations.g.dart';
 import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
 import 'package:uuid/uuid.dart';
 
@@ -111,7 +111,9 @@ class Tyrads {
     selectedLanguage = prefs.getString(AcmoKeyNames.LANGUAGE) ??
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
     //LocaleSettings.useDeviceLocale();
-    LocaleSettings.setLocaleRaw(selectedLanguage, listenToDeviceLocale: true);
+    WidgetsFlutterBinding.ensureInitialized();
+    log("Selected Language: $selectedLanguage");
+    await LocalizationService().init(selectedLanguage);
   }
 
   Future<bool> loginUser({String? userID = ""}) async {
@@ -214,8 +216,7 @@ class Tyrads {
       final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
       final body =
           _isSecure ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd) : fd;
-      var response = await dio.post(AcmoEndpointNames.INITIALIZE,
-          data: body);
+      var response = await dio.post(AcmoEndpointNames.INITIALIZE, data: body);
       if (response.statusCode == 200) {
         loginData = AcmoInitModel.fromJson(response.data);
 
@@ -407,16 +408,12 @@ class Tyrads {
 
   Future<void> changeLanguage(String languageCode) async {
     prefs = await SharedPreferences.getInstance();
-    if (languageCode == "device") {
-      selectedLanguage =
-          WidgetsBinding.instance.platformDispatcher.locale.languageCode;
-      LocaleSettings.useDeviceLocale();
-      prefs.remove(AcmoKeyNames.LANGUAGE);
-    } else {
-      selectedLanguage = languageCode;
-      LocaleSettings.setLocaleRaw(selectedLanguage, listenToDeviceLocale: true);
-      prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
-    }
+    selectedLanguage = languageCode;
+
+    log("Language changed");
+    await LocalizationService().changeLanguage(selectedLanguage);
+    prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
+
     AcmoPremiumWidgetsController.instance.refresh();
   }
 }
