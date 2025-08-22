@@ -55,7 +55,7 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
           _handleCloseRequestFromiFrame();
           break;
         case 'changeLanguage':
-          final langCode = jsonMessage['languageCode'];
+          final langCode = jsonMessage['value'];
           if (langCode != null && langCode is String) {
             Tyrads.instance.changeLanguage(langCode);
           }
