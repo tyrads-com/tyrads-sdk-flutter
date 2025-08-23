@@ -396,6 +396,15 @@ class Tyrads {
     _callbacks[type]?.call(data);
   }
 
+  /// A widget that displays the top offers.
+  ///
+  /// The [widgetStyle] parameter is used to choose the style of the widget.
+  /// The default style is [PremiumWidgetStyles.list], which displays the offers
+  /// in a list. Other available style is [PremiumWidgetStyles.sliderCards], which
+  /// displays the offers in a slider.
+  ///
+  /// The [context] parameter is required and should be the context of the
+  /// widget that will display the top offers widget.
   Widget topOffersWidget(
     BuildContext context, {
     PremiumWidgetStyles widgetStyle = PremiumWidgetStyles.list,
@@ -406,11 +415,31 @@ class Tyrads {
     );
   }
 
+  /// Changes the language of the SDK.
+  ///
+  /// This method is used to change the language of the SDK.
+  ///
+  /// The [languageCode] parameter is the language code of the language
+  /// to be used. For example, "en" for English, or "fr" for French.
+  ///
+  /// The method is asynchronous and returns a [Future] that completes
+  /// when the language has been changed.
+  ///
+  /// The Tyrads SDK supports the following languages:
+  ///
+  /// - English (en)
+  /// - Spanish (es)
+  /// - Indonesian (id)
+  /// - Japanese (ja)
+  /// - Korean (ko)
+  /// - Chinese (China, Simplified) (zh-Hans-CN)
+  ///
+  /// Note that the language change is persisted in the app's preferences,
+  /// so the next time the app is started, the SDK will use the new language.
+  ///
   Future<void> changeLanguage(String languageCode) async {
     prefs = await SharedPreferences.getInstance();
     selectedLanguage = languageCode;
-
-    log("Language changed");
     await LocalizationService().changeLanguage(selectedLanguage);
     prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
 
