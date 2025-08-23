@@ -48,9 +48,12 @@ Future<void> initializeTyrads({
       sub5: "iOSDevice",
     ),
   );
-  await Tyrads.instance.loginUser(userID: userID ?? "acmo_3424");
+  await Tyrads.instance.loginUser(userID: userID ?? "acmo_3427");
   Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
     debugPrint("TyradsCallbackType.campaignDetail: $data");
+  });
+  Tyrads.instance.setCallback(TyradsCallbackType.campaignActivated, (data) {
+    debugPrint("TyradsCallbackType.activated: $data");
   });
 }
 
