@@ -19,7 +19,7 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
   bool _hasError = false;
   bool _isClosing = false;
   // double _progress = 0;
-  Map<String, int> _lastExecutionTime = {};
+  final Map<String, int> _lastExecutionTime = {};
   final int _debounceDurationMs = 500;
 
   final GlobalKey webViewKey = GlobalKey();
