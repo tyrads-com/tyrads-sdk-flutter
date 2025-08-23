@@ -12,9 +12,15 @@ class LocalizationService {
   final _dio = NetworkCommon().dio;
 
   Map<String, dynamic> _translations = {};
+  List<String> _supportedLocales = [];
   final _prefs = Tyrads.instance.prefs;
+  final String _fallbackLocale = 'en';
 
   Future<void> init(String locale) async {
+    await _loadTranslations(locale);
+  }
+
+  Future<void> _loadTranslations(String locale, [bool force = false]) async {
     final hasUpdate = await _checkForUpdate(locale);
 
     if (!hasUpdate) {
@@ -25,11 +31,14 @@ class LocalizationService {
       }
     }
 
-    await _fetchTranslations(locale);
+    await _fetchTranslations(locale, force);
   }
 
   Future<void> _fetchTranslations(String locale, [bool force = false]) async {
     try {
+      if (!_supportedLocales.contains(locale)) {
+        locale = _fallbackLocale;
+      }
       final response = await _dio.get(
         "${AcmoConfig.BASE_URL}translations/$locale",
         queryParameters: {
@@ -63,14 +72,21 @@ class LocalizationService {
         final Map<String, dynamic> jsonResponse = response.data;
 
         final List<dynamic> data = jsonResponse['data'];
+        _supportedLocales =
+            data.map((e) => e['code'].toString()).toSet().toList();
+        if (!_supportedLocales.contains(locale)) {
+          return false;
+        }
         final String? currentLocaleSha256 = data.firstWhere(
           (element) => element['code'] == locale,
           orElse: () => null,
         )['sha256'];
-        final String? cachedVersion = _prefs.getString('cached_version_$locale');
+        final String? cachedVersion =
+            _prefs.getString('cached_version_$locale');
         if (currentLocaleSha256 != cachedVersion) {
           await _prefs.remove('cached_version_$locale');
-          await _prefs.setString('cached_version_$locale', currentLocaleSha256!);
+          await _prefs.setString(
+              'cached_version_$locale', currentLocaleSha256!);
           return true;
         }
       }
@@ -113,16 +129,6 @@ class LocalizationService {
   }
 
   Future<void> changeLanguage(String locale, [bool force = false]) async {
-    final hasUpdate = await _checkForUpdate(locale);
-
-    if (!hasUpdate) {
-      final cachedData = _prefs.getString('translations_$locale');
-      if (cachedData != null) {
-        _translations = jsonDecode(cachedData);
-        return;
-      }
-    }
-
-    await _fetchTranslations(locale, force);
+    await _loadTranslations(locale, force);
   }
 }
