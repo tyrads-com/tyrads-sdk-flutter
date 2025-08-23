@@ -19,6 +19,8 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
   bool _hasError = false;
   bool _isClosing = false;
   // double _progress = 0;
+  final Map<String, int> _lastExecutionTime = {};
+  final int _debounceDurationMs = 800;
 
   final GlobalKey webViewKey = GlobalKey();
 
@@ -49,6 +51,16 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
     try {
       final Map<String, dynamic> jsonMessage = jsonDecode(message);
       final action = jsonMessage['action'];
+
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      if (_lastExecutionTime.containsKey(action) &&
+          (now - _lastExecutionTime[action]!) < _debounceDurationMs) {
+        debugPrint('Debouncing duplicate message for action: $action');
+        return;
+      }
+
+      _lastExecutionTime[action] = now;
 
       switch (action) {
         case 'closeWebView':
