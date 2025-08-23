@@ -117,7 +117,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
           spacing: 10,
           children: [
             Text(
-              'Keep Playing!\nExciting Rewards Await!',
+              LocalizationService().translate('data.widget.empty.noOffers'),
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w600,
