@@ -16,7 +16,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   dio: ^5.9.0
   url_launcher: ^6.3.2
-  flutter_cors_image: ^0.3.12
+  cached_network_image: ^3.4.1
   shared_preferences: ^2.5.3
   fluttertoast: ^8.2.12
 #  material_design_icons_flutter: ^7.0.7296
