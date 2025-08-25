@@ -1,9 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cors_image/flutter_cors_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numeral/numeral.dart';
+import 'package:tyrads_sdk/src/acmo/core/components/acmo_image.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/button_3.dart';
-import 'package:tyrads_sdk/src/acmo/core/components/skeleton_loading.dart';
 import 'package:tyrads_sdk/src/acmo/core/extensions/double.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/colors.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/currency_sale_model/currency_sale_model.dart';
@@ -71,19 +71,13 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                         ),
                         child: Stack(
                           children: [
-                            CustomNetworkImage(
+                            AcmoNetworkImage(
                               url: item.creative.creativePacks.firstOrNull
                                       ?.creatives.firstOrNull?.fileUrl ??
                                   '',
                               width: double.infinity,
                               height: itemHeight,
-                              customLoadingBuilder: (ctx, child, progress) {
-                                if (progress == null) return child;
-                                return AcmoCustomSkeleton(
-                                  width: double.maxFinite,
-                                  height: itemHeight,
-                                );
-                              },
+                              fit: BoxFit.cover,
                             ),
                             if (item.premium)
                               Positioned(
@@ -128,18 +122,10 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                                 ),
                                 leading: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: CustomNetworkImage(
+                                  child: AcmoNetworkImage(
                                     url: item.app.thumbnail,
                                     width: 38,
                                     height: 38,
-                                    customLoadingBuilder:
-                                        (ctx, child, progress) {
-                                      if (progress == null) return child;
-                                      return const AcmoCustomSkeleton(
-                                        width: 38,
-                                        height: 38,
-                                      );
-                                    },
                                   ),
                                 ),
                                 title: Text(
@@ -180,19 +166,11 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            CustomNetworkImage(
-                                              url: item
+                                            CachedNetworkImage(
+                                              imageUrl: item
                                                   .currency.adUnitCurrencyIcon,
                                               width: 16,
                                               height: 16,
-                                              customLoadingBuilder:
-                                                  (ctx, child, progress) {
-                                                if (progress == null) return child;
-                                                return const AcmoCustomSkeleton(
-                                                  width: 16,
-                                                  height: 16,
-                                                );
-                                              },
                                             ),
                                             Text(
                                               " ${(item.campaignPayout.totalPlayablePayoutConverted * (currencySaleModel.data?.currencySales?.multiplier ?? 1)).numeral(digits: 2)}",
