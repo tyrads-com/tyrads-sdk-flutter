@@ -44,7 +44,8 @@ class NetworkCommon {
     dio.interceptors.add(
         InterceptorsWrapper(onRequest: (RequestOptions options, handler) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (!options.path.endsWith(AcmoEndpointNames.INITIALIZE)) {
+      if (!options.path.endsWith(AcmoEndpointNames.INITIALIZE) &&
+          !options.path.contains("translations")) {
         options.headers["X-User-ID"] = prefs.getString(AcmoKeyNames.USER_ID)!;
       }
       options.headers["X-API-Key"] = prefs.getString(AcmoKeyNames.API_KEY);
@@ -52,8 +53,10 @@ class NetworkCommon {
           prefs.getString(AcmoKeyNames.API_SECRET);
       options.headers["X-SDK-Platform"] = AcmoConfig.SDK_PLATFORM;
       options.headers["X-SDK-Version"] = AcmoConfig.SDK_VERSION;
-      options.headers["X-Secure-Mode"] = Tyrads.instance.isSecure ? "BASIC" : "PLAIN";
-      options.headers["X-Play-Integrity"] = prefs.getString(AcmoKeyNames.PLAY_INTEGRITY_TOKEN);
+      options.headers["X-Secure-Mode"] =
+          Tyrads.instance.isSecure ? "BASIC" : "PLAIN";
+      options.headers["X-Play-Integrity"] =
+          prefs.getString(AcmoKeyNames.PLAY_INTEGRITY_TOKEN);
       debugPrint(
           "Pre request:${options.method},${options.baseUrl}${options.path}${options.queryParameters}");
       debugPrint("Pre request:${options.headers.toString()}");
