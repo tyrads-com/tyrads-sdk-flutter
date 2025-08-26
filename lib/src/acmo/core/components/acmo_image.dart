@@ -5,7 +5,7 @@ import 'package:tyrads_sdk/src/acmo/core/components/skeleton_loading.dart';
 
 // ignore: unused_import
 import 'package:tyrads_sdk/src/acmo/core/components/web_image.dart'
-    if (dart.library.io) 'package:tyrads_sdk/src/acmo/core/components/web_image_sub.dart';
+    if (dart.library.io) 'package:tyrads_sdk/src/acmo/core/components/web_image_stub.dart';
 
 class AcmoNetworkImage extends StatelessWidget {
   const AcmoNetworkImage({
