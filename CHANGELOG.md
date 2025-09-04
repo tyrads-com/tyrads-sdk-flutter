@@ -1,3 +1,6 @@
+## 3.12.0
+* Added localizations.
+
 ## 3.1.0
 * New Premium Widgets added.
 * Offer Details Rewards Based on Stage added.
