@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/src/gen/assets.gen.dart';
+import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AcmoAppBar({
@@ -12,8 +15,9 @@ class AcmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       leading: IconButton(
-        icon: const Icon(
-          Icons.arrow_back,
+        icon: Assets.icons.angleLeft.image(
+          height: 16,
+          color: Tyrads.instance.colorHeaderFg,
         ),
         onPressed: () {
           if (onBack != null) {
@@ -23,7 +27,13 @@ class AcmoAppBar extends StatelessWidget implements PreferredSizeWidget {
           }
         },
       ),
-      title: Text(titleText),
+      title: Text(
+        titleText,
+        style: GoogleFonts.poppins(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 
@@ -88,17 +98,21 @@ class _AcmoAppBarWithSearchState extends State<AcmoAppBarWithSearch> {
         if (isSearching)
           IconButton(
               onPressed: () {
-                setState(() {
-                  isSearching = false;
-                });
+                if (mounted) {
+                  setState(() {
+                    isSearching = false;
+                  });
+                }
               },
               icon: const Icon(Icons.close)),
         if (!isSearching)
           IconButton(
               onPressed: () {
-                setState(() {
-                  isSearching = true;
-                });
+                if (mounted) {
+                  setState(() {
+                    isSearching = true;
+                  });
+                }
               },
               icon: const Icon(
                 Icons.search,

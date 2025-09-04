@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AcmoComponentAgeSelector extends StatefulWidget {
-  const AcmoComponentAgeSelector({Key? key, required this.onChanged, this.init = 18, this.min = 13})
-      : super(key: key);
+  const AcmoComponentAgeSelector(
+      {super.key, required this.onChanged, this.init = 18, this.min = 13});
   final Function(int) onChanged;
   final int init;
   final int min;
@@ -26,16 +25,18 @@ class _AcmoComponentAgeSelectorState extends State<AcmoComponentAgeSelector> {
   }
 
   onChange() {
-    setState(() {
-      _selectedItem = _scrollController.selectedItem;
-    });
+    if (mounted) {
+      setState(() {
+        _selectedItem = _scrollController.selectedItem;
+      });
+    }
     widget.onChanged(_selectedItem + widget.min);
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: 70,
+        height: 74,
         child: RotatedBox(
           quarterTurns: -1,
           child: InkWell(
@@ -68,14 +69,17 @@ class _AcmoComponentAgeSelectorState extends State<AcmoComponentAgeSelector> {
                                 child: Center(
                                   child: Text(
                                     (i + widget.min).toString(),
-                                    style: TextStyle(
-                                        color: isSelected
-                                            ? AcmoConfig.SECONDARY_COLOR
-                                            : Colors.black54,
-                                        fontSize: 24,
-                                        fontWeight: isSelected
-                                            ? FontWeight.bold
-                                            : FontWeight.normal),
+                                    style: GoogleFonts.poppins(
+                                      color: isSelected
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .secondary
+                                          : Colors.black54,
+                                      fontSize: isSelected ? 30 : 22,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
+import '../../../../gen/assets.gen.dart';
 
 class AcmoComponentGenderSelect extends StatefulWidget {
   final Function(int) onChanged;
 
-  const AcmoComponentGenderSelect({Key? key, required this.onChanged})
-      : super(key: key);
+  const AcmoComponentGenderSelect({super.key, required this.onChanged});
   @override
   _AcmoComponentGenderSelectState createState() =>
       _AcmoComponentGenderSelectState();
@@ -15,11 +15,21 @@ class AcmoComponentGenderSelect extends StatefulWidget {
 class _AcmoComponentGenderSelectState extends State<AcmoComponentGenderSelect> {
   List<Gender> genders = <Gender>[];
 
+  final localization = LocalizationService();
+
   @override
   void initState() {
     super.initState();
-    genders.add(Gender("Male", MdiIcons.genderMale, false));
-    genders.add(Gender("Female", MdiIcons.genderFemale, false));
+    genders.add(Gender(
+        localization.translate('data.initialization.userInfo.gender.male'),
+        null,
+        false,
+        maleImage: true));
+    genders.add(Gender(
+        localization.translate('data.initialization.userInfo.gender.female'),
+        null,
+        false,
+        femaleImage: true));
   }
 
   @override
@@ -30,14 +40,16 @@ class _AcmoComponentGenderSelectState extends State<AcmoComponentGenderSelect> {
         itemCount: genders.length,
         itemBuilder: (context, index) {
           return InkWell(
-            //splashColor: Theme.of(context).colorScheme.secondary,
             onTap: () {
-              setState(() {
-                for (var gender in genders) {
-                  gender.isSelected = false;
-                }
-                genders[index].isSelected = true;
-              });
+              if (mounted) {
+                setState(() {
+                  for (var gender in genders) {
+                    gender.isSelected = false;
+                  }
+                  genders[index].isSelected = true;
+                });
+              }
+
               widget.onChanged(index == 0 ? 1 : 2);
             },
             child: GenderListItem(genders[index]),
@@ -55,7 +67,7 @@ class GenderListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         color: _gender.isSelected
-            ? AcmoConfig.SECONDARY_COLOR
+            ? Theme.of(context).colorScheme.secondary
             : Colors.white,
         child: Container(
           height: 100,
@@ -66,16 +78,30 @@ class GenderListItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Icon(
-                _gender.icon,
-                color: _gender.isSelected ? Colors.white : Colors.grey,
-                size: 40,
-              ),
+              _gender.maleImage
+                  ? Assets.icons.male.image(
+                      color: _gender.isSelected ? Colors.white : Colors.grey,
+                      height: 40,
+                    )
+                  : _gender.femaleImage
+                      ? Assets.icons.female.image(
+                          color:
+                              _gender.isSelected ? Colors.white : Colors.grey,
+                          height: 40,
+                        )
+                      : Icon(
+                          _gender.icon,
+                          color:
+                              _gender.isSelected ? Colors.white : Colors.grey,
+                          size: 40,
+                        ),
               const SizedBox(height: 10),
               Text(
                 _gender.name,
-                style: TextStyle(
-                    color: _gender.isSelected ? Colors.white : Colors.grey),
+                style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: _gender.isSelected ? Colors.white : const Color(0xFF667085)),
               )
             ],
           ),
@@ -85,8 +111,11 @@ class GenderListItem extends StatelessWidget {
 
 class Gender {
   String name;
-  IconData icon;
+  IconData? icon;
   bool isSelected;
+  bool maleImage;
+  bool femaleImage;
 
-  Gender(this.name, this.icon, this.isSelected);
+  Gender(this.name, this.icon, this.isSelected,
+      {this.maleImage = false, this.femaleImage = false});
 }

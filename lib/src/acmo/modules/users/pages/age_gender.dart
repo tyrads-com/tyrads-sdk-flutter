@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:tyrads_sdk/src/acmo/modules/offers/pages/offers.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/src/acmo/core/components/button_primary.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/components/gender_select.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/controller.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
+import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 import '../../../../gen/assets.gen.dart';
-import '../../offers/components/button_primary.dart';
 import '../components/age_select.dart';
 
 class AcmoUsersUpdatePage extends StatefulWidget {
-  const AcmoUsersUpdatePage({Key? key}) : super(key: key);
+  const AcmoUsersUpdatePage({super.key});
 
   @override
   State<AcmoUsersUpdatePage> createState() => _AcmoUsersUpdatePageState();
@@ -18,10 +20,12 @@ class AcmoUsersUpdatePage extends StatefulWidget {
 
 class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
   final _controller = AcmoUsersController();
+  final localization = LocalizationService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       body: Stack(
         children: [
           Align(
@@ -43,20 +47,27 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Last step..\nYou’re almost there!',
+                          localization.translate('data.initialization.userInfo.title'),
                           textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(color: AcmoConfig.SECONDARY_COLOR),
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.secondary,
+                            height: 27.5 / 16,
+                          ),
                         ),
                         const SizedBox(
                           height: 56,
                         ),
-                        const Text(
-                          'Choose Your Gender',
+                        Text(
+                          localization.translate('data.initialization.userInfo.chooseGender.label'),
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: AcmoConfig.SECONDARY_COLOR),
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.secondary,
+                            height: 27.5 / 16,
+                          ),
                         ),
                         const SizedBox(
                           height: 25,
@@ -71,10 +82,15 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                         const SizedBox(
                           height: 56,
                         ),
-                        const Text(
-                          'Choose Your Age',
+                        Text(
+                          localization.translate('data.initialization.userInfo.chooseAge.label'),
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: AcmoConfig.SECONDARY_COLOR),
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.secondary,
+                            height: 27.5 / 16,
+                          ),
                         ),
                         const SizedBox(
                           height: 25,
@@ -94,16 +110,27 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: AcmoComponentButtonPrimary(
                         isLoading: _controller.submiting,
-                        titleText: "Continue",
+                        titleText: localization.translate('data.initialization.userInfo.cta.continue'),
                         onTap: _controller.submiting
                             ? null
                             : () {
-                                setState(() {
-                                  _controller.submiting = true;
-                                });
+                                if (_controller.fd['age'] == "" ||
+                                    _controller.fd['gender'] == "" ||
+                                    _controller.fd['age'] == null ||
+                                    _controller.fd['gender'] == null) {
+                                  acmoSnackbar(
+                                      "Please select gender and age to proceed.");
+                                  return;
+                                }
+                                if (mounted) {
+                                  setState(() {
+                                    _controller.submiting = true;
+                                  });
+                                }
                                 _controller.updateUser(
                                     Tyrads.instance.publisherUserID);
-                                Tyrads.instance.to(const AcmoOffersPage());
+                                Tyrads.instance
+                                    .to(const AcmoWebSdk(), replace: true);
                               },
                       ),
                     ),
