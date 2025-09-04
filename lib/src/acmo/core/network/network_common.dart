@@ -77,7 +77,7 @@ class NetworkCommon {
       } catch (e) {
         rethrow;
       }
-    }, onError: (DioError e, handler) {
+    }, onError: (DioException e, handler) {
       if (e.error.toString().toLowerCase().contains('socketexception')) {
         // if (!isDialogOpen) {
         //   isDialogOpen = true;

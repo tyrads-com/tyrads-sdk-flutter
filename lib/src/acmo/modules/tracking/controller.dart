@@ -1,5 +1,7 @@
 
 
+import 'package:flutter/widgets.dart';
+
 import 'repository.dart';
 
 class AcmoTrackingController {
@@ -11,6 +13,8 @@ class AcmoTrackingController {
       var fd = <String, dynamic>{};
       fd["activity"] = activity;
       await _repo.updateUser(fd);
-    } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }

@@ -107,7 +107,9 @@ class AcmoControllerUsageStats {
       });
 
       return timestamp;
-    } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   getDoubleFromString(String? v) {

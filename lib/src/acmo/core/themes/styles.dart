@@ -87,8 +87,8 @@ class AcmoStyleThemes {
       colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: AcmoConfig.PRIMARY_COLOR,
           secondary: AcmoConfig.SECONDARY_COLOR,
-          background: AcmoConfig.SECONDARY_COLOR,
-          onBackground: Colors.black,
+          surface: AcmoConfig.SECONDARY_COLOR,
+          onSurface: Colors.black,
           outline: Colors.transparent),
       appBarTheme: const AppBarTheme(
         iconTheme: IconThemeData(color: Colors.white),
