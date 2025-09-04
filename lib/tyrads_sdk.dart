@@ -302,6 +302,7 @@ class Tyrads {
         queryParameters: {
           'to': campaignID == null ? route : '$route/$campaignID',
           'token': token,
+          'lang': selectedLanguage,
         },
       ).toString();
 
