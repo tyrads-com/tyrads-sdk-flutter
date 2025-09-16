@@ -1,4 +1,4 @@
-## 3.2.0-beta.0
+## 3.2.0
 * Resolved issue with iOS device identifier retrieval that was causing crashes on iOS devices
 * Migration from local asset-based localization to remote localization system for dynamic content updates without app redeployment
 
