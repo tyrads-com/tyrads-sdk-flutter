@@ -1,6 +1,6 @@
 ## 3.2.0
-* Resolved issue with iOS device identifier retrieval that was causing crashes on iOS devices
-* Migration from local asset-based localization to remote localization system for dynamic content updates without app redeployment
+* Resolved issue with iOS device identifier on iOS devices.
+* Migration from local asset-based localization to remote localization system for dynamic content updates without app redeployment.
 
 ## 3.1.0
 * New Premium Widgets added.
