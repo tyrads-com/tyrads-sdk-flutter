@@ -10,6 +10,7 @@ import 'package:advertising_id/advertising_id.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/src/acmo/core/aes_encrypt.dart';
 import 'package:tyrads_sdk/src/acmo/core/app.dart';
@@ -142,10 +143,13 @@ class Tyrads {
         identifierType = "IDFA";
       }
       String? advertisingId;
-      if (AcmoPlatform.isAndroid) {
+
+      if (!kIsWeb) {
         try {
           advertisingId = await AdvertisingId.id(true);
-        } finally {}
+        } on PlatformException {
+          advertisingId = 'Failed to get platform version.';
+        }
       }
       var fd = {
         "publisherUserId": userID,
