@@ -36,6 +36,7 @@ dependencies:
   plugin_platform_interface: ^2.1.8
   cryptography: ^2.7.0
   flutter_inappwebview: ^6.1.5
+  web: ^1.1.1
 
 
 dev_dependencies:
