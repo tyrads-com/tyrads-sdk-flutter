@@ -148,7 +148,7 @@ class Tyrads {
         try {
           advertisingId = await AdvertisingId.id(true);
         } on PlatformException {
-          advertisingId = 'Failed to get platform version.';
+          debugPrint("Failed to get advertising id");
         }
       }
       var fd = {
