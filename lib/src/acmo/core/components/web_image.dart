@@ -1,5 +1,3 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/skeleton_loading.dart';
 
