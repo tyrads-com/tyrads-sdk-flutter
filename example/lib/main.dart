@@ -25,7 +25,7 @@ Future<void> initializeTyrads({
         (defaultTargetPlatform == TargetPlatform.iOS ? Env.TYRADS_SDK_IOS_KEY : Env.TYRADS_SDK_KEY),
     apiSecret: apiSecret ??
         (defaultTargetPlatform == TargetPlatform.iOS ? Env.TYRADS_SDK_IOS_SECRET : Env.TYRADS_SDK_SECRET),
-    encryptionKey: defaultTargetPlatform == TargetPlatform.iOS ? Env.TYRADS_SDK_IOS_ENC_KEY :  Env.TYRADS_SDK_ENC_KEY,
+    encryptionKey: encKey ?? (defaultTargetPlatform == TargetPlatform.iOS ? Env.TYRADS_SDK_IOS_ENC_KEY :  Env.TYRADS_SDK_ENC_KEY),
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -48,7 +48,7 @@ Future<void> initializeTyrads({
       sub5: "iOSDevice",
     ),
   );
-  await Tyrads.instance.loginUser(userID: userID ?? "acmo_3427");
+  await Tyrads.instance.loginUser(userID: userID ?? "acmoUser_3427");
   Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
     debugPrint("TyradsCallbackType.campaignDetail: $data");
   });
