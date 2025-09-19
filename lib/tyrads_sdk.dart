@@ -135,12 +135,19 @@ class Tyrads {
         prefs.setString(AcmoKeyNames.CUSTOM_AD_ID, customAdId);
       }
 
+      final isLimitAdTrackingEnabled =
+          await AdvertisingId.isLimitAdTrackingEnabled;
+
       var identifierType = "OTHER";
       if (kIsWeb) {
       } else if (Platform.isAndroid) {
         identifierType = "GAID";
       } else if (Platform.isIOS) {
-        identifierType = "IDFA";
+        if (isLimitAdTrackingEnabled ?? false) {
+          identifierType = "IDFV";
+        } else {
+          identifierType = "IDFA";
+        }
       }
       String? advertisingId;
 
@@ -252,7 +259,8 @@ class Tyrads {
         isLoginSuccessful = true;
       }
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("Error initializing: ${e.toString()}");
+      isLoginSuccessful = false;
     } finally {
       if (!initializationWait.isCompleted) {
         initializationWait.complete();
@@ -264,6 +272,7 @@ class Tyrads {
   Future<void> logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(AcmoKeyNames.USER_ID);
+    await prefs.remove(AcmoKeyNames.TOKEN);
     publisherUserID = '';
     isLoginSuccessful = false;
   }
