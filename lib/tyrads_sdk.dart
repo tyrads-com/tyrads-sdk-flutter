@@ -135,8 +135,7 @@ class Tyrads {
         prefs.setString(AcmoKeyNames.CUSTOM_AD_ID, customAdId);
       }
 
-      final isLimitAdTrackingEnabled =
-          await AdvertisingId.isLimitAdTrackingEnabled;
+      bool? isLimitAdTrackingEnabled;
 
       var identifierType = "OTHER";
       if (kIsWeb) {
@@ -149,6 +148,7 @@ class Tyrads {
 
       if (!kIsWeb) {
         try {
+          isLimitAdTrackingEnabled = await AdvertisingId.isLimitAdTrackingEnabled;
           advertisingId = await AdvertisingId.id(true);
         } on PlatformException {
           debugPrint("Failed to get advertising id");
@@ -162,7 +162,7 @@ class Tyrads {
         var deviceDetailsController = AcmoDeviceDetailsController();
         var deviceDetails = await deviceDetailsController.getDeviceDetails();
         fd["deviceData"] = deviceDetails;
-        if(isLimitAdTrackingEnabled == false){
+        if (isLimitAdTrackingEnabled == true && AcmoPlatform.isIOS) {
           identifierType = "OTHER";
           advertisingId = deviceDetails["deviceId"];
         }
