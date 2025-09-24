@@ -143,11 +143,7 @@ class Tyrads {
       } else if (Platform.isAndroid) {
         identifierType = "GAID";
       } else if (Platform.isIOS) {
-        if (isLimitAdTrackingEnabled ?? false) {
-          identifierType = "IDFV";
-        } else {
-          identifierType = "IDFA";
-        }
+        identifierType = "IDFA";
       }
       String? advertisingId;
 
@@ -166,6 +162,10 @@ class Tyrads {
         var deviceDetailsController = AcmoDeviceDetailsController();
         var deviceDetails = await deviceDetailsController.getDeviceDetails();
         fd["deviceData"] = deviceDetails;
+        if(isLimitAdTrackingEnabled == false){
+          identifierType = "OTHER";
+          advertisingId = deviceDetails["deviceId"];
+        }
         if (advertisingId == null || advertisingId.isEmpty) {
           identifierType = "OTHER";
           advertisingId = customAdId;
