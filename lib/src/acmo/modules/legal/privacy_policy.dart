@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:styled_text/styled_text.dart';
+import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/usage_permissions.dart';
+import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
+import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
@@ -72,12 +77,28 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
                   children: [
                     const Info2(),
                     TwoButtons(
-                      acceptOnTap: () {
-                        Tyrads.instance.to(AcmoUsagePermissionsPage(
-                          closeButtononTap: () {
-                            Tyrads.instance.back();
-                          },
-                        ), replace: true);
+                      acceptOnTap: () async {
+                        Widget page;
+                        if (AcmoPlatform.isAndroid) {
+                          Tyrads.instance.to(AcmoUsagePermissionsPage(
+                            closeButtononTap: () {
+                              Tyrads.instance.back();
+                            },
+                          ), replace: true);
+                          return;
+                        }
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setBool(
+                            AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
+                                Tyrads.instance.publisherUserID,
+                            true);
+                        if (Tyrads.instance.newUser) {
+                          page = const AcmoUsersUpdatePage();
+                        } else {
+                          page = const AcmoWebSdk();
+                        }
+                        Tyrads.instance.to(page, replace: true);
                       },
                       rejectOntap: () {
                         Tyrads.instance.back();

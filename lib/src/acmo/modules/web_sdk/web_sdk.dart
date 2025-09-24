@@ -185,8 +185,10 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
                         }
 
                         if (!urlString.contains('sdk.tyrads.com')) {
-                          await launchUrlString(urlString);
-
+                          await launchUrlString(
+                            urlString,
+                            mode: LaunchMode.externalApplication,
+                          );
                           return NavigationActionPolicy.CANCEL;
                         }
                         return NavigationActionPolicy.ALLOW;

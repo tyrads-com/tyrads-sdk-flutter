@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -53,38 +51,41 @@ class _AcmoAppState extends State<AcmoApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb || Platform.isIOS) {
+    if (kIsWeb) {
       return SafeArea(child: Theme(data: theme, child: const AcmoWebSdk()));
     } else {
       return FutureBuilder<SharedPreferences>(
-          future: prefsFuture,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return Container();
-            var prefs = snapshot.data!;
-            return SafeArea(
-              top: false,
-              child: MaterialApp(
-                navigatorKey: Tyrads.instance.navKey,
-                theme: theme,
-                initialRoute: '/',
-                onGenerateRoute: (settings) {
-                  Widget page;
-                  var privacyAccepted = 
-                  prefs.getBool(AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID + Tyrads.instance.publisherUserID) ?? false;
-                  if (privacyAccepted) {
-                    if (Tyrads.instance.newUser) {
-                      page = const AcmoUsersUpdatePage();
-                    } else {
-                      page = const AcmoWebSdk();
-                    }
+        future: prefsFuture,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return Container();
+          var prefs = snapshot.data!;
+          return SafeArea(
+            top: false,
+            child: MaterialApp(
+              navigatorKey: Tyrads.instance.navKey,
+              theme: theme,
+              initialRoute: '/',
+              onGenerateRoute: (settings) {
+                Widget page;
+                var privacyAccepted = prefs.getBool(
+                        AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
+                            Tyrads.instance.publisherUserID) ??
+                    false;
+                if (privacyAccepted) {
+                  if (Tyrads.instance.newUser) {
+                    page = const AcmoUsersUpdatePage();
                   } else {
-                    page = const AcmoPrivacyPolicyPage();
+                    page = const AcmoWebSdk();
                   }
-                  return MaterialPageRoute(builder: (c) => page);
-                },
-              ),
-            );
-          });
+                } else {
+                  page = const AcmoPrivacyPolicyPage();
+                }
+                return MaterialPageRoute(builder: (c) => page);
+              },
+            ),
+          );
+        },
+      );
     }
   }
 }

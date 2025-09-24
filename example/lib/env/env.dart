@@ -16,4 +16,6 @@ abstract class Env {
     static const String TYRADS_SDK_IOS_SECRET = _Env.TYRADS_SDK_IOS_SECRET;
     @EnviedField(varName: 'TYRADS_SDK_ENC_KEY')
     static const String TYRADS_SDK_ENC_KEY = _Env.TYRADS_SDK_ENC_KEY;
+    @EnviedField(varName: 'TYRADS_SDK_IOS_ENC_KEY')
+    static const String TYRADS_SDK_IOS_ENC_KEY = _Env.TYRADS_SDK_IOS_ENC_KEY;
 }
