@@ -6,14 +6,20 @@ import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
 import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
+import 'package:usage_stats_new/usage_stats.dart';
 
 import 'privacy_policy.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AcmoUsagePermissionsPage extends StatelessWidget {
-  const AcmoUsagePermissionsPage({super.key, this.closeButtononTap});
+  const AcmoUsagePermissionsPage({
+    super.key,
+    this.closeButtononTap,
+    this.isReturningToWidget = false,
+  });
   final void Function()? closeButtononTap;
+  final bool isReturningToWidget;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -52,19 +58,24 @@ class AcmoUsagePermissionsPage extends StatelessWidget {
                             ],
                           ),
                           child: AcmoAppUsageStatsTile(onGrant: () async {
+                            UsageStats.grantUsagePermission();
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             prefs.setBool(
                                 AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
                                     Tyrads.instance.publisherUserID,
                                 true);
-                            Widget page;
-                            if (Tyrads.instance.newUser) {
-                              page = const AcmoUsersUpdatePage();
+
+                            if (isReturningToWidget) {
+                              if (!context.mounted) return;
+
+                              Navigator.pop(context, true); 
                             } else {
-                              page = const AcmoWebSdk();
+                              Widget page = Tyrads.instance.newUser
+                                  ? const AcmoUsersUpdatePage()
+                                  : const AcmoWebSdk();
+                              Tyrads.instance.to(page, replace: true);
                             }
-                            Tyrads.instance.to(page, replace: true);
                           }),
                         )
                       ],
@@ -95,10 +106,11 @@ class Body extends StatelessWidget {
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.65,
             child: Text(
-              localization.translate('data.initialization.usagePermission.title'),
+              localization
+                  .translate('data.initialization.usagePermission.title'),
               style: GoogleFonts.lexend(
-                  textStyle:
-                      const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
+                  textStyle: const TextStyle(
+                      fontWeight: FontWeight.w500, fontSize: 16)),
               textAlign: TextAlign.center,
             ),
           ),

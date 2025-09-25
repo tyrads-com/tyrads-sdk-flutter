@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/custom_slider.dart';
-import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
+import 'package:tyrads_sdk/src/acmo/core/onboarding_check.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
@@ -152,10 +153,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
         ),
       );
     }
-    var privacyAccepted = Tyrads.instance.prefs.getBool(
-            AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
-                Tyrads.instance.publisherUserID) ??
-        false;
     return CardContainer(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -237,25 +234,18 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                 child: AcmoOfferListItem(
                   key: ValueKey(e.campaignId),
                   loadingIndex: loadingIndex,
-                  onButtonTap:
-                      // AcmoPlatform.isAndroid ?
-                      privacyAccepted
-                          ? () async {
-                              await _controller.openOffer(
-                                item: e,
-                              );
-                            }
-                          : () => Tyrads.instance.showOffers(
-                                context,
-                                route: TyradsDeepRoutes.OFFERS,
-                                campaignID: e.campaignId,
-                                launchMode: Tyrads.instance.launchMode,
-                              ),
-                  // : () async {
-                  //     await _controller.openOffer(
-                  //       item: e,
-                  //     );
-                  //   },
+                  onButtonTap: kIsWeb
+                      ? () async {
+                          await _controller.openOffer(item: e);
+                        }
+                      : () async {
+                          final isReady = await OnboardingCheck.instance
+                              .checkOnboardingStatus(context);
+
+                          if (isReady) {
+                            await _controller.openOffer(item: e);
+                          }
+                        },
                   e: e,
                   currencySales: _controller.currencySales.data?.currencySales,
                   index: entry.key,
@@ -296,26 +286,20 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                         margin: const EdgeInsets.all(16),
                         isPremiumWidget: true,
                         isLoading: itemLoadingNotifier,
-                        onButtonClick:
-                            // AcmoPlatform.isAndroid ?
-                            privacyAccepted
-                                ? () async {
-                                    await _controller.openOffer(
-                                      item: _controller.hotOffers[index],
-                                    );
-                                  }
-                                : () => Tyrads.instance.showOffers(
-                                      context,
-                                      route: TyradsDeepRoutes.OFFERS,
-                                      campaignID: _controller
-                                          .hotOffers[index].campaignId,
-                                      launchMode: Tyrads.instance.launchMode,
-                                    ),
-                        // : () async {
-                        //     await _controller.openOffer(
-                        //       item: _controller.hotOffers[index],
-                        //     );
-                        //   },
+                        onButtonClick: kIsWeb
+                            ? () async {
+                                await _controller.openOffer(
+                                    item: _controller.hotOffers[index]);
+                              }
+                            : () async {
+                                final isReady = await OnboardingCheck.instance
+                                    .checkOnboardingStatus(context);
+
+                                if (isReady) {
+                                  await _controller.openOffer(
+                                      item: _controller.hotOffers[index]);
+                                }
+                              },
                         onTap: () => Tyrads.instance.showOffers(
                           context,
                           route: TyradsDeepRoutes.OFFERS,
