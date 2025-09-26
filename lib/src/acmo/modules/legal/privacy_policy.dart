@@ -116,8 +116,7 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
                         } else {
                           Widget page;
                           if (AcmoPlatform.isAndroid) {
-                            page =
-                                const AcmoUsagePermissionsPage();
+                            page = const AcmoUsagePermissionsPage();
                           } else {
                             page = Tyrads.instance.newUser
                                 ? const AcmoUsersUpdatePage()
@@ -127,7 +126,12 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
                         }
                       },
                       rejectOntap: () {
-                        Navigator.pop(context, false);
+                        if (isReturningToWidget) {
+                          if (!context.mounted) return;
+                          Navigator.pop(context, false);
+                        } else {
+                          Tyrads.instance.back();
+                        }
                       },
                     ),
                   ],
