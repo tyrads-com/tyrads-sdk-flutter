@@ -116,7 +116,9 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
                         } else {
                           Widget page;
                           if (AcmoPlatform.isAndroid) {
-                            page = const AcmoUsagePermissionsPage();
+                            page = AcmoUsagePermissionsPage(
+                              closeButtononTap: () => Tyrads.instance.back(),
+                            );
                           } else {
                             page = Tyrads.instance.newUser
                                 ? const AcmoUsersUpdatePage()

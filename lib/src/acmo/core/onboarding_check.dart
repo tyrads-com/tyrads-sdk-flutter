@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
@@ -68,8 +67,12 @@ class OnboardingCheck {
       if (!status) {
         final result = await navigator.push(
           MaterialPageRoute(
-            builder: (c) =>
-                const AcmoUsagePermissionsPage(isReturningToWidget: true),
+            builder: (c) => AcmoUsagePermissionsPage(
+              isReturningToWidget: true,
+              closeButtononTap: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
         );
         if (!context.mounted) return false;
@@ -77,7 +80,7 @@ class OnboardingCheck {
         if (result != true) return false;
 
         bool newStatus = await UsageStats.checkUsagePermission() ?? false;
-        
+
         if (!newStatus) {
           return false;
         }
