@@ -20,6 +20,7 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/colors.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
+import 'package:tyrads_sdk/src/acmo/core/onboarding_check.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
@@ -320,6 +321,13 @@ class Tyrads {
       ).toString();
 
       log("Web Url: $webUrl");
+
+      final ready = await OnboardingCheck.instance.checkOnboardingStatus(context);
+
+      if (ready == false) {
+        log("Onboarding not completed");
+        return;
+      }
 
       runZonedGuarded(() {
         parentContext = context;
