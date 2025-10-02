@@ -8,11 +8,15 @@ import 'package:tyrads_sdk/src/acmo/modules/users/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
-import '../../../../gen/assets.gen.dart';
 import '../components/age_select.dart';
 
 class AcmoUsersUpdatePage extends StatefulWidget {
-  const AcmoUsersUpdatePage({super.key});
+  final bool isReturningToWidget;
+
+  const AcmoUsersUpdatePage({
+    super.key,
+    this.isReturningToWidget = false,
+  });
 
   @override
   State<AcmoUsersUpdatePage> createState() => _AcmoUsersUpdatePageState();
@@ -28,13 +32,13 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
       backgroundColor: const Color(0xFFFFFFFF),
       body: Stack(
         children: [
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                  width: double.infinity,
-                  child: Assets.images.singupBg.image(fit: BoxFit.fitWidth))),
+          // Align(
+          //     alignment: Alignment.bottomCenter,
+          //     child: SizedBox(
+          //         width: double.infinity,
+          //         child: Assets.images.singupBg.image(fit: BoxFit.fitWidth))),
           Container(
-              padding: const EdgeInsets.symmetric(horizontal: 48),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,12 +51,14 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          localization.translate('data.initialization.userInfo.title'),
+                          localization
+                              .translate('data.initialization.userInfo.title'),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: Tyrads.instance.colorMain ??
+                                Theme.of(context).colorScheme.secondary,
                             height: 27.5 / 16,
                           ),
                         ),
@@ -60,12 +66,14 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                           height: 56,
                         ),
                         Text(
-                          localization.translate('data.initialization.userInfo.chooseGender.label'),
+                          localization.translate(
+                              'data.initialization.userInfo.chooseGender.label'),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: Tyrads.instance.colorMain ??
+                                Theme.of(context).colorScheme.secondary,
                             height: 27.5 / 16,
                           ),
                         ),
@@ -80,15 +88,17 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                               },
                             )),
                         const SizedBox(
-                          height: 56,
+                          height: 100,
                         ),
                         Text(
-                          localization.translate('data.initialization.userInfo.chooseAge.label'),
+                          localization.translate(
+                              'data.initialization.userInfo.chooseAge.label'),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: Tyrads.instance.colorMain ??
+                                Theme.of(context).colorScheme.secondary,
                             height: 27.5 / 16,
                           ),
                         ),
@@ -104,16 +114,17 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                     ),
                     // Assets.images.
                     const SizedBox(
-                      height: 57,
+                      height: 55,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: AcmoComponentButtonPrimary(
                         isLoading: _controller.submiting,
-                        titleText: localization.translate('data.initialization.userInfo.cta.continue'),
+                        titleText: localization.translate(
+                            'data.initialization.userInfo.cta.continue'),
                         onTap: _controller.submiting
                             ? null
-                            : () {
+                            : () async {
                                 if (_controller.fd['age'] == "" ||
                                     _controller.fd['gender'] == "" ||
                                     _controller.fd['age'] == null ||
@@ -127,10 +138,21 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                                     _controller.submiting = true;
                                   });
                                 }
-                                _controller.updateUser(
+                                await _controller.updateUser(
                                     Tyrads.instance.publisherUserID);
-                                Tyrads.instance
-                                    .to(const AcmoWebSdk(), replace: true);
+                                if (widget.isReturningToWidget) {
+                                  if (!context.mounted) return;
+                                  // if (AcmoPlatform.isIOS) {
+                                    Navigator.pop(context, true);
+                                  // } else {
+                                  //   Navigator.of(context)
+                                  //     ..pop(true)
+                                  //     ..pop(true);
+                                  // }
+                                } else {
+                                  Tyrads.instance
+                                      .to(const AcmoWebSdk(), replace: true);
+                                }
                               },
                       ),
                     ),

@@ -13,19 +13,40 @@ void main() async {
   runApp(const MyApp());
 }
 
+bool _isTyradsInitialized = false;
+String? _previousApiKey;
+String? _previousApiSecret;
+String? _previousEncKey;
+String? _previousUserID;
+
 Future<void> initializeTyrads({
   String? apiKey,
   String? apiSecret,
   String? encKey,
   String? userID,
 }) async {
+  if (_isTyradsInitialized &&
+      _previousApiKey == apiKey &&
+      _previousApiSecret == apiSecret &&
+      _previousEncKey == encKey &&
+      _previousUserID == userID) {
+    log("Tyrads already initialized with same details, skipping reinitialization");
+    return;
+  }
   log("initializeTyrads $apiKey,  $apiSecret,  $userID");
   await Tyrads.instance.init(
     apiKey: apiKey ??
-        (defaultTargetPlatform == TargetPlatform.iOS ? Env.TYRADS_SDK_IOS_KEY : Env.TYRADS_SDK_KEY),
+        (defaultTargetPlatform == TargetPlatform.iOS
+            ? Env.TYRADS_SDK_IOS_KEY
+            : Env.TYRADS_SDK_KEY),
     apiSecret: apiSecret ??
-        (defaultTargetPlatform == TargetPlatform.iOS ? Env.TYRADS_SDK_IOS_SECRET : Env.TYRADS_SDK_SECRET),
-    encryptionKey: defaultTargetPlatform == TargetPlatform.iOS ? encKey : encKey ?? Env.TYRADS_SDK_ENC_KEY,
+        (defaultTargetPlatform == TargetPlatform.iOS
+            ? Env.TYRADS_SDK_IOS_SECRET
+            : Env.TYRADS_SDK_SECRET),
+    encryptionKey: encKey ??
+        (defaultTargetPlatform == TargetPlatform.iOS
+            ? Env.TYRADS_SDK_IOS_ENC_KEY
+            : Env.TYRADS_SDK_ENC_KEY),
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -48,13 +69,30 @@ Future<void> initializeTyrads({
       sub5: "iOSDevice",
     ),
   );
-  await Tyrads.instance.loginUser(userID: userID ?? "acmo_3427");
+  await Tyrads.instance.loginUser(userID: userID ?? "acmoUser_34233");
   Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
     debugPrint("TyradsCallbackType.campaignDetail: $data");
   });
   Tyrads.instance.setCallback(TyradsCallbackType.campaignActivated, (data) {
     debugPrint("TyradsCallbackType.activated: $data");
   });
+
+  _previousApiKey = apiKey;
+  _previousApiSecret = apiSecret;
+  _previousEncKey = encKey;
+  _previousUserID = userID;
+  _isTyradsInitialized = true;
+
+  log("Tyrads initialized successfully with new details");
+}
+
+void clearTyradsCache() {
+  _previousApiKey = null;
+  _previousApiSecret = null;
+  _previousEncKey = null;
+  _previousUserID = null;
+  _isTyradsInitialized = false;
+  log("Tyrads cache cleared");
 }
 
 class MyApp extends StatelessWidget {

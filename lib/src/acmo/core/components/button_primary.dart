@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoComponentButtonPrimary extends StatelessWidget {
   const AcmoComponentButtonPrimary({
@@ -19,7 +20,10 @@ class AcmoComponentButtonPrimary extends StatelessWidget {
         Expanded(
           child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
+                backgroundColor: Tyrads.instance.colorMain ?? Theme.of(context).colorScheme.secondary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
               ),
               onPressed: onTap,
               child: Padding(
@@ -31,7 +35,10 @@ class AcmoComponentButtonPrimary extends StatelessWidget {
                       const SizedBox(
                         width: 10,
                         height: 10,
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.2,
+                          color: Color(0xffa3a9b6),
+                        ),
                       ),
                     if (isLoading)
                       const SizedBox(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
+import 'package:tyrads_sdk/tyrads_sdk.dart';
 import '../../../../gen/assets.gen.dart';
 
 class AcmoComponentGenderSelect extends StatefulWidget {
@@ -67,8 +68,12 @@ class GenderListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         color: _gender.isSelected
-            ? Theme.of(context).colorScheme.secondary
+            ? (Tyrads.instance.colorMain ??
+                Theme.of(context).colorScheme.secondary)
             : Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(4),
+        ),
         child: Container(
           height: 100,
           width: 100,
@@ -101,7 +106,9 @@ class GenderListItem extends StatelessWidget {
                 style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: _gender.isSelected ? Colors.white : const Color(0xFF667085)),
+                    color: _gender.isSelected
+                        ? Colors.white
+                        : const Color(0xFF667085)),
               )
             ],
           ),

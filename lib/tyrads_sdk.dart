@@ -20,6 +20,7 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/colors.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
+import 'package:tyrads_sdk/src/acmo/core/onboarding_check.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
@@ -135,6 +136,8 @@ class Tyrads {
         prefs.setString(AcmoKeyNames.CUSTOM_AD_ID, customAdId);
       }
 
+      bool? isLimitAdTrackingEnabled;
+
       var identifierType = "OTHER";
       if (kIsWeb) {
       } else if (Platform.isAndroid) {
@@ -146,9 +149,10 @@ class Tyrads {
 
       if (!kIsWeb) {
         try {
+          isLimitAdTrackingEnabled = await AdvertisingId.isLimitAdTrackingEnabled;
           advertisingId = await AdvertisingId.id(true);
         } on PlatformException {
-          advertisingId = 'Failed to get platform version.';
+          debugPrint("Failed to get advertising id");
         }
       }
       var fd = {
@@ -159,6 +163,10 @@ class Tyrads {
         var deviceDetailsController = AcmoDeviceDetailsController();
         var deviceDetails = await deviceDetailsController.getDeviceDetails();
         fd["deviceData"] = deviceDetails;
+        if (isLimitAdTrackingEnabled == true && AcmoPlatform.isIOS) {
+          identifierType = "OTHER";
+          advertisingId = deviceDetails["deviceId"];
+        }
         if (advertisingId == null || advertisingId.isEmpty) {
           identifierType = "OTHER";
           advertisingId = customAdId;
@@ -252,7 +260,8 @@ class Tyrads {
         isLoginSuccessful = true;
       }
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("Error initializing: ${e.toString()}");
+      isLoginSuccessful = false;
     } finally {
       if (!initializationWait.isCompleted) {
         initializationWait.complete();
@@ -264,6 +273,7 @@ class Tyrads {
   Future<void> logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(AcmoKeyNames.USER_ID);
+    await prefs.remove(AcmoKeyNames.TOKEN);
     publisherUserID = '';
     isLoginSuccessful = false;
   }
@@ -311,6 +321,13 @@ class Tyrads {
       ).toString();
 
       log("Web Url: $webUrl");
+
+      final ready = await OnboardingCheck.instance.checkOnboardingStatus(context);
+
+      if (ready == false) {
+        log("Onboarding not completed");
+        return;
+      }
 
       runZonedGuarded(() {
         parentContext = context;

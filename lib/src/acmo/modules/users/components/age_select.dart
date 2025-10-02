@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoComponentAgeSelector extends StatefulWidget {
   const AcmoComponentAgeSelector(
@@ -71,9 +72,9 @@ class _AcmoComponentAgeSelectorState extends State<AcmoComponentAgeSelector> {
                                     (i + widget.min).toString(),
                                     style: GoogleFonts.poppins(
                                       color: isSelected
-                                          ? Theme.of(context)
+                                          ? (Tyrads.instance.colorMain ?? Theme.of(context)
                                               .colorScheme
-                                              .secondary
+                                              .secondary)
                                           : Colors.black54,
                                       fontSize: isSelected ? 30 : 22,
                                       fontWeight: isSelected

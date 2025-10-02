@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/custom_slider.dart';
-import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
-import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
+import 'package:tyrads_sdk/src/acmo/core/onboarding_check.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
@@ -98,8 +98,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
       );
     }
 
-    if (_cachedHotOffers == null ||
-        _cachedHotOffers!.isEmpty) {
+    if (_cachedHotOffers == null || _cachedHotOffers!.isEmpty) {
       return Container(
         width: double.maxFinite,
         padding: const EdgeInsets.symmetric(
@@ -140,7 +139,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                 ),
               ),
               child: Text(
-                LocalizationService().translate('data.widget.button.continuePlaying'),
+                LocalizationService()
+                    .translate('data.widget.button.continuePlaying'),
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -153,10 +153,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
         ),
       );
     }
-    var privacyAccepted = Tyrads.instance.prefs.getBool(
-            AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
-                Tyrads.instance.publisherUserID) ??
-        false;
     return CardContainer(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -193,35 +189,36 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                   ),
                 ),
                 const Spacer(),
-                  InkWell(
-                    onTap: () {
-                      Tyrads.instance.showOffers(
-                        context,
-                        launchMode: Tyrads.instance.launchMode,
-                      );
-                    },
-                    child: Row(
-                      spacing: 4,
-                      children: [
-                        Text(
-                          LocalizationService().translate('data.widget.button.moreOffers'),
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            color: Tyrads.instance.colorPremium ??
-                                Theme.of(context).colorScheme.secondary,
-                          ),
+                InkWell(
+                  onTap: () {
+                    Tyrads.instance.showOffers(
+                      context,
+                      launchMode: Tyrads.instance.launchMode,
+                    );
+                  },
+                  child: Row(
+                    spacing: 4,
+                    children: [
+                      Text(
+                        LocalizationService()
+                            .translate('data.widget.button.moreOffers'),
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          color: Tyrads.instance.colorPremium ??
+                              Theme.of(context).colorScheme.secondary,
                         ),
-                        RotatedBox(
-                          quarterTurns: 1,
-                          child: Assets.icons.angleUp.image(
-                            width: 12,
-                            color: Tyrads.instance.colorPremium ??
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                        )
-                      ],
-                    ),
+                      ),
+                      RotatedBox(
+                        quarterTurns: 1,
+                        child: Assets.icons.angleUp.image(
+                          width: 12,
+                          color: Tyrads.instance.colorPremium ??
+                              Theme.of(context).colorScheme.secondary,
+                        ),
+                      )
+                    ],
                   ),
+                ),
               ],
             ),
           ),
@@ -237,23 +234,17 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                 child: AcmoOfferListItem(
                   key: ValueKey(e.campaignId),
                   loadingIndex: loadingIndex,
-                  onButtonTap: AcmoPlatform.isAndroid
-                      ? privacyAccepted
-                          ? () async {
-                              await _controller.openOffer(
-                                item: e,
-                              );
-                            }
-                          : () => Tyrads.instance.showOffers(
-                                context,
-                                route: TyradsDeepRoutes.OFFERS,
-                                campaignID: e.campaignId,
-                                launchMode: Tyrads.instance.launchMode,
-                              )
+                  onButtonTap: kIsWeb
+                      ? () async {
+                          await _controller.openOffer(item: e);
+                        }
                       : () async {
-                          await _controller.openOffer(
-                            item: e,
-                          );
+                          final isReady = await OnboardingCheck.instance
+                              .checkOnboardingStatus(context);
+
+                          if (isReady) {
+                            await _controller.openOffer(item: e);
+                          }
                         },
                   e: e,
                   currencySales: _controller.currencySales.data?.currencySales,
@@ -295,24 +286,19 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                         margin: const EdgeInsets.all(16),
                         isPremiumWidget: true,
                         isLoading: itemLoadingNotifier,
-                        onButtonClick: AcmoPlatform.isAndroid
-                            ? privacyAccepted
-                                ? () async {
-                                    await _controller.openOffer(
-                                      item: _controller.hotOffers[index],
-                                    );
-                                  }
-                                : () => Tyrads.instance.showOffers(
-                                      context,
-                                      route: TyradsDeepRoutes.OFFERS,
-                                      campaignID: _controller
-                                          .hotOffers[index].campaignId,
-                                      launchMode: Tyrads.instance.launchMode,
-                                    )
-                            : () async {
+                        onButtonClick: kIsWeb
+                            ? () async {
                                 await _controller.openOffer(
-                                  item: _controller.hotOffers[index],
-                                );
+                                    item: _controller.hotOffers[index]);
+                              }
+                            : () async {
+                                final isReady = await OnboardingCheck.instance
+                                    .checkOnboardingStatus(context);
+
+                                if (isReady) {
+                                  await _controller.openOffer(
+                                      item: _controller.hotOffers[index]);
+                                }
                               },
                         onTap: () => Tyrads.instance.showOffers(
                           context,
@@ -345,10 +331,11 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
           //     ),
           //   ),
           // if (widget.showMyOffers && _activeOffersCount > 0)
-            ActiveOfferButton(
-              key: ValueKey(LocalizationService().translate("data.widget.button.moreOffers")),
-              activatedCount: _activeOffersCount,
-            ),
+          ActiveOfferButton(
+            key: ValueKey(LocalizationService()
+                .translate("data.widget.button.moreOffers")),
+            activatedCount: _activeOffersCount,
+          ),
         ],
       ),
     );

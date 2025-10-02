@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:styled_text/styled_text.dart';
+import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/usage_permissions.dart';
+import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
+import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoPrivacyPolicyPage extends StatelessWidget {
-  const AcmoPrivacyPolicyPage({super.key});
+  final bool isReturningToWidget;
+
+  const AcmoPrivacyPolicyPage({
+    super.key,
+    this.isReturningToWidget = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +53,9 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
                             child: SingleChildScrollView(
                               child: Column(
                                 children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 16),
-                                    child: Info(),
-                                  ),
+                                  Info(),
                                   SizedBox(
-                                    height: 190,
+                                    height: 90,
                                   )
                                 ],
                               ),
@@ -72,15 +78,62 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
                   children: [
                     const Info2(),
                     TwoButtons(
-                      acceptOnTap: () {
-                        Tyrads.instance.to(AcmoUsagePermissionsPage(
-                          closeButtononTap: () {
-                            Tyrads.instance.back();
-                          },
-                        ), replace: true);
+                      acceptOnTap: () async {
+                        // if (AcmoPlatform.isAndroid) {
+                        //   Tyrads.instance.to(
+                        //       AcmoUsagePermissionsPage(
+                        //         closeButtononTap: () {
+                        //           Navigator.pop(context, false);
+                        //         },
+                        //         isReturningToWidget: isReturningToWidget,
+                        //       ),
+                        //       replace: true);
+                        //   return;
+                        // }
+                        // if (AcmoPlatform.isAndroid) {
+                        //   Navigator.of(context).pushReplacement(
+                        //     MaterialPageRoute(
+                        //       builder: (c) => AcmoUsagePermissionsPage(
+                        //         closeButtononTap: () {
+                        //           Navigator.pop(context, false);
+                        //         },
+                        //         isReturningToWidget: isReturningToWidget,
+                        //       ),
+                        //     ),
+                        //   );
+                        //   return;
+                        // }
+
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setBool(
+                            AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
+                                Tyrads.instance.publisherUserID,
+                            true);
+                        if (isReturningToWidget) {
+                          if (!context.mounted) return;
+                          Navigator.pop(context, true);
+                        } else {
+                          Widget page;
+                          if (AcmoPlatform.isAndroid) {
+                            page = AcmoUsagePermissionsPage(
+                              closeButtononTap: () => Tyrads.instance.back(),
+                            );
+                          } else {
+                            page = Tyrads.instance.newUser
+                                ? const AcmoUsersUpdatePage()
+                                : const AcmoWebSdk();
+                          }
+                          Tyrads.instance.to(page, replace: true);
+                        }
                       },
                       rejectOntap: () {
-                        Tyrads.instance.back();
+                        if (isReturningToWidget) {
+                          if (!context.mounted) return;
+                          Navigator.pop(context, false);
+                        } else {
+                          Tyrads.instance.back();
+                        }
                       },
                     ),
                   ],
@@ -160,7 +213,8 @@ class TwoButtons extends StatelessWidget {
                 height: 35,
                 width: 160,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Tyrads.instance.colorMain ??
+                      Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Center(
@@ -213,12 +267,22 @@ class Info extends StatelessWidget {
     super.key,
   });
 
+  String wrapLinks(String text) {
+    final urlRegex = RegExp(r'(https?:\/\/[^\s]+)');
+    return text.replaceAllMapped(urlRegex, (match) {
+      final url = match.group(0)!;
+      return '<link href="$url">$url</link>';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final localization = LocalizationService();
+
     return StyledText(
       textAlign: TextAlign.left,
-      text: localization.translate('data.initialization.legal.explanation'),
+      text: wrapLinks(
+          localization.translate('data.initialization.legal.explanation')),
       style: GoogleFonts.openSans(
         fontSize: 14,
         fontWeight: FontWeight.w400,
@@ -226,8 +290,11 @@ class Info extends StatelessWidget {
       ),
       tags: {
         "link": StyledTextActionTag(
-          (_, attrs) => acmoLaunchURLForce(attrs),
-        ),
+            (_, attrs) => acmoLaunchURLForce(attrs['href'] ?? ''),
+            style: GoogleFonts.poppins(
+              color: Tyrads.instance.colorMain ??
+                  Theme.of(context).colorScheme.secondary,
+            )),
       },
     );
   }
