@@ -74,7 +74,7 @@ class Tyrads {
   bool _isSecure = false;
 
   bool get isSecure => _isSecure;
-  bool skipUserInfo = false;
+  // bool skipUserInfo = false;
 
   Tyrads._internal();
   static Tyrads get instance {
@@ -287,8 +287,14 @@ class Tyrads {
   setNewUser(bool newUser) {
     this.newUser = newUser;
   }
-  setSkipUserInfo(bool newValue) {
-    skipUserInfo = newValue;
+  Future<void> setSkipUserInfo(bool newValue) async {
+    final String key = "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
+    await prefs.setBool(key, newValue);
+  }
+  bool getSkipUserInfo() {
+    final String key = "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
+    final skipUserInfo = prefs.getBool(key) ?? false;
+    return skipUserInfo;
   }
 
   updateUser(String userId, {int? age, int? gender}) async {
@@ -313,6 +319,7 @@ class Tyrads {
       if (await waitAndCheck() == false) {
         return;
       }
+      final skipUserInfo = getSkipUserInfo();
       this.campaignID = campaignID;
       this.route = route ?? TyradsDeepRoutes.OFFERS;
       webURI = Uri(

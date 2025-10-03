@@ -103,7 +103,8 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
   @override
   void initState() {
     super.initState();
-    if (Tyrads.instance.skipUserInfo) {
+    final skipUserInfo = Tyrads.instance.getSkipUserInfo();
+    if (skipUserInfo) {
       initialUrl = Tyrads.instance.webURI.replace(
         queryParameters: {
           ...Tyrads.instance.webURI.queryParameters,
