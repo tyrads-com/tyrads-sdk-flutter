@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/button_primary.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/components/gender_select.dart';
@@ -32,11 +33,6 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
       backgroundColor: const Color(0xFFFFFFFF),
       body: Stack(
         children: [
-          // Align(
-          //     alignment: Alignment.bottomCenter,
-          //     child: SizedBox(
-          //         width: double.infinity,
-          //         child: Assets.images.singupBg.image(fit: BoxFit.fitWidth))),
           Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SingleChildScrollView(
@@ -45,7 +41,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
-                      height: 100,
+                      height: 130,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -142,13 +138,7 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                                     Tyrads.instance.publisherUserID);
                                 if (widget.isReturningToWidget) {
                                   if (!context.mounted) return;
-                                  // if (AcmoPlatform.isIOS) {
-                                    Navigator.pop(context, true);
-                                  // } else {
-                                  //   Navigator.of(context)
-                                  //     ..pop(true)
-                                  //     ..pop(true);
-                                  // }
+                                  Navigator.pop(context, true);
                                 } else {
                                   Tyrads.instance
                                       .to(const AcmoWebSdk(), replace: true);
@@ -162,6 +152,43 @@ class _AcmoUsersUpdatePageState extends State<AcmoUsersUpdatePage> {
                   ],
                 ),
               )),
+          if (AcmoPlatform.isIOS)
+            Positioned(
+              top: kToolbarHeight + 10,
+              right: 16,
+              child: OutlinedButton(
+                onPressed: () {
+                  Tyrads.instance.setSkipUserInfo(true);
+                  Tyrads.instance.setNewUser(false);
+                  if (widget.isReturningToWidget) {
+                    Navigator.pop(context, true);
+                  } else {
+                    Tyrads.instance.to(const AcmoWebSdk(), replace: true);
+                  }
+                },
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(74, 32),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  side: BorderSide(
+                    color: Tyrads.instance.colorMain ??
+                        Theme.of(context).colorScheme.secondary,
+                    width: 2,
+                  ),
+                ),
+                child: Text(
+                  localization.translate('data.shared.button.skip'),
+                  style: GoogleFonts.poppins(
+                    color: Tyrads.instance.colorMain ??
+                        Theme.of(context).colorScheme.secondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
