@@ -72,7 +72,7 @@ class GenderListItem extends StatelessWidget {
                 Theme.of(context).colorScheme.secondary)
             : Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(4),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Container(
           height: 100,
