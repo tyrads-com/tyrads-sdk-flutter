@@ -169,7 +169,7 @@ class Info2 extends StatelessWidget {
         tags: {
           "tos": StyledTextActionTag(
             (text, attributes) => acmoLaunchURLForce(
-              "https://tyrads.com/tyrsdk-privacy-policy/",
+              "https://tyrads.com/tyrsdk-terms-of-service/",
             ),
             style: GoogleFonts.poppins(
               color: Colors.green,

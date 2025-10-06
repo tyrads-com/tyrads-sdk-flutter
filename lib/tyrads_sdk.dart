@@ -65,7 +65,7 @@ class Tyrads {
   TyradsMediaSourceInfo? mediaSourceInfo;
   TyradsUserInfo? userInfo;
   var tracker = AcmoTrackingController();
-  var webUrl = "";
+  var webURI = Uri();
   var _isInitCalled = false;
   var _isLoginCalled = false;
   var isLoginSuccessful = false;
@@ -74,6 +74,7 @@ class Tyrads {
   bool _isSecure = false;
 
   bool get isSecure => _isSecure;
+  // bool skipUserInfo = false;
 
   Tyrads._internal();
   static Tyrads get instance {
@@ -149,7 +150,8 @@ class Tyrads {
 
       if (!kIsWeb) {
         try {
-          isLimitAdTrackingEnabled = await AdvertisingId.isLimitAdTrackingEnabled;
+          isLimitAdTrackingEnabled =
+              await AdvertisingId.isLimitAdTrackingEnabled;
           advertisingId = await AdvertisingId.id(true);
         } on PlatformException {
           debugPrint("Failed to get advertising id");
@@ -285,6 +287,15 @@ class Tyrads {
   setNewUser(bool newUser) {
     this.newUser = newUser;
   }
+  Future<void> setSkipUserInfo(bool newValue) async {
+    final String key = "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
+    await prefs.setBool(key, newValue);
+  }
+  bool getSkipUserInfo() {
+    final String key = "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
+    final skipUserInfo = prefs.getBool(key) ?? false;
+    return skipUserInfo;
+  }
 
   updateUser(String userId, {int? age, int? gender}) async {
     var fd = <String, dynamic>{};
@@ -301,28 +312,29 @@ class Tyrads {
   Future<void> showOffers(context,
       {int? campaignID, String? route, int? launchMode}) async {
     try {
-      if (_isLoginCalled) {
+      if (!_isLoginCalled) {
         log("Make sure login method is called first");
+        return;
       }
       if (await waitAndCheck() == false) {
         return;
       }
+      final skipUserInfo = getSkipUserInfo();
       this.campaignID = campaignID;
       this.route = route ?? TyradsDeepRoutes.OFFERS;
-      webUrl = Uri(
+      webURI = Uri(
         scheme: 'https',
         host: 'sdk.tyrads.com',
-        // path: campaignID == null ? route : '$route/$campaignID',
         queryParameters: {
           'to': campaignID == null ? route : '$route/$campaignID',
           'token': token,
           'lang': selectedLanguage,
+          'skipUserInfo': skipUserInfo.toString(),
         },
-      ).toString();
+      );
 
-      log("Web Url: $webUrl");
-
-      final ready = await OnboardingCheck.instance.checkOnboardingStatus(context);
+      final ready =
+          await OnboardingCheck.instance.checkOnboardingStatus(context);
 
       if (ready == false) {
         log("Onboarding not completed");
@@ -337,7 +349,7 @@ class Tyrads {
 
       track(TyradsActivity.opened);
     } catch (e) {
-      log("Exiting");
+      log("Exiting: $e");
     }
   }
 

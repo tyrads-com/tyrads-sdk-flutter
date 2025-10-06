@@ -98,9 +98,22 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
     }
   }
 
+  String initialUrl = "";
+
   @override
   void initState() {
     super.initState();
+    final skipUserInfo = Tyrads.instance.getSkipUserInfo();
+    if (skipUserInfo) {
+      initialUrl = Tyrads.instance.webURI.replace(
+        queryParameters: {
+          ...Tyrads.instance.webURI.queryParameters,
+          'skipUserInfo': 'true',
+        },
+      ).toString();
+    } else {
+      initialUrl = Tyrads.instance.webURI.toString();
+    }
   }
 
   @override
@@ -135,8 +148,8 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
                   Expanded(
                     child: InAppWebView(
                       key: webViewKey,
-                      initialUrlRequest:
-                          URLRequest(url: WebUri(Tyrads.instance.webUrl)),
+                      initialUrlRequest: URLRequest(
+                          url: WebUri(initialUrl)),
                       initialSettings: InAppWebViewSettings(
                         javaScriptEnabled: true,
                         javaScriptCanOpenWindowsAutomatically: true,
