@@ -1,4 +1,4 @@
-## 3.2.1-beta
+## 3.2.1-beta.0
 * A skip button has been added to the User Update page (Age and Gender) on iOS.
 
 ## 3.2.0

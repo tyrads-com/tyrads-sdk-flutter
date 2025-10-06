@@ -1075,7 +1075,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.2.1-beta"
+    version: "3.2.1-beta.0"
   url_launcher:
     dependency: transitive
     description:
