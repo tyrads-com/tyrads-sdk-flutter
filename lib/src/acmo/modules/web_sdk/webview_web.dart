@@ -88,7 +88,36 @@ class _WebSdkState extends State<WebSdk> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            'Failed to load content. Please check your connection.',
+            Widget _buildErrorView() {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.error_outline, color: Colors.redAccent, size: 48),
+        const SizedBox(height: 12),
+        const Text(
+          'Oops! Something went wrong.',
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Unable to load the content. Please try again.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.black54),
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: _retryLoad,
+          child: const Text('Retry'),
+        ),
+      ],
+    ),
+  );
+}
             style: TextStyle(color: Colors.red),
           ),
           const SizedBox(height: 16),
