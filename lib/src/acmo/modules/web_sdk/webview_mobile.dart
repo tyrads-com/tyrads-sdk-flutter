@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class WebSdk extends StatefulWidget {
@@ -132,7 +133,13 @@ class _WebSdkState extends State<WebSdk> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Failed to load content'),
+          Text(
+            'Failed to load content. Please try again.',
+            style: GoogleFonts.poppins(
+              color: Colors.red,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           ElevatedButton(
             onPressed: () {
               setState(() {

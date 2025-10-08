@@ -2,6 +2,7 @@ import 'dart:js_interop';
 import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:web/web.dart' as web;
 
 class WebSdk extends StatefulWidget {
@@ -87,38 +88,12 @@ class _WebSdkState extends State<WebSdk> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            Widget _buildErrorView() {
-  return Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(Icons.error_outline, color: Colors.redAccent, size: 48),
-        const SizedBox(height: 12),
-        const Text(
-          'Oops! Something went wrong.',
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-          ),
-        ),
-        const SizedBox(height: 6),
-        const Text(
-          'Unable to load the content. Please try again.',
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.black54),
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: _retryLoad,
-          child: const Text('Retry'),
-        ),
-      ],
-    ),
-  );
-}
-            style: TextStyle(color: Colors.red),
+          Text(
+            'Failed to load content. Please try again.',
+            style: GoogleFonts.poppins(
+              color: Colors.red,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 16),
           ElevatedButton(
