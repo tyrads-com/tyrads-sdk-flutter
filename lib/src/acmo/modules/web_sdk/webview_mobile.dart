@@ -68,12 +68,6 @@ class _WebSdkState extends State<WebSdk> {
               injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
             ),
           ]),
-          // onNavigationResponse:
-          //     (controller, navigationResponse) async {
-          //   log("Navigation ${navigationResponse.response?.url.toString()}");
-
-          //   return NavigationResponseAction.ALLOW;
-          // },
           onConsoleMessage: (controller, consoleMessage) {
             debugPrint(consoleMessage.message);
           },
@@ -113,11 +107,6 @@ class _WebSdkState extends State<WebSdk> {
             }
           },
           onLoadStop: (controller, url) {},
-          onProgressChanged: (controller, progress) {
-            // setState(() {
-            //   _progress = progress / 100;
-            // });
-          },
           onReceivedError: (controller, request, error) {
             debugPrint('WebView Error: ${error.toString()}');
             if (error.description.contains('code=102')) {
