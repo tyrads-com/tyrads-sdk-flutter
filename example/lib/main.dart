@@ -353,20 +353,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 8, 8, 93),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 12,
-                          children: [
-                            if (loading)
-                              const SizedBox(
-                                  height: 22,
-                                  width: 22,
-                                  child: CircularProgressIndicator()),
-                            const Text(
-                              "Copy Token",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
+                        child: const Text(
+                          "Copy Token",
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
                   ],
