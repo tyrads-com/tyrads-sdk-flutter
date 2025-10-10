@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:example/env/env.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 void main() async {
@@ -125,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController apiSecretController;
   late TextEditingController encKeyController;
   late TextEditingController userIDController;
+  String? fcmToken;
   bool loading = false;
   int style = 1;
   @override
@@ -134,6 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
     apiSecretController = TextEditingController();
     encKeyController = TextEditingController();
     userIDController = TextEditingController();
+    fcmToken = Tyrads.instance.prefs.getString("acmo_tyrads_sdk_fcm_token");
   }
 
   @override
@@ -247,7 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
                 SizedBox(
-                  width: 300,
+                  width: double.maxFinite,
                   child: TextField(
                       controller: apiKeyController,
                       decoration: const InputDecoration(
@@ -257,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  width: 300,
+                  width: double.maxFinite,
                   child: TextField(
                       controller: apiSecretController,
                       decoration: const InputDecoration(
@@ -267,7 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  width: 300,
+                  width: double.maxFinite,
                   child: TextField(
                       controller: encKeyController,
                       decoration: const InputDecoration(
@@ -277,7 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  width: 300,
+                  width: double.maxFinite,
                   child: TextField(
                       controller: userIDController,
                       decoration: const InputDecoration(
@@ -285,21 +288,88 @@ class _MyHomePageState extends State<MyHomePage> {
                         hintText: "Custom user Id or empty for anonymous user",
                       )),
                 ),
-                const SizedBox(height: 10),
-                OutlinedButton(
-                  onPressed: loading ? null : _showOfferwall,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 12,
-                    children: [
-                      if (loading)
-                        const SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: CircularProgressIndicator()),
-                      const Text("Show offerwall"),
-                    ],
+                if (fcmToken != null) const SizedBox(height: 10),
+                if (fcmToken != null)
+                  SizedBox(
+                    width: double.maxFinite,
+                    child: TextField(
+                      controller: TextEditingController(
+                        text: fcmToken,
+                      ),
+                      enabled: false,
+                      maxLines: 4,
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        fontSize: 12,
+                      ),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                          color: Colors.black54,
+                        )),
+                        label: Text(
+                          "FCM Token",
+                          style: TextStyle(
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: loading ? null : _showOfferwall,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 12,
+                        children: [
+                          if (loading)
+                            const SizedBox(
+                                height: 22,
+                                width: 22,
+                                child: CircularProgressIndicator()),
+                          const Text("Show offerwall"),
+                        ],
+                      ),
+                    ),
+                    if (fcmToken != null) const Spacer(),
+                    if (fcmToken != null)
+                      ElevatedButton(
+                        onPressed: () {
+                          Clipboard.setData(
+                            ClipboardData(text: fcmToken!),
+                          ).then(
+                            (_) => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("FCM Token Copied"),
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 8, 8, 93),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 12,
+                          children: [
+                            if (loading)
+                              const SizedBox(
+                                  height: 22,
+                                  width: 22,
+                                  child: CircularProgressIndicator()),
+                            const Text(
+                              "Copy Token",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 )
               ],
             ),
