@@ -22,6 +22,7 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
 import 'package:tyrads_sdk/src/acmo/core/onboarding_check.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
+import 'package:tyrads_sdk/src/acmo/core/services/notifications/fcm_services.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/top_offers.dart';
@@ -113,10 +114,16 @@ class Tyrads {
     dio = NetworkCommon().dio;
     selectedLanguage = prefs.getString(AcmoKeyNames.LANGUAGE) ??
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
-    //LocaleSettings.useDeviceLocale();
     WidgetsFlutterBinding.ensureInitialized();
     log("Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
+    if (!kIsWeb) {
+      try {
+        await FCMService.initialize();
+      } catch (error) {
+        log("Failed to init: $error");
+      }
+    }
   }
 
   Future<bool> loginUser({String? userID = ""}) async {
@@ -287,12 +294,16 @@ class Tyrads {
   setNewUser(bool newUser) {
     this.newUser = newUser;
   }
+
   Future<void> setSkipUserInfo(bool newValue) async {
-    final String key = "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
+    final String key =
+        "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
     await prefs.setBool(key, newValue);
   }
+
   bool getSkipUserInfo() {
-    final String key = "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
+    final String key =
+        "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
     final skipUserInfo = prefs.getBool(key) ?? false;
     return skipUserInfo;
   }
