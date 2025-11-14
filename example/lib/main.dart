@@ -23,6 +23,7 @@ Future<void> initializeTyrads({
   String? apiKey,
   String? apiSecret,
   String? encKey,
+  String? engagementId,
   String? userID,
 }) async {
   if (_isTyradsInitialized &&
@@ -47,6 +48,7 @@ Future<void> initializeTyrads({
         (defaultTargetPlatform == TargetPlatform.iOS
             ? Env.TYRADS_SDK_IOS_ENC_KEY
             : Env.TYRADS_SDK_ENC_KEY),
+    engagementId: engagementId,
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -124,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController apiKeyController;
   late TextEditingController apiSecretController;
   late TextEditingController encKeyController;
+  late TextEditingController engagementIdController;
   late TextEditingController userIDController;
   bool loading = false;
   int style = 1;
@@ -133,6 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
     apiKeyController = TextEditingController();
     apiSecretController = TextEditingController();
     encKeyController = TextEditingController();
+    engagementIdController = TextEditingController();
     userIDController = TextEditingController();
   }
 
@@ -142,6 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
     apiKeyController.dispose();
     apiSecretController.dispose();
     encKeyController.dispose();
+    engagementIdController.dispose();
     userIDController.dispose();
   }
 
@@ -174,6 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
       apiSecret:
           apiSecretController.text.isEmpty ? null : apiSecretController.text,
       encKey: encKeyController.text.isEmpty ? null : encKeyController.text,
+      engagementId: engagementIdController.text.isEmpty ? null : engagementIdController.text,
       userID: userIDController.text.isEmpty ? null : userIDController.text,
     );
 
@@ -247,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
                 SizedBox(
-                  width: 300,
+                  width: double.maxFinite,
                   child: TextField(
                       controller: apiKeyController,
                       decoration: const InputDecoration(
@@ -257,7 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  width: 300,
+                  width: double.maxFinite,
                   child: TextField(
                       controller: apiSecretController,
                       decoration: const InputDecoration(
@@ -267,7 +273,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  width: 300,
+                  width: double.maxFinite,
                   child: TextField(
                       controller: encKeyController,
                       decoration: const InputDecoration(
@@ -277,7 +283,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  width: 300,
+                  width: double.maxFinite,
+                  child: TextField(
+                      controller: engagementIdController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Engagement Id (Optional)",
+                      )),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.maxFinite,
                   child: TextField(
                       controller: userIDController,
                       decoration: const InputDecoration(

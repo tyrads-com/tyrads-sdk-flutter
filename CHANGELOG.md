@@ -1,5 +1,6 @@
-## 3.2.1-beta.0
+## 3.3.0-beta.0
 * A skip button has been added to the User Update page (Age and Gender) on iOS.
+* Added a new param `engagementId` in init to support engagement tracking.
 
 ## 3.2.0
 * Resolved issue with iOS device identifier on iOS devices.

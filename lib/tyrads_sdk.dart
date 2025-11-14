@@ -50,6 +50,7 @@ class Tyrads {
   var apiSecret;
   var publisherUserID;
   var token;
+  String? engagementId;
 
   late AcmoInitModel loginData;
   Color? colorHeaderBg;
@@ -88,6 +89,7 @@ class Tyrads {
     required apiKey,
     required apiSecret,
     String? encryptionKey,
+    String? engagementId,
     TyradsMediaSourceInfo? mediaSourceInfo,
     TyradsUserInfo? userInfo,
     int? launchMode,
@@ -95,6 +97,7 @@ class Tyrads {
     _isInitCalled = true;
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
+    this.engagementId = engagementId;
     this.userInfo = userInfo;
     this.mediaSourceInfo = mediaSourceInfo;
     this.launchMode = launchMode;
@@ -113,7 +116,6 @@ class Tyrads {
     dio = NetworkCommon().dio;
     selectedLanguage = prefs.getString(AcmoKeyNames.LANGUAGE) ??
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
-    //LocaleSettings.useDeviceLocale();
     WidgetsFlutterBinding.ensureInitialized();
     log("Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
@@ -174,6 +176,8 @@ class Tyrads {
           advertisingId = customAdId;
         }
       }
+      final engagementId = this.engagementId;
+      fd["engagementId"] = (engagementId != null && engagementId != "") ? int.parse(engagementId) : null;
       fd["identifierType"] = identifierType;
       fd["identifier"] = advertisingId ?? "NA";
       if (mediaSourceInfo?.sub1 != null) {
@@ -287,12 +291,16 @@ class Tyrads {
   setNewUser(bool newUser) {
     this.newUser = newUser;
   }
+
   Future<void> setSkipUserInfo(bool newValue) async {
-    final String key = "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
+    final String key =
+        "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
     await prefs.setBool(key, newValue);
   }
+
   bool getSkipUserInfo() {
-    final String key = "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
+    final String key =
+        "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
     final skipUserInfo = prefs.getBool(key) ?? false;
     return skipUserInfo;
   }
