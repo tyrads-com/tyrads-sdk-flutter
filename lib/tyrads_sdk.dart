@@ -164,6 +164,9 @@ class Tyrads {
           debugPrint("Failed to get advertising id");
         }
       }
+
+      String? fcmToken = prefs.getString(AcmoKeyNames.FCM_TOKEN);
+
       var fd = {
         "publisherUserId": userID,
         "platform": acmoGetPlatformName(),
@@ -172,6 +175,7 @@ class Tyrads {
         var deviceDetailsController = AcmoDeviceDetailsController();
         var deviceDetails = await deviceDetailsController.getDeviceDetails();
         fd["deviceData"] = deviceDetails;
+
         if (isLimitAdTrackingEnabled == true && AcmoPlatform.isIOS) {
           identifierType = "OTHER";
           advertisingId = deviceDetails["deviceId"];
@@ -179,6 +183,10 @@ class Tyrads {
         if (advertisingId == null || advertisingId.isEmpty) {
           identifierType = "OTHER";
           advertisingId = customAdId;
+        }
+
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          fd["devicePushToken"] = fcmToken;
         }
       }
       fd["identifierType"] = identifierType;
@@ -234,6 +242,8 @@ class Tyrads {
       if (userInfo?.userGroup != null) {
         fd["userGroup"] = userInfo?.userGroup;
       }
+
+      log("fd: $fd");
       final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
       final body =
           _isSecure ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd) : fd;
