@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
@@ -13,18 +14,18 @@ class AcmoPremiumWidgetsController {
   static final AcmoPremiumWidgetsController instance =
       AcmoPremiumWidgetsController._();
 
-  void Function()? _refresh;
+  void Function()? _refreshData;
 
   void attach(void Function() fn) {
-    _refresh = fn;
+    _refreshData = fn;
   }
 
   void detach() {
-    _refresh = null;
+    _refreshData = null;
   }
 
   void refresh() {
-    _refresh?.call();
+    _refreshData?.call();
   }
 
   final _repo = AcmoOffersRepository();
@@ -36,10 +37,11 @@ class AcmoPremiumWidgetsController {
   final ValueNotifier<int> activatedCount = ValueNotifier<int>(0);
   AcmoOfferCurrencySaleModel currencySales = const AcmoOfferCurrencySaleModel();
   var offerLoading = false;
+  bool reloadAfterOfferActivation = false;
   bool redirectToActivePage = false;
 
   DateTime? _lastFetchTime;
-  Duration cacheTTL = const Duration(minutes: 5);
+  Duration cacheTTL = const Duration(minutes: 1);
   Duration minRefreshInterval = const Duration(seconds: 60);
 
   bool get isCacheValid {
@@ -69,29 +71,23 @@ class AcmoPremiumWidgetsController {
 
   Future<List<AcmoOffersModel>> _fetchOffers() async {
     try {
-      if (await Tyrads.instance.waitAndCheck() == false) {
-        return hotOffers;
-      }
-      final responses = await Future.wait([
+      final waitFuture = Tyrads.instance.waitAndCheck();
+      final apiFuture = Future.wait([
         _repo.getOffers(),
         _repo.getEngagement(),
         _repo.getActivatedOfferSummary(),
       ]);
 
-      final response = responses[0] as AcmoOffersResponseModel;
-      currencySales = responses[1] as AcmoOfferCurrencySaleModel;
-      activatedCount.value = responses[2] as int;
-      hotOffers = response.data
-          .where((e) => e.campaignPayout.totalPayoutConverted > 0)
-          .toList();
-      hotOffers.sort((a, b) {
-        if (a.premium != b.premium) return b.premium ? 1 : -1;
-        return b.sortingScore.compareTo(a.sortingScore);
-      });
+      final results = await Future.wait([waitFuture, apiFuture]);
+      final waitCheck = results[0] as bool;
+      if (!waitCheck) return hotOffers;
 
-      if (hotOffers.length > 5) {
-        hotOffers = hotOffers.sublist(0, 5);
-      }
+      final apiResults = results[1] as List<dynamic>;
+      final offers = apiResults[0] as AcmoOffersResponseModel;
+      currencySales = apiResults[1] as AcmoOfferCurrencySaleModel;
+      activatedCount.value = apiResults[2] as int;
+      final sortedOffers = await compute(_sortAndPrepareOffers, offers.data);
+      hotOffers = sortedOffers;
       _lastFetchTime = DateTime.now();
       loading = false;
       return hotOffers;
@@ -120,6 +116,7 @@ class AcmoPremiumWidgetsController {
         Tyrads.instance.track(TyradsActivity.campaignActivated);
       }
       await _repo.activateOffer(id: campaignId);
+      reloadAfterOfferActivation = true;
       redirectToActivePage = true;
       Tyrads.instance.triggerCallback(TyradsCallbackType.campaignActivated, {
         'campaignId': campaignId,
@@ -142,4 +139,14 @@ class AcmoPremiumWidgetsController {
     await acmoLaunchURLForce(url);
     offerLoading = false;
   }
+}
+
+List<AcmoOffersModel> _sortAndPrepareOffers(List<AcmoOffersModel> data) {
+  final list =
+      data.where((e) => e.campaignPayout.totalPayoutConverted > 0).toList();
+  list.sort((a, b) {
+    if (a.premium != b.premium) return b.premium ? 1 : -1;
+    return b.sortingScore.compareTo(a.sortingScore);
+  });
+  return list.length > 5 ? list.sublist(0, 5) : list;
 }
