@@ -30,42 +30,73 @@ class AcmoPremiumWidgetsController {
   final _repo = AcmoOffersRepository();
 
   bool loading = true;
+  Future<List<AcmoOffersModel>>? _ongoing;
+
   List<AcmoOffersModel> hotOffers = [];
   final ValueNotifier<int> activatedCount = ValueNotifier<int>(0);
   AcmoOfferCurrencySaleModel currencySales = const AcmoOfferCurrencySaleModel();
   var offerLoading = false;
   bool redirectToActivePage = false;
 
-  Future<List<AcmoOffersModel>> loadTopOffers() async {
+  DateTime? _lastFetchTime;
+  Duration cacheTTL = const Duration(minutes: 5);
+  Duration minRefreshInterval = const Duration(seconds: 60);
+
+  bool get isCacheValid {
+    if (_lastFetchTime == null) return false;
+    return DateTime.now().difference(_lastFetchTime!) < cacheTTL;
+  }
+
+  bool get isRecentlyRefreshed {
+    if (_lastFetchTime == null) return false;
+    return DateTime.now().difference(_lastFetchTime!) < minRefreshInterval;
+  }
+
+  Future<List<AcmoOffersModel>> loadTopOffers({bool force = false}) async {
+    if (!force && isCacheValid && hotOffers.isNotEmpty) {
+      return hotOffers;
+    }
+    if (_ongoing != null) return _ongoing!;
+    if (!force && isRecentlyRefreshed) {
+      return hotOffers;
+    }
+    loading = true;
+    _ongoing = _fetchOffers().whenComplete(() {
+      _ongoing = null;
+    });
+    return _ongoing!;
+  }
+
+  Future<List<AcmoOffersModel>> _fetchOffers() async {
     try {
-      loading = true;
       if (await Tyrads.instance.waitAndCheck() == false) {
-        return [];
+        return hotOffers;
       }
-      var responses = await Future.wait([
+      final responses = await Future.wait([
         _repo.getOffers(),
         _repo.getEngagement(),
         _repo.getActivatedOfferSummary(),
       ]);
-      var response = responses[0] as AcmoOffersResponseModel;
+
+      final response = responses[0] as AcmoOffersResponseModel;
       currencySales = responses[1] as AcmoOfferCurrencySaleModel;
       activatedCount.value = responses[2] as int;
-      hotOffers.clear();
-      hotOffers.addAll(response.data);
+      hotOffers = response.data
+          .where((e) => e.campaignPayout.totalPayoutConverted > 0)
+          .toList();
       hotOffers.sort((a, b) {
-        if (a.premium != b.premium) {
-          return b.premium ? 1 : -1;
-        }
+        if (a.premium != b.premium) return b.premium ? 1 : -1;
         return b.sortingScore.compareTo(a.sortingScore);
       });
-      hotOffers.removeWhere(
-          (element) => element.campaignPayout.totalPayoutConverted <= 0);
-      hotOffers =
-          hotOffers.sublist(0, hotOffers.length > 5 ? 5 : hotOffers.length);
+
+      if (hotOffers.length > 5) {
+        hotOffers = hotOffers.sublist(0, 5);
+      }
+      _lastFetchTime = DateTime.now();
       loading = false;
       return hotOffers;
     } catch (e) {
-      return [];
+      return hotOffers;
     }
   }
 

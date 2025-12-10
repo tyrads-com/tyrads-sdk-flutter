@@ -39,25 +39,28 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    AcmoPremiumWidgetsController.instance.attach(_refreshData);
+    AcmoPremiumWidgetsController.instance.attach(_refreshUI);
     _loadData();
   }
 
   Future<void> _loadData() async {
-    if (_cachedHotOffers == null) {
-      setState(() => _isLoading = true);
-      await _controller.loadTopOffers();
+    if (_controller.hotOffers.isNotEmpty) {
       setState(() {
         _cachedHotOffers = _controller.hotOffers;
-        _isLoading = false;
-        _activeOffersCount = _controller.activatedCount.value;
-        _initializeItemLoadingNotifiers();
+        _isLoading = _controller.loading;
       });
     }
+    final data = await _controller.loadTopOffers();
+    setState(() {
+      _cachedHotOffers = data;
+      _activeOffersCount = _controller.activatedCount.value;
+      _initializeItemLoadingNotifiers();
+      _isLoading = _controller.loading;
+    });
   }
 
   void _initializeItemLoadingNotifiers() {
-    _itemLoadingNotifiers.clear(); // Clear existing notifiers
+    _itemLoadingNotifiers.clear();
     for (var offer in _cachedHotOffers!) {
       if (offer is AcmoOffersModel) {
         _itemLoadingNotifiers[offer.campaignId] = ValueNotifier(false);
@@ -65,10 +68,16 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
     }
   }
 
+  void _refreshUI() async {
+    setState(() {});
+  }
+
   void _refreshData() async {
-    await _controller.loadTopOffers();
+    if (_controller.isRecentlyRefreshed) return;
+    final data = await _controller.loadTopOffers(force: true);
+    if (!mounted) return;
     setState(() {
-      _cachedHotOffers = _controller.hotOffers;
+      _cachedHotOffers = data;
       _activeOffersCount = _controller.activatedCount.value;
     });
   }
