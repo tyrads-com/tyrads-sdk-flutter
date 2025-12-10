@@ -39,23 +39,18 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    AcmoPremiumWidgetsController.instance.attach(_refreshUI);
+    AcmoPremiumWidgetsController.instance.attach(_refreshData);
     _loadData();
   }
 
   Future<void> _loadData() async {
-    if (_controller.hotOffers.isNotEmpty) {
-      setState(() {
-        _cachedHotOffers = _controller.hotOffers;
-        _isLoading = _controller.loading;
-      });
-    }
     final data = await _controller.loadTopOffers();
+    if (!mounted) return;
     setState(() {
       _cachedHotOffers = data;
       _activeOffersCount = _controller.activatedCount.value;
       _initializeItemLoadingNotifiers();
-      _isLoading = _controller.loading;
+      _isLoading = false;
     });
   }
 
@@ -68,12 +63,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
     }
   }
 
-  void _refreshUI() async {
-    setState(() {});
-  }
-
-  void _refreshData() async {
-    if (_controller.isRecentlyRefreshed) return;
+  void _refreshData({bool force = false}) async {
+    if (!force && _controller.isRecentlyRefreshed) return;
     final data = await _controller.loadTopOffers(force: true);
     if (!mounted) return;
     setState(() {
@@ -85,7 +76,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _refreshData();
+      _refreshData(force: _controller.reloadAfterOfferActivation);
+      _controller.reloadAfterOfferActivation = false;
     }
   }
 
@@ -321,25 +313,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                 ),
               ),
             ),
-          // if (_activeOffersCount == 0)
-          //   TextButton(
-          //     onPressed: () {
-          //       Tyrads.instance.showOffers(
-          //         context,
-          //         launchMode: Tyrads.instance.launchMode,
-          //       );
-          //     },
-          //     child: Text(
-          //       'See Other Offers',
-          //       style: GoogleFonts.poppins(
-          //         fontSize: 12,
-          //         fontWeight: FontWeight.w600,
-          //         color: Tyrads.instance.colorPremium ??
-          //             Theme.of(context).colorScheme.secondary,
-          //       ),
-          //     ),
-          //   ),
-          // if (widget.showMyOffers && _activeOffersCount > 0)
           ActiveOfferButton(
             key: ValueKey(LocalizationService()
                 .translate("data.widget.button.moreOffers")),
