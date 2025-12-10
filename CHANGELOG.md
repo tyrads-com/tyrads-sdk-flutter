@@ -1,4 +1,4 @@
-## 3.3.0-beta.1
+## 3.3.0-beta.2
 * A skip button has been added to the User Update page (Age and Gender) on iOS.
 * Added a new param `engagementId` in init to support engagement tracking.
 * Optimization of Premium Widgets loading and caching.
