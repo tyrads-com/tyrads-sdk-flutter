@@ -41,6 +41,7 @@ class NetworkCommon {
         maxRedirects: 0,
         //  validateStatus: (status) { return status! < 500; },
         contentType: Headers.jsonContentType));
+    dio.transformer = BackgroundTransformer();
     dio.interceptors.add(
         InterceptorsWrapper(onRequest: (RequestOptions options, handler) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
