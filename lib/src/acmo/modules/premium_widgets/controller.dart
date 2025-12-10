@@ -41,7 +41,7 @@ class AcmoPremiumWidgetsController {
   bool redirectToActivePage = false;
 
   DateTime? _lastFetchTime;
-  Duration cacheTTL = const Duration(minutes: 1);
+  Duration cacheTTL = const Duration(minutes: 5);
   Duration minRefreshInterval = const Duration(seconds: 60);
 
   bool get isCacheValid {
