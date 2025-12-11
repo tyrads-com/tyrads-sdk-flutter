@@ -72,24 +72,26 @@ class AcmoPremiumWidgetsController {
   Future<List<AcmoOffersModel>> _fetchOffers() async {
     try {
       final waitFuture = Tyrads.instance.waitAndCheck();
+      if (!(await waitFuture)) return hotOffers;
+
       final apiFuture = Future.wait([
         _repo.getOffers(),
         _repo.getEngagement(),
         _repo.getActivatedOfferSummary(),
       ]);
 
-      final results = await Future.wait([waitFuture, apiFuture]);
-      final waitCheck = results[0] as bool;
-      if (!waitCheck) return hotOffers;
+      final apiResults = await apiFuture;
 
-      final apiResults = results[1] as List<dynamic>;
       final offers = apiResults[0] as AcmoOffersResponseModel;
       currencySales = apiResults[1] as AcmoOfferCurrencySaleModel;
       activatedCount.value = apiResults[2] as int;
+
       final sortedOffers = await compute(_sortAndPrepareOffers, offers.data);
+
       hotOffers = sortedOffers;
       _lastFetchTime = DateTime.now();
       loading = false;
+      
       return hotOffers;
     } catch (e) {
       return hotOffers;
