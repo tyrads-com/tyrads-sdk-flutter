@@ -31,6 +31,8 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
+  - tyrads_sdk (1.0.0):
+    - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -47,6 +49,7 @@ DEPENDENCIES:
   - platform_device_id_plus (from `.symlinks/plugins/platform_device_id_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
+  - tyrads_sdk (from `.symlinks/plugins/tyrads_sdk/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
@@ -78,6 +81,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
+  tyrads_sdk:
+    :path: ".symlinks/plugins/tyrads_sdk/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
@@ -95,6 +100,7 @@ SPEC CHECKSUMS:
   platform_device_id_plus: ead043ea948d38cec3e8d2b9aa17cfd0825e2d23
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  tyrads_sdk: 0beb4354552dc95c39ed87d7cc4d9d515d56fa9b
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
 
 PODFILE CHECKSUM: 351dbda8241c6ae667acbc7bc0353a0d9978d7f1
