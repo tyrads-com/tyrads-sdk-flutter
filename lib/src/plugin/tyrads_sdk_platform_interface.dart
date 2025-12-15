@@ -58,4 +58,20 @@ abstract class TyradsSdkPlatform extends platform_interface.PlatformInterface {
   Stream<bool> onVpnStatusChange() {
     throw UnimplementedError('onVpnStatusChange() has not been implemented.');
   }
+
+  /// Request push notification permission (iOS)
+  Future<bool> requestPushPermission() {
+    throw UnimplementedError(
+        'requestPushPermission() has not been implemented.');
+  }
+
+  /// Get APNs token (iOS)
+  Future<String?> getApnsToken() {
+    throw UnimplementedError('getApnsToken() has not been implemented.');
+  }
+
+  /// Push notification events
+  Stream<Map<String, dynamic>> onPushEvent() {
+    throw UnimplementedError('onPushEvent() has not been implemented.');
+  }
 }

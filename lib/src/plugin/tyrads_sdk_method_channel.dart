@@ -15,6 +15,11 @@ class MethodChannelTyradsSdk extends TyradsSdkPlatform {
   static const EventChannel _vpnEventChannel =
       EventChannel('tyrads_sdk/vpnCheck');
 
+  static const EventChannel _pushEventChannel =
+      EventChannel('tyrads_sdk/pushEvents'); // iOS
+
+  bool get isIOS => defaultTargetPlatform == TargetPlatform.iOS;
+
   @override
   Future<TrackingInfo> getTrackingInfo() async {
     final info = await methodChannel.invokeMethod<Map>('getTrackingInfo');
@@ -75,5 +80,36 @@ class MethodChannelTyradsSdk extends TyradsSdkPlatform {
   @override
   Stream<bool> onVpnStatusChange() {
     return _vpnEventChannel.receiveBroadcastStream("vpnCheck").cast<bool>();
+  }
+
+  @override
+  Future<bool> requestPushPermission() async {
+    if (!isIOS) {
+      return false;
+    }
+    final result = await methodChannel.invokeMethod<bool>(
+      'push/requestPermission',
+    );
+    return result ?? false;
+  }
+
+  @override
+  Future<String?> getApnsToken() async {
+    if (!isIOS) {
+      return null;
+    }
+    return await methodChannel.invokeMethod<String>(
+      'push/getApnsToken',
+    );
+  }
+
+  @override
+  Stream<Map<String, dynamic>> onPushEvent() {
+    if (!isIOS) {
+      return const Stream.empty();
+    }
+    return _pushEventChannel.receiveBroadcastStream().map(
+          (event) => Map<String, dynamic>.from(event as Map<Object?, Object?>),
+        );
   }
 }
