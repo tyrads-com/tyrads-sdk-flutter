@@ -25,6 +25,7 @@ import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/top_offers.dart';
+import 'package:tyrads_sdk/src/acmo/modules/push-notifications/apns_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/models/init.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/repository.dart';
@@ -119,6 +120,11 @@ class Tyrads {
     WidgetsFlutterBinding.ensureInitialized();
     log("Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
+    try {
+      ApnsManager.instance.init();
+    } catch (e) {
+      log("Error initializing APNs: $e");
+    }
   }
 
   Future<bool> loginUser({String? userID = ""}) async {
