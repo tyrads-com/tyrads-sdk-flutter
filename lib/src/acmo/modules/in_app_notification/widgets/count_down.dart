@@ -1,0 +1,119 @@
+// ignore_for_file: must_be_immutable
+
+import 'package:custom_timer/custom_timer.dart';
+import 'package:flutter/material.dart';
+
+// Global map to track countdown start times by unique key
+final Map<String, DateTime> _countdownStartTimes = {};
+
+class AcmoComponentCountdown extends StatefulWidget {
+  AcmoComponentCountdown(
+      {super.key,
+      this.seconds = 0,
+      this.onFinish,
+      this.style,
+      this.formatType,
+      this.countdownId});
+
+  int seconds;
+  Function? onFinish;
+  TextStyle? style;
+  String? formatType;
+  String? countdownId;
+
+  @override
+  State<AcmoComponentCountdown> createState() => _AcmoComponentCountdownState();
+}
+
+class _AcmoComponentCountdownState extends State<AcmoComponentCountdown>
+    with SingleTickerProviderStateMixin {
+  late CustomTimerController cd_controller;
+  late int _remainingSeconds;
+
+  @override
+  void dispose() {
+    cd_controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    _initializeCountdown();
+    super.initState();
+  }
+
+  void _initializeCountdown() {
+    // Use countdown ID to track elapsed time globally
+    final countdownId = widget.countdownId ?? 'default_${widget.key}';
+
+    if (!_countdownStartTimes.containsKey(countdownId)) {
+      // First time initialization - store the start time
+      _countdownStartTimes[countdownId] = DateTime.now();
+      _remainingSeconds = widget.seconds;
+    } else {
+      // Countdown already started - calculate elapsed time
+      final elapsed = DateTime.now()
+          .difference(_countdownStartTimes[countdownId]!)
+          .inSeconds;
+      _remainingSeconds = (widget.seconds - elapsed).clamp(0, widget.seconds);
+    }
+
+    cd_controller = CustomTimerController(
+        vsync: this,
+        begin: Duration(seconds: _remainingSeconds),
+        end: const Duration(),
+        initialState: CustomTimerState.reset,
+        interval: CustomTimerInterval.seconds);
+    cd_controller.start();
+
+    if (_remainingSeconds > 0) {
+      Future.delayed(Duration(seconds: _remainingSeconds)).then((value) {
+        _countdownStartTimes
+            .remove(widget.countdownId ?? 'default_${widget.key}');
+        widget.onFinish != null ? widget.onFinish!() : null;
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(AcmoComponentCountdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.seconds != widget.seconds) {
+      cd_controller.dispose();
+      _countdownStartTimes.clear();
+      _initializeCountdown();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomTimer(
+        controller: cd_controller,
+        builder: (state, time) {
+          var totalTime = _remainingSeconds;
+          return DefaultTextStyle(
+            style: widget.style ??
+                const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (widget.formatType == 'hh:mm:ss')
+                  if (totalTime > 86400)
+                    Text("${time.days}d ${time.hours}h")
+                  else
+                    Text("${time.hours}:${time.minutes}:${time.seconds}")
+                else if (totalTime > 86400)
+                  Text("${time.days}d ${time.hours}h")
+                else if (totalTime > 3600)
+                  Text("${time.hours}h ${time.minutes}m")
+                else
+                  Text("${time.minutes}m ${time.seconds}s"),
+              ],
+            ),
+          );
+        });
+  }
+}
