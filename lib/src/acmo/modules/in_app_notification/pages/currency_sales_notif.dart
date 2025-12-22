@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/widgets/count_down.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/widgets/notification_card.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
@@ -94,14 +95,32 @@ class _CurrencySalesDialogState extends State<CurrencySalesDialog> {
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Center(
-                              child: Text(
-                                'Bonus Expires in ${(_controller.currencySaleRemainingSeconds)}',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.0,
-                                ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Bonus Expires in ',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  AcmoComponentCountdown(
+                                    key: const ValueKey(
+                                        'currency_sale_countdown'),
+                                    countdownId: 'currency_sale_countdown',
+                                    seconds: _controller
+                                        .currencySaleRemainingSeconds,
+                                    formatType: 'hh:mm:ss',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -114,6 +133,7 @@ class _CurrencySalesDialogState extends State<CurrencySalesDialog> {
                             child: OutlinedButton(
                               onPressed: () {
                                 _closeDialog();
+                                Tyrads.instance.showOffers(context);
                               },
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: const Color(0xFFFFFFFF),

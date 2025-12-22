@@ -1,8 +1,8 @@
 import 'dart:ui';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/custom_slider.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/widgets/notification_card.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/widgets/offer_card.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
@@ -77,7 +77,7 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
                             itemCount: activeOffers.length,
                             autoPlayInterval: const Duration(seconds: 5),
                             showIndicator: false,
-                            infiniteScroll: true,
+                            infiniteScroll: false,
                             viewportFraction: 0.8,
                             scaleFactor: 0.94,
                             initialPage: 0,
@@ -91,10 +91,7 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
                               return OfferCard(
                                 campaign: campaign,
                                 onPlayNow: () {
-                                  if (kDebugMode) {
-                                    print(
-                                        'Play Now tapped for ${campaign.campaignName}');
-                                  }
+                                  acmoLaunchURLForce(campaign.app.previewUrl);
                                 },
                               );
                             },

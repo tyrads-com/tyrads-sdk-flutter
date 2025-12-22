@@ -97,22 +97,15 @@ class _AcmoComponentCountdownState extends State<AcmoComponentCountdown>
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (widget.formatType == 'hh:mm:ss')
-                  if (totalTime > 86400)
-                    Text("${time.days}d ${time.hours}h")
-                  else
-                    Text("${time.hours}:${time.minutes}:${time.seconds}")
-                else if (totalTime > 86400)
-                  Text("${time.days}d ${time.hours}h")
-                else if (totalTime > 3600)
-                  Text("${time.hours}h ${time.minutes}m")
-                else
-                  Text("${time.minutes}m ${time.seconds}s"),
-              ],
-            ),
+            child: widget.formatType == 'hh:mm:ss'
+                ? (totalTime > 86400
+                    ? Text("${time.days}d ${time.hours}h")
+                    : Text("${time.hours}:${time.minutes}:${time.seconds}"))
+                : (totalTime > 86400
+                    ? Text("${time.days}d ${time.hours}h")
+                    : (totalTime > 3600
+                        ? Text("${time.hours}h ${time.minutes}m")
+                        : Text("${time.minutes}m ${time.seconds}s"))),
           );
         });
   }

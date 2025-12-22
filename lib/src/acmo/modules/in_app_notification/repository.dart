@@ -12,7 +12,7 @@ class AcmoInAppNotificationRepository {
       final mockData = {
         "data": [
           {
-            "groupName": "UrgentTask",
+            "groupName": "hotdeals",
             "campaigns": [
               {
                 "campaignId": 3831,
@@ -160,7 +160,7 @@ class AcmoInAppNotificationRepository {
             ]
           },
           {
-            "groupName": "All",
+            "groupName": "hotdeals",
             "campaigns": [
               {
                 "campaignId": 4468,
@@ -364,8 +364,8 @@ class AcmoInAppNotificationRepository {
         },
       );
       if (response.statusCode == 200) {
-        return AcmoActiveOffersModel.fromJson(response.data);
-        // return AcmoActiveOffersModel.fromJson(mockData);
+        // return AcmoActiveOffersModel.fromJson(response.data);
+        return AcmoActiveOffersModel.fromJson(mockData);
       }
       return const AcmoActiveOffersModel();
     } catch (e, stackTrace) {
@@ -387,7 +387,8 @@ class AcmoInAppNotificationRepository {
             "multiplier": 1.9,
             "bannerUrl": "",
             "dateStart": "2025-12-01T00:00:00.000Z",
-            "dateEnd": "2025-12-31T23:59:59.000Z"
+            "dateEnd": "2025-12-31T23:59:59.000Z",
+            "remainingTimeSeconds": 86400
           }
         },
         "message": "OK"
@@ -400,8 +401,8 @@ class AcmoInAppNotificationRepository {
         },
       );
       if (response.statusCode == 200) {
-        return AcmoOfferCurrencySaleModel.fromJson(response.data);
-        // return AcmoOfferCurrencySaleModel.fromJson(mockData);
+        // return AcmoOfferCurrencySaleModel.fromJson(response.data);
+        return AcmoOfferCurrencySaleModel.fromJson(mockData);
       }
 
       return const AcmoOfferCurrencySaleModel();
