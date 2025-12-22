@@ -364,8 +364,8 @@ class AcmoInAppNotificationRepository {
         },
       );
       if (response.statusCode == 200) {
-        // return AcmoActiveOffersModel.fromJson(response.data);
-        return AcmoActiveOffersModel.fromJson(mockData);
+        return AcmoActiveOffersModel.fromJson(response.data);
+        // return AcmoActiveOffersModel.fromJson(mockData);
       }
       return const AcmoActiveOffersModel();
     } catch (e, stackTrace) {
@@ -401,8 +401,8 @@ class AcmoInAppNotificationRepository {
         },
       );
       if (response.statusCode == 200) {
-        // return AcmoOfferCurrencySaleModel.fromJson(response.data);
-        return AcmoOfferCurrencySaleModel.fromJson(mockData);
+        return AcmoOfferCurrencySaleModel.fromJson(response.data);
+        //return AcmoOfferCurrencySaleModel.fromJson(mockData);
       }
 
       return const AcmoOfferCurrencySaleModel();

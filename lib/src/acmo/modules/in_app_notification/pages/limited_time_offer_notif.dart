@@ -26,118 +26,124 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
   Widget build(BuildContext context) {
     final activeOffers = _controller.activeOffers;
     return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.zero,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-        child: GestureDetector(
-          onTap: _closeDialog,
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: const Color(0x80000000),
-            child: Center(
-              child: NotificationCard(
-                onDismiss: _closeDialog,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Limited Time Offer",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                      child: Divider(
-                        thickness: 1,
-                        color: Color(0xFFE0E2E7),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Limited time offer unlocked! Play now and claim extra rewards!',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 375,
-                      child: ClipRect(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: AcmoCarouselSlider(
-                            itemCount: activeOffers.length,
-                            autoPlayInterval: const Duration(seconds: 5),
-                            showIndicator: false,
-                            infiniteScroll: false,
-                            viewportFraction: 0.8,
-                            scaleFactor: 0.94,
-                            initialPage: 0,
-                            onPageChanged: (index) {
-                              setState(() {
-                                _currentIndex = index;
-                              });
-                            },
-                            itemBuilder: (context, index) {
-                              final campaign = activeOffers[index];
-                              return OfferCard(
-                                campaign: campaign,
-                                onPlayNow: () {
-                                  acmoLaunchURLForce(campaign.app.previewUrl);
-                                },
-                              );
-                            },
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+            child: GestureDetector(
+              onTap: _closeDialog,
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: const Color(0x80000000),
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: NotificationCard(
+                      onDismiss: _closeDialog,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Limited Time Offer",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            child: Divider(
+                              thickness: 1,
+                              color: Color(0xFFE0E2E7),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                              'Limited time offer unlocked! Play now and claim extra rewards!',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 375,
+                            child: ClipRect(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                child: AcmoCarouselSlider(
+                                  itemCount: activeOffers.length,
+                                  autoPlayInterval: const Duration(seconds: 5),
+                                  showIndicator: false,
+                                  infiniteScroll: true,
+                                  viewportFraction: 0.8,
+                                  scaleFactor: 0.94,
+                                  initialPage: 0,
+                                  onPageChanged: (index) {
+                                    setState(() {
+                                      _currentIndex = index;
+                                    });
+                                  },
+                                  itemBuilder: (context, index) {
+                                    final campaign = activeOffers[index];
+                                    return OfferCard(
+                                      campaign: campaign,
+                                      onPlayNow: () {
+                                        acmoLaunchURLForce(
+                                            campaign.app.previewUrl);
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (activeOffers.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:
+                                    List.generate(activeOffers.length, (index) {
+                                  return TweenAnimationBuilder<double>(
+                                    duration: const Duration(milliseconds: 300),
+                                    tween: Tween<double>(
+                                        begin: 1.0,
+                                        end:
+                                            _currentIndex == index ? 1.2 : 1.0),
+                                    builder: (context, double scale, child) {
+                                      return Transform.scale(
+                                        scale: scale,
+                                        child: Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 4.0),
+                                          width: 4.0,
+                                          height: 4.0,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: _currentIndex == index
+                                                ? Colors.white
+                                                : Colors.white
+                                                    .withValues(alpha: 0.3),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                    if (activeOffers.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(activeOffers.length, (index) {
-                            return TweenAnimationBuilder<double>(
-                              duration: const Duration(milliseconds: 300),
-                              tween: Tween<double>(
-                                  begin: 1.0,
-                                  end: _currentIndex == index ? 1.2 : 1.0),
-                              builder: (context, double scale, child) {
-                                return Transform.scale(
-                                  scale: scale,
-                                  child: Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 4.0),
-                                    width: 4.0,
-                                    height: 4.0,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: _currentIndex == index
-                                          ? Colors.white
-                                          : Colors.white.withValues(alpha: 0.3),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          }),
-                        ),
-                      ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
-      ),
-    );
+            )));
   }
 }
