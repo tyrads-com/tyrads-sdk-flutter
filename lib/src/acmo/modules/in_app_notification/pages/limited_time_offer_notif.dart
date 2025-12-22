@@ -122,8 +122,8 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
                                         child: Container(
                                           margin: const EdgeInsets.symmetric(
                                               horizontal: 4.0),
-                                          width: 4.0,
-                                          height: 4.0,
+                                          width: 6.0,
+                                          height: 6.0,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: _currentIndex == index
