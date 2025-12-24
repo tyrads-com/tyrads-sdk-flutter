@@ -3,7 +3,6 @@
 import 'package:custom_timer/custom_timer.dart';
 import 'package:flutter/material.dart';
 
-// Global map to track countdown start times by unique key
 final Map<String, DateTime> _countdownStartTimes = {};
 
 class AcmoComponentCountdown extends StatefulWidget {
@@ -43,15 +42,12 @@ class _AcmoComponentCountdownState extends State<AcmoComponentCountdown>
   }
 
   void _initializeCountdown() {
-    // Use countdown ID to track elapsed time globally
     final countdownId = widget.countdownId ?? 'default_${widget.key}';
 
     if (!_countdownStartTimes.containsKey(countdownId)) {
-      // First time initialization - store the start time
       _countdownStartTimes[countdownId] = DateTime.now();
       _remainingSeconds = widget.seconds;
     } else {
-      // Countdown already started - calculate elapsed time
       final elapsed = DateTime.now()
           .difference(_countdownStartTimes[countdownId]!)
           .inSeconds;

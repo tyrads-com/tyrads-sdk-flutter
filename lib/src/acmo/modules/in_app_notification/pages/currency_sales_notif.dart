@@ -27,143 +27,136 @@ class _CurrencySalesDialogState extends State<CurrencySalesDialog> {
       insetPadding: EdgeInsets.zero,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-        child: GestureDetector(
-          onTap: _closeDialog,
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: const Color(0x80000000),
-            child: Center(
-              child: GestureDetector(
-                onTap: () {},
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    NotificationCard(
-                      onDismiss: _closeDialog,
-                      width: 328,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "Limited Time Offer",
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: const Color(0x80000000),
+          child: Center(
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                NotificationCard(
+                  onDismiss: _closeDialog,
+                  width: 328,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Limited Time Offer",
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
+                        child: Divider(
+                          thickness: 1,
+                          color: Color(0xFFE0E2E7),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text.rich(
+                          textAlign: TextAlign.center,
+                          TextSpan(
+                            text:
+                                'You get ${_controller.currencySaleMultiplier}X bonus rewards!\n',
                             style: GoogleFonts.poppins(
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.w700,
                             ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            child: Divider(
-                              thickness: 1,
-                              color: Color(0xFFE0E2E7),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Text.rich(
-                              textAlign: TextAlign.center,
+                            children: [
                               TextSpan(
                                 text:
-                                    'You get ${_controller.currencySaleMultiplier}X bonus rewards!\n',
+                                    'Go to offerwall and activate new offer!',
                                 style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 24,
+                        margin: const EdgeInsets.only(
+                            top: 16, left: 16, right: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF554A),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Bonus Expires in ',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
                                 ),
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        'Go to offerwall and activate new offer!',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
                               ),
-                            ),
-                          ),
-                          Container(
-                            height: 24,
-                            margin: const EdgeInsets.only(
-                                top: 16, left: 16, right: 16),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFF554A),
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Bonus Expires in ',
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  AcmoComponentCountdown(
-                                    key: const ValueKey(
-                                        'currency_sale_countdown'),
-                                    countdownId: 'currency_sale_countdown',
-                                    seconds: _controller
-                                        .currencySaleRemainingSeconds,
-                                    formatType: 'hh:mm:ss',
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Container(
-                            width: double.maxFinite,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: OutlinedButton(
-                              onPressed: () {
-                                _closeDialog();
-                                Tyrads.instance.showOffers(context);
-                              },
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: const Color(0xFFFFFFFF),
-                                side: BorderSide(
-                                  color: Tyrads.instance.colorMain ??
-                                      const Color(0xFF02B5BE),
-                                  width: 2,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 12,
-                                ),
-                              ),
-                              child: Text(
-                                "Go to Offerwall",
+                              AcmoComponentCountdown(
+                                key: const ValueKey(
+                                    'currency_sale_countdown'),
+                                countdownId: 'currency_sale_countdown',
+                                seconds: _controller
+                                    .currencySaleRemainingSeconds,
+                                formatType: 'hh:mm:ss',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Tyrads.instance.colorMain ??
-                                      const Color(0xFF02B5BE),
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        width: double.maxFinite,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Tyrads.instance.showOffers(context);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFFFFF),
+                            side: BorderSide(
+                              color: Tyrads.instance.colorMain ??
+                                  const Color(0xFF02B5BE),
+                              width: 2,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
                             ),
                           ),
-                        ],
+                          child: Text(
+                            "Go to Offerwall",
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Tyrads.instance.colorMain ??
+                                  const Color(0xFF02B5BE),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),

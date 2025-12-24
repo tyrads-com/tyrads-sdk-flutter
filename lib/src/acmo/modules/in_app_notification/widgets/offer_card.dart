@@ -30,6 +30,7 @@ class OfferCard extends StatelessWidget {
       child: DefaultTextStyle(
         style: GoogleFonts.poppins(),
         child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
             color: const Color(0xFFFFF9ED),
             borderRadius: BorderRadius.circular(8),
@@ -103,7 +104,7 @@ class OfferCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     SizedBox(
-                      height: 180,
+                      height: 190,
                       child: ListView.builder(
                         itemCount: event.length,
                         itemBuilder: (context, index) {
@@ -120,7 +121,7 @@ class OfferCard extends StatelessWidget {
                         },
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     SizedBox(
                       width: double.maxFinite,
                       child: ElevatedButton(
