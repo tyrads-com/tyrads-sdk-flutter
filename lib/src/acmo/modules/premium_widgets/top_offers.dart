@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,8 +7,8 @@ import 'package:tyrads_sdk/src/acmo/core/components/custom_slider.dart';
 import 'package:tyrads_sdk/src/acmo/core/onboarding_check.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
-import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/pages/currency_sales_notif.dart';
-import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/pages/limited_time_offer_notif.dart';
+import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notification_executor.dart';
+import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notificattions_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/active_offer_button.dart';
@@ -37,68 +39,15 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   int _activeOffersCount = 1;
   final Map<int, ValueNotifier<bool>> _itemLoadingNotifiers = {};
   final ValueNotifier<int?> loadingIndex = ValueNotifier(null);
-  bool _hasShownLimitedTimeOffer = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     AcmoPremiumWidgetsController.instance.attach(_refreshData);
+    AcmoInAppNotificationManager.instance.promoQueue.addListener(_onPromoQueue);
     _loadData();
-  }
-
-  Future<void> _showPromotionalDialogs() async {
-    if (_hasShownLimitedTimeOffer) return;
-    _hasShownLimitedTimeOffer = true;
-    final inAppController = AcmoInAppNotificationController.instance;
-
-    final isReady = await Tyrads.instance.waitAndCheck();
-    if (!isReady) {
-      debugPrint('[TopOffers] SDK not ready, skipping promotional dialogs');
-      return;
-    }
-    inAppController.clear();
-    await inAppController.init();
-
-    final hasLimitedTimeOffers = inAppController.activeOffers.isNotEmpty;
-    final hasCurrencySales = inAppController.currencySales != null;
-
-    if (!mounted) return;
-
-    if (hasLimitedTimeOffers) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (!mounted) return;
-
-        await showDialog(
-          context: context,
-          barrierColor: Colors.transparent,
-          builder: (dialogContext) => const LimitedTimeOfferDialog(),
-        );
-        if (!mounted) return;
-
-        if (hasCurrencySales && mounted) {
-          await Future.delayed(const Duration(milliseconds: 300));
-          if (!mounted) return;
-
-          showDialog(
-            context: context,
-            barrierColor: Colors.transparent,
-            builder: (dialogContext) => const CurrencySalesDialog(),
-          );
-        }
-      });
-    } else if (hasCurrencySales) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        showDialog(
-          context: context,
-          barrierColor: Colors.transparent,
-          builder: (context) => const CurrencySalesDialog(),
-        );
-      });
-    } else {
-      debugPrint('[TopOffers] No promotional dialogs to show');
-    }
+    loadInAppNotifications();
   }
 
   Future<void> _loadData() async {
@@ -110,10 +59,27 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
       _initializeItemLoadingNotifiers();
       _isLoading = false;
     });
+  }
 
-    if (mounted) {
-      await _showPromotionalDialogs();
-    }
+  Future<void> loadInAppNotifications() async {
+    await AcmoInAppNotificationController.instance.init();
+
+    scheduleMicrotask(() {
+      AcmoInAppNotificationManager.instance.evaluatePromotions();
+    });
+  }
+
+  void _onPromoQueue() {
+    final manager = AcmoInAppNotificationManager.instance;
+    final queue = manager.promoQueue.value;
+
+    if (!mounted || queue.isEmpty) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      AcmoPromoExecutor.instance.execute(context, queue);
+      manager.clearQueue();
+    });
   }
 
   void _initializeItemLoadingNotifiers() {
@@ -145,6 +111,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
 
   @override
   void dispose() {
+    AcmoInAppNotificationManager.instance.promoQueue
+      .removeListener(_onPromoQueue);
     AcmoPremiumWidgetsController.instance.detach();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
