@@ -7,7 +7,6 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/usage_permissions.dart';
-import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
 import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
@@ -120,9 +119,7 @@ class AcmoPrivacyPolicyPage extends StatelessWidget {
                               closeButtononTap: () => Tyrads.instance.back(),
                             );
                           } else {
-                            page = Tyrads.instance.newUser
-                                ? const AcmoUsersUpdatePage()
-                                : const AcmoWebSdk();
+                            page = const AcmoWebSdk();
                           }
                           Tyrads.instance.to(page, replace: true);
                         }

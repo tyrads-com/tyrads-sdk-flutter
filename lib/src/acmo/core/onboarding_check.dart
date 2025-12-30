@@ -4,7 +4,6 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/privacy_policy.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/usage_permissions.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
-import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import 'package:usage_stats_new/usage_stats.dart';
 
@@ -87,22 +86,6 @@ class OnboardingCheck {
         usageController.saveUsageStats();
       } else {
         usageController.saveUsageStats();
-      }
-    }
-
-    if (Tyrads.instance.newUser) {
-      final result = await navigator.push(
-        MaterialPageRoute(
-          builder: (c) => const AcmoUsersUpdatePage(isReturningToWidget: true),
-        ),
-      );
-
-      if (!navigator.context.mounted) {
-        return false;
-      }
-
-      if (result != true) {
-        return false;
       }
     }
 
