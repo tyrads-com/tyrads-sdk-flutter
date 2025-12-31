@@ -70,7 +70,8 @@ class _AcmoAppState extends State<AcmoApp> {
                         AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
                             Tyrads.instance.publisherUserID) ??
                     false;
-                if (privacyAccepted) {
+                if (privacyAccepted ||
+                    Tyrads.instance.config.skipInitialPages == true) {
                   page = const AcmoWebSdk();
                 } else {
                   page = const AcmoPrivacyPolicyPage();

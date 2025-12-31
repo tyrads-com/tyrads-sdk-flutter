@@ -37,6 +37,7 @@ import 'src/acmo/modules/tracking/controller.dart';
 
 part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';
+part 'src/acmo/core/input_models/tyrads_config.dart';
 part 'src/acmo/core/constants/deep_routes.dart';
 part 'src/acmo/core/helpers/callback_types.dart';
 part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
@@ -51,6 +52,7 @@ class Tyrads {
   var publisherUserID;
   var token;
   String? engagementId;
+  TyradsConfig config = TyradsConfig();
 
   late AcmoInitModel loginData;
   Color? colorHeaderBg;
@@ -92,6 +94,7 @@ class Tyrads {
     String? engagementId,
     TyradsMediaSourceInfo? mediaSourceInfo,
     TyradsUserInfo? userInfo,
+    TyradsConfig? config,
     int? launchMode,
   }) async {
     _isInitCalled = true;
@@ -101,6 +104,7 @@ class Tyrads {
     this.userInfo = userInfo;
     this.mediaSourceInfo = mediaSourceInfo;
     this.launchMode = launchMode;
+    setTyradsConfig(config ?? TyradsConfig());
     prefs = await SharedPreferences.getInstance();
     if (AcmoPlatform.isAndroid) {
       final integrityToken =
@@ -177,7 +181,9 @@ class Tyrads {
         }
       }
       final engagementId = this.engagementId;
-      fd["engagementId"] = (engagementId != null && engagementId != "") ? int.parse(engagementId) : null;
+      fd["engagementId"] = (engagementId != null && engagementId != "")
+          ? int.parse(engagementId)
+          : null;
       fd["identifierType"] = identifierType;
       fd["identifier"] = advertisingId ?? "NA";
       if (mediaSourceInfo?.sub1 != null) {
@@ -290,6 +296,10 @@ class Tyrads {
 
   setNewUser(bool newUser) {
     this.newUser = newUser;
+  }
+
+  setTyradsConfig(TyradsConfig config) {
+    this.config = config;
   }
 
   Future<void> setSkipUserInfo(bool newValue) async {

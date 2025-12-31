@@ -25,6 +25,7 @@ Future<void> initializeTyrads({
   String? encKey,
   String? engagementId,
   String? userID,
+  bool skipInitialPages = false,
 }) async {
   if (_isTyradsInitialized &&
       _previousApiKey == apiKey &&
@@ -35,6 +36,7 @@ Future<void> initializeTyrads({
     return;
   }
   log("initializeTyrads $apiKey,  $apiSecret,  $userID");
+  debugPrint("skipInitialPages config value: $skipInitialPages");
   await Tyrads.instance.init(
     apiKey: apiKey ??
         (defaultTargetPlatform == TargetPlatform.iOS
@@ -49,6 +51,7 @@ Future<void> initializeTyrads({
             ? Env.TYRADS_SDK_IOS_ENC_KEY
             : Env.TYRADS_SDK_ENC_KEY),
     engagementId: engagementId,
+    config: TyradsConfig(skipInitialPages: skipInitialPages),
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -130,6 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController userIDController;
   bool loading = false;
   int style = 1;
+  int initialPageMode = 1; // 1: Show Initial Pages, 2: Hide Initial Pages
   @override
   void initState() {
     super.initState();
@@ -138,6 +142,12 @@ class _MyHomePageState extends State<MyHomePage> {
     encKeyController = TextEditingController();
     engagementIdController = TextEditingController();
     userIDController = TextEditingController();
+
+    // Set default values
+    apiKeyController.text = "0a55de10c58f459c9f65988d9d33e774";
+    apiSecretController.text =
+        "418fc08c18a6715b48428568946e6f82f0ff06bfbc017944d22a19b3317a5ce2ad7028b0599a149534d957017d54650a9fa355cebf6971d7fdbc3eca372ca4ed";
+    encKeyController.text = "VKdZsSz9&3WQqA6xfBJ4G2!5cUe8Y7yP";
   }
 
   @override
@@ -179,8 +189,11 @@ class _MyHomePageState extends State<MyHomePage> {
       apiSecret:
           apiSecretController.text.isEmpty ? null : apiSecretController.text,
       encKey: encKeyController.text.isEmpty ? null : encKeyController.text,
-      engagementId: engagementIdController.text.isEmpty ? null : engagementIdController.text,
+      engagementId: engagementIdController.text.isEmpty
+          ? null
+          : engagementIdController.text,
       userID: userIDController.text.isEmpty ? null : userIDController.text,
+      skipInitialPages: initialPageMode == 1,
     );
 
     Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
@@ -234,24 +247,67 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(
                   height: 16,
                 ),
-                DropdownButton(
-                  value: style,
-                  items: const [
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text("List View"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    DropdownButton(
+                      value: style,
+                      items: const [
+                        DropdownMenuItem(
+                          value: 1,
+                          child: Text("List View"),
+                        ),
+                        DropdownMenuItem(
+                          value: 2,
+                          child: Text("Slide Cards"),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          style = value ?? 1;
+                        });
+                      },
                     ),
-                    DropdownMenuItem(
-                      value: 2,
-                      child: Text("Slide Cards"),
+                    DropdownButton(
+                      value: initialPageMode,
+                      items: const [
+                        DropdownMenuItem(
+                          value: 1,
+                          child: Text("Show Initial Pages"),
+                        ),
+                        DropdownMenuItem(
+                          value: 2,
+                          child: Text("Hide Initial Pages"),
+                        ),
+                      ],
+                      onChanged: (value) async {
+                        setState(() {
+                          initialPageMode = value ?? 1;
+                        });
+                        // Reinitialize SDK when selection changes
+                        await initializeTyrads(
+                          apiKey: apiKeyController.text.isEmpty
+                              ? null
+                              : apiKeyController.text,
+                          apiSecret: apiSecretController.text.isEmpty
+                              ? null
+                              : apiSecretController.text,
+                          encKey: encKeyController.text.isEmpty
+                              ? null
+                              : encKeyController.text,
+                          engagementId: engagementIdController.text.isEmpty
+                              ? null
+                              : engagementIdController.text,
+                          userID: userIDController.text.isEmpty
+                              ? null
+                              : userIDController.text,
+                          skipInitialPages: initialPageMode == 1,
+                        );
+                      },
                     ),
                   ],
-                  onChanged: (value) {
-                    setState(() {
-                      style = value ?? 1;
-                    });
-                  },
                 ),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
