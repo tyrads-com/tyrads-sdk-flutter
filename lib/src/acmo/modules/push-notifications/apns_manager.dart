@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
+import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class ApnsManager {
   ApnsManager._();
@@ -20,7 +22,8 @@ class ApnsManager {
       final apnsToken =
           await _platform.getApnsToken().timeout(const Duration(seconds: 8));
       if (apnsToken != null && apnsToken.isNotEmpty) {
-        log("APNs token: $apnsToken");
+        Tyrads.instance.prefs.setString(AcmoKeyNames.APNS_TOKEN, apnsToken);
+        log("APNs token fetched: $apnsToken");
       }
     } catch (e) {
       log("APNs token not available yet: $e");

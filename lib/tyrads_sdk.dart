@@ -120,10 +120,12 @@ class Tyrads {
     WidgetsFlutterBinding.ensureInitialized();
     log("Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
-    try {
-      ApnsManager.instance.init();
-    } catch (e) {
-      log("Error initializing APNs: $e");
+    if(AcmoPlatform.isIOS){
+      try {
+        ApnsManager.instance.init();
+      } catch (e) {
+        log("Error initializing APNs: $e");
+      }
     }
   }
 
@@ -165,6 +167,7 @@ class Tyrads {
           debugPrint("Failed to get advertising id");
         }
       }
+      String? apnsToken = prefs.getString(AcmoKeyNames.APNS_TOKEN);
       var fd = {
         "publisherUserId": userID,
         "platform": acmoGetPlatformName(),
@@ -180,6 +183,9 @@ class Tyrads {
         if (advertisingId == null || advertisingId.isEmpty) {
           identifierType = "OTHER";
           advertisingId = customAdId;
+        }
+        if (AcmoPlatform.isIOS && apnsToken != null && apnsToken.isNotEmpty) {
+          fd["devicePushToken"] = apnsToken;
         }
       }
       final engagementId = this.engagementId;

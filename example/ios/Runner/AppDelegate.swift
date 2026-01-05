@@ -54,6 +54,6 @@ import UserNotifications
     withCompletionHandler completionHandler:
       @escaping (UNNotificationPresentationOptions) -> Void
   ) {
-    completionHandler([.banner, .sound, .badge])
+    completionHandler([.sound, .badge])
   }
 }
