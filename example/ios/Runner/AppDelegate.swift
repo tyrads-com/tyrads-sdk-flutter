@@ -1,7 +1,6 @@
 import UIKit
 import Flutter
 import tyrads_sdk
-import UserNotifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -10,6 +9,8 @@ import UserNotifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    APNsAppDelegateProxy.configure()
+    
     GeneratedPluginRegistrant.register(with: self)
     return super.application(
       application,
@@ -21,9 +22,7 @@ import UserNotifications
     _ application: UIApplication,
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
-    APNsAppDelegateProxy.didRegisterForRemoteNotifications(
-      deviceToken: deviceToken
-    )
+    APNsAppDelegateProxy.didRegisterForRemoteNotifications(deviceToken)
 
     super.application(
       application,
@@ -36,24 +35,20 @@ import UserNotifications
     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
   ) {
+
     APNsAppDelegateProxy.didReceiveRemoteNotification(
-      userInfo: userInfo,
+      userInfo,
       completionHandler: completionHandler
     )
-
+    
+    let wrappedCompletionHandler: (UIBackgroundFetchResult) -> Void = { result in
+    }
+    
     super.application(
       application,
       didReceiveRemoteNotification: userInfo,
-      fetchCompletionHandler: completionHandler
+      fetchCompletionHandler: wrappedCompletionHandler
     )
   }
 
-  override func userNotificationCenter(
-    _ center: UNUserNotificationCenter,
-    willPresent notification: UNNotification,
-    withCompletionHandler completionHandler:
-      @escaping (UNNotificationPresentationOptions) -> Void
-  ) {
-    completionHandler([.sound, .badge])
-  }
 }

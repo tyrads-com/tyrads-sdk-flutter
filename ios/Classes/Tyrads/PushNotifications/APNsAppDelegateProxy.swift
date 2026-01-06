@@ -6,24 +6,32 @@
 //
 
 import UIKit
+import UserNotifications
 
 @objc public final class APNsAppDelegateProxy: NSObject {
 
-    // Token (first launch guaranteed)
-    @objc public static func didRegisterForRemoteNotifications(
-        deviceToken: Data
-    ) {
-        APNsNotificationManager.shared.onTokenReceived(deviceToken)
-    }
+  /// Must be called from AppDelegate.didFinishLaunching
+  @objc public static func configure() {
+    UNUserNotificationCenter.current().delegate =
+      APNsNotificationReceiver.shared
+  }
 
-    // Silent / background push
-    @objc public static func didReceiveRemoteNotification(
-        userInfo: [AnyHashable: Any],
-        completionHandler: @escaping (UIBackgroundFetchResult) -> Void
-    ) {
-        APNsNotificationReceiver.shared
-            .handleSilentNotification(userInfo: userInfo)
+  /// Forward APNs token from AppDelegate
+  @objc public static func didRegisterForRemoteNotifications(
+    _ deviceToken: Data
+  ) {
+    APNsNotificationManager.shared.onTokenReceived(deviceToken)
+  }
 
-        completionHandler(.newData)
-    }
+  /// Forward silent / background push from AppDelegate
+  @objc public static func didReceiveRemoteNotification(
+    _ userInfo: [AnyHashable: Any],
+    completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+  ) {
+    APNsNotificationReceiver.shared
+      .handleSilentNotification(userInfo: userInfo)
+
+    completionHandler(.newData)
+  }
 }
+
