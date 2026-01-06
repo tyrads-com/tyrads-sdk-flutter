@@ -42,8 +42,7 @@ class ApnsManager {
   _onPushEvent() {
     _platform.onPushEvent().listen((event) {
       final data = event['data'];
-      final alert = data['aps']['alert'];
-      final deepLink = alert['deepLink'];
+      final deepLink = data['deepLink'];
       final type = event['type'];
       final context = Tyrads.instance.parentContext;
       if (type == "clicked" &&
