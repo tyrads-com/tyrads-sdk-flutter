@@ -48,8 +48,8 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
                         ),
                       ),
                       const Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                         child: Divider(
                           thickness: 1,
                           color: Color(0xFFE0E2E7),
@@ -70,14 +70,14 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
                         height: 375,
                         child: ClipRect(
                           child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             child: AcmoCarouselSlider(
                               itemCount: activeOffers.length,
                               autoPlayInterval: const Duration(seconds: 5),
                               showIndicator: false,
                               infiniteScroll: true,
-                              viewportFraction: activeOffers.length > 1 ? 0.8 : 1,
+                              viewportFraction:
+                                  activeOffers.length > 1 ? 0.8 : 1,
                               scaleFactor: 1,
                               initialPage: 0,
                               onPageChanged: (index) {
@@ -90,8 +90,7 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
                                 return OfferCard(
                                   campaign: campaign,
                                   onPlayNow: () {
-                                    acmoLaunchURLForce(
-                                        campaign.app.previewUrl);
+                                    acmoLaunchURLForce(campaign.app.previewUrl);
                                   },
                                 );
                               },
@@ -110,8 +109,7 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
                                 duration: const Duration(milliseconds: 300),
                                 tween: Tween<double>(
                                     begin: 1.0,
-                                    end:
-                                        _currentIndex == index ? 1.2 : 1.0),
+                                    end: _currentIndex == index ? 1.2 : 1.0),
                                 builder: (context, double scale, child) {
                                   return Transform.scale(
                                     scale: scale,
