@@ -193,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ? null
           : engagementIdController.text,
       userID: userIDController.text.isEmpty ? null : userIDController.text,
-      skipInitialPages: initialPageMode == 1,
+      skipInitialPages: initialPageMode == 2,
     );
 
     Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
@@ -301,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           userID: userIDController.text.isEmpty
                               ? null
                               : userIDController.text,
-                          skipInitialPages: initialPageMode == 1,
+                          skipInitialPages: initialPageMode == 2,
                         );
                       },
                     ),
