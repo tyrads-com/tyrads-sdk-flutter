@@ -114,7 +114,16 @@ class FCMService {
   }
 
   static void _handleMessageData(Map<String, dynamic> data) {
-    debugPrint('Message data: $data');
+    debugPrint('Message data :$data');
+    final deeplink = data['deepLink'];
+    final context = Tyrads.instance.parentContext;
+
+    debugPrint('deepLink data :$deeplink Context $context');
+    if (deeplink != null && deeplink != '' && context != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Tyrads.instance.showOffers(context, route: deeplink);
+      });
+    }
   }
 
   static Future<void> dispose() async {

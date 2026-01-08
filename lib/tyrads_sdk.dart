@@ -117,7 +117,7 @@ class Tyrads {
     WidgetsFlutterBinding.ensureInitialized();
     log("Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
-    if (!kIsWeb) {
+    if (AcmoPlatform.isAndroid) {
       try {
         await FCMService.initialize();
       } catch (error) {
