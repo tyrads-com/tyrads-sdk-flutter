@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 class AcmoConfig {
   static const API_VERSION = "3.0";
-  static const BUILD_VERSION = "0";
+  static const BUILD_VERSION = "1";
   static const AV = "4";
-  static const SDK_VERSION = "3.3.0-$BUILD_VERSION";
+  static const SDK_VERSION = "3.4.0-$BUILD_VERSION";
   static const SDK_PLATFORM = "Flutter";
   static const BASE_URL = "https://api.tyrads.com/v$API_VERSION/";
   static const PRIMARY_COLOR =
