@@ -362,9 +362,13 @@ class Tyrads {
       }
 
       runZonedGuarded(() {
-        parentContext = context;
-        Navigator.of(parentContext!)
-            .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
+        if (navKey.currentState != null && navKey.currentState!.mounted) {
+          navKey.currentState!.pushReplacementNamed('/');
+        } else {
+          parentContext = context;
+          Navigator.of(parentContext!)
+              .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
+        }
       }, (error, stack) {});
 
       track(TyradsActivity.opened);
