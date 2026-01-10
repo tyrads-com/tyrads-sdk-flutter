@@ -110,7 +110,16 @@ class _WebSdkState extends State<WebSdk> {
           onLoadStop: (controller, url) {},
           onReceivedError: (controller, request, error) {
             debugPrint('WebView Error: ${error.toString()}');
-            if (error.description.contains('code=102')) {
+            if (error.description.contains('code=102') ||
+                error.description.contains('-1001') ||
+                error.description.contains('-1009') ||
+                error.type.toString().contains('TIMEOUT') ||
+                error.type.toString().contains('timeOut') ||
+                error.type.toString().contains('timeout') ||
+                error.type.toString().contains('CONNECT') ||
+                error.type.toString().contains('connect') ||
+                error.type.toString().contains('UNKNOWN') ||
+                error.type.toString().contains('unknown')) {
               setState(() {
                 _hasError = true;
               });
@@ -147,7 +156,10 @@ class _WebSdkState extends State<WebSdk> {
               });
               _webViewController.reload();
             },
-            child: const Text('Retry'),
+            child: Text(
+              'Retry',
+              style: GoogleFonts.poppins(color: Colors.white),
+            ),
           ),
         ],
       ),

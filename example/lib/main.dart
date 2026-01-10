@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:example/env/env.dart';
 import 'package:flutter/foundation.dart';
@@ -18,6 +19,7 @@ String? _previousApiKey;
 String? _previousApiSecret;
 String? _previousEncKey;
 String? _previousUserID;
+bool? _previousSkipInitialPages;
 
 Future<void> initializeTyrads({
   String? apiKey,
@@ -31,7 +33,8 @@ Future<void> initializeTyrads({
       _previousApiKey == apiKey &&
       _previousApiSecret == apiSecret &&
       _previousEncKey == encKey &&
-      _previousUserID == userID) {
+      _previousUserID == userID &&
+      _previousSkipInitialPages == skipInitialPages) {
     log("Tyrads already initialized with same details, skipping reinitialization");
     return;
   }
@@ -51,7 +54,9 @@ Future<void> initializeTyrads({
             ? Env.TYRADS_SDK_IOS_ENC_KEY
             : Env.TYRADS_SDK_ENC_KEY),
     engagementId: engagementId,
-    config: TyradsConfig(skipInitialPages: skipInitialPages),
+    config: Platform.isAndroid
+        ? TyradsConfig(skipInitialPages: skipInitialPages)
+        : null,
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -87,6 +92,7 @@ Future<void> initializeTyrads({
   _previousEncKey = encKey;
   _previousUserID = userID;
   _isTyradsInitialized = true;
+  _previousSkipInitialPages = skipInitialPages;
 
   log("Tyrads initialized successfully with new details");
 }
@@ -133,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController userIDController;
   bool loading = false;
   int style = 1;
-  int initialPageMode = 1; // 1: Show Initial Pages, 2: Hide Initial Pages
+  int initialPageMode = 1;
   @override
   void initState() {
     super.initState();
@@ -248,7 +254,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 16,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: Platform.isAndroid
+                      ? MainAxisAlignment.spaceEvenly
+                      : MainAxisAlignment.center,
                   children: [
                     DropdownButton(
                       value: style,
@@ -268,42 +276,45 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                       },
                     ),
-                    DropdownButton(
-                      value: initialPageMode,
-                      items: const [
-                        DropdownMenuItem(
-                          value: 1,
-                          child: Text("Show Initial Pages"),
-                        ),
-                        DropdownMenuItem(
-                          value: 2,
-                          child: Text("Hide Initial Pages"),
-                        ),
-                      ],
-                      onChanged: (value) async {
-                        setState(() {
-                          initialPageMode = value ?? 1;
-                        });
-                        // Reinitialize SDK when selection changes
-                        await initializeTyrads(
-                          apiKey: apiKeyController.text.isEmpty
-                              ? null
-                              : apiKeyController.text,
-                          apiSecret: apiSecretController.text.isEmpty
-                              ? null
-                              : apiSecretController.text,
-                          encKey: encKeyController.text.isEmpty
-                              ? null
-                              : encKeyController.text,
-                          engagementId: engagementIdController.text.isEmpty
-                              ? null
-                              : engagementIdController.text,
-                          userID: userIDController.text.isEmpty
-                              ? null
-                              : userIDController.text,
-                          skipInitialPages: initialPageMode == 2,
-                        );
-                      },
+                    Visibility(
+                      visible: Platform.isAndroid,
+                      child: DropdownButton(
+                        value: initialPageMode,
+                        items: const [
+                          DropdownMenuItem(
+                            value: 1,
+                            child: Text("Show Initial Pages"),
+                          ),
+                          DropdownMenuItem(
+                            value: 2,
+                            child: Text("Hide Initial Pages"),
+                          ),
+                        ],
+                        onChanged: (value) async {
+                          setState(() {
+                            initialPageMode = value ?? 1;
+                          });
+                          // Reinitialize SDK when selection changes
+                          await initializeTyrads(
+                            apiKey: apiKeyController.text.isEmpty
+                                ? null
+                                : apiKeyController.text,
+                            apiSecret: apiSecretController.text.isEmpty
+                                ? null
+                                : apiSecretController.text,
+                            encKey: encKeyController.text.isEmpty
+                                ? null
+                                : encKeyController.text,
+                            engagementId: engagementIdController.text.isEmpty
+                                ? null
+                                : engagementIdController.text,
+                            userID: userIDController.text.isEmpty
+                                ? null
+                                : userIDController.text,
+                            skipInitialPages: initialPageMode == 2,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

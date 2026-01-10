@@ -77,7 +77,6 @@ class Tyrads {
   bool _isSecure = false;
 
   bool get isSecure => _isSecure;
-  // bool skipUserInfo = false;
 
   Tyrads._internal();
   static Tyrads get instance {
@@ -104,9 +103,9 @@ class Tyrads {
     this.userInfo = userInfo;
     this.mediaSourceInfo = mediaSourceInfo;
     this.launchMode = launchMode;
-    setTyradsConfig(config ?? TyradsConfig());
     prefs = await SharedPreferences.getInstance();
     if (AcmoPlatform.isAndroid) {
+      this.config = config ?? TyradsConfig();
       final integrityToken =
           await TyradsSdkPlatform.instance.getPlayIntegrityToken();
       await prefs.setString(AcmoKeyNames.PLAY_INTEGRITY_TOKEN, integrityToken);
