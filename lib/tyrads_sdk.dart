@@ -76,7 +76,8 @@ class Tyrads {
   bool _isSecure = false;
 
   bool get isSecure => _isSecure;
-  // bool skipUserInfo = false;
+
+  String? _pendingDeepLink;
 
   Tyrads._internal();
   static Tyrads get instance {
@@ -402,7 +403,7 @@ class Tyrads {
       } else if (parentContext != null) {
         Navigator.pop(parentContext!, result);
         track(TyradsActivity.closed);
-        parentContext = null; //important for memory management
+        // parentContext = null; // removed to preserve context for push redirection
         return true;
       }
     }
@@ -411,6 +412,15 @@ class Tyrads {
       track(TyradsActivity.closed);
     }
     return false;
+  }
+
+    void setPendingDeepLink(String? route) {
+    _pendingDeepLink = route;
+    if (parentContext != null && _pendingDeepLink != null) {
+      String routeToProcess = _pendingDeepLink!;
+      _pendingDeepLink = null;
+      showOffers(parentContext!, route: routeToProcess);
+    }
   }
 
   track(String activity) {

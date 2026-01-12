@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
+
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
@@ -41,17 +41,17 @@ class ApnsManager {
 
   _onPushEvent() {
     _platform.onPushEvent().listen((event) {
+      log("Push event received: $event");
       final data = event['data'];
-      final deepLink = data['deepLink'];
+      final deepLink = data?['deepLink'];
       final type = event['type'];
-      final context = Tyrads.instance.parentContext;
-      if (type == "clicked" &&
-          deepLink != null &&
-          deepLink != "" &&
-          context != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Tyrads.instance.showOffers(context, route: deepLink);
-        });
+
+      if (type == "clicked" && deepLink != null && deepLink != "") {
+        if (Tyrads.instance.parentContext != null) {
+          Tyrads.instance.showOffers(Tyrads.instance.parentContext!, route: deepLink);
+        } else {
+          Tyrads.instance.setPendingDeepLink(deepLink);
+        }
       }
     }).onError((e) {
       log("Error listening to push events: $e");
