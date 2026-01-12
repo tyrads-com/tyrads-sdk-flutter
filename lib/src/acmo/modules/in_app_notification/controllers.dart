@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/models/limited_time_offer/limited_time_offer.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/repository.dart';
+import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/currency_sale_model/currency_sale_model.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
@@ -70,6 +71,28 @@ class AcmoInAppNotificationController {
   void clear() {
     activeOffers.clear();
     currencySales = null;
+  }
+
+  Future<bool> hasShownCurrencySalesNotification() async {
+    return Tyrads.instance.prefs
+            .getBool(AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION) ??
+        false;
+  }
+
+  Future<void> markCurrencySalesNotificationAsShown() async {
+    await Tyrads.instance.prefs
+        .setBool(AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION, true);
+  }
+
+  Future<bool> hasShownLimitedTimeOfferNotification() async {
+    return Tyrads.instance.prefs
+            .getBool(AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION) ??
+        false;
+  }
+
+  Future<void> markLimitedTimeOfferNotificationAsShown() async {
+    await Tyrads.instance.prefs
+        .setBool(AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION, true);
   }
 
   bool showCountdown(PayoutEvents event) {

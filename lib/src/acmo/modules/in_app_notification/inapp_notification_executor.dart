@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' show BuildContext, showDialog, Colors;
+import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notificattions_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/pages/currency_sales_notif.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/pages/limited_time_offer_notif.dart';
@@ -21,19 +22,31 @@ class AcmoPromoExecutor {
 
       switch (action.type) {
         case PromoType.limitedTimeOffer:
-          await showDialog(
-            context: context,
-            barrierColor: Colors.transparent,
-            builder: (_) => const LimitedTimeOfferDialog(),
-          );
+          final hasShown = await AcmoInAppNotificationController.instance
+              .hasShownLimitedTimeOfferNotification();
+          if (!hasShown && context.mounted) {
+            await showDialog(
+              context: context,
+              barrierColor: Colors.transparent,
+              builder: (_) => const LimitedTimeOfferDialog(),
+            );
+            await AcmoInAppNotificationController.instance
+                .markLimitedTimeOfferNotificationAsShown();
+          }
           break;
 
         case PromoType.currencySale:
-          await showDialog(
-            context: context,
-            barrierColor: Colors.transparent,
-            builder: (_) => const CurrencySalesDialog(),
-          );
+          final hasShown = await AcmoInAppNotificationController.instance
+              .hasShownCurrencySalesNotification();
+          if (!hasShown && context.mounted) {
+            await showDialog(
+              context: context,
+              barrierColor: Colors.transparent,
+              builder: (_) => const CurrencySalesDialog(),
+            );
+            await AcmoInAppNotificationController.instance
+                .markCurrencySalesNotificationAsShown();
+          }
           break;
       }
 
