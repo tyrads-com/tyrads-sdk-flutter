@@ -346,7 +346,7 @@ class Tyrads {
         scheme: 'https',
         host: 'sdk.tyrads.com',
         queryParameters: {
-          'to': campaignID == null ? route : '$route/$campaignID',
+          'to': campaignID == null ? this.route : '${this.route}/$campaignID',
           'token': token,
           'lang': selectedLanguage,
           'skipUserInfo': skipUserInfo.toString(),
