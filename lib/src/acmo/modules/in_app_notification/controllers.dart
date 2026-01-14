@@ -74,25 +74,27 @@ class AcmoInAppNotificationController {
   }
 
   Future<bool> hasShownCurrencySalesNotification() async {
-    return Tyrads.instance.prefs
-            .getBool(AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION) ??
+    return Tyrads.instance.prefs.getBool(
+            '${AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION}${Tyrads.instance.publisherUserID}') ??
         false;
   }
 
   Future<void> markCurrencySalesNotificationAsShown() async {
-    await Tyrads.instance.prefs
-        .setBool(AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION, true);
+    await Tyrads.instance.prefs.setBool(
+        '${AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION}${Tyrads.instance.publisherUserID}',
+        true);
   }
 
   Future<bool> hasShownLimitedTimeOfferNotification() async {
-    return Tyrads.instance.prefs
-            .getBool(AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION) ??
+    return Tyrads.instance.prefs.getBool(
+            '${AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION}${Tyrads.instance.publisherUserID}') ??
         false;
   }
 
   Future<void> markLimitedTimeOfferNotificationAsShown() async {
-    await Tyrads.instance.prefs
-        .setBool(AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION, true);
+    await Tyrads.instance.prefs.setBool(
+        '${AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION}${Tyrads.instance.publisherUserID}',
+        true);
   }
 
   bool showCountdown(PayoutEvents event) {
