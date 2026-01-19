@@ -177,7 +177,9 @@ class Tyrads {
         }
       }
       final engagementId = this.engagementId;
-      fd["engagementId"] = (engagementId != null && engagementId != "") ? int.parse(engagementId) : null;
+      fd["engagementId"] = (engagementId != null && engagementId != "")
+          ? int.parse(engagementId)
+          : null;
       fd["identifierType"] = identifierType;
       fd["identifier"] = advertisingId ?? "NA";
       if (mediaSourceInfo?.sub1 != null) {
@@ -485,6 +487,6 @@ class Tyrads {
     await LocalizationService().changeLanguage(selectedLanguage);
     prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
 
-    AcmoPremiumWidgetsController.instance.refresh();
+    AcmoPremiumWidgetsController.instance.refresh(force: true);
   }
 }
