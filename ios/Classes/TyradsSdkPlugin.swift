@@ -8,6 +8,7 @@
 
 import Flutter
 import UIKit
+import UserNotifications
 
 public final class TyradsSdkPlugin: NSObject,
                                     FlutterPlugin,
@@ -31,9 +32,13 @@ public final class TyradsSdkPlugin: NSObject,
         let instance = TyradsSdkPlugin()
         
         registrar.addMethodCallDelegate(instance, channel: methodChannel)
+        registrar.addApplicationDelegate(instance)
+        
         pushEventChannel.setStreamHandler(instance)
         
         APNsNotificationReceiver.shared.setListener(instance)
+        
+        UNUserNotificationCenter.current().delegate = APNsNotificationReceiver.shared
     }
     
     // Method calls
@@ -91,6 +96,32 @@ public final class TyradsSdkPlugin: NSObject,
             "type": "dismissed",
             "id": identifier
         ])
+    }
+    
+    // MARK: - UIApplicationDelegate
+    
+    public func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        APNsNotificationManager.shared.onTokenReceived(deviceToken)
+    }
+    
+    public func application(
+        _ application: UIApplication,
+        didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
+        print("Tyrads SDK: Failed to register for remote notifications: \(error)")
+    }
+    
+    public func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) -> Bool {
+        APNsNotificationReceiver.shared.handleSilentNotification(userInfo: userInfo)
+        completionHandler(.newData)
+        return true
     }
 }
 
