@@ -39,25 +39,24 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    AcmoPremiumWidgetsController.instance.attach(_refreshData);
+    AcmoPremiumWidgetsController.instance
+        .attach((bool force) => _refreshData(force: force));
     _loadData();
   }
 
   Future<void> _loadData() async {
-    if (_cachedHotOffers == null) {
-      setState(() => _isLoading = true);
-      await _controller.loadTopOffers();
-      setState(() {
-        _cachedHotOffers = _controller.hotOffers;
-        _isLoading = false;
-        _activeOffersCount = _controller.activatedCount.value;
-        _initializeItemLoadingNotifiers();
-      });
-    }
+    final data = await _controller.loadTopOffers();
+    if (!mounted) return;
+    setState(() {
+      _cachedHotOffers = data;
+      _activeOffersCount = _controller.activatedCount.value;
+      _initializeItemLoadingNotifiers();
+      _isLoading = false;
+    });
   }
 
   void _initializeItemLoadingNotifiers() {
-    _itemLoadingNotifiers.clear(); // Clear existing notifiers
+    _itemLoadingNotifiers.clear();
     for (var offer in _cachedHotOffers!) {
       if (offer is AcmoOffersModel) {
         _itemLoadingNotifiers[offer.campaignId] = ValueNotifier(false);
@@ -65,10 +64,12 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
     }
   }
 
-  void _refreshData() async {
-    await _controller.loadTopOffers();
+  void _refreshData({bool force = false}) async {
+    if (!force && _controller.isRecentlyRefreshed) return;
+    final data = await _controller.loadTopOffers(force: true);
+    if (!mounted) return;
     setState(() {
-      _cachedHotOffers = _controller.hotOffers;
+      _cachedHotOffers = data;
       _activeOffersCount = _controller.activatedCount.value;
     });
   }
@@ -76,7 +77,8 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _refreshData();
+      _refreshData(force: _controller.reloadAfterOfferActivation);
+      _controller.reloadAfterOfferActivation = false;
     }
   }
 
@@ -312,25 +314,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                 ),
               ),
             ),
-          // if (_activeOffersCount == 0)
-          //   TextButton(
-          //     onPressed: () {
-          //       Tyrads.instance.showOffers(
-          //         context,
-          //         launchMode: Tyrads.instance.launchMode,
-          //       );
-          //     },
-          //     child: Text(
-          //       'See Other Offers',
-          //       style: GoogleFonts.poppins(
-          //         fontSize: 12,
-          //         fontWeight: FontWeight.w600,
-          //         color: Tyrads.instance.colorPremium ??
-          //             Theme.of(context).colorScheme.secondary,
-          //       ),
-          //     ),
-          //   ),
-          // if (widget.showMyOffers && _activeOffersCount > 0)
           ActiveOfferButton(
             key: ValueKey(LocalizationService()
                 .translate("data.widget.button.moreOffers")),
