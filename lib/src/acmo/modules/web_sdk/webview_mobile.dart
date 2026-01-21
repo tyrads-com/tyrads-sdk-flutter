@@ -1,8 +1,8 @@
-import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+
+import 'webview_manager.dart';
 
 class WebSdk extends StatefulWidget {
   final String initialUrl;
@@ -23,6 +23,28 @@ class _WebSdkState extends State<WebSdk> {
   bool _hasError = false;
   final GlobalKey webViewKey = GlobalKey();
 
+  @override
+  void initState() {
+    super.initState();
+    final preloaded = WebViewManager.instance.headlessWebView;
+    if (preloaded != null) {
+      _webViewController = preloaded.webViewController!;
+      _hasError = WebViewManager.instance.hasError;
+    }
+
+    WebViewManager.instance.onMessage = (msg) => widget.onMessage(msg);
+    WebViewManager.instance.onErrorChanged = (val) {
+      if (mounted) setState(() => _hasError = val);
+    };
+  }
+
+  @override
+  void dispose() {
+    WebViewManager.instance.onMessage = null;
+    WebViewManager.instance.onErrorChanged = null;
+    super.dispose();
+  }
+
   void _handleJSMessage(String message) {
     widget.onMessage(message);
   }
@@ -33,72 +55,34 @@ class _WebSdkState extends State<WebSdk> {
       children: [
         InAppWebView(
           key: webViewKey,
+          headlessWebView: WebViewManager.instance.headlessWebView,
           initialUrlRequest: URLRequest(url: WebUri(widget.initialUrl)),
-          initialSettings: InAppWebViewSettings(
-              javaScriptEnabled: true,
-              javaScriptCanOpenWindowsAutomatically: true,
-              allowFileAccess: true,
-              allowContentAccess: true,
-              mediaPlaybackRequiresUserGesture: false,
-              useShouldOverrideUrlLoading: true,
-              allowsInlineMediaPlayback: true,
-              iframeAllowFullscreen: true),
-          initialUserScripts: UnmodifiableListView([
-            UserScript(
-              source: '''
-                            window.addEventListener('message', function(event) {
-                              try {
-                                const message = typeof event.data === 'string'
-                                  ? JSON.parse(event.data)
-                                  : event.data;
-                                if (message) {
-                                  if (window.flutter_inappwebview) {
-                                    console.error('JS Bridge Message:', message);
-                                    window.flutter_inappwebview.callHandler('JSInterface', JSON.stringify(message));
-                                  } else if (window.parent !== window) {
-                                    // Send to Flutter Web
-                                    console.error('JS Bridge Message Web:', message);
-                                    window.parent.postMessage({ type: 'JSInterface', payload: message }, '*');
-                                  }
-                                }
-                              } catch (error) {
-                                console.error('JS Bridge error:', error);
-                              }
-                            });
-                          ''',
-              injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
-            ),
-          ]),
+          initialSettings: WebViewManager.instance.settings,
+          initialUserScripts: WebViewManager.instance.userScripts,
           onConsoleMessage: (controller, consoleMessage) {
             debugPrint(consoleMessage.message);
           },
           shouldOverrideUrlLoading: (controller, navigationAction) async {
-            Uri uri = navigationAction.request.url!;
-
-            final urlString = uri.toString();
-            if (uri.host == 'sdk.tyrads.com') {
-              return NavigationActionPolicy.ALLOW;
-            }
-
-            if (!urlString.contains('sdk.tyrads.com')) {
-              await launchUrlString(
-                urlString,
-                mode: LaunchMode.externalApplication,
-              );
-              return NavigationActionPolicy.CANCEL;
-            }
-            return NavigationActionPolicy.ALLOW;
+            return WebViewManager.instance
+                .shouldOverrideUrlLoading(controller, navigationAction);
           },
           onWebViewCreated: (controller) {
+            debugPrint(
+                'WebSdk: onWebViewCreated called. Preloaded: ${WebViewManager.instance.headlessWebView != null}');
             _webViewController = controller;
+
             _webViewController.addJavaScriptHandler(
               handlerName: 'JSInterface',
               callback: (args) {
+                debugPrint(
+                    'WebSdk: JSInterface message received: ${args.length > 0 ? args[0] : "empty"}');
                 if (args.isNotEmpty) {
                   _handleJSMessage(args[0].toString());
                 }
               },
             );
+
+            WebViewManager.instance.clearPreload();
           },
           onLoadStart: (controller, url) async {
             if (mounted) {
