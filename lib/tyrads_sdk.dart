@@ -34,6 +34,8 @@ import 'package:uuid/uuid.dart';
 
 import 'src/acmo/modules/tracking/activities.dart';
 import 'src/acmo/modules/tracking/controller.dart';
+import 'src/acmo/modules/web_sdk/webview_manager.dart';
+
 
 part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';
@@ -266,7 +268,9 @@ class Tyrads {
         }
         track(TyradsActivity.initialized);
         isLoginSuccessful = true;
+        _preloadWebView();
       }
+
     } catch (e) {
       debugPrint("Error initializing: ${e.toString()}");
       isLoginSuccessful = false;
@@ -319,6 +323,28 @@ class Tyrads {
     await repo.updateUser(userId, fd);
   }
 
+  Uri getWebUri({int? campaignID, String? route}) {
+    final skipUserInfo = getSkipUserInfo();
+    final currentRoute = route ?? TyradsDeepRoutes.OFFERS;
+    return Uri(
+      scheme: 'https',
+      host: 'sdk.tyrads.com',
+      queryParameters: {
+        'to': campaignID == null ? currentRoute : '$currentRoute/$campaignID',
+        'token': token,
+        'lang': selectedLanguage,
+        'skipUserInfo': skipUserInfo.toString(),
+      },
+    );
+  }
+
+  void _preloadWebView() {
+    if (!kIsWeb) {
+      webURI = getWebUri();
+      WebViewManager.instance.preload(webURI);
+    }
+  }
+
   Future<void> showOffers(context,
       {int? campaignID, String? route, int? launchMode}) async {
     try {
@@ -329,19 +355,21 @@ class Tyrads {
       if (await waitAndCheck() == false) {
         return;
       }
-      final skipUserInfo = getSkipUserInfo();
       this.campaignID = campaignID;
+
       this.route = route ?? TyradsDeepRoutes.OFFERS;
-      webURI = Uri(
-        scheme: 'https',
-        host: 'sdk.tyrads.com',
-        queryParameters: {
-          'to': campaignID == null ? route : '$route/$campaignID',
-          'token': token,
-          'lang': selectedLanguage,
-          'skipUserInfo': skipUserInfo.toString(),
-        },
-      );
+      
+      final requestedUri = getWebUri(campaignID: campaignID, route: route);
+      
+      if (webURI.toString() != requestedUri.toString() || 
+          (!kIsWeb && WebViewManager.instance.headlessWebView == null)) {
+        webURI = requestedUri;
+        if (!kIsWeb) {
+          WebViewManager.instance.preload(webURI);
+        }
+      }
+
+
 
       final ready =
           await OnboardingCheck.instance.checkOnboardingStatus(context);
@@ -381,23 +409,21 @@ class Tyrads {
 
   back({result}) {
     var navigator = navKey.currentState;
-    if (navigator != null) {
-      if (navigator.canPop()) {
-        navigator.pop(result);
-        return true;
-      } else if (parentContext != null) {
-        Navigator.pop(parentContext!, result);
-        track(TyradsActivity.closed);
-        parentContext = null; //important for memory management
-        return true;
-      }
+    if (navigator != null && navigator.canPop()) {
+      navigator.pop(result);
+      return true;
     }
+
     if (parentContext != null) {
       Navigator.pop(parentContext!, result);
       track(TyradsActivity.closed);
+      parentContext = null; //important for memory management
+      _preloadWebView();
+      return true;
     }
     return false;
   }
+
 
   track(String activity) {
     tracker.trackUser(activity);
