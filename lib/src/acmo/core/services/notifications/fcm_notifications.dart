@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'fcm_services.dart';
 
 class FCMNotifications {
   static final FlutterLocalNotificationsPlugin _notifications =
@@ -31,7 +32,15 @@ class FCMNotifications {
       settings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         if (response.payload != null) {
-          log("Notification tapped with payload: ${response.payload}");
+          try {
+            final Map<String, dynamic> data = json.decode(response.payload!);
+            final deeplink = data['deepLink'];
+            if (deeplink != null && deeplink != '') {
+              FCMService.handleDeepLink(deeplink.toString());
+            }
+          } catch (e) {
+            log("Error parsing notification payload: $e");
+          }
         }
       },
     );
