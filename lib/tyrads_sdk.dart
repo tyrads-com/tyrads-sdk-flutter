@@ -58,7 +58,30 @@ class Tyrads {
   Color? colorMain;
   Color? colorPremium;
   Color? colorPremiumFg;
-  BuildContext? parentContext;
+  BuildContext? _parentContext;
+
+  BuildContext? get parentContext => _parentContext;
+
+  set parentContext(BuildContext? value) {
+    _parentContext = value;
+    if (_parentContext != null) {
+      FCMService.checkPendingDeepLink();
+    }
+  }
+
+  void updateWebUri(String targetRoute, {int? targetCampaignID}) {
+    final skipUserInfo = getSkipUserInfo();
+    webURI = Uri(
+      scheme: 'https',
+      host: 'sdk.tyrads.com',
+      queryParameters: {
+        'to': targetCampaignID == null ? targetRoute : '$targetRoute/$targetCampaignID',
+        'token': token,
+        'lang': selectedLanguage,
+        'skipUserInfo': skipUserInfo.toString(),
+      },
+    );
+  }
   late Dio dio;
   int? campaignID;
   String? route;
@@ -67,6 +90,7 @@ class Tyrads {
   TyradsUserInfo? userInfo;
   var tracker = AcmoTrackingController();
   var webURI = Uri();
+  final deepLinkNotifier = ValueNotifier<String?>(null);
   var _isInitCalled = false;
   var _isLoginCalled = false;
   var isLoginSuccessful = false;
@@ -243,7 +267,6 @@ class Tyrads {
         fd["userGroup"] = userInfo?.userGroup;
       }
 
-      log("fd: $fd");
       final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
       final body =
           _isSecure ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd) : fd;
@@ -332,6 +355,7 @@ class Tyrads {
 
   Future<void> showOffers(context,
       {int? campaignID, String? route, int? launchMode}) async {
+    FCMService.clearPendingDeepLink();
     try {
       if (!_isLoginCalled) {
         log("Make sure login method is called first");
@@ -363,8 +387,8 @@ class Tyrads {
       }
 
       runZonedGuarded(() {
-        parentContext = context;
-        Navigator.of(parentContext!)
+        _parentContext = context;
+        Navigator.of(_parentContext!)
             .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
       }, (error, stack) {});
 
@@ -399,7 +423,6 @@ class Tyrads {
       } else if (parentContext != null) {
         Navigator.pop(parentContext!, result);
         track(TyradsActivity.closed);
-        parentContext = null; //important for memory management
         return true;
       }
     }

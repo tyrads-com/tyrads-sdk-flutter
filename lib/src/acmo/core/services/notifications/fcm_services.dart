@@ -14,6 +14,53 @@ class FCMService {
   static bool _useNativeImplementation = false;
   static StreamSubscription<RemoteMessage>? _messageSubscription;
   static StreamSubscription<RemoteMessage>? _messageOpenedAppSubscription;
+  static String? _pendingDeepLink;
+
+  static void handleDeepLink(String deeplink) {
+    if (deeplink.isEmpty) return;
+
+    final tyrads = Tyrads.instance;
+
+    if (tyrads.navKey.currentState != null) {
+      tyrads.updateWebUri(deeplink);
+      tyrads.deepLinkNotifier.value = deeplink;
+      return;
+    }
+
+    final context = tyrads.parentContext;
+    if (context != null && context.mounted) {
+      _pendingDeepLink = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        tyrads.showOffers(context, route: deeplink);
+      });
+    } else {
+      _pendingDeepLink = deeplink;
+      if (context != null) {
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (_pendingDeepLink == deeplink) {
+            checkPendingDeepLink();
+          }
+        });
+      }
+    }
+  }
+
+  static void checkPendingDeepLink() {
+    final tyrads = Tyrads.instance;
+    if (_pendingDeepLink != null && tyrads.parentContext != null) {
+      final link = _pendingDeepLink!;
+      _pendingDeepLink = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (tyrads.parentContext != null && tyrads.parentContext!.mounted) {
+          tyrads.showOffers(tyrads.parentContext!, route: link);
+        }
+      });
+    }
+  }
+
+  static void clearPendingDeepLink() {
+    _pendingDeepLink = null;
+  }
 
   static Future<void> initialize() async {
     try {
@@ -104,8 +151,6 @@ class FCMService {
         payload: message.data,
       );
     }
-
-    _handleMessageData(message.data);
   }
 
   static Future<void> _handleBackgroundMessage(RemoteMessage message) async {
@@ -116,13 +161,8 @@ class FCMService {
   static void _handleMessageData(Map<String, dynamic> data) {
     debugPrint('Message data :$data');
     final deeplink = data['deepLink'];
-    final context = Tyrads.instance.parentContext;
-
-    debugPrint('deepLink data :$deeplink Context $context');
-    if (deeplink != null && deeplink != '' && context != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Tyrads.instance.showOffers(context, route: deeplink);
-      });
+    if (deeplink != null && deeplink != '') {
+      handleDeepLink(deeplink.toString());
     }
   }
 
