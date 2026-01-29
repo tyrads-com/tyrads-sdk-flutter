@@ -28,6 +28,16 @@ class _WebSdkState extends State<WebSdk> {
   }
 
   @override
+  void didUpdateWidget(WebSdk oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialUrl != widget.initialUrl) {
+      _webViewController.loadUrl(
+        urlRequest: URLRequest(url: WebUri(widget.initialUrl)),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
