@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/models/limited_time_offer/limited_time_offer.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/repository.dart';
@@ -73,28 +74,78 @@ class AcmoInAppNotificationController {
     currencySales = null;
   }
 
-  Future<bool> hasShownCurrencySalesNotification() async {
-    return Tyrads.instance.prefs.getBool(
-            '${AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION}${Tyrads.instance.publisherUserID}') ??
-        false;
+  Future<bool> hasShownCurrencySalesNotification(String saleId) async {
+    if (saleId.isEmpty) return false;
+    final String key =
+        '${AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION}${Tyrads.instance.publisherUserID}';
+    final String? data = Tyrads.instance.prefs.getString(key);
+    if (data == null) return false;
+
+    try {
+      final Map<String, dynamic> json = jsonDecode(data);
+      final String today = DateTime.now().toIso8601String().split('T')[0];
+      final String? lastShown = json[saleId];
+      return lastShown == today;
+    } catch (e) {
+      return false;
+    }
   }
 
-  Future<void> markCurrencySalesNotificationAsShown() async {
-    await Tyrads.instance.prefs.setBool(
-        '${AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION}${Tyrads.instance.publisherUserID}',
-        true);
+  Future<void> markCurrencySalesNotificationAsShown(String saleId) async {
+    if (saleId.isEmpty) return;
+    final String key =
+        '${AcmoKeyNames.HAS_SHOWN_CURRENCY_SALES_NOTIFICATION}${Tyrads.instance.publisherUserID}';
+    final String? data = Tyrads.instance.prefs.getString(key);
+    Map<String, dynamic> json = {};
+    if (data != null) {
+      try {
+        json = jsonDecode(data);
+      } catch (_) {}
+    }
+
+    final String today = DateTime.now().toIso8601String().split('T')[0];
+    json[saleId] = today;
+    await Tyrads.instance.prefs.setString(key, jsonEncode(json));
   }
 
-  Future<bool> hasShownLimitedTimeOfferNotification() async {
-    return Tyrads.instance.prefs.getBool(
-            '${AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION}${Tyrads.instance.publisherUserID}') ??
-        false;
+  Future<bool> hasShownLimitedTimeOfferNotification(List<int> campaignIds) async {
+    if (campaignIds.isEmpty) return false;
+    final String key =
+        '${AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION}${Tyrads.instance.publisherUserID}';
+    final String? data = Tyrads.instance.prefs.getString(key);
+    if (data == null) return false;
+
+    try {
+      final Map<String, dynamic> json = jsonDecode(data);
+      final String today = DateTime.now().toIso8601String().split('T')[0];
+
+      for (final id in campaignIds) {
+        final String? lastShown = json[id.toString()];
+        if (lastShown != today) return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
-  Future<void> markLimitedTimeOfferNotificationAsShown() async {
-    await Tyrads.instance.prefs.setBool(
-        '${AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION}${Tyrads.instance.publisherUserID}',
-        true);
+  Future<void> markLimitedTimeOfferNotificationAsShown(List<int> campaignIds) async {
+    if (campaignIds.isEmpty) return;
+    final String key =
+        '${AcmoKeyNames.HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION}${Tyrads.instance.publisherUserID}';
+    final String? data = Tyrads.instance.prefs.getString(key);
+    Map<String, dynamic> json = {};
+    if (data != null) {
+      try {
+        json = jsonDecode(data);
+      } catch (_) {}
+    }
+
+    final String today = DateTime.now().toIso8601String().split('T')[0];
+    for (final id in campaignIds) {
+      json[id.toString()] = today;
+    }
+    await Tyrads.instance.prefs.setString(key, jsonEncode(json));
   }
 
   bool showCountdown(PayoutEvents event) {
