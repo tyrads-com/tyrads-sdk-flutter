@@ -10,9 +10,12 @@ class PromoAction {
   final PromoType type;
   final Duration delayAfter;
 
+  final dynamic data;
+
   PromoAction({
     required this.type,
     this.delayAfter = Duration.zero,
+    this.data,
   });
 }
 
@@ -25,29 +28,36 @@ class AcmoInAppNotificationManager {
   final ValueNotifier<List<PromoAction>> promoQueue =
       ValueNotifier([]);
 
-  bool _shownLimited = false;
-  bool _shownCurrency = false;
-
-  void evaluatePromotions() {
+  Future<void> evaluatePromotions() async {
     final List<PromoAction> queue = [];
 
-    if (_controller.activeOffers.isNotEmpty && !_shownLimited) {
-      _shownLimited = true;
-      queue.add(
-        PromoAction(
-          type: PromoType.limitedTimeOffer,
-          delayAfter: const Duration(milliseconds: 300),
-        ),
-      );
+    if (_controller.activeOffers.isNotEmpty) {
+      final campaignIds = _controller.activeOffers.map((e) => e.campaignId).toList();
+      final hasShown = await _controller.hasShownLimitedTimeOfferNotification(campaignIds);
+      
+      if (!hasShown) {
+        queue.add(
+          PromoAction(
+            type: PromoType.limitedTimeOffer,
+            data: campaignIds,
+            delayAfter: const Duration(milliseconds: 300),
+          ),
+        );
+      }
     }
 
-    if (_controller.currencySales != null && !_shownCurrency) {
-      _shownCurrency = true;
-      queue.add(
-        PromoAction(
-          type: PromoType.currencySale,
-        ),
-      );
+    if (_controller.currencySales != null) {
+      final saleId = _controller.currencySales!.name ?? 'default_sale';
+      final hasShown = await _controller.hasShownCurrencySalesNotification(saleId);
+
+      if (!hasShown) {
+        queue.add(
+          PromoAction(
+            type: PromoType.currencySale,
+            data: saleId,
+          ),
+        );
+      }
     }
 
     if (queue.isNotEmpty) {
