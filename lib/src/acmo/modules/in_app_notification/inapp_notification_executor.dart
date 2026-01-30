@@ -22,8 +22,9 @@ class AcmoPromoExecutor {
 
       switch (action.type) {
         case PromoType.limitedTimeOffer:
+          final campaignIds = action.data as List<int>;
           final hasShown = await AcmoInAppNotificationController.instance
-              .hasShownLimitedTimeOfferNotification();
+              .hasShownLimitedTimeOfferNotification(campaignIds);
           if (!hasShown && context.mounted) {
             await showDialog(
               context: context,
@@ -31,13 +32,14 @@ class AcmoPromoExecutor {
               builder: (_) => const LimitedTimeOfferDialog(),
             );
             await AcmoInAppNotificationController.instance
-                .markLimitedTimeOfferNotificationAsShown();
+                .markLimitedTimeOfferNotificationAsShown(campaignIds);
           }
           break;
 
         case PromoType.currencySale:
+          final saleId = action.data as String;
           final hasShown = await AcmoInAppNotificationController.instance
-              .hasShownCurrencySalesNotification();
+              .hasShownCurrencySalesNotification(saleId);
           if (!hasShown && context.mounted) {
             await showDialog(
               context: context,
@@ -45,7 +47,7 @@ class AcmoPromoExecutor {
               builder: (_) => const CurrencySalesDialog(),
             );
             await AcmoInAppNotificationController.instance
-                .markCurrencySalesNotificationAsShown();
+                .markCurrencySalesNotificationAsShown(saleId);
           }
           break;
       }
