@@ -6,6 +6,7 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/common.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/widgets/notification_card.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/widgets/offer_card.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
+import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 
 class LimitedTimeOfferDialog extends StatefulWidget {
   const LimitedTimeOfferDialog({super.key});
@@ -37,6 +38,7 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
               child: Center(
                 child: NotificationCard(
                   onDismiss: _closeDialog,
+                  icon: Assets.icons.coinTimer,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

@@ -5,6 +5,7 @@ import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/widgets/count_do
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/widgets/notification_card.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
+import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 
 class CurrencySalesDialog extends StatefulWidget {
   const CurrencySalesDialog({super.key});
@@ -38,15 +39,19 @@ class _CurrencySalesDialogState extends State<CurrencySalesDialog> {
                 NotificationCard(
                   onDismiss: _closeDialog,
                   width: 328,
+                  icon: Assets.icons.coinStack,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "Limited Time Offer",
+                        "Bonus Rewards\nUnlocked!",
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const Padding(
                         padding: EdgeInsets.symmetric(
