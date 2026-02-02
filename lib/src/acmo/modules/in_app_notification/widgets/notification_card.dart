@@ -6,6 +6,7 @@ class NotificationCard extends StatelessWidget {
   final Widget child;
   final double width;
   final double height;
+  final AssetGenImage? icon;
 
   final VoidCallback? onDismiss;
 
@@ -14,6 +15,7 @@ class NotificationCard extends StatelessWidget {
     required this.child,
     this.width = 328,
     this.height = 454.49,
+    this.icon,
     this.onDismiss,
   });
 
@@ -46,13 +48,15 @@ class NotificationCard extends StatelessWidget {
           ),
           child: child,
         ),
-        Positioned(
+        if (icon != null)
+          Positioned(
             top: -26,
             left: 36,
-            child: Assets.icons.coinCoins.image(
+            child: icon!.image(
               width: 90,
               height: 90,
-            )),
+            ),
+          ),
         Positioned(
           top: 12,
           right: 46,

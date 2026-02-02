@@ -53,9 +53,13 @@ class $AssetsIconsGen {
   AssetGenImage get clapperPlay =>
       const AssetGenImage('assets/icons/clapper-play.png');
 
-  /// File path: assets/icons/coin_coin.png
-  AssetGenImage get coinCoins =>
-      const AssetGenImage('assets/icons/coin_coin.png');
+  /// File path: assets/icons/coin_stack.png
+  AssetGenImage get coinStack =>
+      const AssetGenImage('assets/icons/coin_stack.png');
+
+  /// File path: assets/icons/coin_timer.png
+  AssetGenImage get coinTimer =>
+      const AssetGenImage('assets/icons/coin_timer.png');
 
   /// File path: assets/icons/diamond.png
   AssetGenImage get diamond => const AssetGenImage('assets/icons/diamond.png');
@@ -161,6 +165,8 @@ class $AssetsIconsGen {
         circleXOutlined,
         circleX,
         clapperPlay,
+        coinStack,
+        coinTimer,
         diamond,
         downToLine,
         exclamation,
