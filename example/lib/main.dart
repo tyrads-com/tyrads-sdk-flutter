@@ -4,59 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
-late final String _apiKey;
-late final String _apiSecret;
-late final String _encryptionKey;
-const String _userId = 'acmo_user_01';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  _apiKey = defaultTargetPlatform == TargetPlatform.iOS
-      ? Env.TYRADS_SDK_IOS_KEY
-      : Env.TYRADS_SDK_KEY;
-  _apiSecret = defaultTargetPlatform == TargetPlatform.iOS
-      ? Env.TYRADS_SDK_IOS_SECRET
-      : Env.TYRADS_SDK_SECRET;
-  _encryptionKey = defaultTargetPlatform == TargetPlatform.iOS
-      ? Env.TYRADS_SDK_IOS_ENC_KEY
-      : Env.TYRADS_SDK_ENC_KEY;
-
   await initializeTyrads();
   runApp(const MyApp());
 }
 
 bool _isTyradsInitialized = false;
-String? _previousApiKey;
-String? _previousApiSecret;
-String? _previousEncKey;
-String? _previousUserID;
+const String _defaultUserId = 'acmo_user_01';
 
-Future<Map<String, String?>> _getCredentials() async {
+Future<Map<String, String>> _getCredentials() async {
   final prefs = await SharedPreferences.getInstance();
 
-  String? apiKey = prefs.getString('tyrads_api_key');
-  String? apiSecret = prefs.getString('tyrads_api_secret');
-  String? encKey = prefs.getString('tyrads_encryption_key');
-  String? userId = prefs.getString('tyrads_user_id');
+  String apiKey = prefs.getString('tyrads_api_key') ?? '';
+  String apiSecret = prefs.getString('tyrads_api_secret') ?? '';
+  String encKey = prefs.getString('tyrads_encryption_key') ?? '';
+  String userId = prefs.getString('tyrads_user_id') ?? '';
 
-  if (apiKey == null || apiSecret == null || encKey == null) {
-    try {
-      apiKey = defaultTargetPlatform == TargetPlatform.iOS
-          ? Env.TYRADS_SDK_IOS_KEY
-          : Env.TYRADS_SDK_KEY;
-      apiSecret = defaultTargetPlatform == TargetPlatform.iOS
-          ? Env.TYRADS_SDK_IOS_SECRET
-          : Env.TYRADS_SDK_SECRET;
-      encKey = defaultTargetPlatform == TargetPlatform.iOS
-          ? Env.TYRADS_SDK_IOS_ENC_KEY
-          : Env.TYRADS_SDK_ENC_KEY;
-    } catch (e) {
-      apiKey = _apiKey;
-      apiSecret = _apiSecret;
-      encKey = _encryptionKey;
-    }
-    userId ??= _userId;
+  final isIOS = defaultTargetPlatform == TargetPlatform.iOS;
+  if (apiKey.isEmpty) {
+    apiKey = isIOS ? Env.TYRADS_SDK_IOS_KEY : Env.TYRADS_SDK_KEY;
+  }
+  if (apiSecret.isEmpty) {
+    apiSecret = isIOS ? Env.TYRADS_SDK_IOS_SECRET : Env.TYRADS_SDK_SECRET;
+  }
+  if (encKey.isEmpty) {
+    encKey = isIOS ? Env.TYRADS_SDK_IOS_ENC_KEY : Env.TYRADS_SDK_ENC_KEY;
+  }
+  if (userId.isEmpty) {
+    userId = _defaultUserId;
   }
 
   return {
@@ -81,6 +57,11 @@ Future<void> _saveCredentialsToPrefs({
   await prefs.setString('tyrads_user_id', userId);
 }
 
+String? _previousApiKey;
+String? _previousApiSecret;
+String? _previousEncKey;
+String? _previousUserID;
+
 Future<void> initializeTyrads({
   String? apiKey,
   String? apiSecret,
@@ -89,10 +70,18 @@ Future<void> initializeTyrads({
   String? userID,
 }) async {
   final credentials = await _getCredentials();
-  final finalApiKey = apiKey ?? credentials['apiKey']!;
-  final finalApiSecret = apiSecret ?? credentials['apiSecret']!;
-  final finalEncKey = encKey ?? credentials['encKey']!;
-  final finalUserId = userID ?? credentials['userId'] ?? _userId;
+  final finalApiKey = (apiKey != null && apiKey.isNotEmpty)
+      ? apiKey
+      : credentials['apiKey']!;
+  final finalApiSecret = (apiSecret != null && apiSecret.isNotEmpty)
+      ? apiSecret
+      : credentials['apiSecret']!;
+  final finalEncKey = (encKey != null && encKey.isNotEmpty)
+      ? encKey
+      : credentials['encKey']!;
+  final finalUserId = (userID != null && userID.isNotEmpty)
+      ? userID
+      : credentials['userId'] ?? _defaultUserId;
 
   if (_isTyradsInitialized &&
       _previousApiKey == finalApiKey &&
@@ -202,6 +191,18 @@ class _MyHomePageState extends State<MyHomePage> {
     encKeyController = TextEditingController();
     engagementIdController = TextEditingController();
     userIDController = TextEditingController();
+
+    _loadStoredCredentials();
+  }
+
+  Future<void> _loadStoredCredentials() async {
+    final credentials = await _getCredentials();
+    setState(() {
+      apiKeyController.text = credentials['apiKey'] ?? '';
+      apiSecretController.text = credentials['apiSecret'] ?? '';
+      encKeyController.text = credentials['encKey'] ?? '';
+      userIDController.text = credentials['userId'] ?? '';
+    });
   }
 
   @override
@@ -239,19 +240,14 @@ class _MyHomePageState extends State<MyHomePage> {
     await Tyrads.instance.initializationWait.future;
 
     await initializeTyrads(
-      apiKey: apiKeyController.text.isEmpty ? null : apiKeyController.text,
-      apiSecret:
-          apiSecretController.text.isEmpty ? null : apiSecretController.text,
-      encKey: encKeyController.text.isEmpty ? null : encKeyController.text,
-      engagementId: engagementIdController.text.isEmpty
-          ? null
-          : engagementIdController.text,
-      userID: userIDController.text.isEmpty ? null : userIDController.text,
+      apiKey: apiKeyController.text,
+      apiSecret: apiSecretController.text,
+      encKey: encKeyController.text,
+      engagementId: engagementIdController.text,
+      userID: userIDController.text,
     );
 
-    Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
-      debugPrint("TyradsCallbackType.campaignDetail: $data");
-    });
+    await _loadStoredCredentials();
 
     // var isLoginSuccessful = await Tyrads.instance.loginUser(userID: userID);
     // if(!isLoginSuccessful){
