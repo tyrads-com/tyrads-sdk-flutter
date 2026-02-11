@@ -24,6 +24,7 @@ import 'package:tyrads_sdk/src/acmo/core/onboarding_check.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/notifications/fcm_services.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
+import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/top_offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/push-notifications/apns_manager.dart';
@@ -230,7 +231,9 @@ class Tyrads {
         }
       }
       final engagementId = this.engagementId;
-      fd["engagementId"] = (engagementId != null && engagementId != "") ? int.parse(engagementId) : null;
+      fd["engagementId"] = (engagementId != null && engagementId != "")
+          ? int.parse(engagementId)
+          : null;
       fd["identifierType"] = identifierType;
       fd["identifier"] = advertisingId ?? "NA";
       if (mediaSourceInfo?.sub1 != null) {
@@ -318,6 +321,7 @@ class Tyrads {
         }
         track(TyradsActivity.initialized);
         isLoginSuccessful = true;
+        AcmoInAppNotificationController.instance.init();
       }
     } catch (e) {
       debugPrint("Error initializing: ${e.toString()}");

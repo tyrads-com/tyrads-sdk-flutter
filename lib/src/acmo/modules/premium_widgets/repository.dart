@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:tyrads_sdk/src/acmo/core/constants/endpoint_name.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/currency_sale_model/currency_sale_model.dart';
@@ -14,40 +12,16 @@ class AcmoOffersRepository {
         .get(AcmoEndpointNames.OFFERS, queryParameters: {
       "lang": currentLanguage,
     });
-    // log(response.toString());
     return AcmoOffersResponseModel.fromJson(response.data);
   }
 
-  // Future<AcmoActiveOffersModel> getActiveOffers() async {
-  //   final currentLanguage = Tyrads.instance.selectedLanguage;
-  //   var response = await NetworkCommon()
-  //       .dio
-  //       .get(AcmoEndpointNames.ACTIVE_OFFERS, queryParameters: {
-  //     "lang": currentLanguage,
-  //   });
-  //   return AcmoActiveOffersModel.fromJson(response.data);
-  // }
-
   Future<AcmoOfferCurrencySaleModel> getEngagement() async {
-    // final data = {
-    //   "data": {
-    //     "CurrencySales": {
-    //       "name": "Ramadhan Karem",
-    //       "multiplier": 1.5,
-    //       "bannerUrl": "",
-    //       "dateStart": "2025-03-10T00:00:00.000Z",
-    //       "dateEnd": "2025-03-10T23:59:59.000Z"
-    //     }
-    //   },
-    //   "message": "OK"
-    // };
     final currentLanguage = Tyrads.instance.selectedLanguage;
     var response = await NetworkCommon()
         .dio
         .get(AcmoEndpointNames.ENGAGEMENT, queryParameters: {
       "lang": currentLanguage,
     });
-    log("Engagements: ${response.data.toString()}");
     return AcmoOfferCurrencySaleModel.fromJson(response.data);
   }
 
