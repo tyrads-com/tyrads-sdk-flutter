@@ -11,6 +11,7 @@ class AcmoKeyNames {
   static const String PLAY_INTEGRITY_TOKEN = '${PREFIX}play_integrity_token';
   static const String USERNAME = '${PREFIX}username';
   static const String FCM_TOKEN = '${PREFIX}fcm_token';
+  static const String APNS_TOKEN = '${PREFIX}apns_token';
   static const String USER_DATA = '${PREFIX}user_data';
   static const String ADVERTISING_ID = '${PREFIX}advertising_id';
   static const String TRACKED_CAMPAIGNS_FOR_USER_ID =

@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:example/env/env.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 void main() async {
@@ -24,6 +23,7 @@ Future<void> initializeTyrads({
   String? apiKey,
   String? apiSecret,
   String? encKey,
+  String? engagementId,
   String? userID,
 }) async {
   if (_isTyradsInitialized &&
@@ -48,6 +48,7 @@ Future<void> initializeTyrads({
         (defaultTargetPlatform == TargetPlatform.iOS
             ? Env.TYRADS_SDK_IOS_ENC_KEY
             : Env.TYRADS_SDK_ENC_KEY),
+    engagementId: engagementId,
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -70,7 +71,7 @@ Future<void> initializeTyrads({
       sub5: "iOSDevice",
     ),
   );
-  await Tyrads.instance.loginUser(userID: userID ?? "acmoUser_34233");
+  await Tyrads.instance.loginUser(userID: userID ?? "acmoUser_90874");
   Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
     debugPrint("TyradsCallbackType.campaignDetail: $data");
   });
@@ -125,8 +126,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController apiKeyController;
   late TextEditingController apiSecretController;
   late TextEditingController encKeyController;
+  late TextEditingController engagementIdController;
   late TextEditingController userIDController;
-  String? fcmToken;
   bool loading = false;
   int style = 1;
   @override
@@ -135,8 +136,8 @@ class _MyHomePageState extends State<MyHomePage> {
     apiKeyController = TextEditingController();
     apiSecretController = TextEditingController();
     encKeyController = TextEditingController();
+    engagementIdController = TextEditingController();
     userIDController = TextEditingController();
-    fcmToken = Tyrads.instance.prefs.getString("acmo_tyrads_sdk_fcm_token");
   }
 
   @override
@@ -145,6 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
     apiKeyController.dispose();
     apiSecretController.dispose();
     encKeyController.dispose();
+    engagementIdController.dispose();
     userIDController.dispose();
   }
 
@@ -177,6 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
       apiSecret:
           apiSecretController.text.isEmpty ? null : apiSecretController.text,
       encKey: encKeyController.text.isEmpty ? null : encKeyController.text,
+      engagementId: engagementIdController.text.isEmpty ? null : engagementIdController.text,
       userID: userIDController.text.isEmpty ? null : userIDController.text,
     );
 
@@ -282,83 +285,37 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
+                      controller: engagementIdController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Engagement Id (Optional)",
+                      )),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.maxFinite,
+                  child: TextField(
                       controller: userIDController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: "Custom user Id or empty for anonymous user",
                       )),
                 ),
-                if (fcmToken != null) const SizedBox(height: 10),
-                if (fcmToken != null)
-                  SizedBox(
-                    width: double.maxFinite,
-                    child: TextField(
-                      controller: TextEditingController(
-                        text: fcmToken,
-                      ),
-                      enabled: false,
-                      maxLines: 4,
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        fontSize: 12,
-                      ),
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          color: Colors.black54,
-                        )),
-                        label: Text(
-                          "FCM Token",
-                          style: TextStyle(
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    OutlinedButton(
-                      onPressed: loading ? null : _showOfferwall,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 12,
-                        children: [
-                          if (loading)
-                            const SizedBox(
-                                height: 22,
-                                width: 22,
-                                child: CircularProgressIndicator()),
-                          const Text("Show offerwall"),
-                        ],
-                      ),
-                    ),
-                    if (fcmToken != null) const Spacer(),
-                    if (fcmToken != null)
-                      ElevatedButton(
-                        onPressed: () {
-                          Clipboard.setData(
-                            ClipboardData(text: fcmToken!),
-                          ).then(
-                            (_) => ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("FCM Token Copied"),
-                              ),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 8, 8, 93),
-                        ),
-                        child: const Text(
-                          "Copy Token",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                  ],
+                OutlinedButton(
+                  onPressed: loading ? null : _showOfferwall,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 12,
+                    children: [
+                      if (loading)
+                        const SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator()),
+                      const Text("Show offerwall"),
+                    ],
+                  ),
                 )
               ],
             ),

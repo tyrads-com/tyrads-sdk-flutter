@@ -86,11 +86,11 @@ class _WebSdkState extends State<WebSdk> {
             Uri uri = navigationAction.request.url!;
 
             final urlString = uri.toString();
-            if (uri.host == 'sdk.tyrads.com') {
+            if (uri.host.endsWith('tyrads.com')) {
               return NavigationActionPolicy.ALLOW;
             }
 
-            if (!urlString.contains('sdk.tyrads.com')) {
+            if (!urlString.contains('tyrads.com')) {
               await launchUrlString(
                 urlString,
                 mode: LaunchMode.externalApplication,
@@ -120,7 +120,16 @@ class _WebSdkState extends State<WebSdk> {
           onLoadStop: (controller, url) {},
           onReceivedError: (controller, request, error) {
             debugPrint('WebView Error: ${error.toString()}');
-            if (error.description.contains('code=102')) {
+            if (error.description.contains('code=102') ||
+                error.description.contains('-1001') ||
+                error.description.contains('-1009') ||
+                error.type.toString().contains('TIMEOUT') ||
+                error.type.toString().contains('timeOut') ||
+                error.type.toString().contains('timeout') ||
+                error.type.toString().contains('CONNECT') ||
+                error.type.toString().contains('connect') ||
+                error.type.toString().contains('UNKNOWN') ||
+                error.type.toString().contains('unknown')) {
               setState(() {
                 _hasError = true;
               });

@@ -26,6 +26,7 @@ import 'package:tyrads_sdk/src/acmo/core/services/notifications/fcm_services.dar
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/top_offers.dart';
+import 'package:tyrads_sdk/src/acmo/modules/push-notifications/apns_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/models/init.dart';
 import 'package:tyrads_sdk/src/acmo/modules/users/repository.dart';
@@ -51,6 +52,7 @@ class Tyrads {
   var apiSecret;
   var publisherUserID;
   var token;
+  String? engagementId;
 
   late AcmoInitModel loginData;
   Color? colorHeaderBg;
@@ -99,7 +101,8 @@ class Tyrads {
   bool _isSecure = false;
 
   bool get isSecure => _isSecure;
-  // bool skipUserInfo = false;
+
+  String? _pendingDeepLink;
 
   Tyrads._internal();
   static Tyrads get instance {
@@ -113,6 +116,7 @@ class Tyrads {
     required apiKey,
     required apiSecret,
     String? encryptionKey,
+    String? engagementId,
     TyradsMediaSourceInfo? mediaSourceInfo,
     TyradsUserInfo? userInfo,
     int? launchMode,
@@ -120,6 +124,7 @@ class Tyrads {
     _isInitCalled = true;
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
+    this.engagementId = engagementId;
     this.userInfo = userInfo;
     this.mediaSourceInfo = mediaSourceInfo;
     this.launchMode = launchMode;
@@ -146,6 +151,13 @@ class Tyrads {
         await FCMService.initialize();
       } catch (error) {
         log("Failed to init: $error");
+      }
+    }
+    if(AcmoPlatform.isIOS){
+      try {
+        ApnsManager.instance.init();
+      } catch (e) {
+        log("Error initializing APNs: $e");
       }
     }
   }
@@ -191,6 +203,7 @@ class Tyrads {
 
       String? fcmToken = prefs.getString(AcmoKeyNames.FCM_TOKEN);
 
+      String? apnsToken = prefs.getString(AcmoKeyNames.APNS_TOKEN);
       var fd = {
         "publisherUserId": userID,
         "platform": acmoGetPlatformName(),
@@ -212,7 +225,12 @@ class Tyrads {
         if (fcmToken != null && fcmToken.isNotEmpty) {
           fd["devicePushToken"] = fcmToken;
         }
+        if (AcmoPlatform.isIOS && apnsToken != null && apnsToken.isNotEmpty) {
+          fd["devicePushToken"] = apnsToken;
+        }
       }
+      final engagementId = this.engagementId;
+      fd["engagementId"] = (engagementId != null && engagementId != "") ? int.parse(engagementId) : null;
       fd["identifierType"] = identifierType;
       fd["identifier"] = advertisingId ?? "NA";
       if (mediaSourceInfo?.sub1 != null) {
@@ -371,7 +389,7 @@ class Tyrads {
         scheme: 'https',
         host: 'sdk.tyrads.com',
         queryParameters: {
-          'to': campaignID == null ? route : '$route/$campaignID',
+          'to': campaignID == null ? this.route : '${this.route}/$campaignID',
           'token': token,
           'lang': selectedLanguage,
           'skipUserInfo': skipUserInfo.toString(),
@@ -390,6 +408,13 @@ class Tyrads {
         _parentContext = context;
         Navigator.of(_parentContext!)
             .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
+        if (navKey.currentState != null && navKey.currentState!.mounted) {
+          navKey.currentState!.pushReplacementNamed('/');
+        } else {
+          parentContext = context;
+          Navigator.of(parentContext!)
+              .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
+        }
       }, (error, stack) {});
 
       track(TyradsActivity.opened);
@@ -423,6 +448,7 @@ class Tyrads {
       } else if (parentContext != null) {
         Navigator.pop(parentContext!, result);
         track(TyradsActivity.closed);
+        // parentContext = null; // removed to preserve context for push redirection
         return true;
       }
     }
@@ -431,6 +457,15 @@ class Tyrads {
       track(TyradsActivity.closed);
     }
     return false;
+  }
+
+    void setPendingDeepLink(String? route) {
+    _pendingDeepLink = route;
+    if (parentContext != null && _pendingDeepLink != null) {
+      String routeToProcess = _pendingDeepLink!;
+      _pendingDeepLink = null;
+      showOffers(parentContext!, route: routeToProcess);
+    }
   }
 
   track(String activity) {
