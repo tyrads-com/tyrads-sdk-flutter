@@ -68,6 +68,11 @@ class Tyrads {
   set parentContext(BuildContext? value) {
     _parentContext = value;
     if (_parentContext != null) {
+      if (_pendingDeepLink != null) {
+        String routeToProcess = _pendingDeepLink!;
+        _pendingDeepLink = null;
+        showOffers(_parentContext!, route: routeToProcess);
+      }
       FCMService.checkPendingDeepLink();
     }
   }
@@ -171,7 +176,7 @@ class Tyrads {
       }
       _isLoginCalled = true;
       userID ??= "";
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
       if (userID.isEmpty) {
         userID = prefs.getString(AcmoKeyNames.USER_ID) ?? "";
       }
@@ -335,7 +340,7 @@ class Tyrads {
   }
 
   Future<void> logoutUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(AcmoKeyNames.USER_ID);
     await prefs.remove(AcmoKeyNames.TOKEN);
     publisherUserID = '';
@@ -394,7 +399,7 @@ class Tyrads {
         host: 'sdk.tyrads.com',
         queryParameters: {
           'to': campaignID == null ? this.route : '${this.route}/$campaignID',
-          'token': token,
+          'token': token ?? '',
           'lang': selectedLanguage,
           'skipUserInfo': skipUserInfo.toString(),
         },
@@ -410,13 +415,10 @@ class Tyrads {
 
       runZonedGuarded(() {
         _parentContext = context;
-        Navigator.of(_parentContext!)
-            .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
         if (navKey.currentState != null && navKey.currentState!.mounted) {
           navKey.currentState!.pushReplacementNamed('/');
         } else {
-          parentContext = context;
-          Navigator.of(parentContext!)
+          Navigator.of(_parentContext!)
               .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
         }
       }, (error, stack) {});
@@ -445,30 +447,36 @@ class Tyrads {
 
   back({result}) {
     var navigator = navKey.currentState;
-    if (navigator != null) {
-      if (navigator.canPop()) {
-        navigator.pop(result);
-        return true;
-      } else if (parentContext != null) {
+
+    if (navigator != null && navigator.canPop()) {
+      navigator.pop(result);
+      return true;
+    }
+
+    if (parentContext != null) {
+      try {
         Navigator.pop(parentContext!, result);
         track(TyradsActivity.closed);
         // parentContext = null; // removed to preserve context for push redirection
         return true;
+      } catch (e) {
+        return false;
       }
     }
-    if (parentContext != null) {
-      Navigator.pop(parentContext!, result);
-      track(TyradsActivity.closed);
-    }
+
     return false;
   }
 
-    void setPendingDeepLink(String? route) {
-    _pendingDeepLink = route;
-    if (parentContext != null && _pendingDeepLink != null) {
-      String routeToProcess = _pendingDeepLink!;
+  void setPendingDeepLink(String? route) {
+    if (route == null) {
       _pendingDeepLink = null;
-      showOffers(parentContext!, route: routeToProcess);
+      return;
+    }
+
+    if (parentContext != null) {
+      showOffers(parentContext!, route: route);
+    } else {
+      _pendingDeepLink = route;
     }
   }
 
