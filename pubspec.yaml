@@ -38,7 +38,10 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   web: ^1.1.1
   custom_timer: ^0.2.3
-
+  # Add these Firebase dependencies:
+  firebase_core: ^3.8.1
+  firebase_messaging: ^15.1.4
+  flutter_local_notifications: ^18.0.1
 
 dev_dependencies:
   flutter_test:
