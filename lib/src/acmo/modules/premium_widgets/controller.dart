@@ -14,9 +14,9 @@ class AcmoPremiumWidgetsController {
   static final AcmoPremiumWidgetsController instance =
       AcmoPremiumWidgetsController._();
 
-  void Function()? _refreshData;
+  void Function(bool)? _refreshData;
 
-  void attach(void Function() fn) {
+  void attach(void Function(bool) fn) {
     _refreshData = fn;
   }
 
@@ -24,8 +24,8 @@ class AcmoPremiumWidgetsController {
     _refreshData = null;
   }
 
-  void refresh() {
-    _refreshData?.call();
+  void refresh({bool force = false}) {
+    _refreshData?.call(force);
   }
 
   final _repo = AcmoOffersRepository();
@@ -91,7 +91,7 @@ class AcmoPremiumWidgetsController {
       hotOffers = sortedOffers;
       _lastFetchTime = DateTime.now();
       loading = false;
-      
+
       return hotOffers;
     } catch (e) {
       return hotOffers;

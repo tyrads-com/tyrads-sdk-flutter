@@ -44,8 +44,10 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    AcmoPremiumWidgetsController.instance.attach(_refreshData);
+    // AcmoPremiumWidgetsController.instance.attach(_refreshData);
     AcmoInAppNotificationManager.instance.promoQueue.addListener(_onPromoQueue);
+    AcmoPremiumWidgetsController.instance
+        .attach((bool force) => _refreshData(force: force));
     _loadData();
     loadInAppNotifications();
   }

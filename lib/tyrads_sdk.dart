@@ -37,6 +37,7 @@ import 'package:uuid/uuid.dart';
 
 import 'src/acmo/modules/tracking/activities.dart';
 import 'src/acmo/modules/tracking/controller.dart';
+import 'src/acmo/modules/web_sdk/webview_manager.dart';
 
 part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';
@@ -69,7 +70,7 @@ class Tyrads {
     _parentContext = value;
     if (_parentContext != null) {
       if (_pendingDeepLink != null) {
-        String routeToProcess = _pendingDeepLink!;
+        final routeToProcess = _pendingDeepLink!;
         _pendingDeepLink = null;
         showOffers(_parentContext!, route: routeToProcess);
       }
@@ -77,19 +78,9 @@ class Tyrads {
     }
   }
 
-  void updateWebUri(String targetRoute, {int? targetCampaignID}) {
-    final skipUserInfo = getSkipUserInfo();
-    webURI = Uri(
-      scheme: 'https',
-      host: 'sdk.tyrads.com',
-      queryParameters: {
-        'to': targetCampaignID == null ? targetRoute : '$targetRoute/$targetCampaignID',
-        'token': token,
-        'lang': selectedLanguage,
-        'skipUserInfo': skipUserInfo.toString(),
-      },
-    );
-  }
+  String? _pendingDeepLink;
+  final deepLinkNotifier = ValueNotifier<String?>(null);
+
   late Dio dio;
   int? campaignID;
   String? route;
@@ -98,7 +89,8 @@ class Tyrads {
   TyradsUserInfo? userInfo;
   var tracker = AcmoTrackingController();
   var webURI = Uri();
-  final deepLinkNotifier = ValueNotifier<String?>(null);
+  final _callbacks = <TyradsCallbackType, TyradsCallback>{};
+
   var _isInitCalled = false;
   var _isLoginCalled = false;
   var isLoginSuccessful = false;
@@ -108,15 +100,11 @@ class Tyrads {
 
   bool get isSecure => _isSecure;
 
-  String? _pendingDeepLink;
-
   Tyrads._internal();
-  static Tyrads get instance {
-    return _singleton;
-  }
+
+  static Tyrads get instance => _singleton;
 
   late String selectedLanguage;
-  final _callbacks = <TyradsCallbackType, TyradsCallback>{};
 
   Future<void> init({
     required apiKey,
@@ -134,32 +122,38 @@ class Tyrads {
     this.userInfo = userInfo;
     this.mediaSourceInfo = mediaSourceInfo;
     this.launchMode = launchMode;
+
     prefs = await SharedPreferences.getInstance();
+
     if (AcmoPlatform.isAndroid) {
       final integrityToken =
-          await TyradsSdkPlatform.instance.getPlayIntegrityToken();
+      await TyradsSdkPlatform.instance.getPlayIntegrityToken();
       await prefs.setString(AcmoKeyNames.PLAY_INTEGRITY_TOKEN, integrityToken);
     }
+
     await prefs.setString(AcmoKeyNames.API_KEY, apiKey);
     await prefs.setString(AcmoKeyNames.API_SECRET, apiSecret);
+
     if (encryptionKey != null) {
       await prefs.setString(AcmoKeyNames.ENCRYPTION_KEY, encryptionKey);
       _isSecure = true;
     }
+
     dio = NetworkCommon().dio;
     selectedLanguage = prefs.getString(AcmoKeyNames.LANGUAGE) ??
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
     WidgetsFlutterBinding.ensureInitialized();
     log("Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
+
     if (AcmoPlatform.isAndroid) {
       try {
         await FCMService.initialize();
       } catch (error) {
-        log("Failed to init: $error");
+        log("Failed to init FCM: $error");
       }
     }
-    if(AcmoPlatform.isIOS){
+    if (AcmoPlatform.isIOS) {
       try {
         ApnsManager.instance.init();
       } catch (e) {
@@ -176,10 +170,11 @@ class Tyrads {
       }
       _isLoginCalled = true;
       userID ??= "";
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
+
       if (userID.isEmpty) {
         userID = prefs.getString(AcmoKeyNames.USER_ID) ?? "";
       }
+
       String customAdId = prefs.getString(AcmoKeyNames.CUSTOM_AD_ID) ?? "";
       if (customAdId.isEmpty) {
         customAdId = const Uuid().v4();
@@ -187,7 +182,6 @@ class Tyrads {
       }
 
       bool? isLimitAdTrackingEnabled;
-
       var identifierType = "OTHER";
       if (kIsWeb) {
       } else if (Platform.isAndroid) {
@@ -195,28 +189,30 @@ class Tyrads {
       } else if (Platform.isIOS) {
         identifierType = "IDFA";
       }
-      String? advertisingId;
 
+      String? advertisingId;
       if (!kIsWeb) {
         try {
           isLimitAdTrackingEnabled =
-              await AdvertisingId.isLimitAdTrackingEnabled;
+          await AdvertisingId.isLimitAdTrackingEnabled;
           advertisingId = await AdvertisingId.id(true);
         } on PlatformException {
           debugPrint("Failed to get advertising id");
         }
       }
 
-      String? fcmToken = prefs.getString(AcmoKeyNames.FCM_TOKEN);
+      final String? fcmToken = prefs.getString(AcmoKeyNames.FCM_TOKEN);
+      final String? apnsToken = prefs.getString(AcmoKeyNames.APNS_TOKEN);
 
-      String? apnsToken = prefs.getString(AcmoKeyNames.APNS_TOKEN);
       var fd = {
         "publisherUserId": userID,
         "platform": acmoGetPlatformName(),
       };
+
       if (!kIsWeb) {
-        var deviceDetailsController = AcmoDeviceDetailsController();
-        var deviceDetails = await deviceDetailsController.getDeviceDetails();
+        final deviceDetailsController = AcmoDeviceDetailsController();
+        final deviceDetails =
+        await deviceDetailsController.getDeviceDetails();
         fd["deviceData"] = deviceDetails;
 
         if (isLimitAdTrackingEnabled == true && AcmoPlatform.isIOS) {
@@ -235,68 +231,49 @@ class Tyrads {
           fd["devicePushToken"] = apnsToken;
         }
       }
+
       final engagementId = this.engagementId;
       fd["engagementId"] = (engagementId != null && engagementId != "")
           ? int.parse(engagementId)
           : null;
       fd["identifierType"] = identifierType;
       fd["identifier"] = advertisingId ?? "NA";
-      if (mediaSourceInfo?.sub1 != null) {
-        fd["sub1"] = mediaSourceInfo?.sub1;
-      }
-      if (mediaSourceInfo?.sub2 != null) {
-        fd["sub2"] = mediaSourceInfo?.sub2;
-      }
-      if (mediaSourceInfo?.sub3 != null) {
-        fd["sub3"] = mediaSourceInfo?.sub3;
-      }
-      if (mediaSourceInfo?.sub4 != null) {
-        fd["sub4"] = mediaSourceInfo?.sub4;
-      }
-      if (mediaSourceInfo?.sub5 != null) {
-        fd["sub5"] = mediaSourceInfo?.sub5;
-      }
-      if (mediaSourceInfo?.mediaSourceName != null) {
+
+      if (mediaSourceInfo?.sub1 != null) fd["sub1"] = mediaSourceInfo?.sub1;
+      if (mediaSourceInfo?.sub2 != null) fd["sub2"] = mediaSourceInfo?.sub2;
+      if (mediaSourceInfo?.sub3 != null) fd["sub3"] = mediaSourceInfo?.sub3;
+      if (mediaSourceInfo?.sub4 != null) fd["sub4"] = mediaSourceInfo?.sub4;
+      if (mediaSourceInfo?.sub5 != null) fd["sub5"] = mediaSourceInfo?.sub5;
+      if (mediaSourceInfo?.mediaSourceName != null)
         fd["mediaSourceName"] = mediaSourceInfo?.mediaSourceName;
-      }
-      if (mediaSourceInfo?.mediaSourceId != null) {
+      if (mediaSourceInfo?.mediaSourceId != null)
         fd["mediaSourceId"] = mediaSourceInfo?.mediaSourceId;
-      }
-      if (mediaSourceInfo?.mediaSubSourceId != null) {
+      if (mediaSourceInfo?.mediaSubSourceId != null)
         fd["mediaSubSourceId"] = mediaSourceInfo?.mediaSubSourceId;
-      }
-      if (mediaSourceInfo?.incentivized != null) {
+      if (mediaSourceInfo?.incentivized != null)
         fd["incentivized"] = mediaSourceInfo?.incentivized;
-      }
-      if (mediaSourceInfo?.mediaAdsetName != null) {
+      if (mediaSourceInfo?.mediaAdsetName != null)
         fd["mediaAdsetName"] = mediaSourceInfo?.mediaAdsetName;
-      }
-      if (mediaSourceInfo?.mediaAdsetId != null) {
+      if (mediaSourceInfo?.mediaAdsetId != null)
         fd["mediaAdsetId"] = mediaSourceInfo?.mediaAdsetId;
-      }
-      if (mediaSourceInfo?.mediaCreativeName != null) {
+      if (mediaSourceInfo?.mediaCreativeName != null)
         fd["mediaCreativeName"] = mediaSourceInfo?.mediaCreativeName;
-      }
-      if (mediaSourceInfo?.mediaCreativeId != null) {
+      if (mediaSourceInfo?.mediaCreativeId != null)
         fd["mediaCreativeId"] = mediaSourceInfo?.mediaCreativeId;
-      }
-      if (mediaSourceInfo?.mediaCampaignName != null) {
+      if (mediaSourceInfo?.mediaCampaignName != null)
         fd["mediaCampaignName"] = mediaSourceInfo?.mediaCampaignName;
-      }
-      if (userInfo?.email != null) {
-        fd["email"] = userInfo?.email;
-      }
-      if (userInfo?.phoneNumber != null) {
+      if (userInfo?.email != null) fd["email"] = userInfo?.email;
+      if (userInfo?.phoneNumber != null)
         fd["phoneNumber"] = userInfo?.phoneNumber;
-      }
-      if (userInfo?.userGroup != null) {
-        fd["userGroup"] = userInfo?.userGroup;
-      }
+      if (userInfo?.userGroup != null) fd["userGroup"] = userInfo?.userGroup;
 
       final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
       final body =
-          _isSecure ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd) : fd;
-      var response = await dio.post(AcmoEndpointNames.INITIALIZE, data: body);
+      _isSecure ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd) : fd;
+
+      final response =
+      await dio.post(AcmoEndpointNames.INITIALIZE, data: body);
+
       if (response.statusCode == 200) {
         loginData = AcmoInitModel.fromJson(response.data);
 
@@ -308,25 +285,25 @@ class Tyrads {
 
         newUser = loginData.data.newRegisteredUser;
         colorMain = loginData.data.publisherApp.mainColor.toColor();
-
         colorHeaderBg = loginData.data.publisherApp.headerColor.toColor();
         colorHeaderFg = acmoGetFontColorForBackground(colorHeaderBg);
-
-        colorPremium = loginData.data.publisherApp.premiumColor.toColor() ??
-            const Color(0xff02B5BE);
+        colorPremium =
+            loginData.data.publisherApp.premiumColor.toColor() ??
+                const Color(0xff02B5BE);
         colorPremiumFg = acmoGetFontColorForBackground(colorPremium);
 
-        var privacyAccepted = prefs.getBool(
-                AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
-                    Tyrads.instance.publisherUserID) ??
+        final privacyAccepted = prefs.getBool(
+            AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
+                Tyrads.instance.publisherUserID) ??
             false;
         if (privacyAccepted) {
-          var usageStatsController = AcmoControllerUsageStats();
-          usageStatsController.saveUsageStats();
+          AcmoControllerUsageStats().saveUsageStats();
         }
+
         track(TyradsActivity.initialized);
         isLoginSuccessful = true;
         AcmoInAppNotificationController.instance.init();
+        _preloadWebView();
       }
     } catch (e) {
       debugPrint("Error initializing: ${e.toString()}");
@@ -340,86 +317,112 @@ class Tyrads {
   }
 
   Future<void> logoutUser() async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(AcmoKeyNames.USER_ID);
     await prefs.remove(AcmoKeyNames.TOKEN);
     publisherUserID = '';
     isLoginSuccessful = false;
   }
 
-  setLaunchMode(int launchMode) {
-    this.launchMode = launchMode;
-  }
+  setLaunchMode(int launchMode) => this.launchMode = launchMode;
 
-  setNewUser(bool newUser) {
-    this.newUser = newUser;
-  }
+  setNewUser(bool newUser) => this.newUser = newUser;
 
   Future<void> setSkipUserInfo(bool newValue) async {
-    final String key =
+    final key =
         "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
     await prefs.setBool(key, newValue);
   }
 
   bool getSkipUserInfo() {
-    final String key =
+    final key =
         "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
-    final skipUserInfo = prefs.getBool(key) ?? false;
-    return skipUserInfo;
+    return prefs.getBool(key) ?? false;
   }
 
   updateUser(String userId, {int? age, int? gender}) async {
-    var fd = <String, dynamic>{};
-    var repo = AcmoUsersRepository();
-    if (age != null) {
-      fd["age"] = age;
-    }
-    if (gender != null) {
-      fd["gender"] = gender;
-    }
-    await repo.updateUser(userId, fd);
+    final fd = <String, dynamic>{};
+    if (age != null) fd["age"] = age;
+    if (gender != null) fd["gender"] = gender;
+    await AcmoUsersRepository().updateUser(userId, fd);
   }
 
-  Future<void> showOffers(context,
-      {int? campaignID, String? route, int? launchMode}) async {
+  /// Builds a URI for the given route / campaignID.
+  Uri getWebUri({int? campaignID, String? route}) {
+    final skipUserInfo = getSkipUserInfo();
+    final currentRoute = route ?? TyradsDeepRoutes.OFFERS;
+    return Uri(
+      scheme: 'https',
+      host: 'sdk.tyrads.com',
+      queryParameters: {
+        'to': campaignID == null
+            ? currentRoute
+            : '$currentRoute/$campaignID',
+        'token': token,
+        'lang': selectedLanguage,
+        'skipUserInfo': skipUserInfo.toString(),
+      },
+    );
+  }
+
+  /// Updates [webURI] and keeps it in sync (used by the notification branch).
+  void updateWebUri(String targetRoute, {int? targetCampaignID}) {
+    webURI = getWebUri(
+      campaignID: targetCampaignID,
+      route: targetRoute,
+    );
+  }
+
+  void _preloadWebView() {
+    if (!kIsWeb) {
+      webURI = getWebUri();
+      WebViewManager.instance.preload(webURI);
+    }
+  }
+
+  Future<void> showOffers(
+      context, {
+        int? campaignID,
+        String? route,
+        int? launchMode,
+      }) async {
     FCMService.clearPendingDeepLink();
+
     try {
       if (!_isLoginCalled) {
         log("Make sure login method is called first");
         return;
       }
-      if (await waitAndCheck() == false) {
-        return;
-      }
-      final skipUserInfo = getSkipUserInfo();
+      if (await waitAndCheck() == false) return;
+
       this.campaignID = campaignID;
       this.route = route ?? TyradsDeepRoutes.OFFERS;
-      webURI = Uri(
-        scheme: 'https',
-        host: 'sdk.tyrads.com',
-        queryParameters: {
-          'to': campaignID == null ? this.route : '${this.route}/$campaignID',
-          'token': token ?? '',
-          'lang': selectedLanguage,
-          'skipUserInfo': skipUserInfo.toString(),
-        },
-      );
+
+      final requestedUri =
+      getWebUri(campaignID: campaignID, route: this.route);
+
+      if (webURI.toString() != requestedUri.toString() ||
+          (!kIsWeb && WebViewManager.instance.headlessWebView == null)) {
+        webURI = requestedUri;
+        if (!kIsWeb) {
+          WebViewManager.instance.preload(webURI);
+        }
+      }
 
       final ready =
-          await OnboardingCheck.instance.checkOnboardingStatus(context);
-
+      await OnboardingCheck.instance.checkOnboardingStatus(context);
       if (ready == false) {
         log("Onboarding not completed");
         return;
       }
 
       runZonedGuarded(() {
-        _parentContext = context;
+        parentContext = context;
+
         if (navKey.currentState != null && navKey.currentState!.mounted) {
           navKey.currentState!.pushReplacementNamed('/');
         } else {
           Navigator.of(_parentContext!)
-              .push(MaterialPageRoute(builder: (context) => const AcmoApp()));
+              .push(MaterialPageRoute(builder: (_) => const AcmoApp()));
         }
       }, (error, stack) {});
 
@@ -430,40 +433,34 @@ class Tyrads {
   }
 
   to(Widget page, {bool replace = false}) async {
-    dynamic result;
     if (replace) {
-      result = await navKey.currentState!
-          .pushReplacement(MaterialPageRoute(builder: (context) => page));
-    } else {
-      result = await navKey.currentState!
-          .push(MaterialPageRoute(builder: (context) => page));
+      return await navKey.currentState!
+          .pushReplacement(MaterialPageRoute(builder: (_) => page));
     }
-    return result;
+    return await navKey.currentState!
+        .push(MaterialPageRoute(builder: (_) => page));
   }
 
-  dialog(Widget dialog) async {
-    return await showDialog(context: parentContext!, builder: (c) => dialog);
-  }
+  dialog(Widget d) async =>
+      await showDialog(context: parentContext!, builder: (_) => d);
 
   back({result}) {
-    var navigator = navKey.currentState;
-
+    final navigator = navKey.currentState;
     if (navigator != null && navigator.canPop()) {
       navigator.pop(result);
       return true;
     }
 
-    if (parentContext != null) {
+    if (_parentContext != null) {
       try {
-        Navigator.pop(parentContext!, result);
+        Navigator.pop(_parentContext!, result);
         track(TyradsActivity.closed);
-        // parentContext = null; // removed to preserve context for push redirection
+        _preloadWebView();
         return true;
       } catch (e) {
         return false;
       }
     }
-
     return false;
   }
 
@@ -473,16 +470,14 @@ class Tyrads {
       return;
     }
 
-    if (parentContext != null) {
-      showOffers(parentContext!, route: route);
+    if (_parentContext != null) {
+      showOffers(_parentContext!, route: route);
     } else {
       _pendingDeepLink = route;
     }
   }
 
-  track(String activity) {
-    tracker.trackUser(activity);
-  }
+  track(String activity) => tracker.trackUser(activity);
 
   Future<bool> waitAndCheck() async {
     if (!initializationWait.isCompleted) {
@@ -498,76 +493,31 @@ class Tyrads {
   }
 
   /// Registers a callback for a specific event.
-  ///
-  /// The callback will be called when the corresponding event happens.
-  ///
-  /// Supported events are:
-  ///
-  /// - [TyradsCallbackType.campaignDetail]: Called when the offer detail page is opened.
-  /// - [TyradsCallbackType.campaignActivated]: Called when a campaign is activated.
-  /// - [TyradsCallbackType.campaignInstalled]: Called when a campaign is installed.
-  ///
-  /// The `callback` parameter is a function that takes a single argument,
-  /// which is a [Map<String, dynamic>] containing the event data.
   void setCallback(TyradsCallbackType type, TyradsCallback callback) {
     _callbacks[type] = callback;
   }
 
-  /// Triggers a callback that has been registered via [setCallback].
-  ///
-  /// This is used internally to trigger callbacks when certain events happen.
-  /// You should not need to call this method directly.
+  /// Internal use only — triggers a registered callback.
   void triggerCallback(TyradsCallbackType type, Map<String, dynamic> data) {
     _callbacks[type]?.call(data);
   }
 
-  /// A widget that displays the top offers.
-  ///
-  /// The [widgetStyle] parameter is used to choose the style of the widget.
-  /// The default style is [PremiumWidgetStyles.list], which displays the offers
-  /// in a list. Other available style is [PremiumWidgetStyles.sliderCards], which
-  /// displays the offers in a slider.
-  ///
-  /// The [context] parameter is required and should be the context of the
-  /// widget that will display the top offers widget.
   Widget topOffersWidget(
-    BuildContext context, {
-    PremiumWidgetStyles widgetStyle = PremiumWidgetStyles.list,
-  }) {
+      BuildContext context, {
+        PremiumWidgetStyles widgetStyle = PremiumWidgetStyles.list,
+      }) {
     parentContext = context;
-    return TopOffersWidget(
-      widgetStyle: widgetStyle,
-    );
+    return TopOffersWidget(widgetStyle: widgetStyle);
   }
 
-  /// Changes the language of the SDK.
+  /// Changes the SDK language and persists the choice.
   ///
-  /// This method is used to change the language of the SDK.
-  ///
-  /// The [languageCode] parameter is the language code of the language
-  /// to be used. For example, "en" for English, or "fr" for French.
-  ///
-  /// The method is asynchronous and returns a [Future] that completes
-  /// when the language has been changed.
-  ///
-  /// The Tyrads SDK supports the following languages:
-  ///
-  /// - English (en)
-  /// - Spanish (es)
-  /// - Indonesian (id)
-  /// - Japanese (ja)
-  /// - Korean (ko)
-  /// - Chinese (China, Simplified) (zh-Hans-CN)
-  ///
-  /// Note that the language change is persisted in the app's preferences,
-  /// so the next time the app is started, the SDK will use the new language.
-  ///
+  /// Supported codes: en, es, id, ja, ko, zh-Hans-CN.
   Future<void> changeLanguage(String languageCode) async {
     prefs = await SharedPreferences.getInstance();
     selectedLanguage = languageCode;
     await LocalizationService().changeLanguage(selectedLanguage);
     prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
-
-    AcmoPremiumWidgetsController.instance.refresh();
+    AcmoPremiumWidgetsController.instance.refresh(force: true);
   }
 }
