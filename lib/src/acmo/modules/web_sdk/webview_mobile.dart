@@ -150,7 +150,10 @@ class _WebSdkState extends State<WebSdk> {
               });
               _webViewController.reload();
             },
-            child: const Text('Retry'),
+            child: Text(
+              'Retry',
+              style: GoogleFonts.poppins(color: Colors.white),
+            ),
           ),
         ],
       ),

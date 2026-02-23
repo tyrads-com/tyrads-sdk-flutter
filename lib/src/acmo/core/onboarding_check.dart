@@ -4,7 +4,6 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/privacy_policy.dart';
 import 'package:tyrads_sdk/src/acmo/modules/legal/usage_permissions.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
-import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import 'package:usage_stats_new/usage_stats.dart';
 
@@ -36,73 +35,58 @@ class OnboardingCheck {
             AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
                 Tyrads.instance.publisherUserID) ??
         false;
-
-    if (!privacyAccepted) {
-      final result = await navigator.push(
-        MaterialPageRoute(
-          builder: (c) =>
-              const AcmoPrivacyPolicyPage(isReturningToWidget: true),
-        ),
-      );
-      if (!navigator.context.mounted) {
-        return false;
-      }
-
-      if (result != true) {
-        return false;
-      }
-    }
-
-    final postPrivacyCheck = prefs.getBool(
-            AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
-                Tyrads.instance.publisherUserID) ??
-        false;
-
-    if (!postPrivacyCheck) return false;
-
-    if (AcmoPlatform.isAndroid) {
-      final usageController = AcmoControllerUsageStats();
-      bool status = await UsageStats.checkUsagePermission() ?? false;
-
-      if (!status) {
+    if (Tyrads.instance.config.skipInitialPages == false) {
+      if (!privacyAccepted) {
         final result = await navigator.push(
           MaterialPageRoute(
-            builder: (c) => AcmoUsagePermissionsPage(
-              isReturningToWidget: true,
-              closeButtononTap: () {
-                Navigator.pop(context);
-              },
-            ),
+            builder: (c) =>
+                const AcmoPrivacyPolicyPage(isReturningToWidget: true),
           ),
         );
-        if (!context.mounted) return false;
-
-        if (result != true) return false;
-
-        bool newStatus = await UsageStats.checkUsagePermission() ?? false;
-
-        if (!newStatus) {
+        if (!navigator.context.mounted) {
           return false;
         }
-        usageController.saveUsageStats();
-      } else {
-        usageController.saveUsageStats();
-      }
-    }
 
-    if (Tyrads.instance.newUser) {
-      final result = await navigator.push(
-        MaterialPageRoute(
-          builder: (c) => const AcmoUsersUpdatePage(isReturningToWidget: true),
-        ),
-      );
-
-      if (!navigator.context.mounted) {
-        return false;
+        if (result != true) {
+          return false;
+        }
       }
 
-      if (result != true) {
-        return false;
+      final postPrivacyCheck = prefs.getBool(
+              AcmoKeyNames.PRIVACY_ACCEPTED_FOR_USER_ID +
+                  Tyrads.instance.publisherUserID) ??
+          false;
+
+      if (!postPrivacyCheck) return false;
+
+      if (AcmoPlatform.isAndroid) {
+        final usageController = AcmoControllerUsageStats();
+        bool status = await UsageStats.checkUsagePermission() ?? false;
+
+        if (!status) {
+          final result = await navigator.push(
+            MaterialPageRoute(
+              builder: (c) => AcmoUsagePermissionsPage(
+                isReturningToWidget: true,
+                closeButtononTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          );
+          if (!context.mounted) return false;
+
+          if (result != true) return false;
+
+          bool newStatus = await UsageStats.checkUsagePermission() ?? false;
+
+          if (!newStatus) {
+            return false;
+          }
+          usageController.saveUsageStats();
+        } else {
+          usageController.saveUsageStats();
+        }
       }
     }
 

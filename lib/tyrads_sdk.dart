@@ -41,6 +41,7 @@ import 'src/acmo/modules/web_sdk/webview_manager.dart';
 
 part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';
+part 'src/acmo/core/input_models/tyrads_config.dart';
 part 'src/acmo/core/constants/deep_routes.dart';
 part 'src/acmo/core/helpers/callback_types.dart';
 part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
@@ -55,6 +56,7 @@ class Tyrads {
   var publisherUserID;
   var token;
   String? engagementId;
+  TyradsConfig config = TyradsConfig();
 
   late AcmoInitModel loginData;
   Color? colorHeaderBg;
@@ -113,6 +115,7 @@ class Tyrads {
     String? engagementId,
     TyradsMediaSourceInfo? mediaSourceInfo,
     TyradsUserInfo? userInfo,
+    TyradsConfig? config,
     int? launchMode,
   }) async {
     _isInitCalled = true;
@@ -126,6 +129,7 @@ class Tyrads {
     prefs = await SharedPreferences.getInstance();
 
     if (AcmoPlatform.isAndroid) {
+      this.config = config ?? TyradsConfig();
       final integrityToken =
       await TyradsSdkPlatform.instance.getPlayIntegrityToken();
       await prefs.setString(AcmoKeyNames.PLAY_INTEGRITY_TOKEN, integrityToken);
@@ -326,6 +330,10 @@ class Tyrads {
   setLaunchMode(int launchMode) => this.launchMode = launchMode;
 
   setNewUser(bool newUser) => this.newUser = newUser;
+
+  setTyradsConfig(TyradsConfig config) {
+    this.config = config;
+  }
 
   Future<void> setSkipUserInfo(bool newValue) async {
     final key =

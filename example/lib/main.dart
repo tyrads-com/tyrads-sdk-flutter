@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
-
+import 'dart:io';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeTyrads();
@@ -61,6 +61,7 @@ String? _previousApiKey;
 String? _previousApiSecret;
 String? _previousEncKey;
 String? _previousUserID;
+bool? _previousSkipInitialPages;
 
 Future<void> initializeTyrads({
   String? apiKey,
@@ -68,6 +69,7 @@ Future<void> initializeTyrads({
   String? encKey,
   String? engagementId,
   String? userID,
+  bool skipInitialPages = false,
 }) async {
   final credentials = await _getCredentials();
   final finalApiKey = (apiKey != null && apiKey.isNotEmpty)
@@ -87,7 +89,8 @@ Future<void> initializeTyrads({
       _previousApiKey == finalApiKey &&
       _previousApiSecret == finalApiSecret &&
       _previousEncKey == finalEncKey &&
-      _previousUserID == finalUserId) {
+      _previousUserID == finalUserId &&
+      _previousSkipInitialPages == skipInitialPages) {
     return;
   }
 
@@ -96,6 +99,9 @@ Future<void> initializeTyrads({
     apiSecret: finalApiSecret,
     encryptionKey: finalEncKey,
     engagementId: engagementId,
+    config: Platform.isAndroid
+        ? TyradsConfig(skipInitialPages: skipInitialPages)
+        : null,
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -139,6 +145,7 @@ Future<void> initializeTyrads({
   _previousEncKey = finalEncKey;
   _previousUserID = finalUserId;
   _isTyradsInitialized = true;
+  _previousSkipInitialPages = skipInitialPages;
 
   debugPrint('Tyrads initialized successfully');
 }
@@ -183,6 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController userIDController;
   bool loading = false;
   int style = 1;
+  int initialPageMode = 1;
   @override
   void initState() {
     super.initState();
@@ -245,6 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
       encKey: encKeyController.text,
       engagementId: engagementIdController.text,
       userID: userIDController.text,
+      skipInitialPages: initialPageMode == 2,
     );
 
     await _loadStoredCredentials();
@@ -296,24 +305,72 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(
                   height: 16,
                 ),
-                DropdownButton(
-                  value: style,
-                  items: const [
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text("List View"),
+                Row(
+                  mainAxisAlignment: Platform.isAndroid
+                      ? MainAxisAlignment.spaceEvenly
+                      : MainAxisAlignment.center,
+                  children: [
+                    DropdownButton(
+                      value: style,
+                      items: const [
+                        DropdownMenuItem(
+                          value: 1,
+                          child: Text("List View"),
+                        ),
+                        DropdownMenuItem(
+                          value: 2,
+                          child: Text("Slide Cards"),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          style = value ?? 1;
+                        });
+                      },
                     ),
-                    DropdownMenuItem(
-                      value: 2,
-                      child: Text("Slide Cards"),
+                    Visibility(
+                      visible: Platform.isAndroid,
+                      child: DropdownButton(
+                        value: initialPageMode,
+                        items: const [
+                          DropdownMenuItem(
+                            value: 1,
+                            child: Text("Show Initial Pages"),
+                          ),
+                          DropdownMenuItem(
+                            value: 2,
+                            child: Text("Hide Initial Pages"),
+                          ),
+                        ],
+                        onChanged: (value) async {
+                          setState(() {
+                            initialPageMode = value ?? 1;
+                          });
+                          // Reinitialize SDK when selection changes
+                          await initializeTyrads(
+                            apiKey: apiKeyController.text.isEmpty
+                                ? null
+                                : apiKeyController.text,
+                            apiSecret: apiSecretController.text.isEmpty
+                                ? null
+                                : apiSecretController.text,
+                            encKey: encKeyController.text.isEmpty
+                                ? null
+                                : encKeyController.text,
+                            engagementId: engagementIdController.text.isEmpty
+                                ? null
+                                : engagementIdController.text,
+                            userID: userIDController.text.isEmpty
+                                ? null
+                                : userIDController.text,
+                            skipInitialPages: initialPageMode == 2,
+                          );
+                        },
+                      ),
                     ),
                   ],
-                  onChanged: (value) {
-                    setState(() {
-                      style = value ?? 1;
-                    });
-                  },
                 ),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
