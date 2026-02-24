@@ -126,7 +126,7 @@ class _WebSdkState extends State<WebSdk> {
             );
           },
         ),
-        if (_hasError) _buildErrorView(),
+        // if (_hasError) _buildErrorView(),
       ],
     );
   }
