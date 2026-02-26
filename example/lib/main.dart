@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import 'dart:io';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeTyrads();
@@ -13,47 +14,44 @@ void main() async {
 bool _isTyradsInitialized = false;
 const String _defaultUserId = 'acmo_user_01';
 
-Future<Map<String, String>> _getCredentials() async {
-  final prefs = await SharedPreferences.getInstance();
+const List<Map<String, String>> configOptions = [
+  {'label': 'Tyrreward', 'value': 'tyrreward'},
+  {'label': 'Belanda 1', 'value': 'belanda1'},
+  {'label': 'Belanda 2', 'value': 'belanda2'},
+  {'label': 'Belanda 3', 'value': 'belanda3'},
+];
 
-  String apiKey = prefs.getString('tyrads_api_key') ?? '';
-  String apiSecret = prefs.getString('tyrads_api_secret') ?? '';
-  String encKey = prefs.getString('tyrads_encryption_key') ?? '';
-  String userId = prefs.getString('tyrads_user_id') ?? '';
+Map<String, String> _getConfigKeys(String selectedConfig) {
+  final isAndroid = defaultTargetPlatform == TargetPlatform.android;
 
-  final isIOS = defaultTargetPlatform == TargetPlatform.iOS;
-  if (apiKey.isEmpty) {
-    apiKey = isIOS ? Env.TYRADS_SDK_IOS_KEY : Env.TYRADS_SDK_KEY;
+  switch (selectedConfig) {
+    case 'tyrreward':
+      return isAndroid
+          ? {'apiKey': Env.ANDROID_TYRREWARD_SDK_KEY,       'apiSecret': Env.ANDROID_TYRREWARD_SDK_SECRET,       'encKey': Env.ANDROID_TYRREWARD_SDK_ENC_KEY}
+          : {'apiKey': Env.IOS_TYRREWARD_SDK_KEY,           'apiSecret': Env.IOS_TYRREWARD_SDK_SECRET,           'encKey': Env.IOS_TYRREWARD_SDK_ENC_KEY};
+    case 'belanda2':
+      return isAndroid
+          ? {'apiKey': Env.ANDROID_BELANDA2_TYRADS_SDK_KEY, 'apiSecret': Env.ANDROID_BELANDA2_TYRADS_SDK_SECRET, 'encKey': Env.ANDROID_BELANDA2_TYRADS_SDK_ENC_KEY}
+          : {'apiKey': Env.IOS_BELANDA2_TYRADS_SDK_KEY,     'apiSecret': Env.IOS_BELANDA2_TYRADS_SDK_SECRET,     'encKey': Env.IOS_BELANDA2_TYRADS_SDK_ENC_KEY};
+    case 'belanda3':
+      return isAndroid
+          ? {'apiKey': Env.ANDROID_BELANDA3_TYRADS_SDK_KEY, 'apiSecret': Env.ANDROID_BELANDA3_TYRADS_SDK_SECRET, 'encKey': Env.ANDROID_BELANDA3_TYRADS_SDK_ENC_KEY}
+          : {'apiKey': Env.IOS_BELANDA3_TYRADS_SDK_KEY,     'apiSecret': Env.IOS_BELANDA3_TYRADS_SDK_SECRET,     'encKey': Env.IOS_BELANDA3_TYRADS_SDK_ENC_KEY};
+    case 'belanda1':
+    default:
+      return isAndroid
+          ? {'apiKey': Env.ANDROID_BELANDA1_TYRADS_SDK_KEY, 'apiSecret': Env.ANDROID_BELANDA1_TYRADS_SDK_SECRET, 'encKey': Env.ANDROID_BELANDA1_TYRADS_SDK_ENC_KEY}
+          : {'apiKey': Env.IOS_BELANDA1_TYRADS_SDK_KEY,     'apiSecret': Env.IOS_BELANDA1_TYRADS_SDK_SECRET,     'encKey': Env.IOS_BELANDA1_TYRADS_SDK_ENC_KEY};
   }
-  if (apiSecret.isEmpty) {
-    apiSecret = isIOS ? Env.TYRADS_SDK_IOS_SECRET : Env.TYRADS_SDK_SECRET;
-  }
-  if (encKey.isEmpty) {
-    encKey = isIOS ? Env.TYRADS_SDK_IOS_ENC_KEY : Env.TYRADS_SDK_ENC_KEY;
-  }
-  if (userId.isEmpty) {
-    userId = _defaultUserId;
-  }
-
-  return {
-    'apiKey': apiKey,
-    'apiSecret': apiSecret,
-    'encKey': encKey,
-    'userId': userId,
-  };
 }
 
-Future<void> _saveCredentialsToPrefs({
-  required String apiKey,
-  required String apiSecret,
-  required String encKey,
-  required String userId,
-}) async {
+Future<String> _getUserId() async {
   final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('tyrads_user_id') ?? _defaultUserId;
+}
 
-  await prefs.setString('tyrads_api_key', apiKey);
-  await prefs.setString('tyrads_api_secret', apiSecret);
-  await prefs.setString('tyrads_encryption_key', encKey);
+Future<void> _saveUserId(String userId) async {
+  final prefs = await SharedPreferences.getInstance();
   await prefs.setString('tyrads_user_id', userId);
 }
 
@@ -61,9 +59,10 @@ String? _previousApiKey;
 String? _previousApiSecret;
 String? _previousEncKey;
 String? _previousUserID;
-bool? _previousSkipInitialPages;
+bool?   _previousSkipInitialPages;
 
 Future<void> initializeTyrads({
+  String selectedConfig = 'belanda1',
   String? apiKey,
   String? apiSecret,
   String? encKey,
@@ -71,19 +70,11 @@ Future<void> initializeTyrads({
   String? userID,
   bool skipInitialPages = false,
 }) async {
-  final credentials = await _getCredentials();
-  final finalApiKey = (apiKey != null && apiKey.isNotEmpty)
-      ? apiKey
-      : credentials['apiKey']!;
-  final finalApiSecret = (apiSecret != null && apiSecret.isNotEmpty)
-      ? apiSecret
-      : credentials['apiSecret']!;
-  final finalEncKey = (encKey != null && encKey.isNotEmpty)
-      ? encKey
-      : credentials['encKey']!;
-  final finalUserId = (userID != null && userID.isNotEmpty)
-      ? userID
-      : credentials['userId'] ?? _defaultUserId;
+  final configKeys  = _getConfigKeys(selectedConfig);
+  final finalApiKey    = (apiKey    != null && apiKey.isNotEmpty)    ? apiKey    : configKeys['apiKey']!;
+  final finalApiSecret = (apiSecret != null && apiSecret.isNotEmpty) ? apiSecret : configKeys['apiSecret']!;
+  final finalEncKey    = (encKey    != null && encKey.isNotEmpty)    ? encKey    : configKeys['encKey']!;
+  final finalUserId    = (userID    != null && userID.isNotEmpty)    ? userID    : await _getUserId();
 
   if (_isTyradsInitialized &&
       _previousApiKey == finalApiKey &&
@@ -126,12 +117,7 @@ Future<void> initializeTyrads({
   );
 
   await Tyrads.instance.loginUser(userID: finalUserId);
-  await _saveCredentialsToPrefs(
-    apiKey: finalApiKey,
-    apiSecret: finalApiSecret,
-    encKey: finalEncKey,
-    userId: finalUserId,
-  );
+  await _saveUserId(finalUserId); // only userId is persisted — keys always come from Env
 
   Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
     debugPrint("TyradsCallbackType.campaignDetail: $data");
@@ -140,21 +126,21 @@ Future<void> initializeTyrads({
     debugPrint("TyradsCallbackType.activated: $data");
   });
 
-  _previousApiKey = finalApiKey;
-  _previousApiSecret = finalApiSecret;
-  _previousEncKey = finalEncKey;
-  _previousUserID = finalUserId;
-  _isTyradsInitialized = true;
+  _previousApiKey           = finalApiKey;
+  _previousApiSecret        = finalApiSecret;
+  _previousEncKey           = finalEncKey;
+  _previousUserID           = finalUserId;
+  _isTyradsInitialized      = true;
   _previousSkipInitialPages = skipInitialPages;
 
   debugPrint('Tyrads initialized successfully');
 }
 
-void clearTyradsCache() async {
-  _previousApiKey = null;
-  _previousApiSecret = null;
-  _previousEncKey = null;
-  _previousUserID = null;
+void clearTyradsCache() {
+  _previousApiKey      = null;
+  _previousApiSecret   = null;
+  _previousEncKey      = null;
+  _previousUserID      = null;
   _isTyradsInitialized = false;
 }
 
@@ -191,26 +177,99 @@ class _MyHomePageState extends State<MyHomePage> {
   bool loading = false;
   int style = 1;
   int initialPageMode = 1;
+  String selectedConfig = 'belanda1';
+
+  int widgetKey = 0;
+  bool isReady = false;
+
   @override
   void initState() {
     super.initState();
-    apiKeyController = TextEditingController();
-    apiSecretController = TextEditingController();
-    encKeyController = TextEditingController();
+    apiKeyController       = TextEditingController();
+    apiSecretController    = TextEditingController();
+    encKeyController       = TextEditingController();
     engagementIdController = TextEditingController();
-    userIDController = TextEditingController();
+    userIDController       = TextEditingController();
 
     _loadStoredCredentials();
   }
 
   Future<void> _loadStoredCredentials() async {
-    final credentials = await _getCredentials();
+    final prefs = await SharedPreferences.getInstance();
+
+    final storedConfig = prefs.getString('selectedConfig');
+    final configToUse = storedConfig ?? selectedConfig;
+    if (storedConfig != null && storedConfig != selectedConfig) {
+      setState(() { selectedConfig = storedConfig; });
+    }
+
+    final configKeys = _getConfigKeys(configToUse);
+    final userId = prefs.getString('tyrads_user_id') ?? _defaultUserId;
+
     setState(() {
-      apiKeyController.text = credentials['apiKey'] ?? '';
-      apiSecretController.text = credentials['apiSecret'] ?? '';
-      encKeyController.text = credentials['encKey'] ?? '';
-      userIDController.text = credentials['userId'] ?? '';
+      apiKeyController.text    = configKeys['apiKey']!;
+      apiSecretController.text = configKeys['apiSecret']!;
+      encKeyController.text    = configKeys['encKey']!;
+      userIDController.text    = userId;
+      isReady                  = true;
     });
+  }
+
+  Future<void> _onConfigChange(String value) async {
+    final newKeys = _getConfigKeys(value);
+    setState(() {
+      selectedConfig           = value;
+      apiKeyController.text    = newKeys['apiKey']!;
+      apiSecretController.text = newKeys['apiSecret']!;
+      encKeyController.text    = newKeys['encKey']!;
+      isReady                  = false;
+    });
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedConfig', value);
+
+    clearTyradsCache();
+    await initializeTyrads(selectedConfig: value);
+
+    setState(() {
+      widgetKey++;
+      isReady = true;
+    });
+  }
+
+  void _showOfferwall() async {
+    final apiKey    = apiKeyController.text.trim();
+    final apiSecret = apiSecretController.text.trim();
+    final userID    = userIDController.text.trim();
+
+    bool hasApiKey    = apiKey.isNotEmpty;
+    bool hasApiSecret = apiSecret.isNotEmpty;
+    bool hasUserID    = userID.isNotEmpty;
+
+    if ((hasApiKey && !hasApiSecret) ||
+        (hasApiSecret && !hasApiKey) ||
+        (hasUserID && (hasApiKey ^ hasApiSecret))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter both API Key and Secret if either is used.')),
+      );
+      return;
+    }
+    setState(() { loading = true; });
+    await Tyrads.instance.initializationWait.future;
+
+    await initializeTyrads(
+      selectedConfig:   selectedConfig,
+      apiKey:           apiKeyController.text,
+      apiSecret:        apiSecretController.text,
+      encKey:           encKeyController.text,
+      engagementId:     engagementIdController.text,
+      userID:           userIDController.text,
+      skipInitialPages: initialPageMode == 2,
+    );
+
+    setState(() { loading = false; });
+
+    Tyrads.instance.showOffers(context);
   }
 
   @override
@@ -221,65 +280,6 @@ class _MyHomePageState extends State<MyHomePage> {
     encKeyController.dispose();
     engagementIdController.dispose();
     userIDController.dispose();
-  }
-
-  void _showOfferwall() async {
-    final apiKey = apiKeyController.text.trim();
-    final apiSecret = apiSecretController.text.trim();
-    final userID = userIDController.text.trim();
-
-    bool hasApiKey = apiKey.isNotEmpty;
-    bool hasApiSecret = apiSecret.isNotEmpty;
-    bool hasUserID = userID.isNotEmpty;
-
-    if ((hasApiKey && !hasApiSecret) ||
-        (hasApiSecret && !hasApiKey) ||
-        (hasUserID && (hasApiKey ^ hasApiSecret))) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Please enter both API Key and Secret if either is used.')),
-      );
-      return;
-    }
-    setState(() {
-      loading = true;
-    });
-    await Tyrads.instance.initializationWait.future;
-
-    await initializeTyrads(
-      apiKey: apiKeyController.text,
-      apiSecret: apiSecretController.text,
-      encKey: encKeyController.text,
-      engagementId: engagementIdController.text,
-      userID: userIDController.text,
-      skipInitialPages: initialPageMode == 2,
-    );
-
-    await _loadStoredCredentials();
-
-    // var isLoginSuccessful = await Tyrads.instance.loginUser(userID: userID);
-    // if(!isLoginSuccessful){
-    //   //re-initialize
-    // }
-
-    // or you can login without waiting for the future
-
-    //  Tyrads.instance.loginUser(userID: userID);
-    //   if(!Tyrads.instance.initializationWait.isCompleted){
-    //      await Tyrads.instance.initializationWait.future;
-    //   }
-    //   if(!Tyrads.instance.isLoginSuccessful){
-    //     //re-initialize
-    //   }
-    setState(() {
-      loading = false;
-    });
-
-    Tyrads.instance.showOffers(
-      context,
-      // ,campaignID: 00,route: TyradsDeepRoutes.CAMPAIGN_TICKETS
-    );
   }
 
   @override
@@ -296,15 +296,31 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Tyrads.instance.topOffersWidget(
-                  context,
-                  widgetStyle: style == 1
-                      ? PremiumWidgetStyles.list
-                      : PremiumWidgetStyles.sliderCards,
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
+
+                if (isReady)
+                  KeyedSubtree(
+                    key: ValueKey(widgetKey),
+                    child: Tyrads.instance.topOffersWidget(
+                      context,
+                      widgetStyle: style == 1
+                          ? PremiumWidgetStyles.list
+                          : PremiumWidgetStyles.sliderCards,
+                    ),
+                  )
+                else
+                  Container(
+                    width: double.maxFinite,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                const SizedBox(height: 16),
+
                 Row(
                   mainAxisAlignment: Platform.isAndroid
                       ? MainAxisAlignment.spaceEvenly
@@ -313,19 +329,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     DropdownButton(
                       value: style,
                       items: const [
-                        DropdownMenuItem(
-                          value: 1,
-                          child: Text("List View"),
-                        ),
-                        DropdownMenuItem(
-                          value: 2,
-                          child: Text("Slide Cards"),
-                        ),
+                        DropdownMenuItem(value: 1, child: Text("List View")),
+                        DropdownMenuItem(value: 2, child: Text("Slide Cards")),
                       ],
                       onChanged: (value) {
-                        setState(() {
-                          style = value ?? 1;
-                        });
+                        setState(() { style = value ?? 1; });
                       },
                     ),
                     Visibility(
@@ -333,38 +341,21 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: DropdownButton(
                         value: initialPageMode,
                         items: const [
-                          DropdownMenuItem(
-                            value: 1,
-                            child: Text("Show Initial Pages"),
-                          ),
-                          DropdownMenuItem(
-                            value: 2,
-                            child: Text("Hide Initial Pages"),
-                          ),
+                          DropdownMenuItem(value: 1, child: Text("Show Initial Pages")),
+                          DropdownMenuItem(value: 2, child: Text("Hide Initial Pages")),
                         ],
                         onChanged: (value) async {
-                          setState(() {
-                            initialPageMode = value ?? 1;
-                          });
-                          // Reinitialize SDK when selection changes
+                          setState(() { initialPageMode = value ?? 1; });
                           await initializeTyrads(
-                            apiKey: apiKeyController.text.isEmpty
-                                ? null
-                                : apiKeyController.text,
-                            apiSecret: apiSecretController.text.isEmpty
-                                ? null
-                                : apiSecretController.text,
-                            encKey: encKeyController.text.isEmpty
-                                ? null
-                                : encKeyController.text,
-                            engagementId: engagementIdController.text.isEmpty
-                                ? null
-                                : engagementIdController.text,
-                            userID: userIDController.text.isEmpty
-                                ? null
-                                : userIDController.text,
+                            selectedConfig:   selectedConfig,
+                            apiKey:           apiKeyController.text.isEmpty       ? null : apiKeyController.text,
+                            apiSecret:        apiSecretController.text.isEmpty    ? null : apiSecretController.text,
+                            encKey:           encKeyController.text.isEmpty       ? null : encKeyController.text,
+                            engagementId:     engagementIdController.text.isEmpty ? null : engagementIdController.text,
+                            userID:           userIDController.text.isEmpty       ? null : userIDController.text,
                             skipInitialPages: initialPageMode == 2,
                           );
+                          setState(() { widgetKey++; });
                         },
                       ),
                     ),
@@ -373,52 +364,109 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.maxFinite,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Select Config:',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF333333),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonFormField<String>(
+                          value: selectedConfig,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              borderSide: BorderSide(color: Color(0xFFCCCCCC)),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          items: configOptions.map((option) {
+                            return DropdownMenuItem<String>(
+                              value: option['value'],
+                              child: Text(option['label']!, style: const TextStyle(color: Colors.black)),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            if (value != null) _onConfigChange(value);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Platform: ${Platform.isAndroid ? 'Android' : 'iOS'} | Config: ${selectedConfig.toUpperCase()}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF666666),
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.maxFinite,
                   child: TextField(
-                      controller: apiKeyController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Api_Key (Optional)",
-                      )),
+                    controller: apiKeyController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Api_Key (Optional)",
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                      controller: apiSecretController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Api_Secret (Optional)",
-                      )),
+                    controller: apiSecretController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Api_Secret (Optional)",
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                      controller: encKeyController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Encryption Key (Optional)",
-                      )),
+                    controller: encKeyController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Encryption Key (Optional)",
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                      controller: engagementIdController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Engagement Id (Optional)",
-                      )),
+                    controller: engagementIdController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Engagement Id (Optional)",
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                      controller: userIDController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Custom user Id or empty for anonymous user",
-                      )),
+                    controller: userIDController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Custom user Id or empty for anonymous user",
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 OutlinedButton(
@@ -428,14 +476,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     spacing: 12,
                     children: [
                       if (loading)
-                        const SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: CircularProgressIndicator()),
+                        const SizedBox(height: 22, width: 22, child: CircularProgressIndicator()),
                       const Text("Show offerwall"),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
