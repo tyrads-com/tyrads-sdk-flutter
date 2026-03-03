@@ -248,27 +248,37 @@ class Tyrads {
       if (mediaSourceInfo?.sub3 != null) fd["sub3"] = mediaSourceInfo?.sub3;
       if (mediaSourceInfo?.sub4 != null) fd["sub4"] = mediaSourceInfo?.sub4;
       if (mediaSourceInfo?.sub5 != null) fd["sub5"] = mediaSourceInfo?.sub5;
-      if (mediaSourceInfo?.mediaSourceName != null)
+      if (mediaSourceInfo?.mediaSourceName != null) {
         fd["mediaSourceName"] = mediaSourceInfo?.mediaSourceName;
-      if (mediaSourceInfo?.mediaSourceId != null)
+      }
+      if (mediaSourceInfo?.mediaSourceId != null) {
         fd["mediaSourceId"] = mediaSourceInfo?.mediaSourceId;
-      if (mediaSourceInfo?.mediaSubSourceId != null)
+      }
+      if (mediaSourceInfo?.mediaSubSourceId != null) {
         fd["mediaSubSourceId"] = mediaSourceInfo?.mediaSubSourceId;
-      if (mediaSourceInfo?.incentivized != null)
+      }
+      if (mediaSourceInfo?.incentivized != null) {
         fd["incentivized"] = mediaSourceInfo?.incentivized;
-      if (mediaSourceInfo?.mediaAdsetName != null)
+      }
+      if (mediaSourceInfo?.mediaAdsetName != null) {
         fd["mediaAdsetName"] = mediaSourceInfo?.mediaAdsetName;
-      if (mediaSourceInfo?.mediaAdsetId != null)
+      }
+      if (mediaSourceInfo?.mediaAdsetId != null) {
         fd["mediaAdsetId"] = mediaSourceInfo?.mediaAdsetId;
-      if (mediaSourceInfo?.mediaCreativeName != null)
+      }
+      if (mediaSourceInfo?.mediaCreativeName != null) {
         fd["mediaCreativeName"] = mediaSourceInfo?.mediaCreativeName;
-      if (mediaSourceInfo?.mediaCreativeId != null)
+      }
+      if (mediaSourceInfo?.mediaCreativeId != null) {
         fd["mediaCreativeId"] = mediaSourceInfo?.mediaCreativeId;
-      if (mediaSourceInfo?.mediaCampaignName != null)
+      }
+      if (mediaSourceInfo?.mediaCampaignName != null) {
         fd["mediaCampaignName"] = mediaSourceInfo?.mediaCampaignName;
+      }
       if (userInfo?.email != null) fd["email"] = userInfo?.email;
-      if (userInfo?.phoneNumber != null)
+      if (userInfo?.phoneNumber != null) {
         fd["phoneNumber"] = userInfo?.phoneNumber;
+      }
       if (userInfo?.userGroup != null) fd["userGroup"] = userInfo?.userGroup;
 
       final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
