@@ -22,6 +22,7 @@ class TrackingInfo {
   final String totalMemory;
   final String freeMemory;
   final String osArch;
+  final String ramSize;
 
   // Device Information
   final String deviceManufacturer;
@@ -35,10 +36,15 @@ class TrackingInfo {
   final String buildType;
   final String buildTags;
 
-  // Screen Metrics
+  // screen metrics
   final String screenDensity;
   final String screenWidth;
   final String screenHeight;
+  final String screenScale;
+
+  final String batteryLevel;
+  final String totalDiskSpace;
+  final String freeDiskSpace;
 
   TrackingInfo({
     // Telephony Information
@@ -64,6 +70,7 @@ class TrackingInfo {
     required this.totalMemory,
     required this.freeMemory,
     required this.osArch,
+    required this.ramSize,
 
     // Device Information
     required this.deviceManufacturer,
@@ -81,6 +88,10 @@ class TrackingInfo {
     required this.screenDensity,
     required this.screenWidth,
     required this.screenHeight,
+    required this.screenScale,
+    required this.batteryLevel,
+    required this.totalDiskSpace,
+    required this.freeDiskSpace,
   });
 
   factory TrackingInfo.fromMap(Map<String, dynamic> map) {
@@ -108,6 +119,7 @@ class TrackingInfo {
       totalMemory: map['total_memory'] ?? '',
       freeMemory: map['free_memory'] ?? '',
       osArch: map['os_arch'] ?? '',
+      ramSize: map['ram_size'] ?? '',
 
       // Device Information
       deviceManufacturer: map['device_manufacturer'] ?? '',
@@ -125,6 +137,10 @@ class TrackingInfo {
       screenDensity: map['screen_density'] ?? '',
       screenWidth: map['screen_width'] ?? '',
       screenHeight: map['screen_height'] ?? '',
+      screenScale: map['screen_scale'] ?? '',
+      batteryLevel: map['batteryLevel']?.toString() ?? '',
+      totalDiskSpace: map['totalDiskSpace']?.toString() ?? '',
+      freeDiskSpace: map['freeDiskSpace']?.toString() ?? '',
     );
   }
 }

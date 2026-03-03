@@ -128,6 +128,9 @@ class AcmoDeviceDetailsController {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
+    var networkDetails = await _networkController.getNetworkDetails();
+    var trackingInfo = await TyradsSdkPlatform.instance.getTrackingInfo();
+
     fd['deviceId'] = await PlatformDeviceId.getDeviceId;
     fd['device'] =
         (iosInfo.model.toLowerCase().contains("ipad")) ? "iPad" : "iPhone";
@@ -135,9 +138,11 @@ class AcmoDeviceDetailsController {
     fd['brand'] = "Apple";
     fd['model'] = iosInfo.model;
     fd['modelName'] = iosInfo.modelName;
+    fd['hardware'] = iosInfo.utsname.machine;
     fd['product'] = iosInfo.utsname.sysname;
     fd['baseOs'] = iosInfo.systemName;
     fd['releaseVersion'] = iosInfo.systemVersion;
+
     fd["build"] = packageInfo.buildNumber;
     fd["version"] = packageInfo.version;
     fd["package"] = packageInfo.packageName;
@@ -145,10 +150,17 @@ class AcmoDeviceDetailsController {
     fd["platform"] = acmoGetPlatformName();
     fd["installerStore"] = packageInfo.installerStore;
     fd["osLang"] = Platform.localeName.toString().split('_')[0];
+
     fd['rooted'] = await FlutterSecurityChecker.isRooted;
     fd['virtual'] = !(await FlutterSecurityChecker.isRealDevice);
-    fd['sdkVersion'] =  AcmoConfig.SDK_VERSION;
+
+    fd['totalMemory'] = trackingInfo.totalDiskSpace;
+
+    fd['connectionType'] = networkDetails['connectionType'];
+
+    fd['sdkVersion'] = AcmoConfig.SDK_VERSION;
     fd['sdkPlatform'] = 'Flutter';
+
     return fd;
   }
 }

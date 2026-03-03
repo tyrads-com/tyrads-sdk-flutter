@@ -44,6 +44,9 @@ public final class TyradsSdkPlugin: NSObject,
     // Method calls
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if handleDeviceDetails(call, result: result) {
+            return
+        }
         
         switch call.method {
         case "push/requestPermission":
