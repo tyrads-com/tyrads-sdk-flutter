@@ -29,8 +29,7 @@ import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/top_offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/push-notifications/apns_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
-import 'package:tyrads_sdk/src/acmo/modules/users/models/init.dart';
-import 'package:tyrads_sdk/src/acmo/modules/users/repository.dart';
+import 'package:tyrads_sdk/src/acmo/core/input_models/init/init.dart';
 import 'package:tyrads_sdk/src/acmo/core/extensions/colors.dart';
 import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
 import 'package:uuid/uuid.dart';
@@ -56,6 +55,7 @@ class Tyrads {
   var publisherUserID;
   var token;
   String? engagementId;
+  String? placementId;
   TyradsConfig config = TyradsConfig();
 
   late AcmoInitModel loginData;
@@ -113,6 +113,7 @@ class Tyrads {
     required apiSecret,
     String? encryptionKey,
     String? engagementId,
+    String? placementId,
     TyradsMediaSourceInfo? mediaSourceInfo,
     TyradsUserInfo? userInfo,
     TyradsConfig? config,
@@ -122,6 +123,7 @@ class Tyrads {
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
     this.engagementId = engagementId;
+    this.placementId = placementId;
     this.userInfo = userInfo;
     this.mediaSourceInfo = mediaSourceInfo;
     this.launchMode = launchMode;
@@ -240,6 +242,10 @@ class Tyrads {
       fd["engagementId"] = (engagementId != null && engagementId != "")
           ? int.parse(engagementId)
           : null;
+      final placementId = this.placementId;
+      fd["placementId"] = (placementId != null && placementId != "")
+          ? int.parse(placementId)
+          : null;
       fd["identifierType"] = identifierType;
       fd["identifier"] = advertisingId ?? "NA";
 
@@ -291,18 +297,19 @@ class Tyrads {
       if (response.statusCode == 200) {
         loginData = AcmoInitModel.fromJson(response.data);
 
-        publisherUserID = loginData.data.user.publisherUserId;
+        publisherUserID = loginData.data.accountInfo.publisherUserId;
         await prefs.setString(AcmoKeyNames.USER_ID, publisherUserID);
 
         token = loginData.data.token;
         await prefs.setString(AcmoKeyNames.TOKEN, token);
+        log("Token: $token");
 
         newUser = loginData.data.newRegisteredUser;
-        colorMain = loginData.data.publisherApp.mainColor.toColor();
-        colorHeaderBg = loginData.data.publisherApp.headerColor.toColor();
+        colorMain = loginData.data.appInfo.mainColor.toColor();
+        colorHeaderBg = loginData.data.appInfo.headerColor.toColor();
         colorHeaderFg = acmoGetFontColorForBackground(colorHeaderBg);
         colorPremium =
-            loginData.data.publisherApp.premiumColor.toColor() ??
+            loginData.data.appInfo.premiumColor.toColor() ??
                 const Color(0xff02B5BE);
         colorPremiumFg = acmoGetFontColorForBackground(colorPremium);
 
@@ -317,7 +324,7 @@ class Tyrads {
         track(TyradsActivity.initialized);
         isLoginSuccessful = true;
         AcmoInAppNotificationController.instance.init();
-        _preloadWebView();
+        // _preloadWebView();
       }
     } catch (e) {
       debugPrint("Error initializing: ${e.toString()}");
@@ -345,28 +352,8 @@ class Tyrads {
     this.config = config;
   }
 
-  Future<void> setSkipUserInfo(bool newValue) async {
-    final key =
-        "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
-    await prefs.setBool(key, newValue);
-  }
-
-  bool getSkipUserInfo() {
-    final key =
-        "${AcmoKeyNames.SKIP_USER_INFO}${Tyrads.instance.publisherUserID}";
-    return prefs.getBool(key) ?? false;
-  }
-
-  updateUser(String userId, {int? age, int? gender}) async {
-    final fd = <String, dynamic>{};
-    if (age != null) fd["age"] = age;
-    if (gender != null) fd["gender"] = gender;
-    await AcmoUsersRepository().updateUser(userId, fd);
-  }
-
   /// Builds a URI for the given route / campaignID.
   Uri getWebUri({int? campaignID, String? route}) {
-    final skipUserInfo = getSkipUserInfo();
     final currentRoute = route ?? TyradsDeepRoutes.OFFERS;
     return Uri(
       scheme: 'https',
@@ -377,7 +364,6 @@ class Tyrads {
             : '$currentRoute/$campaignID',
         'token': token,
         'lang': selectedLanguage,
-        'skipUserInfo': skipUserInfo.toString(),
       },
     );
   }

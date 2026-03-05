@@ -67,6 +67,7 @@ Future<void> initializeTyrads({
   String? apiSecret,
   String? encKey,
   String? engagementId,
+  String? placementId,
   String? userID,
   bool skipInitialPages = false,
 }) async {
@@ -90,6 +91,7 @@ Future<void> initializeTyrads({
     apiSecret: finalApiSecret,
     encryptionKey: finalEncKey,
     engagementId: engagementId,
+    placementId: placementId,
     config: Platform.isAndroid
         ? TyradsConfig(skipInitialPages: skipInitialPages)
         : null,
@@ -173,6 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController apiSecretController;
   late TextEditingController encKeyController;
   late TextEditingController engagementIdController;
+  late TextEditingController placementIdController;
   late TextEditingController userIDController;
   bool loading = false;
   int style = 1;
@@ -189,6 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
     apiSecretController    = TextEditingController();
     encKeyController       = TextEditingController();
     engagementIdController = TextEditingController();
+    placementIdController  = TextEditingController();
     userIDController       = TextEditingController();
 
     _loadStoredCredentials();
@@ -263,6 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
       apiSecret:        apiSecretController.text,
       encKey:           encKeyController.text,
       engagementId:     engagementIdController.text,
+      placementId:      placementIdController.text,
       userID:           userIDController.text,
       skipInitialPages: initialPageMode == 2,
     );
@@ -279,6 +284,7 @@ class _MyHomePageState extends State<MyHomePage> {
     apiSecretController.dispose();
     encKeyController.dispose();
     engagementIdController.dispose();
+    placementIdController.dispose();
     userIDController.dispose();
   }
 
@@ -454,6 +460,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: "Engagement Id (Optional)",
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.maxFinite,
+                  child: TextField(
+                    controller: placementIdController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Placement Id (Optional)",
                     ),
                   ),
                 ),
