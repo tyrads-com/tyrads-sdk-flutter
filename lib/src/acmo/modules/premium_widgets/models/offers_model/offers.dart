@@ -1,42 +1,41 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tyrads_sdk/src/acmo/core/helpers/converters.dart';
 
 part 'offers.freezed.dart';
 part 'offers.g.dart';
 
 
 @freezed
-class AcmoOffersResponseModel with _$AcmoOffersResponseModel {
+abstract class AcmoOffersResponseModel with _$AcmoOffersResponseModel {
 
-  factory AcmoOffersResponseModel({required List<AcmoOffersModel> data}) = _AcmoOffersResponseModel;
+  factory AcmoOffersResponseModel({
+    required int code,
+    required List<AcmoOffersModel> data,
+    required String message,
+    required int timestamp,
+    required double responseTime,
+  }) = _AcmoOffersResponseModel;
 
   factory AcmoOffersResponseModel.fromJson(Map<String, dynamic> json) => _$AcmoOffersResponseModelFromJson(json);
 }
 @freezed
-class AcmoOffersModel with _$AcmoOffersModel {
+abstract class AcmoOffersModel with _$AcmoOffersModel {
   factory AcmoOffersModel({
     required int campaignId,
     required String campaignName,
     @Default('') String campaignDescription,
-    @Default('') String active,
-    @Default('') String status,
+    @Default('') String campaignType,
+    @Default(false) bool campaignPremium,
+    @Default('') String campaignStatus,
+    required Validity validity,
+    @Default({}) Map<String, AvailableCurrency> availableCurrencies,
     required App app,
-    required Currency currency,
-    required CampaignPayout campaignPayout,
-    required Tracking tracking,
     required Targeting targeting,
+    @Default({}) Map<String, PayoutSummary> payoutSummary,
+    required Tracking tracking,
     required Creative creative,
     @Default(false) bool hasPlaytimeEvents,
-    @Default(false) bool premium,
-    @Default(false) bool isRetryDownload,
-    @Default(false) bool isInstalled,
-    @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
-    @Default(0) num sortingScore,
-    @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? createdOn
-
-
   }) = _AcmoOffersModel;
 
   factory AcmoOffersModel.fromJson(Map<String, dynamic> json) =>
@@ -44,36 +43,96 @@ class AcmoOffersModel with _$AcmoOffersModel {
 }
 
 @freezed
-class Creative with _$Creative {
+abstract class Validity with _$Validity {
+  factory Validity({
+    @Default(false) bool isRetryDownload,
+    @Default(false) bool isActivated,
+    @Default(false) bool isOldUser,
+    String? expiredOn,
+    int? expiredInSeconds,
+    @Default(false) bool isInstalled,
+  }) = _Validity;
+
+  factory Validity.fromJson(Map<String, dynamic> json) => _$ValidityFromJson(json);
+}
+
+@freezed
+abstract class AvailableCurrency with _$AvailableCurrency {
+  factory AvailableCurrency({
+    required int currencyId,
+    required String currencyIcon,
+    required String currencyName,
+  }) = _AvailableCurrency;
+
+  factory AvailableCurrency.fromJson(Map<String, dynamic> json) =>
+      _$AvailableCurrencyFromJson(json);
+}
+
+@freezed
+abstract class PayoutSummary with _$PayoutSummary {
+  factory PayoutSummary({
+    @Default(0) num totalPayoutConverted,
+    @Default(0) num totalPlayablePayoutConverted,
+    @Default(0) num totalMicrochargePayoutConverted,
+  }) = _PayoutSummary;
+
+  factory PayoutSummary.fromJson(Map<String, dynamic> json) =>
+      _$PayoutSummaryFromJson(json);
+}
+
+@freezed
+abstract class Creative with _$Creative {
   factory Creative({@Default('') String creativeUrl, required List<CreativePacks> creativePacks}) = _Creative;
 
   factory Creative.fromJson(Map<String, dynamic> json) =>
       _$CreativeFromJson(json);
 }
 @freezed
-class CreativePacks with _$CreativePacks {
+abstract class CreativePacks with _$CreativePacks {
 
   factory CreativePacks({
-
-@Default([])  List<Creatives?> creatives
-
+    required int creativePackId,
+    required String creativePackName,
+    required String languageName,
+    required String languageCode,
+    @Default([]) List<Creatives?> creatives,
   }) = _CreativePacks;
 
   factory CreativePacks.fromJson(Map<String, dynamic> json) => _$CreativePacksFromJson(json);
 }
 
 @freezed
-class Creatives with _$Creatives {
+abstract class Creatives with _$Creatives {
 
   factory Creatives({
-@Default('')
-  String fileUrl
+    required int creativeId,
+    required String creativeName,
+    String? callToAction,
+    @Default('') String text,
+    @Default('') String byteSize,
+    @Default('') String fileUrl,
+    int? duration,
+    required CreativeType creativeType,
   }) = _Creatives;
 
   factory Creatives.fromJson(Map<String, dynamic> json) => _$CreativesFromJson(json);
 }
+
 @freezed
-class Targeting with _$Targeting {
+abstract class CreativeType with _$CreativeType {
+  factory CreativeType({
+    required String name,
+    required String type,
+    required String width,
+    required String height,
+    required String creativeCategoryType,
+  }) = _CreativeType;
+
+  factory CreativeType.fromJson(Map<String, dynamic> json) =>
+      _$CreativeTypeFromJson(json);
+}
+@freezed
+abstract class Targeting with _$Targeting {
   factory Targeting({
     String? os,
     @Default('') String targetingType,
@@ -85,7 +144,7 @@ class Targeting with _$Targeting {
 }
 
 @freezed
-class Tracking with _$Tracking {
+abstract class Tracking with _$Tracking {
   factory Tracking({
     String? attributionTool,
     String? clickUrl,
@@ -97,47 +156,21 @@ class Tracking with _$Tracking {
       _$TrackingFromJson(json);
 }
 
-@freezed
-class CampaignPayout with _$CampaignPayout {
-  factory CampaignPayout({
-    @Default(0) int totalEvents,
-    @Default(0) double totalPayout,
-    @Default(0) double totalPayoutConverted,
-    @Default(0) double totalPlayablePayout,
-    @Default(0) double totalMicrochargePayout,
-    @Default(0) double totalPlayablePayoutConverted,
-    @Default(0) double totalMicrochargePayoutConverted,
-  }) = _CampaignPayout;
+// CampaignPayout is replaced by PayoutSummary map in AcmoOffersModel
 
-  factory CampaignPayout.fromJson(Map<String, dynamic> json) =>
-      _$CampaignPayoutFromJson(json);
-}
+// Currency is replaced by availableCurrencies map in AcmoOffersModel
 
 @freezed
-class Currency with _$Currency {
-  factory Currency({
-    @Default('') String name,
-    @Default('') String symbol,
-    @Default('') String adUnitName,
-    @Default('') String adUnitCurrencyName,
-    @Default('') String adUnitCurrencyIcon,
-    @Default(0) double adUnitCurrencyConversion,
-  }) = _Currency;
-
-  factory Currency.fromJson(Map<String, dynamic> json) =>
-      _$CurrencyFromJson(json);
-}
-
-@freezed
-class App with _$App {
+abstract class App with _$App {
   factory App({
     @Default(0) int id,
     @Default('') String title,
     @Default('') String packageName,
+    @Default(0) num rating,
+    @Default('') String previewUrl,
     @Default('') String shortDescription,
     @Default('') String store,
     @Default('') String storeCategory,
-    @Default('') String previewUrl,
     @Default('') String thumbnail,
   }) = _App;
 
@@ -145,8 +178,11 @@ class App with _$App {
 }
 
 @freezed
-class Reward with _$Reward {
-  factory Reward({@Default('') String rewardDifficulty}) = _Reward;
+abstract class Reward with _$Reward {
+  factory Reward({
+    @Default('') String rewardDifficulty,
+    @Default('') String incentRewardDescription,
+  }) = _Reward;
 
   factory Reward.fromJson(Map<String, dynamic> json) => _$RewardFromJson(json);
 }

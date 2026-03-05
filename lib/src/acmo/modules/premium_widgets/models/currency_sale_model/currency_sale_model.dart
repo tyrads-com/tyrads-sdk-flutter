@@ -6,7 +6,7 @@ part 'currency_sale_model.freezed.dart';
 part 'currency_sale_model.g.dart';
 
 @freezed
-class AcmoOfferCurrencySaleModel with _$AcmoOfferCurrencySaleModel {
+abstract class AcmoOfferCurrencySaleModel with _$AcmoOfferCurrencySaleModel {
     const factory AcmoOfferCurrencySaleModel({
         Data? data,
         String? message,
@@ -16,7 +16,7 @@ class AcmoOfferCurrencySaleModel with _$AcmoOfferCurrencySaleModel {
 }
 
 @freezed
-class Data with _$Data {
+abstract class Data with _$Data {
     const factory Data({
       @JsonKey(name: 'CurrencySales')
       CurrencySales? currencySales,
@@ -26,7 +26,7 @@ class Data with _$Data {
 }
 
 @freezed
-class CurrencySales with _$CurrencySales {
+abstract class CurrencySales with _$CurrencySales {
     const factory CurrencySales({
         String? name,
         double? multiplier,

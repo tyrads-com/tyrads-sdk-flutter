@@ -6,83 +6,142 @@ part of 'offers.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AcmoOffersResponseModelImpl _$$AcmoOffersResponseModelImplFromJson(
+_AcmoOffersResponseModel _$AcmoOffersResponseModelFromJson(
         Map<String, dynamic> json) =>
-    _$AcmoOffersResponseModelImpl(
+    _AcmoOffersResponseModel(
+      code: (json['code'] as num).toInt(),
       data: (json['data'] as List<dynamic>)
           .map((e) => AcmoOffersModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      message: json['message'] as String,
+      timestamp: (json['timestamp'] as num).toInt(),
+      responseTime: (json['responseTime'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$$AcmoOffersResponseModelImplToJson(
-        _$AcmoOffersResponseModelImpl instance) =>
+Map<String, dynamic> _$AcmoOffersResponseModelToJson(
+        _AcmoOffersResponseModel instance) =>
     <String, dynamic>{
+      'code': instance.code,
       'data': instance.data,
+      'message': instance.message,
+      'timestamp': instance.timestamp,
+      'responseTime': instance.responseTime,
     };
 
-_$AcmoOffersModelImpl _$$AcmoOffersModelImplFromJson(
-        Map<String, dynamic> json) =>
-    _$AcmoOffersModelImpl(
+_AcmoOffersModel _$AcmoOffersModelFromJson(Map<String, dynamic> json) =>
+    _AcmoOffersModel(
       campaignId: (json['campaignId'] as num).toInt(),
       campaignName: json['campaignName'] as String,
       campaignDescription: json['campaignDescription'] as String? ?? '',
-      active: json['active'] as String? ?? '',
-      status: json['status'] as String? ?? '',
+      campaignType: json['campaignType'] as String? ?? '',
+      campaignPremium: json['campaignPremium'] as bool? ?? false,
+      campaignStatus: json['campaignStatus'] as String? ?? '',
+      validity: Validity.fromJson(json['validity'] as Map<String, dynamic>),
+      availableCurrencies:
+          (json['availableCurrencies'] as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(
+                    k, AvailableCurrency.fromJson(e as Map<String, dynamic>)),
+              ) ??
+              const {},
       app: App.fromJson(json['app'] as Map<String, dynamic>),
-      currency: Currency.fromJson(json['currency'] as Map<String, dynamic>),
-      campaignPayout: CampaignPayout.fromJson(
-          json['campaignPayout'] as Map<String, dynamic>),
-      tracking: Tracking.fromJson(json['tracking'] as Map<String, dynamic>),
       targeting: Targeting.fromJson(json['targeting'] as Map<String, dynamic>),
+      payoutSummary: (json['payoutSummary'] as Map<String, dynamic>?)?.map(
+            (k, e) =>
+                MapEntry(k, PayoutSummary.fromJson(e as Map<String, dynamic>)),
+          ) ??
+          const {},
+      tracking: Tracking.fromJson(json['tracking'] as Map<String, dynamic>),
       creative: Creative.fromJson(json['creative'] as Map<String, dynamic>),
       hasPlaytimeEvents: json['hasPlaytimeEvents'] as bool? ?? false,
-      premium: json['premium'] as bool? ?? false,
-      isRetryDownload: json['isRetryDownload'] as bool? ?? false,
-      isInstalled: json['isInstalled'] as bool? ?? false,
-      expiredOn: acmoConverterStringToDatetime(json['expiredOn'] as String?),
       sortingScore: json['sortingScore'] as num? ?? 0,
-      createdOn: acmoConverterStringToDatetime(json['createdOn'] as String?),
     );
 
-Map<String, dynamic> _$$AcmoOffersModelImplToJson(
-        _$AcmoOffersModelImpl instance) =>
+Map<String, dynamic> _$AcmoOffersModelToJson(_AcmoOffersModel instance) =>
     <String, dynamic>{
       'campaignId': instance.campaignId,
       'campaignName': instance.campaignName,
       'campaignDescription': instance.campaignDescription,
-      'active': instance.active,
-      'status': instance.status,
+      'campaignType': instance.campaignType,
+      'campaignPremium': instance.campaignPremium,
+      'campaignStatus': instance.campaignStatus,
+      'validity': instance.validity,
+      'availableCurrencies': instance.availableCurrencies,
       'app': instance.app,
-      'currency': instance.currency,
-      'campaignPayout': instance.campaignPayout,
-      'tracking': instance.tracking,
       'targeting': instance.targeting,
+      'payoutSummary': instance.payoutSummary,
+      'tracking': instance.tracking,
       'creative': instance.creative,
       'hasPlaytimeEvents': instance.hasPlaytimeEvents,
-      'premium': instance.premium,
-      'isRetryDownload': instance.isRetryDownload,
-      'isInstalled': instance.isInstalled,
-      'expiredOn': instance.expiredOn?.toIso8601String(),
       'sortingScore': instance.sortingScore,
-      'createdOn': instance.createdOn?.toIso8601String(),
     };
 
-_$CreativeImpl _$$CreativeImplFromJson(Map<String, dynamic> json) =>
-    _$CreativeImpl(
+_Validity _$ValidityFromJson(Map<String, dynamic> json) => _Validity(
+      isRetryDownload: json['isRetryDownload'] as bool? ?? false,
+      isActivated: json['isActivated'] as bool? ?? false,
+      isOldUser: json['isOldUser'] as bool? ?? false,
+      expiredOn: json['expiredOn'] as String?,
+      expiredInSeconds: (json['expiredInSeconds'] as num?)?.toInt(),
+      isInstalled: json['isInstalled'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$ValidityToJson(_Validity instance) => <String, dynamic>{
+      'isRetryDownload': instance.isRetryDownload,
+      'isActivated': instance.isActivated,
+      'isOldUser': instance.isOldUser,
+      'expiredOn': instance.expiredOn,
+      'expiredInSeconds': instance.expiredInSeconds,
+      'isInstalled': instance.isInstalled,
+    };
+
+_AvailableCurrency _$AvailableCurrencyFromJson(Map<String, dynamic> json) =>
+    _AvailableCurrency(
+      currencyId: (json['currencyId'] as num).toInt(),
+      currencyIcon: json['currencyIcon'] as String,
+      currencyName: json['currencyName'] as String,
+    );
+
+Map<String, dynamic> _$AvailableCurrencyToJson(_AvailableCurrency instance) =>
+    <String, dynamic>{
+      'currencyId': instance.currencyId,
+      'currencyIcon': instance.currencyIcon,
+      'currencyName': instance.currencyName,
+    };
+
+_PayoutSummary _$PayoutSummaryFromJson(Map<String, dynamic> json) =>
+    _PayoutSummary(
+      totalPayoutConverted: json['totalPayoutConverted'] as num? ?? 0,
+      totalPlayablePayoutConverted:
+          json['totalPlayablePayoutConverted'] as num? ?? 0,
+      totalMicrochargePayoutConverted:
+          json['totalMicrochargePayoutConverted'] as num? ?? 0,
+    );
+
+Map<String, dynamic> _$PayoutSummaryToJson(_PayoutSummary instance) =>
+    <String, dynamic>{
+      'totalPayoutConverted': instance.totalPayoutConverted,
+      'totalPlayablePayoutConverted': instance.totalPlayablePayoutConverted,
+      'totalMicrochargePayoutConverted':
+          instance.totalMicrochargePayoutConverted,
+    };
+
+_Creative _$CreativeFromJson(Map<String, dynamic> json) => _Creative(
       creativeUrl: json['creativeUrl'] as String? ?? '',
       creativePacks: (json['creativePacks'] as List<dynamic>)
           .map((e) => CreativePacks.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$CreativeImplToJson(_$CreativeImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CreativeToJson(_Creative instance) => <String, dynamic>{
       'creativeUrl': instance.creativeUrl,
       'creativePacks': instance.creativePacks,
     };
 
-_$CreativePacksImpl _$$CreativePacksImplFromJson(Map<String, dynamic> json) =>
-    _$CreativePacksImpl(
+_CreativePacks _$CreativePacksFromJson(Map<String, dynamic> json) =>
+    _CreativePacks(
+      creativePackId: (json['creativePackId'] as num).toInt(),
+      creativePackName: json['creativePackName'] as String,
+      languageName: json['languageName'] as String,
+      languageCode: json['languageCode'] as String,
       creatives: (json['creatives'] as List<dynamic>?)
               ?.map((e) => e == null
                   ? null
@@ -91,23 +150,58 @@ _$CreativePacksImpl _$$CreativePacksImplFromJson(Map<String, dynamic> json) =>
           const [],
     );
 
-Map<String, dynamic> _$$CreativePacksImplToJson(_$CreativePacksImpl instance) =>
+Map<String, dynamic> _$CreativePacksToJson(_CreativePacks instance) =>
     <String, dynamic>{
+      'creativePackId': instance.creativePackId,
+      'creativePackName': instance.creativePackName,
+      'languageName': instance.languageName,
+      'languageCode': instance.languageCode,
       'creatives': instance.creatives,
     };
 
-_$CreativesImpl _$$CreativesImplFromJson(Map<String, dynamic> json) =>
-    _$CreativesImpl(
+_Creatives _$CreativesFromJson(Map<String, dynamic> json) => _Creatives(
+      creativeId: (json['creativeId'] as num).toInt(),
+      creativeName: json['creativeName'] as String,
+      callToAction: json['callToAction'] as String?,
+      text: json['text'] as String? ?? '',
+      byteSize: json['byteSize'] as String? ?? '',
       fileUrl: json['fileUrl'] as String? ?? '',
+      duration: (json['duration'] as num?)?.toInt(),
+      creativeType:
+          CreativeType.fromJson(json['creativeType'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$CreativesImplToJson(_$CreativesImpl instance) =>
+Map<String, dynamic> _$CreativesToJson(_Creatives instance) =>
     <String, dynamic>{
+      'creativeId': instance.creativeId,
+      'creativeName': instance.creativeName,
+      'callToAction': instance.callToAction,
+      'text': instance.text,
+      'byteSize': instance.byteSize,
       'fileUrl': instance.fileUrl,
+      'duration': instance.duration,
+      'creativeType': instance.creativeType,
     };
 
-_$TargetingImpl _$$TargetingImplFromJson(Map<String, dynamic> json) =>
-    _$TargetingImpl(
+_CreativeType _$CreativeTypeFromJson(Map<String, dynamic> json) =>
+    _CreativeType(
+      name: json['name'] as String,
+      type: json['type'] as String,
+      width: json['width'] as String,
+      height: json['height'] as String,
+      creativeCategoryType: json['creativeCategoryType'] as String,
+    );
+
+Map<String, dynamic> _$CreativeTypeToJson(_CreativeType instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'type': instance.type,
+      'width': instance.width,
+      'height': instance.height,
+      'creativeCategoryType': instance.creativeCategoryType,
+    };
+
+_Targeting _$TargetingFromJson(Map<String, dynamic> json) => _Targeting(
       os: json['os'] as String?,
       targetingType: json['targetingType'] as String? ?? '',
       reward: json['reward'] == null
@@ -115,106 +209,57 @@ _$TargetingImpl _$$TargetingImplFromJson(Map<String, dynamic> json) =>
           : Reward.fromJson(json['reward'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$TargetingImplToJson(_$TargetingImpl instance) =>
+Map<String, dynamic> _$TargetingToJson(_Targeting instance) =>
     <String, dynamic>{
       'os': instance.os,
       'targetingType': instance.targetingType,
       'reward': instance.reward,
     };
 
-_$TrackingImpl _$$TrackingImplFromJson(Map<String, dynamic> json) =>
-    _$TrackingImpl(
+_Tracking _$TrackingFromJson(Map<String, dynamic> json) => _Tracking(
       attributionTool: json['attributionTool'] as String?,
       clickUrl: json['clickUrl'] as String?,
       impressionUrl: json['impressionUrl'] as String?,
       s2sClickUrl: json['s2sClickUrl'] as String?,
     );
 
-Map<String, dynamic> _$$TrackingImplToJson(_$TrackingImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TrackingToJson(_Tracking instance) => <String, dynamic>{
       'attributionTool': instance.attributionTool,
       'clickUrl': instance.clickUrl,
       'impressionUrl': instance.impressionUrl,
       's2sClickUrl': instance.s2sClickUrl,
     };
 
-_$CampaignPayoutImpl _$$CampaignPayoutImplFromJson(Map<String, dynamic> json) =>
-    _$CampaignPayoutImpl(
-      totalEvents: (json['totalEvents'] as num?)?.toInt() ?? 0,
-      totalPayout: (json['totalPayout'] as num?)?.toDouble() ?? 0,
-      totalPayoutConverted:
-          (json['totalPayoutConverted'] as num?)?.toDouble() ?? 0,
-      totalPlayablePayout:
-          (json['totalPlayablePayout'] as num?)?.toDouble() ?? 0,
-      totalMicrochargePayout:
-          (json['totalMicrochargePayout'] as num?)?.toDouble() ?? 0,
-      totalPlayablePayoutConverted:
-          (json['totalPlayablePayoutConverted'] as num?)?.toDouble() ?? 0,
-      totalMicrochargePayoutConverted:
-          (json['totalMicrochargePayoutConverted'] as num?)?.toDouble() ?? 0,
-    );
-
-Map<String, dynamic> _$$CampaignPayoutImplToJson(
-        _$CampaignPayoutImpl instance) =>
-    <String, dynamic>{
-      'totalEvents': instance.totalEvents,
-      'totalPayout': instance.totalPayout,
-      'totalPayoutConverted': instance.totalPayoutConverted,
-      'totalPlayablePayout': instance.totalPlayablePayout,
-      'totalMicrochargePayout': instance.totalMicrochargePayout,
-      'totalPlayablePayoutConverted': instance.totalPlayablePayoutConverted,
-      'totalMicrochargePayoutConverted':
-          instance.totalMicrochargePayoutConverted,
-    };
-
-_$CurrencyImpl _$$CurrencyImplFromJson(Map<String, dynamic> json) =>
-    _$CurrencyImpl(
-      name: json['name'] as String? ?? '',
-      symbol: json['symbol'] as String? ?? '',
-      adUnitName: json['adUnitName'] as String? ?? '',
-      adUnitCurrencyName: json['adUnitCurrencyName'] as String? ?? '',
-      adUnitCurrencyIcon: json['adUnitCurrencyIcon'] as String? ?? '',
-      adUnitCurrencyConversion:
-          (json['adUnitCurrencyConversion'] as num?)?.toDouble() ?? 0,
-    );
-
-Map<String, dynamic> _$$CurrencyImplToJson(_$CurrencyImpl instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'symbol': instance.symbol,
-      'adUnitName': instance.adUnitName,
-      'adUnitCurrencyName': instance.adUnitCurrencyName,
-      'adUnitCurrencyIcon': instance.adUnitCurrencyIcon,
-      'adUnitCurrencyConversion': instance.adUnitCurrencyConversion,
-    };
-
-_$AppImpl _$$AppImplFromJson(Map<String, dynamic> json) => _$AppImpl(
+_App _$AppFromJson(Map<String, dynamic> json) => _App(
       id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String? ?? '',
       packageName: json['packageName'] as String? ?? '',
+      rating: json['rating'] as num? ?? 0,
+      previewUrl: json['previewUrl'] as String? ?? '',
       shortDescription: json['shortDescription'] as String? ?? '',
       store: json['store'] as String? ?? '',
       storeCategory: json['storeCategory'] as String? ?? '',
-      previewUrl: json['previewUrl'] as String? ?? '',
       thumbnail: json['thumbnail'] as String? ?? '',
     );
 
-Map<String, dynamic> _$$AppImplToJson(_$AppImpl instance) => <String, dynamic>{
+Map<String, dynamic> _$AppToJson(_App instance) => <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
       'packageName': instance.packageName,
+      'rating': instance.rating,
+      'previewUrl': instance.previewUrl,
       'shortDescription': instance.shortDescription,
       'store': instance.store,
       'storeCategory': instance.storeCategory,
-      'previewUrl': instance.previewUrl,
       'thumbnail': instance.thumbnail,
     };
 
-_$RewardImpl _$$RewardImplFromJson(Map<String, dynamic> json) => _$RewardImpl(
+_Reward _$RewardFromJson(Map<String, dynamic> json) => _Reward(
       rewardDifficulty: json['rewardDifficulty'] as String? ?? '',
+      incentRewardDescription: json['incentRewardDescription'] as String? ?? '',
     );
 
-Map<String, dynamic> _$$RewardImplToJson(_$RewardImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$RewardToJson(_Reward instance) => <String, dynamic>{
       'rewardDifficulty': instance.rewardDifficulty,
+      'incentRewardDescription': instance.incentRewardDescription,
     };
