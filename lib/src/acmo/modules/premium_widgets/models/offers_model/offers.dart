@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/converters.dart';
 
 part 'offers.freezed.dart';
 part 'offers.g.dart';
@@ -48,7 +49,7 @@ abstract class Validity with _$Validity {
     @Default(false) bool isRetryDownload,
     @Default(false) bool isActivated,
     @Default(false) bool isOldUser,
-    String? expiredOn,
+    @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
     int? expiredInSeconds,
     @Default(false) bool isInstalled,
   }) = _Validity;
@@ -111,7 +112,7 @@ abstract class Creatives with _$Creatives {
     @Default('') String text,
     @Default('') String byteSize,
     @Default('') String fileUrl,
-    int? duration,
+    String? duration,
     required CreativeType creativeType,
   }) = _Creatives;
 
@@ -156,9 +157,6 @@ abstract class Tracking with _$Tracking {
       _$TrackingFromJson(json);
 }
 
-// CampaignPayout is replaced by PayoutSummary map in AcmoOffersModel
-
-// Currency is replaced by availableCurrencies map in AcmoOffersModel
 
 @freezed
 abstract class App with _$App {

@@ -437,7 +437,6 @@ mixin _$AcmoOffersModel {
   Tracking get tracking;
   Creative get creative;
   bool get hasPlaytimeEvents;
-  num get sortingScore;
 
   /// Create a copy of AcmoOffersModel
   /// with the given fields replaced by the non-null parameter values.
@@ -481,9 +480,7 @@ mixin _$AcmoOffersModel {
             (identical(other.creative, creative) ||
                 other.creative == creative) &&
             (identical(other.hasPlaytimeEvents, hasPlaytimeEvents) ||
-                other.hasPlaytimeEvents == hasPlaytimeEvents) &&
-            (identical(other.sortingScore, sortingScore) ||
-                other.sortingScore == sortingScore));
+                other.hasPlaytimeEvents == hasPlaytimeEvents));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -503,12 +500,11 @@ mixin _$AcmoOffersModel {
       const DeepCollectionEquality().hash(payoutSummary),
       tracking,
       creative,
-      hasPlaytimeEvents,
-      sortingScore);
+      hasPlaytimeEvents);
 
   @override
   String toString() {
-    return 'AcmoOffersModel(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, campaignType: $campaignType, campaignPremium: $campaignPremium, campaignStatus: $campaignStatus, validity: $validity, availableCurrencies: $availableCurrencies, app: $app, targeting: $targeting, payoutSummary: $payoutSummary, tracking: $tracking, creative: $creative, hasPlaytimeEvents: $hasPlaytimeEvents, sortingScore: $sortingScore)';
+    return 'AcmoOffersModel(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, campaignType: $campaignType, campaignPremium: $campaignPremium, campaignStatus: $campaignStatus, validity: $validity, availableCurrencies: $availableCurrencies, app: $app, targeting: $targeting, payoutSummary: $payoutSummary, tracking: $tracking, creative: $creative, hasPlaytimeEvents: $hasPlaytimeEvents)';
   }
 }
 
@@ -532,8 +528,7 @@ abstract mixin class $AcmoOffersModelCopyWith<$Res> {
       Map<String, PayoutSummary> payoutSummary,
       Tracking tracking,
       Creative creative,
-      bool hasPlaytimeEvents,
-      num sortingScore});
+      bool hasPlaytimeEvents});
 
   $ValidityCopyWith<$Res> get validity;
   $AppCopyWith<$Res> get app;
@@ -569,7 +564,6 @@ class _$AcmoOffersModelCopyWithImpl<$Res>
     Object? tracking = null,
     Object? creative = null,
     Object? hasPlaytimeEvents = null,
-    Object? sortingScore = null,
   }) {
     return _then(_self.copyWith(
       campaignId: null == campaignId
@@ -628,10 +622,6 @@ class _$AcmoOffersModelCopyWithImpl<$Res>
           ? _self.hasPlaytimeEvents
           : hasPlaytimeEvents // ignore: cast_nullable_to_non_nullable
               as bool,
-      sortingScore: null == sortingScore
-          ? _self.sortingScore
-          : sortingScore // ignore: cast_nullable_to_non_nullable
-              as num,
     ));
   }
 
@@ -793,8 +783,7 @@ extension AcmoOffersModelPatterns on AcmoOffersModel {
             Map<String, PayoutSummary> payoutSummary,
             Tracking tracking,
             Creative creative,
-            bool hasPlaytimeEvents,
-            num sortingScore)?
+            bool hasPlaytimeEvents)?
         $default, {
     required TResult orElse(),
   }) {
@@ -815,8 +804,7 @@ extension AcmoOffersModelPatterns on AcmoOffersModel {
             _that.payoutSummary,
             _that.tracking,
             _that.creative,
-            _that.hasPlaytimeEvents,
-            _that.sortingScore);
+            _that.hasPlaytimeEvents);
       case _:
         return orElse();
     }
@@ -851,8 +839,7 @@ extension AcmoOffersModelPatterns on AcmoOffersModel {
             Map<String, PayoutSummary> payoutSummary,
             Tracking tracking,
             Creative creative,
-            bool hasPlaytimeEvents,
-            num sortingScore)
+            bool hasPlaytimeEvents)
         $default,
   ) {
     final _that = this;
@@ -872,8 +859,7 @@ extension AcmoOffersModelPatterns on AcmoOffersModel {
             _that.payoutSummary,
             _that.tracking,
             _that.creative,
-            _that.hasPlaytimeEvents,
-            _that.sortingScore);
+            _that.hasPlaytimeEvents);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -907,8 +893,7 @@ extension AcmoOffersModelPatterns on AcmoOffersModel {
             Map<String, PayoutSummary> payoutSummary,
             Tracking tracking,
             Creative creative,
-            bool hasPlaytimeEvents,
-            num sortingScore)?
+            bool hasPlaytimeEvents)?
         $default,
   ) {
     final _that = this;
@@ -928,8 +913,7 @@ extension AcmoOffersModelPatterns on AcmoOffersModel {
             _that.payoutSummary,
             _that.tracking,
             _that.creative,
-            _that.hasPlaytimeEvents,
-            _that.sortingScore);
+            _that.hasPlaytimeEvents);
       case _:
         return null;
     }
@@ -953,8 +937,7 @@ class _AcmoOffersModel implements AcmoOffersModel {
       final Map<String, PayoutSummary> payoutSummary = const {},
       required this.tracking,
       required this.creative,
-      this.hasPlaytimeEvents = false,
-      this.sortingScore = 0})
+      this.hasPlaytimeEvents = false})
       : _availableCurrencies = availableCurrencies,
         _payoutSummary = payoutSummary;
   factory _AcmoOffersModel.fromJson(Map<String, dynamic> json) =>
@@ -1008,9 +991,6 @@ class _AcmoOffersModel implements AcmoOffersModel {
   @override
   @JsonKey()
   final bool hasPlaytimeEvents;
-  @override
-  @JsonKey()
-  final num sortingScore;
 
   /// Create a copy of AcmoOffersModel
   /// with the given fields replaced by the non-null parameter values.
@@ -1058,9 +1038,7 @@ class _AcmoOffersModel implements AcmoOffersModel {
             (identical(other.creative, creative) ||
                 other.creative == creative) &&
             (identical(other.hasPlaytimeEvents, hasPlaytimeEvents) ||
-                other.hasPlaytimeEvents == hasPlaytimeEvents) &&
-            (identical(other.sortingScore, sortingScore) ||
-                other.sortingScore == sortingScore));
+                other.hasPlaytimeEvents == hasPlaytimeEvents));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1080,12 +1058,11 @@ class _AcmoOffersModel implements AcmoOffersModel {
       const DeepCollectionEquality().hash(_payoutSummary),
       tracking,
       creative,
-      hasPlaytimeEvents,
-      sortingScore);
+      hasPlaytimeEvents);
 
   @override
   String toString() {
-    return 'AcmoOffersModel(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, campaignType: $campaignType, campaignPremium: $campaignPremium, campaignStatus: $campaignStatus, validity: $validity, availableCurrencies: $availableCurrencies, app: $app, targeting: $targeting, payoutSummary: $payoutSummary, tracking: $tracking, creative: $creative, hasPlaytimeEvents: $hasPlaytimeEvents, sortingScore: $sortingScore)';
+    return 'AcmoOffersModel(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, campaignType: $campaignType, campaignPremium: $campaignPremium, campaignStatus: $campaignStatus, validity: $validity, availableCurrencies: $availableCurrencies, app: $app, targeting: $targeting, payoutSummary: $payoutSummary, tracking: $tracking, creative: $creative, hasPlaytimeEvents: $hasPlaytimeEvents)';
   }
 }
 
@@ -1111,8 +1088,7 @@ abstract mixin class _$AcmoOffersModelCopyWith<$Res>
       Map<String, PayoutSummary> payoutSummary,
       Tracking tracking,
       Creative creative,
-      bool hasPlaytimeEvents,
-      num sortingScore});
+      bool hasPlaytimeEvents});
 
   @override
   $ValidityCopyWith<$Res> get validity;
@@ -1153,7 +1129,6 @@ class __$AcmoOffersModelCopyWithImpl<$Res>
     Object? tracking = null,
     Object? creative = null,
     Object? hasPlaytimeEvents = null,
-    Object? sortingScore = null,
   }) {
     return _then(_AcmoOffersModel(
       campaignId: null == campaignId
@@ -1212,10 +1187,6 @@ class __$AcmoOffersModelCopyWithImpl<$Res>
           ? _self.hasPlaytimeEvents
           : hasPlaytimeEvents // ignore: cast_nullable_to_non_nullable
               as bool,
-      sortingScore: null == sortingScore
-          ? _self.sortingScore
-          : sortingScore // ignore: cast_nullable_to_non_nullable
-              as num,
     ));
   }
 
@@ -1275,7 +1246,8 @@ mixin _$Validity {
   bool get isRetryDownload;
   bool get isActivated;
   bool get isOldUser;
-  String? get expiredOn;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  DateTime? get expiredOn;
   int? get expiredInSeconds;
   bool get isInstalled;
 
@@ -1328,7 +1300,7 @@ abstract mixin class $ValidityCopyWith<$Res> {
       {bool isRetryDownload,
       bool isActivated,
       bool isOldUser,
-      String? expiredOn,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
       int? expiredInSeconds,
       bool isInstalled});
 }
@@ -1368,7 +1340,7 @@ class _$ValidityCopyWithImpl<$Res> implements $ValidityCopyWith<$Res> {
       expiredOn: freezed == expiredOn
           ? _self.expiredOn
           : expiredOn // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       expiredInSeconds: freezed == expiredInSeconds
           ? _self.expiredInSeconds
           : expiredInSeconds // ignore: cast_nullable_to_non_nullable
@@ -1474,8 +1446,14 @@ extension ValidityPatterns on Validity {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(bool isRetryDownload, bool isActivated, bool isOldUser,
-            String? expiredOn, int? expiredInSeconds, bool isInstalled)?
+    TResult Function(
+            bool isRetryDownload,
+            bool isActivated,
+            bool isOldUser,
+            @JsonKey(fromJson: acmoConverterStringToDatetime)
+            DateTime? expiredOn,
+            int? expiredInSeconds,
+            bool isInstalled)?
         $default, {
     required TResult orElse(),
   }) {
@@ -1509,8 +1487,14 @@ extension ValidityPatterns on Validity {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(bool isRetryDownload, bool isActivated, bool isOldUser,
-            String? expiredOn, int? expiredInSeconds, bool isInstalled)
+    TResult Function(
+            bool isRetryDownload,
+            bool isActivated,
+            bool isOldUser,
+            @JsonKey(fromJson: acmoConverterStringToDatetime)
+            DateTime? expiredOn,
+            int? expiredInSeconds,
+            bool isInstalled)
         $default,
   ) {
     final _that = this;
@@ -1542,8 +1526,14 @@ extension ValidityPatterns on Validity {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(bool isRetryDownload, bool isActivated, bool isOldUser,
-            String? expiredOn, int? expiredInSeconds, bool isInstalled)?
+    TResult? Function(
+            bool isRetryDownload,
+            bool isActivated,
+            bool isOldUser,
+            @JsonKey(fromJson: acmoConverterStringToDatetime)
+            DateTime? expiredOn,
+            int? expiredInSeconds,
+            bool isInstalled)?
         $default,
   ) {
     final _that = this;
@@ -1569,7 +1559,7 @@ class _Validity implements Validity {
       {this.isRetryDownload = false,
       this.isActivated = false,
       this.isOldUser = false,
-      this.expiredOn,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) this.expiredOn,
       this.expiredInSeconds,
       this.isInstalled = false});
   factory _Validity.fromJson(Map<String, dynamic> json) =>
@@ -1585,7 +1575,8 @@ class _Validity implements Validity {
   @JsonKey()
   final bool isOldUser;
   @override
-  final String? expiredOn;
+  @JsonKey(fromJson: acmoConverterStringToDatetime)
+  final DateTime? expiredOn;
   @override
   final int? expiredInSeconds;
   @override
@@ -1648,7 +1639,7 @@ abstract mixin class _$ValidityCopyWith<$Res>
       {bool isRetryDownload,
       bool isActivated,
       bool isOldUser,
-      String? expiredOn,
+      @JsonKey(fromJson: acmoConverterStringToDatetime) DateTime? expiredOn,
       int? expiredInSeconds,
       bool isInstalled});
 }
@@ -1688,7 +1679,7 @@ class __$ValidityCopyWithImpl<$Res> implements _$ValidityCopyWith<$Res> {
       expiredOn: freezed == expiredOn
           ? _self.expiredOn
           : expiredOn // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       expiredInSeconds: freezed == expiredInSeconds
           ? _self.expiredInSeconds
           : expiredInSeconds // ignore: cast_nullable_to_non_nullable
@@ -3186,7 +3177,7 @@ mixin _$Creatives {
   String get text;
   String get byteSize;
   String get fileUrl;
-  int? get duration;
+  String? get duration;
   CreativeType get creativeType;
 
   /// Create a copy of Creatives
@@ -3243,7 +3234,7 @@ abstract mixin class $CreativesCopyWith<$Res> {
       String text,
       String byteSize,
       String fileUrl,
-      int? duration,
+      String? duration,
       CreativeType creativeType});
 
   $CreativeTypeCopyWith<$Res> get creativeType;
@@ -3298,7 +3289,7 @@ class _$CreativesCopyWithImpl<$Res> implements $CreativesCopyWith<$Res> {
       duration: freezed == duration
           ? _self.duration
           : duration // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       creativeType: null == creativeType
           ? _self.creativeType
           : creativeType // ignore: cast_nullable_to_non_nullable
@@ -3417,7 +3408,7 @@ extension CreativesPatterns on Creatives {
             String text,
             String byteSize,
             String fileUrl,
-            int? duration,
+            String? duration,
             CreativeType creativeType)?
         $default, {
     required TResult orElse(),
@@ -3461,7 +3452,7 @@ extension CreativesPatterns on Creatives {
             String text,
             String byteSize,
             String fileUrl,
-            int? duration,
+            String? duration,
             CreativeType creativeType)
         $default,
   ) {
@@ -3503,7 +3494,7 @@ extension CreativesPatterns on Creatives {
             String text,
             String byteSize,
             String fileUrl,
-            int? duration,
+            String? duration,
             CreativeType creativeType)?
         $default,
   ) {
@@ -3556,7 +3547,7 @@ class _Creatives implements Creatives {
   @JsonKey()
   final String fileUrl;
   @override
-  final int? duration;
+  final String? duration;
   @override
   final CreativeType creativeType;
 
@@ -3622,7 +3613,7 @@ abstract mixin class _$CreativesCopyWith<$Res>
       String text,
       String byteSize,
       String fileUrl,
-      int? duration,
+      String? duration,
       CreativeType creativeType});
 
   @override
@@ -3678,7 +3669,7 @@ class __$CreativesCopyWithImpl<$Res> implements _$CreativesCopyWith<$Res> {
       duration: freezed == duration
           ? _self.duration
           : duration // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       creativeType: null == creativeType
           ? _self.creativeType
           : creativeType // ignore: cast_nullable_to_non_nullable

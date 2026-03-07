@@ -53,7 +53,6 @@ _AcmoOffersModel _$AcmoOffersModelFromJson(Map<String, dynamic> json) =>
       tracking: Tracking.fromJson(json['tracking'] as Map<String, dynamic>),
       creative: Creative.fromJson(json['creative'] as Map<String, dynamic>),
       hasPlaytimeEvents: json['hasPlaytimeEvents'] as bool? ?? false,
-      sortingScore: json['sortingScore'] as num? ?? 0,
     );
 
 Map<String, dynamic> _$AcmoOffersModelToJson(_AcmoOffersModel instance) =>
@@ -72,14 +71,13 @@ Map<String, dynamic> _$AcmoOffersModelToJson(_AcmoOffersModel instance) =>
       'tracking': instance.tracking,
       'creative': instance.creative,
       'hasPlaytimeEvents': instance.hasPlaytimeEvents,
-      'sortingScore': instance.sortingScore,
     };
 
 _Validity _$ValidityFromJson(Map<String, dynamic> json) => _Validity(
       isRetryDownload: json['isRetryDownload'] as bool? ?? false,
       isActivated: json['isActivated'] as bool? ?? false,
       isOldUser: json['isOldUser'] as bool? ?? false,
-      expiredOn: json['expiredOn'] as String?,
+      expiredOn: acmoConverterStringToDatetime(json['expiredOn'] as String?),
       expiredInSeconds: (json['expiredInSeconds'] as num?)?.toInt(),
       isInstalled: json['isInstalled'] as bool? ?? false,
     );
@@ -88,7 +86,7 @@ Map<String, dynamic> _$ValidityToJson(_Validity instance) => <String, dynamic>{
       'isRetryDownload': instance.isRetryDownload,
       'isActivated': instance.isActivated,
       'isOldUser': instance.isOldUser,
-      'expiredOn': instance.expiredOn,
+      'expiredOn': instance.expiredOn?.toIso8601String(),
       'expiredInSeconds': instance.expiredInSeconds,
       'isInstalled': instance.isInstalled,
     };
@@ -166,7 +164,7 @@ _Creatives _$CreativesFromJson(Map<String, dynamic> json) => _Creatives(
       text: json['text'] as String? ?? '',
       byteSize: json['byteSize'] as String? ?? '',
       fileUrl: json['fileUrl'] as String? ?? '',
-      duration: (json['duration'] as num?)?.toInt(),
+      duration: json['duration'] as String?,
       creativeType:
           CreativeType.fromJson(json['creativeType'] as Map<String, dynamic>),
     );
