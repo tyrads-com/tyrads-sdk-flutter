@@ -93,6 +93,9 @@ class NetworkCommon {
               .then((value) => isDialogOpen = false);
         }
       } else {
+        debugPrint("Dio Error: ${e.message}");
+        debugPrint("Failing URL: ${e.requestOptions.baseUrl}${e.requestOptions.path}");
+        debugPrint("Status Code: ${e.response?.statusCode}");
         return handler.next(e); //continue
       }
     }));
