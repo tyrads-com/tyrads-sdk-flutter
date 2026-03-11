@@ -286,7 +286,8 @@ class Tyrads {
         fd["phoneNumber"] = userInfo?.phoneNumber;
       }
       if (userInfo?.userGroup != null) fd["userGroup"] = userInfo?.userGroup;
-
+      if (userInfo?.age != null) fd["age"] = userInfo?.age;
+      if (userInfo?.gender != null) fd["gender"] = userInfo?.gender;
       final encKey = prefs.getString(AcmoKeyNames.ENCRYPTION_KEY) ?? "";
       final body =
       _isSecure ? await AcmoEncrypt(encKey).encryptDataAESGCM(fd) : fd;
