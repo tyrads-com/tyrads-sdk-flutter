@@ -302,7 +302,6 @@ class Tyrads {
 
         token = loginData.data.token;
         await prefs.setString(AcmoKeyNames.TOKEN, token);
-        log("Token: $token");
 
         newUser = loginData.data.newRegisteredUser;
         colorMain = loginData.data.appInfo.mainColor.toColor();
@@ -324,7 +323,7 @@ class Tyrads {
         track(TyradsActivity.initialized);
         isLoginSuccessful = true;
         AcmoInAppNotificationController.instance.init();
-        // _preloadWebView();
+        _preloadWebView();
       }
     } catch (e) {
       debugPrint("Error initializing: ${e.toString()}");
@@ -352,23 +351,22 @@ class Tyrads {
     this.config = config;
   }
 
-  /// Builds a URI for the given route / campaignID.
   Uri getWebUri({int? campaignID, String? route}) {
     final currentRoute = route ?? TyradsDeepRoutes.OFFERS;
     return Uri(
       scheme: 'https',
-      host: 'sdk.tyrads.com',
+      host: 'v4.sdk.tyrads.com',
       queryParameters: {
+        'token': token,
         'to': campaignID == null
             ? currentRoute
             : '$currentRoute/$campaignID',
-        'token': token,
+        'placementId': placementId,
         'lang': selectedLanguage,
       },
     );
   }
 
-  /// Updates [webURI] and keeps it in sync (used by the notification branch).
   void updateWebUri(String targetRoute, {int? targetCampaignID}) {
     webURI = getWebUri(
       campaignID: targetCampaignID,
