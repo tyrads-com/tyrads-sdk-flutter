@@ -34,6 +34,7 @@ class AcmoPremiumWidgetsController {
   Future<List<AcmoOffersModel>>? _ongoing;
 
   List<AcmoOffersModel> hotOffers = [];
+
   final ValueNotifier<int> activatedCount = ValueNotifier<int>(0);
   AcmoOfferCurrencySaleModel currencySales = const AcmoOfferCurrencySaleModel();
   var offerLoading = false;
@@ -103,8 +104,8 @@ class AcmoPremiumWidgetsController {
     final clickUrl = item.tracking.clickUrl;
     final s2sClickUrl = item.tracking.s2sClickUrl;
     final previewUrl = item.app.previewUrl;
-    final isInstalled = item.isInstalled;
-    final isRetryDownload = item.isRetryDownload;
+    final isInstalled = item.validity.isInstalled;
+    final isRetryDownload = item.validity.isInstalled;
 
     if (offerLoading) return;
     offerLoading = true;
@@ -143,12 +144,24 @@ class AcmoPremiumWidgetsController {
   }
 }
 
+num getTotalPayoutConverted(AcmoOffersModel item) {
+  return item.payoutSummary.entries.first.value.totalPlayablePayoutConverted;
+}
+
+String getCurrencyIcon(AcmoOffersModel item) {
+  return item.availableCurrencies.entries.first.value.currencyIcon;
+}
+
 List<AcmoOffersModel> _sortAndPrepareOffers(List<AcmoOffersModel> data) {
-  final list =
-      data.where((e) => e.campaignPayout.totalPayoutConverted > 0).toList();
+  final list = data.where((e) {
+    return e.payoutSummary.entries.first.value.totalPlayablePayoutConverted > 0;
+  }).toList();
+  // list.sort((a, b) {
+  //   if (a.campaignPremium != b.campaignPremium) return b.campaignPremium ? 1 : -1;
+  //   return b.sortingScore.compareTo(a.sortingScore);
+  // });
   list.sort((a, b) {
-    if (a.premium != b.premium) return b.premium ? 1 : -1;
-    return b.sortingScore.compareTo(a.sortingScore);
+    return b.campaignPremium ? 1 : -1;
   });
   return list.length > 5 ? list.sublist(0, 5) : list;
 }
