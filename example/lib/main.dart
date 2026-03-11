@@ -61,6 +61,8 @@ String? _previousEncKey;
 String? _previousEngagementId;
 String? _previousPlacementId;
 String? _previousUserID;
+int?    _previousAge;
+int?    _previousGender;
 bool?   _previousSkipInitialPages;
 
 Future<void> initializeTyrads({
@@ -71,6 +73,8 @@ Future<void> initializeTyrads({
   String? engagementId,
   String? placementId,
   String? userID,
+  int? age,
+  int? gender,
   bool skipInitialPages = false,
 }) async {
   final configKeys  = _getConfigKeys(selectedConfig);
@@ -86,6 +90,8 @@ Future<void> initializeTyrads({
       _previousEngagementId == engagementId &&
       _previousPlacementId == placementId &&
       _previousUserID == finalUserId &&
+      _previousAge == age &&
+      _previousGender == gender &&
       _previousSkipInitialPages == skipInitialPages) {
     return;
   }
@@ -103,6 +109,8 @@ Future<void> initializeTyrads({
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
       userGroup: "High purchase user",
+      age: age,
+      gender: gender,
     ),
     mediaSourceInfo: TyradsMediaSourceInfo(
       mediaSourceName: "Facebook",
@@ -138,6 +146,8 @@ Future<void> initializeTyrads({
   _previousEngagementId     = engagementId;
   _previousPlacementId      = placementId;
   _previousUserID           = finalUserId;
+  _previousAge              = age;
+  _previousGender           = gender;
   _isTyradsInitialized      = true;
   _previousSkipInitialPages = skipInitialPages;
 
@@ -151,6 +161,8 @@ void clearTyradsCache() {
   _previousEngagementId = null;
   _previousPlacementId  = null;
   _previousUserID       = null;
+  _previousAge          = null;
+  _previousGender       = null;
   _isTyradsInitialized  = false;
 }
 
@@ -189,6 +201,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int style = 1;
   int initialPageMode = 1;
   String selectedConfig = 'belanda1';
+  int? selectedAge;
+  int? selectedGender;
 
   int widgetKey = 0;
   bool isReady = false;
@@ -277,6 +291,8 @@ class _MyHomePageState extends State<MyHomePage> {
       engagementId:     engagementIdController.text,
       placementId:      placementIdController.text,
       userID:           userIDController.text,
+      age:              selectedAge,
+      gender:           selectedGender,
       skipInitialPages: initialPageMode == 2,
     );
 
@@ -367,6 +383,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             encKey:           encKeyController.text.isEmpty       ? null : encKeyController.text,
                             engagementId:     engagementIdController.text.isEmpty ? null : engagementIdController.text,
                             userID:           userIDController.text.isEmpty       ? null : userIDController.text,
+                            age:              selectedAge,
+                            gender:           selectedGender,
                             skipInitialPages: initialPageMode == 2,
                           );
                           setState(() { widgetKey++; });
@@ -425,6 +443,49 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
+                ),
+
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<int>(
+                        value: selectedAge,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Age',
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                        items: List.generate(83, (index) => index + 18).map((age) {
+                          return DropdownMenuItem(
+                            value: age,
+                            child: Text(age.toString()),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() { selectedAge = value; });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: DropdownButtonFormField<int>(
+                        value: selectedGender,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Gender',
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 1, child: Text("Male")),
+                          DropdownMenuItem(value: 2, child: Text("Female")),
+                        ],
+                        onChanged: (value) {
+                          setState(() { selectedGender = value; });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: 10),
