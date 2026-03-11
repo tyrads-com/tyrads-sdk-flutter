@@ -5,6 +5,7 @@ import 'package:tyrads_sdk/src/acmo/core/components/acmo_image.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/button_3.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/colors.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
+import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/currency_sale_model/currency_sale_model.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/card_container.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
@@ -76,7 +77,7 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                               width: double.infinity,
                               height: itemHeight,
                             ),
-                            if (item.premium)
+                            if (item.campaignPremium)
                               Positioned(
                                 right: 16,
                                 top: 16,
@@ -146,8 +147,7 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                                                 .data?.currencySales !=
                                             null)
                                           Text(
-                                            item.campaignPayout
-                                                .totalPlayablePayoutConverted
+                                            getTotalPayoutConverted(item)
                                                 .numeral(digits: 2),
                                             style: GoogleFonts.poppins(
                                                 color: const Color(0xFF454646),
@@ -164,13 +164,12 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             AcmoNetworkImage(
-                                              url: item
-                                                  .currency.adUnitCurrencyIcon,
+                                              url: getCurrencyIcon(item),
                                               width: 16,
                                               height: 16,
                                             ),
                                             Text(
-                                              " ${(item.campaignPayout.totalPlayablePayoutConverted * (currencySaleModel.data?.currencySales?.multiplier ?? 1)).numeral(digits: 2)}",
+                                              " ${(getTotalPayoutConverted(item) * (currencySaleModel.data?.currencySales?.multiplier ?? 1)).numeral(digits: 2)}",
                                               style: GoogleFonts.poppins(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w700,
