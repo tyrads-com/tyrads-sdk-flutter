@@ -28,7 +28,7 @@ class AcmoOffersRepository {
   Future<int> getActivatedOfferSummary() async {
     final currentLanguage = Tyrads.instance.selectedLanguage;
     var response = await NetworkCommon().dio.get(
-        "${AcmoEndpointNames.ACTIVE_OFFERS}/${AcmoEndpointNames.OFFER_SUMMARY}",
+        AcmoEndpointNames.OFFER_SUMMARY,
         queryParameters: {
           "lang": currentLanguage,
         });
@@ -36,6 +36,6 @@ class AcmoOffersRepository {
   }
 
   activateOffer({required id}) async {
-    await NetworkCommon().dio.post("${AcmoEndpointNames.OFFERS}/active/$id");
+    await NetworkCommon().dio.post("${AcmoEndpointNames.OFFERS}/$id/activate");
   }
 }
