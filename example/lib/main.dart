@@ -58,6 +58,8 @@ Future<void> _saveUserId(String userId) async {
 String? _previousApiKey;
 String? _previousApiSecret;
 String? _previousEncKey;
+String? _previousEngagementId;
+String? _previousPlacementId;
 String? _previousUserID;
 bool?   _previousSkipInitialPages;
 
@@ -81,6 +83,8 @@ Future<void> initializeTyrads({
       _previousApiKey == finalApiKey &&
       _previousApiSecret == finalApiSecret &&
       _previousEncKey == finalEncKey &&
+      _previousEngagementId == engagementId &&
+      _previousPlacementId == placementId &&
       _previousUserID == finalUserId &&
       _previousSkipInitialPages == skipInitialPages) {
     return;
@@ -131,6 +135,8 @@ Future<void> initializeTyrads({
   _previousApiKey           = finalApiKey;
   _previousApiSecret        = finalApiSecret;
   _previousEncKey           = finalEncKey;
+  _previousEngagementId     = engagementId;
+  _previousPlacementId      = placementId;
   _previousUserID           = finalUserId;
   _isTyradsInitialized      = true;
   _previousSkipInitialPages = skipInitialPages;
@@ -139,11 +145,13 @@ Future<void> initializeTyrads({
 }
 
 void clearTyradsCache() {
-  _previousApiKey      = null;
-  _previousApiSecret   = null;
-  _previousEncKey      = null;
-  _previousUserID      = null;
-  _isTyradsInitialized = false;
+  _previousApiKey       = null;
+  _previousApiSecret    = null;
+  _previousEncKey       = null;
+  _previousEngagementId = null;
+  _previousPlacementId  = null;
+  _previousUserID       = null;
+  _isTyradsInitialized  = false;
 }
 
 class MyApp extends StatelessWidget {
@@ -453,26 +461,28 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                SizedBox(
-                  width: double.maxFinite,
-                  child: TextField(
-                    controller: engagementIdController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Engagement Id (Optional)",
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: engagementIdController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Engagement Id (Optional)",
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.maxFinite,
-                  child: TextField(
-                    controller: placementIdController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Placement Id (Optional)",
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: placementIdController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Placement Id (Optional)",
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
