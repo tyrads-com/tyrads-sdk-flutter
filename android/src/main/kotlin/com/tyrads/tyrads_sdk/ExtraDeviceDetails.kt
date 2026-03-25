@@ -3,12 +3,14 @@ package com.tyrads.tyrads_sdk
 import android.content.Context
 import android.os.Build
 import javax.microedition.khronos.egl.EGL10
+import javax.microedition.khronos.egl.EGLContext
 import javax.microedition.khronos.opengles.GL10
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import com.google.android.gms.tasks.Tasks
-import com.google.android.play.core.appset.AppSetClient
-import com.google.android.play.core.appset.AppSetClientFactory
+import com.google.android.gms.appset.AppSet
+import com.google.android.gms.appset.AppSetIdClient
+import com.google.android.gms.appset.AppSetIdInfo
 import java.util.concurrent.TimeoutException
 
 /**
@@ -46,7 +48,7 @@ object ExtraDeviceDetails {
 
             // Fallback: Use EGL10 for GPU detection
             try {
-                val egl10 = EGL10.getImplementation()
+                val egl10 = EGLContext.getEGL() as EGL10
                 val display = egl10.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY)
                 if (display == EGL10.EGL_NO_DISPLAY) {
                     return "Unknown"
@@ -151,11 +153,11 @@ object ExtraDeviceDetails {
             val ctx = context ?: return "Unknown"
 
             try {
-                val appSetClient: AppSetClient = AppSetClientFactory.create(ctx)
+                val appSetClient: AppSetIdClient = AppSet.getClient(ctx)
                 val appSetIdTask = appSetClient.appSetIdInfo
 
                 // Blocking call with timeout
-                val appSetIdInfo = Tasks.await(appSetIdTask, 3, java.util.concurrent.TimeUnit.SECONDS)
+                val appSetIdInfo: AppSetIdInfo = Tasks.await(appSetIdTask, 3, java.util.concurrent.TimeUnit.SECONDS)
                 appSetIdInfo.id
             } catch (e: TimeoutException) {
                 "Unknown"
