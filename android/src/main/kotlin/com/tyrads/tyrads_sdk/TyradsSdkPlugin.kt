@@ -23,16 +23,47 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.PluginRegistry.NewIntentListener
+import android.app.Activity
+import com.tyrads.tyrads_sdk.push_notifications.FCMNotifications
+import java.util.concurrent.CopyOnWriteArrayList
+
 
 /** TyradsSdkPlugin */
-class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
+class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler, ActivityAware, NewIntentListener {
   private lateinit var methodChannel : MethodChannel
   private lateinit var networkEventChannel: EventChannel
   private lateinit var vpnEventChannel: EventChannel
+  private lateinit var notificationEventChannel: EventChannel
   private lateinit var context: Context
+  private var activity: Activity? = null
   private var networkEventSink: EventSink? = null
   private var vpnEventSink: EventSink? = null
   private lateinit var networkChangeReceiver: BroadcastReceiver
+
+
+  companion object {
+    var notificationEventSink: EventSink? = null
+    private val pendingEvents = CopyOnWriteArrayList<Map<String, Any>>()
+
+    fun sendOrBufferEvent(eventData: Map<String, Any>) {
+        val sink = notificationEventSink
+        if (sink != null) {
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                try {
+                    sink.success(eventData)
+                } catch (e: Exception) {
+                    pendingEvents.add(eventData)
+                }
+            }
+        } else {
+            pendingEvents.add(eventData)
+        }
+    }
+  }
+
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk")
@@ -43,6 +74,9 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
     
     vpnEventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk/vpnCheck")
     vpnEventChannel.setStreamHandler(this)
+
+    notificationEventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk/notifications")
+    notificationEventChannel.setStreamHandler(this)
 
     context = flutterPluginBinding.applicationContext
 
@@ -88,6 +122,20 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
           }
         }
       }
+      "initializeFCM" -> {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val token = com.tyrads.tyrads_sdk.push_notifications.FCMService.initialize(context)
+                withContext(Dispatchers.Main) {
+                    result.success(token)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    result.error("FCM_INIT_ERROR", e.message, null)
+                }
+            }
+        }
+      }
       else -> result.notImplemented()
     }
   }
@@ -96,6 +144,18 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
     when (arguments) {
       "networkType" -> networkEventSink = events
       "vpnCheck" -> vpnEventSink = events
+      "notifications" -> {
+          notificationEventSink = events
+          // Flush pending events
+          if (events != null && pendingEvents.isNotEmpty()) {
+              val iterator = pendingEvents.iterator()
+              while (iterator.hasNext()) {
+                  val event = iterator.next()
+                  events.success(event)
+                  pendingEvents.remove(event)
+              }
+          }
+      }
       else -> {
             
             println("Unexpected stream argument: $arguments")
@@ -108,6 +168,7 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
     when (arguments) {
       "networkType" -> networkEventSink = null
       "vpnCheck" -> vpnEventSink = null
+      "notifications" -> notificationEventSink = null
       else -> {
              println("Unexpected stream argument: $arguments") // Log the issue
         }
@@ -120,6 +181,33 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
     vpnEventChannel.setStreamHandler(null)
     context.unregisterReceiver(networkChangeReceiver)
   }
+
+  override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+    activity = binding.activity
+    binding.addOnNewIntentListener(this)
+    // Handle the initial intent that launched the activity
+    FCMNotifications.getInstance().handleNotificationIntent(activity?.intent)
+  }
+
+  override fun onDetachedFromActivityForConfigChanges() {
+    activity = null
+  }
+
+  override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+    activity = binding.activity
+    binding.addOnNewIntentListener(this)
+  }
+
+  override fun onDetachedFromActivity() {
+    activity = null
+  }
+
+  override fun onNewIntent(intent: Intent): Boolean {
+    // Handle subsequent intents while the activity is alive
+    FCMNotifications.getInstance().handleNotificationIntent(intent)
+    return false
+  }
+
 
   private fun getTrackingInfo(): Map<String, String> {
         val telephonyManager = context.getSystemService(TELEPHONY_SERVICE) as TelephonyManager
