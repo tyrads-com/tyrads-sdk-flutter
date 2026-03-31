@@ -1,19 +1,11 @@
 import 'dart:async';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
-import 'firebase_config.dart';
-import 'fcm_notifications.dart';
+import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
 
 class FCMService {
-  static final FirebaseMessaging _firebaseMessaging =
-      FirebaseMessaging.instance;
-
-  static bool _useNativeImplementation = false;
-  static StreamSubscription<RemoteMessage>? _messageSubscription;
-  static StreamSubscription<RemoteMessage>? _messageOpenedAppSubscription;
+  static StreamSubscription<Map<String, dynamic>>? _notificationSubscription;
   static String? _pendingDeepLink;
 
   static void handleDeepLink(String deeplink) {
@@ -64,48 +56,18 @@ class FCMService {
 
   static Future<void> initialize() async {
     try {
-      debugPrint('Initializing FCM service...');
-      await FCMNotifications.initialize();
-
-      await _initializeStandardFirebase();
-      _setupMessageHandlers();
-      debugPrint('FCM service initialized successfully');
-    } catch (error) {
-      debugPrint('Standard FCM failed, trying native fallback...');
-    }
-  }
-
-  static Future<void> _initializeStandardFirebase() async {
-    try {
-      await Firebase.initializeApp(
-        options: FirebaseOptions(
-          apiKey: FirebaseConfig.apiKey,
-          appId: FirebaseConfig.appId,
-          messagingSenderId: FirebaseConfig.messagingSenderId,
-          projectId: FirebaseConfig.projectId,
-          storageBucket: FirebaseConfig.storageBucket,
-        ),
-      );
-
-      await _firebaseMessaging.requestPermission();
-      await _handleToken();
-      _useNativeImplementation = false;
-      debugPrint('Standard Firebase initialization successful');
-    } catch (error) {
-      debugPrint('Standard Firebase initialization failed $error');
-      rethrow;
-    }
-  }
-
-  static Future<void> _handleToken() async {
-    try {
-      final String? token = await _firebaseMessaging.getToken();
+      debugPrint('Initializing Native FCM service...');
+      
+      final String? token = await TyradsSdkPlatform.instance.initializeFCM();
       if (token != null) {
-        debugPrint('FCM Token: $token');
+        debugPrint('Native FCM Token: $token');
         await _saveToken(token);
       }
+      
+      _setupMessageHandlers();
+      debugPrint('Native FCM service initialized successfully');
     } catch (error) {
-      debugPrint('Failed to get FCM token $error');
+      debugPrint('Native FCM initialization failed: $error');
     }
   }
 
@@ -119,60 +81,34 @@ class FCMService {
   }
 
   static void _setupMessageHandlers() {
-    if (_useNativeImplementation) {
-      debugPrint('Using native message handlers');
-      return;
-    }
-
-    _messageSubscription = FirebaseMessaging.onMessage.listen(
-      _handleForegroundMessage,
-    );
-    _messageOpenedAppSubscription = FirebaseMessaging.onMessageOpenedApp.listen(
-      _handleBackgroundMessage,
-    );
-
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if (message != null) {
-        _handleBackgroundMessage(message);
+    _notificationSubscription?.cancel();
+    _notificationSubscription = TyradsSdkPlatform.instance.onPushEvent().listen((event) {
+      final type = event['type'];
+      final data = Map<String, dynamic>.from(event['data'] ?? {});
+      
+      debugPrint('Notification Event Received: $type');
+      debugPrint('Notification Data: $data');
+      
+      if (type == 'onClick') {
+        _handleMessageData(data);
       }
     });
 
-    debugPrint('Standard message handlers setup complete');
-  }
-
-  static Future<void> _handleForegroundMessage(RemoteMessage message) async {
-    debugPrint('Foreground message received: ${message.messageId}');
-
-    if (message.notification != null) {
-      await FCMNotifications.showNotification(
-        title: message.notification?.title ?? 'TyrAds Notification',
-        body: message.notification?.body ?? '',
-        imageUrl: message.notification?.android?.imageUrl,
-        payload: message.data,
-      );
-    }
-  }
-
-  static Future<void> _handleBackgroundMessage(RemoteMessage message) async {
-    debugPrint('Background message received: ${message.messageId}');
-    _handleMessageData(message.data);
+    debugPrint('Native message handlers setup complete');
   }
 
   static void _handleMessageData(Map<String, dynamic> data) {
     debugPrint('Message data :$data');
-    final deeplink = data['deepLink'];
+    final deeplink = data['deepLink'] ?? data['deeplink'];
     if (deeplink != null && deeplink != '') {
       handleDeepLink(deeplink.toString());
     }
   }
 
   static Future<void> dispose() async {
-    await _messageSubscription?.cancel();
-    await _messageOpenedAppSubscription?.cancel();
-    _messageSubscription = null;
-    _messageOpenedAppSubscription = null;
+    await _notificationSubscription?.cancel();
+    _notificationSubscription = null;
     debugPrint('FCM service disposed');
   }
-
-  static bool get useNativeImplementation => _useNativeImplementation;
 }
+
