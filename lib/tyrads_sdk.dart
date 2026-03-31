@@ -107,6 +107,8 @@ class Tyrads {
   static Tyrads get instance => _singleton;
 
   late String selectedLanguage;
+  
+  Stream<Map<String, dynamic>> get onNotification => TyradsSdkPlatform.instance.onPushEvent();
 
   Future<void> init({
     required apiKey,
