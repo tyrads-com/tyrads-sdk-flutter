@@ -39,10 +39,6 @@ dependencies:
   web: ^1.1.1
   custom_timer: ^0.2.3
 
-  flutter_local_notifications: ^19.4.2
-  firebase_core: ^4.1.0
-  firebase_messaging: ^16.0.1
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
