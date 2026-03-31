@@ -74,4 +74,9 @@ abstract class TyradsSdkPlatform extends platform_interface.PlatformInterface {
   Stream<Map<String, dynamic>> onPushEvent() {
     throw UnimplementedError('onPushEvent() has not been implemented.');
   }
+
+  /// Initialize FCM (Android)
+  Future<String?> initializeFCM() {
+    throw UnimplementedError('initializeFCM() has not been implemented.');
+  }
 }

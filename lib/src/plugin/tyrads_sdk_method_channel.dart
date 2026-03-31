@@ -17,6 +17,8 @@ class MethodChannelTyradsSdk extends TyradsSdkPlatform {
 
   static const EventChannel _pushEventChannel =
       EventChannel('tyrads_sdk/pushEvents'); // iOS
+  static const EventChannel _androidNotificationEventChannel =
+      EventChannel('tyrads_sdk/notifications'); // Android
 
   bool get isIOS => defaultTargetPlatform == TargetPlatform.iOS;
 
@@ -105,11 +107,21 @@ class MethodChannelTyradsSdk extends TyradsSdkPlatform {
 
   @override
   Stream<Map<String, dynamic>> onPushEvent() {
-    if (!isIOS) {
-      return const Stream.empty();
+    if (isIOS) {
+      return _pushEventChannel.receiveBroadcastStream().map(
+            (event) => Map<String, dynamic>.from(event as Map<Object?, Object?>),
+          );
     }
-    return _pushEventChannel.receiveBroadcastStream().map(
+    return _androidNotificationEventChannel.receiveBroadcastStream("notifications").map(
           (event) => Map<String, dynamic>.from(event as Map<Object?, Object?>),
         );
+  }
+
+  @override
+  Future<String?> initializeFCM() async {
+    if (isIOS) {
+      return null;
+    }
+    return await methodChannel.invokeMethod<String>('initializeFCM');
   }
 }
