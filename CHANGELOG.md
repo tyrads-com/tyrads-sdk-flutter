@@ -1,3 +1,13 @@
+## 4.0.0-beta.0
+* Full support for Firebase Cloud Messaging (FCM) on Android and APNS support on iOS.
+* Support for image-rich and text-based notifications with background and terminated state handling.
+* Automated routing from notification clicks to specific app sections.
+* Enhanced UI and logic for Currency Sales and Limited Time Offer notifications with `AcmoPromoExecutor`.
+* Remote localization system with automatic updates, SHA-256 verification, and caching for translations.
+* Implementation of advanced hardware-level telemetry (GPU, sensors, device state) for enhanced security checks (V4 exclusive).
+* Enhanced security checker with integrity checks to prevent fraud.
+* Optimized loading and caching mechanisms for smoother performance and better UX across widgets.
+
 ## 3.3.0-beta.3
 * A skip button has been added to the User Update page (Age and Gender) on iOS.
 * Added a new param `engagementId` in init to support engagement tracking.
