@@ -3,6 +3,7 @@
 * Support for image-rich and text-based notifications with background and terminated state handling.
 * Automated routing from notification clicks to specific app sections.
 * Enhanced UI and logic for Currency Sales and Limited Time Offer notifications with `AcmoPromoExecutor`.
+* Added `placementId` support in `init` to enable dynamic coin selection and user-specific currency settings based on ad placements.
 * Remote localization system with automatic updates, SHA-256 verification, and caching for translations.
 * Implementation of advanced hardware-level telemetry (GPU, sensors, device state) for enhanced security checks (V4 exclusive).
 * Enhanced security checker with integrity checks to prevent fraud.
