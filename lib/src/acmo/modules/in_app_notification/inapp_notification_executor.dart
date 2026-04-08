@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show BuildContext, showDialog, Colors;
+import 'package:flutter/material.dart' show BuildContext, showDialog, Colors, ModalRoute;
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notificattions_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/pages/currency_sales_notif.dart';
@@ -25,7 +25,7 @@ class AcmoPromoExecutor {
           final campaignIds = action.data as List<int>;
           final hasShown = await AcmoInAppNotificationController.instance
               .hasShownLimitedTimeOfferNotification(campaignIds);
-          if (!hasShown && context.mounted) {
+          if (!hasShown && context.mounted && ModalRoute.of(context)?.isCurrent == true) {
             await showDialog(
               context: context,
               barrierColor: Colors.transparent,
@@ -40,7 +40,7 @@ class AcmoPromoExecutor {
           final saleId = action.data as String;
           final hasShown = await AcmoInAppNotificationController.instance
               .hasShownCurrencySalesNotification(saleId);
-          if (!hasShown && context.mounted) {
+          if (!hasShown && context.mounted && ModalRoute.of(context)?.isCurrent == true) {
             await showDialog(
               context: context,
               barrierColor: Colors.transparent,
