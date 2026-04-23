@@ -12,13 +12,10 @@ class AcmoInAppNotificationController {
       AcmoInAppNotificationController._();
 
   Future<void> init() async {
-    final isReady = await Tyrads.instance.waitAndCheck();
-    if (isReady) {
-      await Future.wait([
-        loadActiveOffers(),
-        loadEngagement(),
-      ]);
-    }
+    await Future.wait([
+      loadActiveOffers(),
+      loadEngagement(),
+    ]);
   }
 
   final _repo = AcmoInAppNotificationRepository();

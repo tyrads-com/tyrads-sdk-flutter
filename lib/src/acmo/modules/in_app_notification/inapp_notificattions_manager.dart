@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show ValueNotifier;
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
+import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notification_context_bridge.dart';
 
 enum PromoType {
   limitedTimeOffer,
@@ -29,6 +30,8 @@ class AcmoInAppNotificationManager {
       ValueNotifier([]);
 
   Future<void> evaluatePromotions() async {
+    AcmoInAppContextBridge.instance.init();
+    
     final List<PromoAction> queue = [];
 
     if (_controller.activeOffers.isNotEmpty) {
