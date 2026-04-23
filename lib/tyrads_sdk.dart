@@ -25,6 +25,7 @@ import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/notifications/fcm_services.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
+import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notificattions_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/top_offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/push-notifications/apns_manager.dart';
@@ -37,6 +38,7 @@ import 'package:uuid/uuid.dart';
 import 'src/acmo/modules/tracking/activities.dart';
 import 'src/acmo/modules/tracking/controller.dart';
 import 'src/acmo/modules/web_sdk/webview_manager.dart';
+import 'src/acmo/modules/in_app_notification/inapp_notification_context_bridge.dart';
 
 part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';
@@ -48,7 +50,10 @@ part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
 class Tyrads {
   static final Tyrads _singleton = Tyrads._internal();
 
-  final navKey = GlobalKey<NavigatorState>();
+  GlobalKey<NavigatorState>? _navigatorKey;
+  GlobalKey<NavigatorState> get navKey => _navigatorKey!;
+  
+  final offerwallKey = GlobalKey<NavigatorState>();
   var newUser = false;
   var apiKey;
   var apiSecret;
@@ -111,8 +116,9 @@ class Tyrads {
   Stream<Map<String, dynamic>> get onNotification => TyradsSdkPlatform.instance.onPushEvent();
 
   Future<void> init({
-    required apiKey,
-    required apiSecret,
+    required GlobalKey<NavigatorState> navigatorKey,
+    required String apiKey,
+    required String apiSecret,
     String? encryptionKey,
     String? engagementId,
     String? placementId,
@@ -122,6 +128,7 @@ class Tyrads {
     int? launchMode,
   }) async {
     _isInitCalled = true;
+    _navigatorKey = navigatorKey;
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
     this.engagementId = engagementId;
@@ -168,6 +175,7 @@ class Tyrads {
         log("Error initializing APNs: $e");
       }
     }
+    AcmoInAppContextBridge.instance.init();
   }
 
   Future<bool> loginUser({String? userID = ""}) async {
@@ -325,7 +333,14 @@ class Tyrads {
 
         track(TyradsActivity.initialized);
         isLoginSuccessful = true;
-        AcmoInAppNotificationController.instance.init();
+
+        scheduleMicrotask(() {
+          AcmoInAppNotificationController.instance.init().then((_) {
+            scheduleMicrotask(() {
+              AcmoInAppNotificationManager.instance.evaluatePromotions();
+            });
+          });
+        });
         _preloadWebView();
       }
     } catch (e) {
@@ -423,8 +438,9 @@ class Tyrads {
       runZonedGuarded(() {
         parentContext = context;
 
-        if (navKey.currentState != null && navKey.currentState!.mounted) {
-          navKey.currentState!.pushReplacementNamed('/');
+        if (offerwallKey.currentState != null &&
+            offerwallKey.currentState!.mounted) {
+          offerwallKey.currentState!.pushReplacementNamed('/');
         } else {
           Navigator.of(_parentContext!)
               .push(MaterialPageRoute(builder: (_) => const AcmoApp()));
@@ -439,10 +455,10 @@ class Tyrads {
 
   to(Widget page, {bool replace = false}) async {
     if (replace) {
-      return await navKey.currentState!
+      return await offerwallKey.currentState!
           .pushReplacement(MaterialPageRoute(builder: (_) => page));
     }
-    return await navKey.currentState!
+    return await offerwallKey.currentState!
         .push(MaterialPageRoute(builder: (_) => page));
   }
 
@@ -450,7 +466,7 @@ class Tyrads {
       await showDialog(context: parentContext!, builder: (_) => d);
 
   back({result}) {
-    final navigator = navKey.currentState;
+    final navigator = offerwallKey.currentState;
     if (navigator != null && navigator.canPop()) {
       navigator.pop(result);
       return true;

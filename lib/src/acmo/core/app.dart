@@ -61,7 +61,7 @@ class _AcmoAppState extends State<AcmoApp> {
           return SafeArea(
             top: false,
             child: MaterialApp(
-              navigatorKey: Tyrads.instance.navKey,
+              navigatorKey: Tyrads.instance.offerwallKey,
               theme: theme,
               initialRoute: '/',
               onGenerateRoute: (settings) {
