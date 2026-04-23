@@ -6,9 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/custom_slider.dart';
 import 'package:tyrads_sdk/src/acmo/core/onboarding_check.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
-import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
-import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notification_executor.dart';
-import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notificattions_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/active_offer_button.dart';
@@ -44,12 +41,9 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // AcmoPremiumWidgetsController.instance.attach(_refreshData);
-    AcmoInAppNotificationManager.instance.promoQueue.addListener(_onPromoQueue);
     AcmoPremiumWidgetsController.instance
         .attach((bool force) => _refreshData(force: force));
     _loadData();
-    loadInAppNotifications();
   }
 
   Future<void> _loadData() async {
@@ -63,26 +57,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
     });
   }
 
-  Future<void> loadInAppNotifications() async {
-    await AcmoInAppNotificationController.instance.init();
-
-    scheduleMicrotask(() {
-      AcmoInAppNotificationManager.instance.evaluatePromotions();
-    });
-  }
-
-  void _onPromoQueue() {
-    final manager = AcmoInAppNotificationManager.instance;
-    final queue = manager.promoQueue.value;
-
-    if (!mounted || queue.isEmpty) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      AcmoPromoExecutor.instance.execute(context, queue);
-      manager.clearQueue();
-    });
-  }
 
   void _initializeItemLoadingNotifiers() {
     _itemLoadingNotifiers.clear();
@@ -113,8 +87,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
 
   @override
   void dispose() {
-    AcmoInAppNotificationManager.instance.promoQueue
-      .removeListener(_onPromoQueue);
     AcmoPremiumWidgetsController.instance.detach();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
