@@ -13,6 +13,7 @@ void main() async {
 
 bool _isTyradsInitialized = false;
 const String _defaultUserId = 'acmo_user_01';
+final GlobalKey<NavigatorState> hostNavKey = GlobalKey<NavigatorState>();
 
 const List<Map<String, String>> configOptions = [
   {'label': 'Tyrreward', 'value': 'tyrreward'},
@@ -97,6 +98,7 @@ Future<void> initializeTyrads({
   }
 
   await Tyrads.instance.init(
+    navigatorKey: hostNavKey,
     apiKey: finalApiKey,
     apiSecret: finalApiSecret,
     encryptionKey: finalEncKey,
@@ -172,6 +174,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: hostNavKey,
       title: 'Tyrrewards SDK Demo',
       theme: ThemeData.light(),
       home: Builder(builder: (context) {
