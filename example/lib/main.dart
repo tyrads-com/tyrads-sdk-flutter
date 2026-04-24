@@ -301,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() { loading = false; });
 
-    Tyrads.instance.showOffers(context);
+    Tyrads.instance.showOffers();
   }
 
   @override
@@ -333,8 +333,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (isReady)
                   KeyedSubtree(
                     key: ValueKey(widgetKey),
-                    child: Tyrads.instance.topOffersWidget(
-                      context,
+                    child: TopOffersWidget(
                       widgetStyle: style == 1
                           ? PremiumWidgetStyles.list
                           : PremiumWidgetStyles.sliderCards,

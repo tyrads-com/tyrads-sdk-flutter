@@ -3,7 +3,6 @@
 library tyrads_sdk;
 
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:advertising_id/advertising_id.dart';
@@ -27,7 +26,6 @@ import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notificattions_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
-import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/top_offers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/push-notifications/apns_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/acmo/core/input_models/init/init.dart';
@@ -39,6 +37,8 @@ import 'src/acmo/modules/tracking/activities.dart';
 import 'src/acmo/modules/tracking/controller.dart';
 import 'src/acmo/modules/web_sdk/webview_manager.dart';
 import 'src/acmo/modules/in_app_notification/inapp_notification_context_bridge.dart';
+
+export 'src/acmo/modules/premium_widgets/top_offers.dart';
 
 part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';
@@ -73,19 +73,6 @@ class Tyrads {
 
   BuildContext? get parentContext => _parentContext;
 
-  set parentContext(BuildContext? value) {
-    _parentContext = value;
-    if (_parentContext != null) {
-      if (_pendingDeepLink != null) {
-        final routeToProcess = _pendingDeepLink!;
-        _pendingDeepLink = null;
-        showOffers(_parentContext!, route: routeToProcess);
-      }
-      FCMService.checkPendingDeepLink();
-    }
-  }
-
-  String? _pendingDeepLink;
   final deepLinkNotifier = ValueNotifier<String?>(null);
 
   late Dio dio;
@@ -158,21 +145,21 @@ class Tyrads {
     selectedLanguage = prefs.getString(AcmoKeyNames.LANGUAGE) ??
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
     WidgetsFlutterBinding.ensureInitialized();
-    log("Selected Language: $selectedLanguage");
+    debugPrint("[Tyrads SDK] Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
 
     if (AcmoPlatform.isAndroid) {
       try {
         await FCMService.initialize();
       } catch (error) {
-        log("Failed to init FCM: $error");
+        debugPrint("[Tyrads SDK] Failed to init FCM: $error");
       }
     }
     if (AcmoPlatform.isIOS) {
       try {
         ApnsManager.instance.init();
       } catch (e) {
-        log("Error initializing APNs: $e");
+        debugPrint("[Tyrads SDK] Error initializing APNs: $e");
       }
     }
     AcmoInAppContextBridge.instance.init();
@@ -181,7 +168,7 @@ class Tyrads {
   Future<bool> loginUser({String? userID = ""}) async {
     try {
       if (!_isInitCalled) {
-        log("Make sure init method is called first");
+        debugPrint("[Tyrads SDK] Make sure init method is called first");
         return false;
       }
       _isLoginCalled = true;
@@ -399,17 +386,21 @@ class Tyrads {
     }
   }
 
-  Future<void> showOffers(
-      context, {
-        int? campaignID,
-        String? route,
-        int? launchMode,
-      }) async {
+  Future<void> showOffers({
+    int? campaignID,
+    String? route,
+    int? launchMode,
+  }) async {
     FCMService.clearPendingDeepLink();
 
     try {
+      final liveCtx = navKey.currentContext;
+      if (liveCtx == null) {
+        debugPrint("[Tyrads SDK] No valid BuildContext found for showOffers. Make sure the navigatorKey is correctly attached.");
+        return;
+      }
       if (!_isLoginCalled) {
-        log("Make sure login method is called first");
+        debugPrint("[Tyrads SDK] Make sure login method is called first");
         return;
       }
       if (await waitAndCheck() == false) return;
@@ -429,27 +420,25 @@ class Tyrads {
       }
 
       final ready =
-      await OnboardingCheck.instance.checkOnboardingStatus(context);
+      await OnboardingCheck.instance.checkOnboardingStatus();
       if (ready == false) {
-        log("Onboarding not completed");
+        debugPrint("[Tyrads SDK] Onboarding not completed");
         return;
       }
 
       runZonedGuarded(() {
-        parentContext = context;
-
         if (offerwallKey.currentState != null &&
             offerwallKey.currentState!.mounted) {
           offerwallKey.currentState!.pushReplacementNamed('/');
         } else {
-          Navigator.of(_parentContext!)
+          Navigator.of(liveCtx)
               .push(MaterialPageRoute(builder: (_) => const AcmoApp()));
         }
       }, (error, stack) {});
 
       track(TyradsActivity.opened);
     } catch (e) {
-      log("Exiting: $e");
+      debugPrint("[Tyrads SDK] Exiting: $e");
     }
   }
 
@@ -462,40 +451,32 @@ class Tyrads {
         .push(MaterialPageRoute(builder: (_) => page));
   }
 
-  dialog(Widget d) async =>
-      await showDialog(context: parentContext!, builder: (_) => d);
+  dialog(Widget d) async {
+    final liveCtx = navKey.currentContext;
+    if (liveCtx != null && liveCtx.mounted) {
+      await showDialog(context: liveCtx, builder: (_) => d);
+    }
+  }
 
-  back({result}) {
-    final navigator = offerwallKey.currentState;
-    if (navigator != null && navigator.canPop()) {
-      navigator.pop(result);
+  bool back({dynamic result}) {
+    final internalNavigator = offerwallKey.currentState;
+    if (internalNavigator != null && internalNavigator.canPop()) {
+      internalNavigator.pop(result);
       return true;
     }
 
-    if (_parentContext != null) {
-      try {
-        Navigator.pop(_parentContext!, result);
+    try {
+      final hostNavigator = navKey.currentState;
+      if (hostNavigator != null && hostNavigator.canPop()) {
+        hostNavigator.pop(result);
         track(TyradsActivity.closed);
         _preloadWebView();
         return true;
-      } catch (e) {
-        return false;
       }
+    } catch (e) {
+      debugPrint("[Tyrads SDK] Error during back navigation: $e");
     }
     return false;
-  }
-
-  void setPendingDeepLink(String? route) {
-    if (route == null) {
-      _pendingDeepLink = null;
-      return;
-    }
-
-    if (_parentContext != null) {
-      showOffers(_parentContext!, route: route);
-    } else {
-      _pendingDeepLink = route;
-    }
   }
 
   track(String activity) => tracker.trackUser(activity);
@@ -506,7 +487,7 @@ class Tyrads {
     }
     await initializationWait.future;
     if (!isLoginSuccessful) {
-      log("initialisation failed");
+      debugPrint("[Tyrads SDK] initialisation failed");
       acmoSnackbar("Please try back later.");
       return false;
     }
@@ -521,14 +502,6 @@ class Tyrads {
   /// Internal use only — triggers a registered callback.
   void triggerCallback(TyradsCallbackType type, Map<String, dynamic> data) {
     _callbacks[type]?.call(data);
-  }
-
-  Widget topOffersWidget(
-      BuildContext context, {
-        PremiumWidgetStyles widgetStyle = PremiumWidgetStyles.list,
-      }) {
-    parentContext = context;
-    return TopOffersWidget(widgetStyle: widgetStyle);
   }
 
   /// Changes the SDK language and persists the choice.
