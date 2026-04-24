@@ -475,7 +475,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ButtonTheme(
                         alignedDropdown: true,
                         child: DropdownButtonFormField<String>(
-                          value: selectedConfig,
+                          initialValue: selectedConfig,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius:
@@ -516,7 +516,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     Expanded(
                       child: DropdownButtonFormField<int>(
-                        value: selectedAge,
+                        initialValue: selectedAge,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Age',
@@ -540,7 +540,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: DropdownButtonFormField<int>(
-                        value: selectedGender,
+                        initialValue: selectedGender,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Gender',
