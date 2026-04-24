@@ -13,21 +13,20 @@ class OnboardingCheck {
   static final _instance = OnboardingCheck._();
   static OnboardingCheck get instance => _instance;
 
-  Future<bool> checkOnboardingStatus(BuildContext context) async {
+  Future<bool> checkOnboardingStatus() async {
+    final liveCtx = Tyrads.instance.navKey.currentContext;
     if (await Tyrads.instance.waitAndCheck() == false) {
       return false;
     }
-    if (!context.mounted) {
+    if (liveCtx == null || !liveCtx.mounted) {
       return false;
     }
 
-    final navigator = Navigator.of(context);
+    final navigator = Navigator.of(liveCtx);
 
     if (!navigator.context.mounted) {
       return false;
     }
-
-    Tyrads.instance.parentContext = context;
 
     final prefs = Tyrads.instance.prefs;
 
@@ -69,13 +68,11 @@ class OnboardingCheck {
               builder: (c) => AcmoUsagePermissionsPage(
                 isReturningToWidget: true,
                 closeButtononTap: () {
-                  Navigator.pop(context);
+                  navigator.pop();
                 },
               ),
             ),
           );
-          if (!context.mounted) return false;
-
           if (result != true) return false;
 
           bool newStatus = await UsageStats.checkUsagePermission() ?? false;

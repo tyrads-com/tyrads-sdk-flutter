@@ -47,7 +47,6 @@ class AcmoOfferListItem extends StatelessWidget {
                 onTap: anyLoading
                     ? null
                     : () => Tyrads.instance.showOffers(
-                          context,
                           route: TyradsDeepRoutes.OFFERS,
                           campaignID: e.campaignId,
                           launchMode: Tyrads.instance.launchMode,

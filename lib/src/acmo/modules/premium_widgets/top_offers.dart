@@ -131,7 +131,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
             ElevatedButton(
               onPressed: () {
                 Tyrads.instance.showOffers(
-                  context,
                   route: TyradsDeepRoutes.ACTIVE_OFFERS,
                   launchMode: Tyrads.instance.launchMode,
                 );
@@ -197,7 +196,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                 InkWell(
                   onTap: () {
                     Tyrads.instance.showOffers(
-                      context,
                       launchMode: Tyrads.instance.launchMode,
                     );
                   },
@@ -245,7 +243,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                         }
                       : () async {
                           final isReady = await OnboardingCheck.instance
-                              .checkOnboardingStatus(context);
+                              .checkOnboardingStatus();
 
                           if (isReady) {
                             await _controller.openOffer(item: e);
@@ -279,7 +277,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                             () => ValueNotifier(false));
                     return GestureDetector(
                       onTap: () => Tyrads.instance.showOffers(
-                        context,
                         route: TyradsDeepRoutes.OFFERS,
                         campaignID: _controller.hotOffers[index].campaignId,
                         launchMode: Tyrads.instance.launchMode,
@@ -298,7 +295,7 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                               }
                             : () async {
                                 final isReady = await OnboardingCheck.instance
-                                    .checkOnboardingStatus(context);
+                                    .checkOnboardingStatus();
 
                                 if (isReady) {
                                   await _controller.openOffer(
@@ -306,7 +303,6 @@ class _TopOffersWidgetState extends State<TopOffersWidget>
                                 }
                               },
                         onTap: () => Tyrads.instance.showOffers(
-                          context,
                           route: TyradsDeepRoutes.OFFERS,
                           campaignID: _controller.hotOffers[index].campaignId,
                           launchMode: Tyrads.instance.launchMode,
