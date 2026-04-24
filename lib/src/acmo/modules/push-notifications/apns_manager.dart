@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:tyrads_sdk/src/acmo/core/services/notifications/fcm_services.dart';
 
 
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
@@ -47,11 +48,7 @@ class ApnsManager {
       final type = event['type'];
 
       if (type == "clicked" && deepLink != null && deepLink != "") {
-        if (Tyrads.instance.parentContext != null) {
-          Tyrads.instance.showOffers(Tyrads.instance.parentContext!, route: deepLink);
-        } else {
-          Tyrads.instance.setPendingDeepLink(deepLink);
-        }
+        FCMService.handleDeepLink(deepLink);
       }
     }).onError((e) {
       log("Error listening to push events: $e");

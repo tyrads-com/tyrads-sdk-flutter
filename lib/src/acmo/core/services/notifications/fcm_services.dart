@@ -9,42 +9,63 @@ class FCMService {
   static String? _pendingDeepLink;
 
   static void handleDeepLink(String deeplink) {
-    if (deeplink.isEmpty) return;
+    debugPrint("Tyrads SDK Deep link received: $deeplink");
+    if (deeplink.isEmpty) {
+      debugPrint("Tyrads SDK Deep link is empty, ignoring.");
+      return;
+    }
 
     final tyrads = Tyrads.instance;
 
-    if (tyrads.navKey.currentState != null) {
+    if (tyrads.offerwallKey.currentState != null && tyrads.offerwallKey.currentState!.mounted) {
+      debugPrint("Tyrads SDK is already open. Updating internal state for deep link.");
       tyrads.updateWebUri(deeplink);
       tyrads.deepLinkNotifier.value = deeplink;
       return;
     }
 
-    final context = tyrads.parentContext;
+    final context = tyrads.navKey.currentContext;
     if (context != null && context.mounted) {
+      debugPrint("Tyrads SDK Valid context found. Executing showOffers for deep link.");
       _pendingDeepLink = null;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        tyrads.showOffers(context, route: deeplink);
+      Future.microtask(() {
+        tyrads.showOffers(route: deeplink);
       });
     } else {
+      debugPrint("Tyrads SDK Context is null or unmounted. Marking deep link as pending.");
       _pendingDeepLink = deeplink;
-      if (context != null) {
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (_pendingDeepLink == deeplink) {
-            checkPendingDeepLink();
-          }
-        });
+      _startRetryLoop(deeplink);
+    }
+  }
+
+  static void _startRetryLoop(String deeplink) async {
+    for (int i = 0; i < 10; i++) {
+      await Future.delayed(const Duration(seconds: 1));
+      if (_pendingDeepLink != deeplink) break;
+      
+      debugPrint("Tyrads SDK Retrying pending deep link check (attempt ${i + 1})...");
+      final context = Tyrads.instance.navKey.currentContext;
+      if (context != null && context.mounted) {
+        checkPendingDeepLink();
+        break;
       }
     }
   }
 
   static void checkPendingDeepLink() {
     final tyrads = Tyrads.instance;
-    if (_pendingDeepLink != null && tyrads.parentContext != null) {
+    final context = tyrads.navKey.currentContext;
+    debugPrint("Tyrads SDK Checking pending deep link. Link: $_pendingDeepLink, Context: $context");
+    
+    if (_pendingDeepLink != null && context != null && context.mounted) {
       final link = _pendingDeepLink!;
+      debugPrint("Tyrads SDK Executing pending deep link: $link");
       _pendingDeepLink = null;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (tyrads.parentContext != null && tyrads.parentContext!.mounted) {
-          tyrads.showOffers(tyrads.parentContext!, route: link);
+        if (context.mounted) {
+          tyrads.showOffers(route: link);
+        } else {
+          debugPrint("Tyrads SDK Context unmounted before post-frame callback execution.");
         }
       });
     }

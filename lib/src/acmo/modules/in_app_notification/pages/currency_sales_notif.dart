@@ -133,7 +133,7 @@ class _CurrencySalesDialogState extends State<CurrencySalesDialog> {
                         ),
                         child: OutlinedButton(
                           onPressed: () {
-                            Tyrads.instance.showOffers(context);
+                            Tyrads.instance.showOffers();
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: const Color(0xFFFFFFFF),
