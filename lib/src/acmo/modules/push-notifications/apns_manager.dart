@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:tyrads_sdk/src/acmo/core/services/notifications/fcm_services.dart';
+import 'package:tyrads_sdk/src/acmo/modules/push-notifications/fcm_manager.dart';
 
 
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
@@ -48,7 +48,7 @@ class ApnsManager {
       final type = event['type'];
 
       if (type == "clicked" && deepLink != null && deepLink != "") {
-        FCMService.handleDeepLink(deepLink);
+        FCMManager.handleDeepLink(deepLink);
       }
     }).onError((e) {
       log("Error listening to push events: $e");

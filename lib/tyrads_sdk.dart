@@ -21,7 +21,7 @@ import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
 import 'package:tyrads_sdk/src/acmo/core/onboarding_check.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
-import 'package:tyrads_sdk/src/acmo/core/services/notifications/fcm_services.dart';
+import 'package:tyrads_sdk/src/acmo/modules/push-notifications/fcm_manager.dart';
 import 'package:tyrads_sdk/src/acmo/modules/device_details/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/controllers.dart';
 import 'package:tyrads_sdk/src/acmo/modules/in_app_notification/inapp_notificattions_manager.dart';
@@ -150,7 +150,7 @@ class Tyrads {
 
     if (AcmoPlatform.isAndroid) {
       try {
-        await FCMService.initialize();
+        await FCMManager.initialize();
       } catch (error) {
         debugPrint("[Tyrads SDK] Failed to init FCM: $error");
       }
@@ -391,7 +391,7 @@ class Tyrads {
     String? route,
     int? launchMode,
   }) async {
-    FCMService.clearPendingDeepLink();
+    FCMManager.clearPendingDeepLink();
 
     try {
       final liveCtx = navKey.currentContext;

@@ -4,7 +4,7 @@ import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
 
-class FCMService {
+class FCMManager {
   static StreamSubscription<Map<String, dynamic>>? _notificationSubscription;
   static String? _pendingDeepLink;
 
