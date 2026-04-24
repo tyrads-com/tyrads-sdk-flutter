@@ -38,7 +38,7 @@ import 'src/acmo/modules/tracking/controller.dart';
 import 'src/acmo/modules/web_sdk/webview_manager.dart';
 import 'src/acmo/modules/in_app_notification/inapp_notification_context_bridge.dart';
 
-export 'src/acmo/modules/premium_widgets/top_offers.dart';
+export 'src/acmo/modules/premium_widgets/premium_offers_widget.dart';
 
 part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';

@@ -16,8 +16,8 @@ import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/widgets/premium_widg
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
-class TopOffersWidget extends StatefulWidget {
-  const TopOffersWidget({
+class PremiumOffersWidget extends StatefulWidget {
+  const PremiumOffersWidget({
     super.key,
     this.widgetStyle = PremiumWidgetStyles.list,
   });
@@ -25,10 +25,10 @@ class TopOffersWidget extends StatefulWidget {
   final PremiumWidgetStyles widgetStyle;
 
   @override
-  State<TopOffersWidget> createState() => _TopOffersWidgetState();
+  State<PremiumOffersWidget> createState() => _PremiumOffersWidgetState();
 }
 
-class _TopOffersWidgetState extends State<TopOffersWidget>
+class _PremiumOffersWidgetState extends State<PremiumOffersWidget>
     with WidgetsBindingObserver {
   final _controller = AcmoPremiumWidgetsController.instance;
   List<dynamic>? _cachedHotOffers;
