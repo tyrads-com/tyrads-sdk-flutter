@@ -46,6 +46,7 @@ part 'src/acmo/core/input_models/user_info.dart';
 part 'src/acmo/core/input_models/tyrads_config.dart';
 part 'src/acmo/core/constants/deep_routes.dart';
 part 'src/acmo/core/constants/launch_mode.dart';
+part 'src/acmo/core/constants/localization_keys.dart';
 part 'src/acmo/core/helpers/callback_types.dart';
 part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
 
