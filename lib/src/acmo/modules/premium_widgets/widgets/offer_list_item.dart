@@ -77,7 +77,7 @@ class AcmoOfferListItem extends StatelessWidget {
                         child: Text(
                           // '${currencySales?.multiplier}x BONUS',
                           LocalizationService().translate(
-                            'data.shared.label.bonusTagCaps',
+                            TyradsLocalKeys.sharedLabelBonusTagCaps,
                             args: {'multiplier': currencySales?.multiplier},
                           ),
                           style: GoogleFonts.poppins(
@@ -165,7 +165,7 @@ class AcmoOfferListItem extends StatelessWidget {
                       ],
                       Text(
                         LocalizationService()
-                            .translate('data.widget.button.play'),
+                            .translate(TyradsLocalKeys.widgetBtnPlay),
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           color: anyLoading

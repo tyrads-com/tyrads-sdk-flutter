@@ -162,7 +162,7 @@ class Info2 extends StatelessWidget {
           fontSize: 14,
         ),
         text:
-            localization.translate('data.initialization.intro.label.iHaveRead'),
+            localization.translate(TyradsLocalKeys.introLabelRead),
         tags: {
           "tos": StyledTextActionTag(
             (text, attributes) => acmoLaunchURLForce(
@@ -217,7 +217,7 @@ class TwoButtons extends StatelessWidget {
                 child: Center(
                   child: Text(
                     localization
-                        .translate('data.initialization.intro.cta.accept'),
+                        .translate(TyradsLocalKeys.introCtaAccept),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lexend(
                       textStyle: const TextStyle(
@@ -239,7 +239,7 @@ class TwoButtons extends StatelessWidget {
                 child: Center(
                   child: Text(
                     localization
-                        .translate('data.initialization.intro.cta.reject'),
+                        .translate(TyradsLocalKeys.introCtaReject),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lexend(
                       textStyle: const TextStyle(
@@ -279,7 +279,7 @@ class Info extends StatelessWidget {
     return StyledText(
       textAlign: TextAlign.left,
       text: wrapLinks(
-          localization.translate('data.initialization.legal.explanation')),
+          localization.translate(TyradsLocalKeys.legalExplanation)),
       style: GoogleFonts.openSans(
         fontSize: 14,
         fontWeight: FontWeight.w400,
@@ -310,7 +310,7 @@ class Body extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            localization.translate('data.initialization.intro.title'),
+            localization.translate(TyradsLocalKeys.introTitle),
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 16,
@@ -321,7 +321,7 @@ class Body extends StatelessWidget {
             height: 160,
           ),
           Text(
-            localization.translate('data.initialization.intro.subtitle'),
+            localization.translate(TyradsLocalKeys.introSubtitle),
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w500,

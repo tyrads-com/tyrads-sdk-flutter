@@ -63,7 +63,7 @@ class _AcmoAppUsageStatsTileState extends State<AcmoAppUsageStatsTile>
                   width: MediaQuery.of(context).size.width / 2,
                   child: Text(
                     localization
-                        .translate('data.initialization.usagePermission.label')
+                        .translate(TyradsLocalKeys.usagePermissionLabel)
                         .toTitleCase(),
                     style: GoogleFonts.poppins(
                       fontSize: 15,
@@ -126,7 +126,7 @@ class _AcmoAppUsageStatsTileState extends State<AcmoAppUsageStatsTile>
             ),
             Text(
               localization
-                  .translate('data.initialization.usagePermission.description'),
+                  .translate(TyradsLocalKeys.usagePermissionDesc),
               style: GoogleFonts.poppins(
                   color: Colors.black.withValues(alpha: 0.61)),
             ),

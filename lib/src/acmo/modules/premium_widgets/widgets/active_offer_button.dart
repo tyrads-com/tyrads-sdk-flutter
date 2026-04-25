@@ -38,7 +38,7 @@ class ActiveOfferButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      LocalizationService().translate('data.offers.button.activeOffers'),
+                      LocalizationService().translate(TyradsLocalKeys.offersBtnActive),
                       style: TextStyle(
                         color: Tyrads.instance.colorPremium ??
                             Theme.of(context).colorScheme.secondary,

@@ -208,7 +208,7 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                                     borderRadius: 8.0,
                                     isLoading: loading,
                                     label: LocalizationService()
-                                        .translate('data.shared.cta.playNow'),
+                                        .translate(TyradsLocalKeys.sharedCtaPlayNow),
                                     labelStyle: GoogleFonts.poppins(
                                       color: loading
                                           ? const Color(0xffa3a9b6)
@@ -278,7 +278,7 @@ class AcmoNewOfferWallItem extends StatelessWidget {
                       child: Center(
                         child: Text(
                           LocalizationService().translate(
-                            'data.shared.label.bonusTag',
+                            TyradsLocalKeys.sharedLabelBonusTag,
                             args: {
                               'multiplier': currencySaleModel
                                   .data?.currencySales?.multiplier

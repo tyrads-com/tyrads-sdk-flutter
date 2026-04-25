@@ -105,7 +105,7 @@ class Body extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.65,
             child: Text(
               localization
-                  .translate('data.initialization.usagePermission.title'),
+                  .translate(TyradsLocalKeys.usagePermissionTitle),
               style: GoogleFonts.lexend(
                   textStyle: const TextStyle(
                       fontWeight: FontWeight.w500, fontSize: 16)),

@@ -121,7 +121,7 @@ class _PremiumOffersWidgetState extends State<PremiumOffersWidget>
           spacing: 10,
           children: [
             Text(
-              LocalizationService().translate('data.widget.empty.noOffers'),
+              LocalizationService().translate(TyradsLocalKeys.widgetEmptyNoOffers),
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w600,
@@ -144,7 +144,7 @@ class _PremiumOffersWidgetState extends State<PremiumOffersWidget>
               ),
               child: Text(
                 LocalizationService()
-                    .translate('data.widget.button.continuePlaying'),
+                    .translate(TyradsLocalKeys.widgetBtnContinue),
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -185,7 +185,7 @@ class _PremiumOffersWidgetState extends State<PremiumOffersWidget>
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  LocalizationService().translate('data.widget.page.title'),
+                  LocalizationService().translate(TyradsLocalKeys.widgetPageTitle),
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     color: Tyrads.instance.colorPremium ??
@@ -204,7 +204,7 @@ class _PremiumOffersWidgetState extends State<PremiumOffersWidget>
                     children: [
                       Text(
                         LocalizationService()
-                            .translate('data.widget.button.moreOffers'),
+                            .translate(TyradsLocalKeys.widgetBtnMore),
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           color: Tyrads.instance.colorPremium ??
@@ -315,7 +315,7 @@ class _PremiumOffersWidgetState extends State<PremiumOffersWidget>
             ),
           ActiveOfferButton(
             key: ValueKey(LocalizationService()
-                .translate("data.widget.button.moreOffers")),
+                .translate(TyradsLocalKeys.widgetBtnMore)),
             activatedCount: _activeOffersCount,
           ),
         ],
