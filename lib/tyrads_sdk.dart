@@ -31,6 +31,7 @@ import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/acmo/core/input_models/init/init.dart';
 import 'package:tyrads_sdk/src/acmo/core/extensions/colors.dart';
 import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import 'src/acmo/modules/tracking/activities.dart';
@@ -44,6 +45,7 @@ part 'src/acmo/core/input_models/media_source_info.dart';
 part 'src/acmo/core/input_models/user_info.dart';
 part 'src/acmo/core/input_models/tyrads_config.dart';
 part 'src/acmo/core/constants/deep_routes.dart';
+part 'src/acmo/core/constants/launch_mode.dart';
 part 'src/acmo/core/helpers/callback_types.dart';
 part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
 
@@ -89,7 +91,7 @@ class Tyrads {
   var _isLoginCalled = false;
   var isLoginSuccessful = false;
   late SharedPreferences prefs;
-  int? launchMode;
+  TyradsLaunchMode? launchMode;
   bool _isSecure = false;
 
   bool get isSecure => _isSecure;
@@ -112,7 +114,7 @@ class Tyrads {
     TyradsMediaSourceInfo? mediaSourceInfo,
     TyradsUserInfo? userInfo,
     TyradsConfig? config,
-    int? launchMode,
+    TyradsLaunchMode? launchMode,
   }) async {
     _isInitCalled = true;
     _navigatorKey = navigatorKey;
@@ -348,7 +350,7 @@ class Tyrads {
     isLoginSuccessful = false;
   }
 
-  setLaunchMode(int launchMode) => this.launchMode = launchMode;
+  setLaunchMode(TyradsLaunchMode launchMode) => this.launchMode = launchMode;
 
   setNewUser(bool newUser) => this.newUser = newUser;
 
@@ -389,7 +391,7 @@ class Tyrads {
   Future<void> showOffers({
     int? campaignID,
     String? route,
-    int? launchMode,
+    TyradsLaunchMode? launchMode,
   }) async {
     FCMManager.clearPendingDeepLink();
 
@@ -424,6 +426,16 @@ class Tyrads {
       if (ready == false) {
         debugPrint("[Tyrads SDK] Onboarding not completed");
         return;
+      }
+
+      if (launchMode == TyradsLaunchMode.externalBrowser || this.launchMode == TyradsLaunchMode.externalBrowser) {
+        if (await canLaunchUrl(requestedUri)) {
+          await launchUrl(requestedUri, mode: LaunchMode.externalApplication);
+          track(TyradsActivity.opened);
+          return;
+        } else {
+          debugPrint("[Tyrads SDK] Could not launch external browser for URI: $requestedUri");
+        }
       }
 
       runZonedGuarded(() {
