@@ -72,7 +72,7 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
                         height: 375,
                         child: ClipRect(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.only(top: 16, left: 8, right: 8),
                             child: AcmoCarouselSlider(
                               itemCount: activeOffers.length,
                               autoPlayInterval: const Duration(seconds: 5),
@@ -100,9 +100,9 @@ class _LimitedTimeOfferDialogState extends State<LimitedTimeOfferDialog> {
                           ),
                         ),
                       ),
-                      if (activeOffers.isNotEmpty)
+                      if (activeOffers.length > 1)
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(top: 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children:
