@@ -153,15 +153,9 @@ String getCurrencyIcon(AcmoOffersModel item) {
 }
 
 List<AcmoOffersModel> _sortAndPrepareOffers(List<AcmoOffersModel> data) {
-  final list = data
-      .where((e) {
-        return e.payoutSummary.entries.first.value
-                .totalPlayablePayoutConverted >
-            0;
-      })
-      .toList()
-      ..sort((a, b) {
-        return b.campaignPremium ? 1 : -1;
-      });
+  final list = data.toList()
+    ..sort((a, b) {
+      return (b.campaignPremium ? 1 : 0).compareTo(a.campaignPremium ? 1 : 0);
+    });
   return list.take(5).toList();
 }
