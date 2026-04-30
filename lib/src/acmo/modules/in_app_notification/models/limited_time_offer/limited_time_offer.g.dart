@@ -26,6 +26,12 @@ Map<String, dynamic> _$AcmoActiveOffersModelToJson(
 _AcmoActiveOffers _$AcmoActiveOffersFromJson(Map<String, dynamic> json) =>
     _AcmoActiveOffers(
       groupName: json['groupName'] as String? ?? '',
+      availableCurrencies:
+          (json['availableCurrencies'] as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(
+                    k, AcmoCurrency.fromJson(e as Map<String, dynamic>)),
+              ) ??
+              const {},
       campaigns: (json['campaigns'] as List<dynamic>?)
               ?.map((e) => ActiveCampaign.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -35,7 +41,22 @@ _AcmoActiveOffers _$AcmoActiveOffersFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$AcmoActiveOffersToJson(_AcmoActiveOffers instance) =>
     <String, dynamic>{
       'groupName': instance.groupName,
+      'availableCurrencies': instance.availableCurrencies,
       'campaigns': instance.campaigns,
+    };
+
+_AcmoCurrency _$AcmoCurrencyFromJson(Map<String, dynamic> json) =>
+    _AcmoCurrency(
+      currencyId: (json['currencyId'] as num?)?.toInt() ?? 0,
+      currencyIcon: json['currencyIcon'] as String? ?? '',
+      currencyName: json['currencyName'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$AcmoCurrencyToJson(_AcmoCurrency instance) =>
+    <String, dynamic>{
+      'currencyId': instance.currencyId,
+      'currencyIcon': instance.currencyIcon,
+      'currencyName': instance.currencyName,
     };
 
 _ActiveApp _$ActiveAppFromJson(Map<String, dynamic> json) => _ActiveApp(
@@ -76,6 +97,12 @@ _CampaignEventSummary _$CampaignEventSummaryFromJson(
           (json['playableEventCountCompleted'] as num?)?.toInt() ?? 0,
       playableEventCountTotal:
           (json['playableEventCountTotal'] as num?)?.toInt() ?? 0,
+      microchargeEventCountAvailable:
+          (json['microchargeEventCountAvailable'] as num?)?.toInt() ?? 0,
+      microchargeEventCountCompleted:
+          (json['microchargeEventCountCompleted'] as num?)?.toInt() ?? 0,
+      microchargeEventCountTotal:
+          (json['microchargeEventCountTotal'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$CampaignEventSummaryToJson(
@@ -84,6 +111,35 @@ Map<String, dynamic> _$CampaignEventSummaryToJson(
       'playableEventCountAvailable': instance.playableEventCountAvailable,
       'playableEventCountCompleted': instance.playableEventCountCompleted,
       'playableEventCountTotal': instance.playableEventCountTotal,
+      'microchargeEventCountAvailable': instance.microchargeEventCountAvailable,
+      'microchargeEventCountCompleted': instance.microchargeEventCountCompleted,
+      'microchargeEventCountTotal': instance.microchargeEventCountTotal,
+    };
+
+_CampaignValidity _$CampaignValidityFromJson(Map<String, dynamic> json) =>
+    _CampaignValidity(
+      isRetryDownload: json['isRetryDownload'] as bool? ?? false,
+      isActivated: json['isActivated'] as bool? ?? false,
+      isOldUser: json['isOldUser'] as bool? ?? false,
+      activeCurrencyId: (json['activeCurrencyId'] as num?)?.toInt() ?? 0,
+      expiredOn: json['expiredOn'] == null
+          ? null
+          : DateTime.parse(json['expiredOn'] as String),
+      expiredInSeconds: (json['expiredInSeconds'] as num?)?.toDouble(),
+      isInstalled: json['isInstalled'] as bool? ?? false,
+      capReached: json['capReached'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$CampaignValidityToJson(_CampaignValidity instance) =>
+    <String, dynamic>{
+      'isRetryDownload': instance.isRetryDownload,
+      'isActivated': instance.isActivated,
+      'isOldUser': instance.isOldUser,
+      'activeCurrencyId': instance.activeCurrencyId,
+      'expiredOn': instance.expiredOn?.toIso8601String(),
+      'expiredInSeconds': instance.expiredInSeconds,
+      'isInstalled': instance.isInstalled,
+      'capReached': instance.capReached,
     };
 
 _ActiveCampaign _$ActiveCampaignFromJson(Map<String, dynamic> json) =>
@@ -91,34 +147,33 @@ _ActiveCampaign _$ActiveCampaignFromJson(Map<String, dynamic> json) =>
       campaignId: (json['campaignId'] as num?)?.toInt() ?? 0,
       campaignName: json['campaignName'] as String? ?? '',
       campaignDescription: json['campaignDescription'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-      createdOn: json['createdOn'] == null
-          ? null
-          : DateTime.parse(json['createdOn'] as String),
-      sortingScore: (json['sortingScore'] as num?)?.toDouble() ?? 0,
-      expiredOn: json['expiredOn'] == null
-          ? null
-          : DateTime.parse(json['expiredOn'] as String),
+      campaignType: json['campaignType'] as String? ?? '',
+      campaignPremium: json['campaignPremium'] as bool? ?? false,
+      validity: json['validity'] == null
+          ? CampaignValidity.empty
+          : CampaignValidity.fromJson(json['validity'] as Map<String, dynamic>),
+      availableCurrencies:
+          (json['availableCurrencies'] as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(
+                    k, AcmoCurrency.fromJson(e as Map<String, dynamic>)),
+              ) ??
+              const {},
       app: json['app'] == null
           ? ActiveApp.empty
           : ActiveApp.fromJson(json['app'] as Map<String, dynamic>),
-      isRetryDownload: json['isRetryDownload'] as bool? ?? false,
-      capReached: json['capReached'] as bool? ?? false,
-      group: json['group'] as String? ?? null,
-      premium: json['premium'] as bool? ?? false,
-      isOldUser: json['isOldUser'] as bool? ?? false,
-      isInstalled: json['isInstalled'] as bool? ?? false,
+      campaignStatus: json['campaignStatus'] as String? ?? '',
+      group: json['group'] as String? ?? '',
+      stage: json['stage'],
+      eventSummary: json['eventSummary'] == null
+          ? CampaignEventSummary.empty
+          : CampaignEventSummary.fromJson(
+              json['eventSummary'] as Map<String, dynamic>),
       limitedTimeEvents: (json['limitedTimeEvents'] as List<dynamic>?)
               ?.map((e) => PayoutEvents.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      campaignEventSummary: json['campaignEventSummary'] == null
-          ? CampaignEventSummary.empty
-          : CampaignEventSummary.fromJson(
-              json['campaignEventSummary'] as Map<String, dynamic>),
-      currency: json['currency'] == null
-          ? null
-          : Currency.fromJson(json['currency'] as Map<String, dynamic>),
+      shorterMaxTimeEvents:
+          json['shorterMaxTimeEvents'] as List<dynamic>? ?? const [],
     );
 
 Map<String, dynamic> _$ActiveCampaignToJson(_ActiveCampaign instance) =>
@@ -126,63 +181,86 @@ Map<String, dynamic> _$ActiveCampaignToJson(_ActiveCampaign instance) =>
       'campaignId': instance.campaignId,
       'campaignName': instance.campaignName,
       'campaignDescription': instance.campaignDescription,
-      'status': instance.status,
-      'createdOn': instance.createdOn?.toIso8601String(),
-      'sortingScore': instance.sortingScore,
-      'expiredOn': instance.expiredOn?.toIso8601String(),
+      'campaignType': instance.campaignType,
+      'campaignPremium': instance.campaignPremium,
+      'validity': instance.validity,
+      'availableCurrencies': instance.availableCurrencies,
       'app': instance.app,
-      'isRetryDownload': instance.isRetryDownload,
-      'capReached': instance.capReached,
+      'campaignStatus': instance.campaignStatus,
       'group': instance.group,
-      'premium': instance.premium,
-      'isOldUser': instance.isOldUser,
-      'isInstalled': instance.isInstalled,
+      'stage': instance.stage,
+      'eventSummary': instance.eventSummary,
       'limitedTimeEvents': instance.limitedTimeEvents,
-      'campaignEventSummary': instance.campaignEventSummary,
-      'currency': instance.currency,
+      'shorterMaxTimeEvents': instance.shorterMaxTimeEvents,
+    };
+
+_AcmoPayoutInfo _$AcmoPayoutInfoFromJson(Map<String, dynamic> json) =>
+    _AcmoPayoutInfo(
+      currencyId: (json['currencyId'] as num?)?.toInt() ?? 0,
+      currencyName: json['currencyName'] as String? ?? '',
+      currencyIcon: json['currencyIcon'] as String? ?? '',
+      currencyConversionRate:
+          (json['currencyConversionRate'] as num?)?.toDouble() ?? 0.0,
+      payoutAmountConverted:
+          (json['payoutAmountConverted'] as num?)?.toDouble() ?? 0.0,
+    );
+
+Map<String, dynamic> _$AcmoPayoutInfoToJson(_AcmoPayoutInfo instance) =>
+    <String, dynamic>{
+      'currencyId': instance.currencyId,
+      'currencyName': instance.currencyName,
+      'currencyIcon': instance.currencyIcon,
+      'currencyConversionRate': instance.currencyConversionRate,
+      'payoutAmountConverted': instance.payoutAmountConverted,
     };
 
 _PayoutEvents _$PayoutEventsFromJson(Map<String, dynamic> json) =>
     _PayoutEvents(
-      id: (json['id'] as num?)?.toInt() ?? 0,
-      conversionStatus: json['conversionStatus'] as String?,
+      appEventId: (json['appEventId'] as num?)?.toInt() ?? 0,
+      conversionStatus: json['conversionStatus'],
       identifier: json['identifier'] as String? ?? '',
       eventName: json['eventName'] as String? ?? '',
-      eventDescription: json['eventDescription'] as String? ?? '',
+      eventDescription: json['eventDescription'] as String?,
       eventCategory: json['eventCategory'] as String? ?? '',
-      payoutAmount: (json['payoutAmount'] as num?)?.toDouble() ?? 0,
-      payoutAmountConverted:
-          (json['payoutAmountConverted'] as num?)?.toDouble() ?? 0,
-      payoutType: json['payoutType'] as String? ?? '',
+      payoutInfo: (json['payoutInfo'] as Map<String, dynamic>?)?.map(
+            (k, e) =>
+                MapEntry(k, AcmoPayoutInfo.fromJson(e as Map<String, dynamic>)),
+          ) ??
+          const {},
       allowDuplicateEvents: json['allowDuplicateEvents'] as bool? ?? false,
       maxTime: (json['maxTime'] as num?)?.toInt() ?? 0,
-      maxTimeMetric: json['maxTimeMetric'] as String? ?? '',
+      maxTimeMetric: json['maxTimeMetric'] as String?,
       maxTimeRemainSeconds: (json['maxTimeRemainSeconds'] as num?)?.toDouble(),
       enforceMaxTimeCompletion:
           json['enforceMaxTimeCompletion'] as bool? ?? false,
       isLimitedTimeEvent: json['isLimitedTimeEvent'] as bool? ?? false,
       limitedTimeEventRemainingSeconds:
-          (json['limitedTimeEventRemainingSeconds'] as num?)?.toDouble() ?? 0,
+          (json['limitedTimeEventRemainingSeconds'] as num?)?.toDouble() ?? 0.0,
       isTicketSubmitted: json['isTicketSubmitted'] as bool? ?? false,
-      isPlaytime: json['isPlaytime'] as bool? ?? false,
-      totalPlaytime: (json['totalPlaytime'] as num?)?.toInt() ?? 0,
+      ticketStatus: json['ticketStatus'],
+      lockEventRule: json['lockEventRule'],
+      hideEventRule: json['hideEventRule'],
+      shorterMaxTimeRule: json['shorterMaxTimeRule'],
+      specialCompletionReason: json['specialCompletionReason'],
       dailyCount: (json['dailyCount'] as num?)?.toInt() ?? 0,
-      dailyLimit: (json['dailyLimit'] as num?)?.toInt() ?? 0,
+      dailyLimit: (json['dailyLimit'] as num?)?.toInt(),
       count: (json['count'] as num?)?.toInt() ?? 0,
-      limit: (json['limit'] as num?)?.toInt() ?? 0,
+      limit: (json['limit'] as num?)?.toInt(),
+      totalDailyUniqueCount:
+          (json['totalDailyUniqueCount'] as num?)?.toInt() ?? 0,
+      totalDailyUniqueLimit: (json['totalDailyUniqueLimit'] as num?)?.toInt(),
+      dailyUniqueTodayExist: json['dailyUniqueTodayExist'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$PayoutEventsToJson(_PayoutEvents instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'appEventId': instance.appEventId,
       'conversionStatus': instance.conversionStatus,
       'identifier': instance.identifier,
       'eventName': instance.eventName,
       'eventDescription': instance.eventDescription,
       'eventCategory': instance.eventCategory,
-      'payoutAmount': instance.payoutAmount,
-      'payoutAmountConverted': instance.payoutAmountConverted,
-      'payoutType': instance.payoutType,
+      'payoutInfo': instance.payoutInfo,
       'allowDuplicateEvents': instance.allowDuplicateEvents,
       'maxTime': instance.maxTime,
       'maxTimeMetric': instance.maxTimeMetric,
@@ -192,12 +270,18 @@ Map<String, dynamic> _$PayoutEventsToJson(_PayoutEvents instance) =>
       'limitedTimeEventRemainingSeconds':
           instance.limitedTimeEventRemainingSeconds,
       'isTicketSubmitted': instance.isTicketSubmitted,
-      'isPlaytime': instance.isPlaytime,
-      'totalPlaytime': instance.totalPlaytime,
+      'ticketStatus': instance.ticketStatus,
+      'lockEventRule': instance.lockEventRule,
+      'hideEventRule': instance.hideEventRule,
+      'shorterMaxTimeRule': instance.shorterMaxTimeRule,
+      'specialCompletionReason': instance.specialCompletionReason,
       'dailyCount': instance.dailyCount,
       'dailyLimit': instance.dailyLimit,
       'count': instance.count,
       'limit': instance.limit,
+      'totalDailyUniqueCount': instance.totalDailyUniqueCount,
+      'totalDailyUniqueLimit': instance.totalDailyUniqueLimit,
+      'dailyUniqueTodayExist': instance.dailyUniqueTodayExist,
     };
 
 _Currency _$CurrencyFromJson(Map<String, dynamic> json) => _Currency(

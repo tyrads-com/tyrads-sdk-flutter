@@ -24,7 +24,7 @@ class OfferCard extends StatelessWidget {
     final String displayIcon = campaign.app.thumbnail;
     final String displayName = campaign.app.title;
     final List<PayoutEvents> event = campaign.limitedTimeEvents;
-    final String currencyIconUrl = campaign.currency!.adUnitCurrencyIcon;
+    final String currencyIconUrl = campaign.availableCurrencies.values.firstOrNull?.currencyIcon ?? '';
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: DefaultTextStyle(
@@ -228,7 +228,7 @@ class OfferCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      event.payoutAmountConverted.beautiful,
+                      event.payoutInfo.entries.first.value.payoutAmountConverted.numeral(digits: 2),
                       style: GoogleFonts.poppins(
                         color: Tyrads.instance.colorMain ??
                             const Color(0xFF02B5BE),
@@ -263,8 +263,8 @@ class OfferCard extends StatelessWidget {
               ),
               child: Center(
                 child: AcmoComponentCountdown(
-                  key: ValueKey('countdown_${event.id}'),
-                  countdownId: 'countdown_${event.id}',
+                  key: ValueKey('countdown_${event.appEventId}'),
+                  countdownId: 'countdown_${event.appEventId}',
                   seconds: event.limitedTimeEventRemainingSeconds.toInt(),
                   formatType: 'hh:mm:ss',
                 ),

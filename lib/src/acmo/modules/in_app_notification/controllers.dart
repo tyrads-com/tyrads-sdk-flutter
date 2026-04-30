@@ -47,7 +47,7 @@ class AcmoInAppNotificationController {
         .where((campaign) {
           return campaign.limitedTimeEvents.isNotEmpty;
         })
-        .where((e) => e.status.toLowerCase() != 'suspended' && e.isInstalled)
+        .where((e) => e.campaignStatus.toLowerCase() != 'suspended' && e.validity.isInstalled)
         .where((e) => e.limitedTimeEvents
             .any((e) => e.conversionStatus?.toLowerCase() != "approved"))
         .toSet();
@@ -149,7 +149,7 @@ class AcmoInAppNotificationController {
     final allowDuplicateEvents = event.allowDuplicateEvents;
     final conversionStatus = event.conversionStatus;
     final dailyCount = event.dailyCount;
-    final dailyLimit = event.dailyLimit;
+    final dailyLimit = event.dailyLimit ?? 0;
 
     final isDailyLimitIncomplete =
         dailyCount == 0 || dailyLimit == 0 || dailyCount < dailyLimit;

@@ -344,6 +344,7 @@ class __$AcmoActiveOffersModelCopyWithImpl<$Res>
 /// @nodoc
 mixin _$AcmoActiveOffers {
   String get groupName;
+  Map<String, AcmoCurrency> get availableCurrencies;
   List<ActiveCampaign> get campaigns;
 
   /// Create a copy of AcmoActiveOffers
@@ -364,17 +365,22 @@ mixin _$AcmoActiveOffers {
             other is AcmoActiveOffers &&
             (identical(other.groupName, groupName) ||
                 other.groupName == groupName) &&
+            const DeepCollectionEquality()
+                .equals(other.availableCurrencies, availableCurrencies) &&
             const DeepCollectionEquality().equals(other.campaigns, campaigns));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, groupName, const DeepCollectionEquality().hash(campaigns));
+      runtimeType,
+      groupName,
+      const DeepCollectionEquality().hash(availableCurrencies),
+      const DeepCollectionEquality().hash(campaigns));
 
   @override
   String toString() {
-    return 'AcmoActiveOffers(groupName: $groupName, campaigns: $campaigns)';
+    return 'AcmoActiveOffers(groupName: $groupName, availableCurrencies: $availableCurrencies, campaigns: $campaigns)';
   }
 }
 
@@ -384,7 +390,10 @@ abstract mixin class $AcmoActiveOffersCopyWith<$Res> {
           AcmoActiveOffers value, $Res Function(AcmoActiveOffers) _then) =
       _$AcmoActiveOffersCopyWithImpl;
   @useResult
-  $Res call({String groupName, List<ActiveCampaign> campaigns});
+  $Res call(
+      {String groupName,
+      Map<String, AcmoCurrency> availableCurrencies,
+      List<ActiveCampaign> campaigns});
 }
 
 /// @nodoc
@@ -401,6 +410,7 @@ class _$AcmoActiveOffersCopyWithImpl<$Res>
   @override
   $Res call({
     Object? groupName = null,
+    Object? availableCurrencies = null,
     Object? campaigns = null,
   }) {
     return _then(_self.copyWith(
@@ -408,6 +418,10 @@ class _$AcmoActiveOffersCopyWithImpl<$Res>
           ? _self.groupName
           : groupName // ignore: cast_nullable_to_non_nullable
               as String,
+      availableCurrencies: null == availableCurrencies
+          ? _self.availableCurrencies
+          : availableCurrencies // ignore: cast_nullable_to_non_nullable
+              as Map<String, AcmoCurrency>,
       campaigns: null == campaigns
           ? _self.campaigns
           : campaigns // ignore: cast_nullable_to_non_nullable
@@ -509,14 +523,18 @@ extension AcmoActiveOffersPatterns on AcmoActiveOffers {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String groupName, List<ActiveCampaign> campaigns)?
+    TResult Function(
+            String groupName,
+            Map<String, AcmoCurrency> availableCurrencies,
+            List<ActiveCampaign> campaigns)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _AcmoActiveOffers() when $default != null:
-        return $default(_that.groupName, _that.campaigns);
+        return $default(
+            _that.groupName, _that.availableCurrencies, _that.campaigns);
       case _:
         return orElse();
     }
@@ -537,12 +555,17 @@ extension AcmoActiveOffersPatterns on AcmoActiveOffers {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String groupName, List<ActiveCampaign> campaigns) $default,
+    TResult Function(
+            String groupName,
+            Map<String, AcmoCurrency> availableCurrencies,
+            List<ActiveCampaign> campaigns)
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _AcmoActiveOffers():
-        return $default(_that.groupName, _that.campaigns);
+        return $default(
+            _that.groupName, _that.availableCurrencies, _that.campaigns);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -562,13 +585,17 @@ extension AcmoActiveOffersPatterns on AcmoActiveOffers {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String groupName, List<ActiveCampaign> campaigns)?
+    TResult? Function(
+            String groupName,
+            Map<String, AcmoCurrency> availableCurrencies,
+            List<ActiveCampaign> campaigns)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _AcmoActiveOffers() when $default != null:
-        return $default(_that.groupName, _that.campaigns);
+        return $default(
+            _that.groupName, _that.availableCurrencies, _that.campaigns);
       case _:
         return null;
     }
@@ -579,14 +606,27 @@ extension AcmoActiveOffersPatterns on AcmoActiveOffers {
 @JsonSerializable()
 class _AcmoActiveOffers implements AcmoActiveOffers {
   const _AcmoActiveOffers(
-      {this.groupName = '', final List<ActiveCampaign> campaigns = const []})
-      : _campaigns = campaigns;
+      {this.groupName = '',
+      final Map<String, AcmoCurrency> availableCurrencies = const {},
+      final List<ActiveCampaign> campaigns = const []})
+      : _availableCurrencies = availableCurrencies,
+        _campaigns = campaigns;
   factory _AcmoActiveOffers.fromJson(Map<String, dynamic> json) =>
       _$AcmoActiveOffersFromJson(json);
 
   @override
   @JsonKey()
   final String groupName;
+  final Map<String, AcmoCurrency> _availableCurrencies;
+  @override
+  @JsonKey()
+  Map<String, AcmoCurrency> get availableCurrencies {
+    if (_availableCurrencies is EqualUnmodifiableMapView)
+      return _availableCurrencies;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_availableCurrencies);
+  }
+
   final List<ActiveCampaign> _campaigns;
   @override
   @JsonKey()
@@ -619,17 +659,22 @@ class _AcmoActiveOffers implements AcmoActiveOffers {
             (identical(other.groupName, groupName) ||
                 other.groupName == groupName) &&
             const DeepCollectionEquality()
+                .equals(other._availableCurrencies, _availableCurrencies) &&
+            const DeepCollectionEquality()
                 .equals(other._campaigns, _campaigns));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, groupName, const DeepCollectionEquality().hash(_campaigns));
+      runtimeType,
+      groupName,
+      const DeepCollectionEquality().hash(_availableCurrencies),
+      const DeepCollectionEquality().hash(_campaigns));
 
   @override
   String toString() {
-    return 'AcmoActiveOffers(groupName: $groupName, campaigns: $campaigns)';
+    return 'AcmoActiveOffers(groupName: $groupName, availableCurrencies: $availableCurrencies, campaigns: $campaigns)';
   }
 }
 
@@ -641,7 +686,10 @@ abstract mixin class _$AcmoActiveOffersCopyWith<$Res>
       __$AcmoActiveOffersCopyWithImpl;
   @override
   @useResult
-  $Res call({String groupName, List<ActiveCampaign> campaigns});
+  $Res call(
+      {String groupName,
+      Map<String, AcmoCurrency> availableCurrencies,
+      List<ActiveCampaign> campaigns});
 }
 
 /// @nodoc
@@ -658,6 +706,7 @@ class __$AcmoActiveOffersCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? groupName = null,
+    Object? availableCurrencies = null,
     Object? campaigns = null,
   }) {
     return _then(_AcmoActiveOffers(
@@ -665,10 +714,362 @@ class __$AcmoActiveOffersCopyWithImpl<$Res>
           ? _self.groupName
           : groupName // ignore: cast_nullable_to_non_nullable
               as String,
+      availableCurrencies: null == availableCurrencies
+          ? _self._availableCurrencies
+          : availableCurrencies // ignore: cast_nullable_to_non_nullable
+              as Map<String, AcmoCurrency>,
       campaigns: null == campaigns
           ? _self._campaigns
           : campaigns // ignore: cast_nullable_to_non_nullable
               as List<ActiveCampaign>,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$AcmoCurrency {
+  int get currencyId;
+  String get currencyIcon;
+  String get currencyName;
+
+  /// Create a copy of AcmoCurrency
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $AcmoCurrencyCopyWith<AcmoCurrency> get copyWith =>
+      _$AcmoCurrencyCopyWithImpl<AcmoCurrency>(
+          this as AcmoCurrency, _$identity);
+
+  /// Serializes this AcmoCurrency to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is AcmoCurrency &&
+            (identical(other.currencyId, currencyId) ||
+                other.currencyId == currencyId) &&
+            (identical(other.currencyIcon, currencyIcon) ||
+                other.currencyIcon == currencyIcon) &&
+            (identical(other.currencyName, currencyName) ||
+                other.currencyName == currencyName));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, currencyId, currencyIcon, currencyName);
+
+  @override
+  String toString() {
+    return 'AcmoCurrency(currencyId: $currencyId, currencyIcon: $currencyIcon, currencyName: $currencyName)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $AcmoCurrencyCopyWith<$Res> {
+  factory $AcmoCurrencyCopyWith(
+          AcmoCurrency value, $Res Function(AcmoCurrency) _then) =
+      _$AcmoCurrencyCopyWithImpl;
+  @useResult
+  $Res call({int currencyId, String currencyIcon, String currencyName});
+}
+
+/// @nodoc
+class _$AcmoCurrencyCopyWithImpl<$Res> implements $AcmoCurrencyCopyWith<$Res> {
+  _$AcmoCurrencyCopyWithImpl(this._self, this._then);
+
+  final AcmoCurrency _self;
+  final $Res Function(AcmoCurrency) _then;
+
+  /// Create a copy of AcmoCurrency
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? currencyId = null,
+    Object? currencyIcon = null,
+    Object? currencyName = null,
+  }) {
+    return _then(_self.copyWith(
+      currencyId: null == currencyId
+          ? _self.currencyId
+          : currencyId // ignore: cast_nullable_to_non_nullable
+              as int,
+      currencyIcon: null == currencyIcon
+          ? _self.currencyIcon
+          : currencyIcon // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyName: null == currencyName
+          ? _self.currencyName
+          : currencyName // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [AcmoCurrency].
+extension AcmoCurrencyPatterns on AcmoCurrency {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_AcmoCurrency value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoCurrency() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_AcmoCurrency value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoCurrency():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_AcmoCurrency value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoCurrency() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(int currencyId, String currencyIcon, String currencyName)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoCurrency() when $default != null:
+        return $default(
+            _that.currencyId, _that.currencyIcon, _that.currencyName);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(int currencyId, String currencyIcon, String currencyName)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoCurrency():
+        return $default(
+            _that.currencyId, _that.currencyIcon, _that.currencyName);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(int currencyId, String currencyIcon, String currencyName)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoCurrency() when $default != null:
+        return $default(
+            _that.currencyId, _that.currencyIcon, _that.currencyName);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _AcmoCurrency implements AcmoCurrency {
+  const _AcmoCurrency(
+      {this.currencyId = 0, this.currencyIcon = '', this.currencyName = ''});
+  factory _AcmoCurrency.fromJson(Map<String, dynamic> json) =>
+      _$AcmoCurrencyFromJson(json);
+
+  @override
+  @JsonKey()
+  final int currencyId;
+  @override
+  @JsonKey()
+  final String currencyIcon;
+  @override
+  @JsonKey()
+  final String currencyName;
+
+  /// Create a copy of AcmoCurrency
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$AcmoCurrencyCopyWith<_AcmoCurrency> get copyWith =>
+      __$AcmoCurrencyCopyWithImpl<_AcmoCurrency>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$AcmoCurrencyToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _AcmoCurrency &&
+            (identical(other.currencyId, currencyId) ||
+                other.currencyId == currencyId) &&
+            (identical(other.currencyIcon, currencyIcon) ||
+                other.currencyIcon == currencyIcon) &&
+            (identical(other.currencyName, currencyName) ||
+                other.currencyName == currencyName));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, currencyId, currencyIcon, currencyName);
+
+  @override
+  String toString() {
+    return 'AcmoCurrency(currencyId: $currencyId, currencyIcon: $currencyIcon, currencyName: $currencyName)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$AcmoCurrencyCopyWith<$Res>
+    implements $AcmoCurrencyCopyWith<$Res> {
+  factory _$AcmoCurrencyCopyWith(
+          _AcmoCurrency value, $Res Function(_AcmoCurrency) _then) =
+      __$AcmoCurrencyCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int currencyId, String currencyIcon, String currencyName});
+}
+
+/// @nodoc
+class __$AcmoCurrencyCopyWithImpl<$Res>
+    implements _$AcmoCurrencyCopyWith<$Res> {
+  __$AcmoCurrencyCopyWithImpl(this._self, this._then);
+
+  final _AcmoCurrency _self;
+  final $Res Function(_AcmoCurrency) _then;
+
+  /// Create a copy of AcmoCurrency
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? currencyId = null,
+    Object? currencyIcon = null,
+    Object? currencyName = null,
+  }) {
+    return _then(_AcmoCurrency(
+      currencyId: null == currencyId
+          ? _self.currencyId
+          : currencyId // ignore: cast_nullable_to_non_nullable
+              as int,
+      currencyIcon: null == currencyIcon
+          ? _self.currencyIcon
+          : currencyIcon // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyName: null == currencyName
+          ? _self.currencyName
+          : currencyName // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -1276,6 +1677,9 @@ mixin _$CampaignEventSummary {
   int get playableEventCountAvailable;
   int get playableEventCountCompleted;
   int get playableEventCountTotal;
+  int get microchargeEventCountAvailable;
+  int get microchargeEventCountCompleted;
+  int get microchargeEventCountTotal;
 
   /// Create a copy of CampaignEventSummary
   /// with the given fields replaced by the non-null parameter values.
@@ -1303,17 +1707,35 @@ mixin _$CampaignEventSummary {
                     playableEventCountCompleted) &&
             (identical(
                     other.playableEventCountTotal, playableEventCountTotal) ||
-                other.playableEventCountTotal == playableEventCountTotal));
+                other.playableEventCountTotal == playableEventCountTotal) &&
+            (identical(other.microchargeEventCountAvailable,
+                    microchargeEventCountAvailable) ||
+                other.microchargeEventCountAvailable ==
+                    microchargeEventCountAvailable) &&
+            (identical(other.microchargeEventCountCompleted,
+                    microchargeEventCountCompleted) ||
+                other.microchargeEventCountCompleted ==
+                    microchargeEventCountCompleted) &&
+            (identical(other.microchargeEventCountTotal,
+                    microchargeEventCountTotal) ||
+                other.microchargeEventCountTotal ==
+                    microchargeEventCountTotal));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, playableEventCountAvailable,
-      playableEventCountCompleted, playableEventCountTotal);
+  int get hashCode => Object.hash(
+      runtimeType,
+      playableEventCountAvailable,
+      playableEventCountCompleted,
+      playableEventCountTotal,
+      microchargeEventCountAvailable,
+      microchargeEventCountCompleted,
+      microchargeEventCountTotal);
 
   @override
   String toString() {
-    return 'CampaignEventSummary(playableEventCountAvailable: $playableEventCountAvailable, playableEventCountCompleted: $playableEventCountCompleted, playableEventCountTotal: $playableEventCountTotal)';
+    return 'CampaignEventSummary(playableEventCountAvailable: $playableEventCountAvailable, playableEventCountCompleted: $playableEventCountCompleted, playableEventCountTotal: $playableEventCountTotal, microchargeEventCountAvailable: $microchargeEventCountAvailable, microchargeEventCountCompleted: $microchargeEventCountCompleted, microchargeEventCountTotal: $microchargeEventCountTotal)';
   }
 }
 
@@ -1326,7 +1748,10 @@ abstract mixin class $CampaignEventSummaryCopyWith<$Res> {
   $Res call(
       {int playableEventCountAvailable,
       int playableEventCountCompleted,
-      int playableEventCountTotal});
+      int playableEventCountTotal,
+      int microchargeEventCountAvailable,
+      int microchargeEventCountCompleted,
+      int microchargeEventCountTotal});
 }
 
 /// @nodoc
@@ -1345,6 +1770,9 @@ class _$CampaignEventSummaryCopyWithImpl<$Res>
     Object? playableEventCountAvailable = null,
     Object? playableEventCountCompleted = null,
     Object? playableEventCountTotal = null,
+    Object? microchargeEventCountAvailable = null,
+    Object? microchargeEventCountCompleted = null,
+    Object? microchargeEventCountTotal = null,
   }) {
     return _then(_self.copyWith(
       playableEventCountAvailable: null == playableEventCountAvailable
@@ -1358,6 +1786,18 @@ class _$CampaignEventSummaryCopyWithImpl<$Res>
       playableEventCountTotal: null == playableEventCountTotal
           ? _self.playableEventCountTotal
           : playableEventCountTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      microchargeEventCountAvailable: null == microchargeEventCountAvailable
+          ? _self.microchargeEventCountAvailable
+          : microchargeEventCountAvailable // ignore: cast_nullable_to_non_nullable
+              as int,
+      microchargeEventCountCompleted: null == microchargeEventCountCompleted
+          ? _self.microchargeEventCountCompleted
+          : microchargeEventCountCompleted // ignore: cast_nullable_to_non_nullable
+              as int,
+      microchargeEventCountTotal: null == microchargeEventCountTotal
+          ? _self.microchargeEventCountTotal
+          : microchargeEventCountTotal // ignore: cast_nullable_to_non_nullable
               as int,
     ));
   }
@@ -1456,16 +1896,26 @@ extension CampaignEventSummaryPatterns on CampaignEventSummary {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int playableEventCountAvailable,
-            int playableEventCountCompleted, int playableEventCountTotal)?
+    TResult Function(
+            int playableEventCountAvailable,
+            int playableEventCountCompleted,
+            int playableEventCountTotal,
+            int microchargeEventCountAvailable,
+            int microchargeEventCountCompleted,
+            int microchargeEventCountTotal)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CampaignEventSummary() when $default != null:
-        return $default(_that.playableEventCountAvailable,
-            _that.playableEventCountCompleted, _that.playableEventCountTotal);
+        return $default(
+            _that.playableEventCountAvailable,
+            _that.playableEventCountCompleted,
+            _that.playableEventCountTotal,
+            _that.microchargeEventCountAvailable,
+            _that.microchargeEventCountCompleted,
+            _that.microchargeEventCountTotal);
       case _:
         return orElse();
     }
@@ -1486,15 +1936,25 @@ extension CampaignEventSummaryPatterns on CampaignEventSummary {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(int playableEventCountAvailable,
-            int playableEventCountCompleted, int playableEventCountTotal)
+    TResult Function(
+            int playableEventCountAvailable,
+            int playableEventCountCompleted,
+            int playableEventCountTotal,
+            int microchargeEventCountAvailable,
+            int microchargeEventCountCompleted,
+            int microchargeEventCountTotal)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CampaignEventSummary():
-        return $default(_that.playableEventCountAvailable,
-            _that.playableEventCountCompleted, _that.playableEventCountTotal);
+        return $default(
+            _that.playableEventCountAvailable,
+            _that.playableEventCountCompleted,
+            _that.playableEventCountTotal,
+            _that.microchargeEventCountAvailable,
+            _that.microchargeEventCountCompleted,
+            _that.microchargeEventCountTotal);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -1514,15 +1974,25 @@ extension CampaignEventSummaryPatterns on CampaignEventSummary {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int playableEventCountAvailable,
-            int playableEventCountCompleted, int playableEventCountTotal)?
+    TResult? Function(
+            int playableEventCountAvailable,
+            int playableEventCountCompleted,
+            int playableEventCountTotal,
+            int microchargeEventCountAvailable,
+            int microchargeEventCountCompleted,
+            int microchargeEventCountTotal)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CampaignEventSummary() when $default != null:
-        return $default(_that.playableEventCountAvailable,
-            _that.playableEventCountCompleted, _that.playableEventCountTotal);
+        return $default(
+            _that.playableEventCountAvailable,
+            _that.playableEventCountCompleted,
+            _that.playableEventCountTotal,
+            _that.microchargeEventCountAvailable,
+            _that.microchargeEventCountCompleted,
+            _that.microchargeEventCountTotal);
       case _:
         return null;
     }
@@ -1535,7 +2005,10 @@ class _CampaignEventSummary implements CampaignEventSummary {
   const _CampaignEventSummary(
       {this.playableEventCountAvailable = 0,
       this.playableEventCountCompleted = 0,
-      this.playableEventCountTotal = 0});
+      this.playableEventCountTotal = 0,
+      this.microchargeEventCountAvailable = 0,
+      this.microchargeEventCountCompleted = 0,
+      this.microchargeEventCountTotal = 0});
   factory _CampaignEventSummary.fromJson(Map<String, dynamic> json) =>
       _$CampaignEventSummaryFromJson(json);
 
@@ -1548,6 +2021,15 @@ class _CampaignEventSummary implements CampaignEventSummary {
   @override
   @JsonKey()
   final int playableEventCountTotal;
+  @override
+  @JsonKey()
+  final int microchargeEventCountAvailable;
+  @override
+  @JsonKey()
+  final int microchargeEventCountCompleted;
+  @override
+  @JsonKey()
+  final int microchargeEventCountTotal;
 
   /// Create a copy of CampaignEventSummary
   /// with the given fields replaced by the non-null parameter values.
@@ -1580,17 +2062,35 @@ class _CampaignEventSummary implements CampaignEventSummary {
                     playableEventCountCompleted) &&
             (identical(
                     other.playableEventCountTotal, playableEventCountTotal) ||
-                other.playableEventCountTotal == playableEventCountTotal));
+                other.playableEventCountTotal == playableEventCountTotal) &&
+            (identical(other.microchargeEventCountAvailable,
+                    microchargeEventCountAvailable) ||
+                other.microchargeEventCountAvailable ==
+                    microchargeEventCountAvailable) &&
+            (identical(other.microchargeEventCountCompleted,
+                    microchargeEventCountCompleted) ||
+                other.microchargeEventCountCompleted ==
+                    microchargeEventCountCompleted) &&
+            (identical(other.microchargeEventCountTotal,
+                    microchargeEventCountTotal) ||
+                other.microchargeEventCountTotal ==
+                    microchargeEventCountTotal));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, playableEventCountAvailable,
-      playableEventCountCompleted, playableEventCountTotal);
+  int get hashCode => Object.hash(
+      runtimeType,
+      playableEventCountAvailable,
+      playableEventCountCompleted,
+      playableEventCountTotal,
+      microchargeEventCountAvailable,
+      microchargeEventCountCompleted,
+      microchargeEventCountTotal);
 
   @override
   String toString() {
-    return 'CampaignEventSummary(playableEventCountAvailable: $playableEventCountAvailable, playableEventCountCompleted: $playableEventCountCompleted, playableEventCountTotal: $playableEventCountTotal)';
+    return 'CampaignEventSummary(playableEventCountAvailable: $playableEventCountAvailable, playableEventCountCompleted: $playableEventCountCompleted, playableEventCountTotal: $playableEventCountTotal, microchargeEventCountAvailable: $microchargeEventCountAvailable, microchargeEventCountCompleted: $microchargeEventCountCompleted, microchargeEventCountTotal: $microchargeEventCountTotal)';
   }
 }
 
@@ -1605,7 +2105,10 @@ abstract mixin class _$CampaignEventSummaryCopyWith<$Res>
   $Res call(
       {int playableEventCountAvailable,
       int playableEventCountCompleted,
-      int playableEventCountTotal});
+      int playableEventCountTotal,
+      int microchargeEventCountAvailable,
+      int microchargeEventCountCompleted,
+      int microchargeEventCountTotal});
 }
 
 /// @nodoc
@@ -1624,6 +2127,9 @@ class __$CampaignEventSummaryCopyWithImpl<$Res>
     Object? playableEventCountAvailable = null,
     Object? playableEventCountCompleted = null,
     Object? playableEventCountTotal = null,
+    Object? microchargeEventCountAvailable = null,
+    Object? microchargeEventCountCompleted = null,
+    Object? microchargeEventCountTotal = null,
   }) {
     return _then(_CampaignEventSummary(
       playableEventCountAvailable: null == playableEventCountAvailable
@@ -1638,6 +2144,539 @@ class __$CampaignEventSummaryCopyWithImpl<$Res>
           ? _self.playableEventCountTotal
           : playableEventCountTotal // ignore: cast_nullable_to_non_nullable
               as int,
+      microchargeEventCountAvailable: null == microchargeEventCountAvailable
+          ? _self.microchargeEventCountAvailable
+          : microchargeEventCountAvailable // ignore: cast_nullable_to_non_nullable
+              as int,
+      microchargeEventCountCompleted: null == microchargeEventCountCompleted
+          ? _self.microchargeEventCountCompleted
+          : microchargeEventCountCompleted // ignore: cast_nullable_to_non_nullable
+              as int,
+      microchargeEventCountTotal: null == microchargeEventCountTotal
+          ? _self.microchargeEventCountTotal
+          : microchargeEventCountTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$CampaignValidity {
+  bool get isRetryDownload;
+  bool get isActivated;
+  bool get isOldUser;
+  int get activeCurrencyId;
+  DateTime? get expiredOn;
+  double? get expiredInSeconds;
+  bool get isInstalled;
+  bool get capReached;
+
+  /// Create a copy of CampaignValidity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $CampaignValidityCopyWith<CampaignValidity> get copyWith =>
+      _$CampaignValidityCopyWithImpl<CampaignValidity>(
+          this as CampaignValidity, _$identity);
+
+  /// Serializes this CampaignValidity to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CampaignValidity &&
+            (identical(other.isRetryDownload, isRetryDownload) ||
+                other.isRetryDownload == isRetryDownload) &&
+            (identical(other.isActivated, isActivated) ||
+                other.isActivated == isActivated) &&
+            (identical(other.isOldUser, isOldUser) ||
+                other.isOldUser == isOldUser) &&
+            (identical(other.activeCurrencyId, activeCurrencyId) ||
+                other.activeCurrencyId == activeCurrencyId) &&
+            (identical(other.expiredOn, expiredOn) ||
+                other.expiredOn == expiredOn) &&
+            (identical(other.expiredInSeconds, expiredInSeconds) ||
+                other.expiredInSeconds == expiredInSeconds) &&
+            (identical(other.isInstalled, isInstalled) ||
+                other.isInstalled == isInstalled) &&
+            (identical(other.capReached, capReached) ||
+                other.capReached == capReached));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      isRetryDownload,
+      isActivated,
+      isOldUser,
+      activeCurrencyId,
+      expiredOn,
+      expiredInSeconds,
+      isInstalled,
+      capReached);
+
+  @override
+  String toString() {
+    return 'CampaignValidity(isRetryDownload: $isRetryDownload, isActivated: $isActivated, isOldUser: $isOldUser, activeCurrencyId: $activeCurrencyId, expiredOn: $expiredOn, expiredInSeconds: $expiredInSeconds, isInstalled: $isInstalled, capReached: $capReached)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $CampaignValidityCopyWith<$Res> {
+  factory $CampaignValidityCopyWith(
+          CampaignValidity value, $Res Function(CampaignValidity) _then) =
+      _$CampaignValidityCopyWithImpl;
+  @useResult
+  $Res call(
+      {bool isRetryDownload,
+      bool isActivated,
+      bool isOldUser,
+      int activeCurrencyId,
+      DateTime? expiredOn,
+      double? expiredInSeconds,
+      bool isInstalled,
+      bool capReached});
+}
+
+/// @nodoc
+class _$CampaignValidityCopyWithImpl<$Res>
+    implements $CampaignValidityCopyWith<$Res> {
+  _$CampaignValidityCopyWithImpl(this._self, this._then);
+
+  final CampaignValidity _self;
+  final $Res Function(CampaignValidity) _then;
+
+  /// Create a copy of CampaignValidity
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? isRetryDownload = null,
+    Object? isActivated = null,
+    Object? isOldUser = null,
+    Object? activeCurrencyId = null,
+    Object? expiredOn = freezed,
+    Object? expiredInSeconds = freezed,
+    Object? isInstalled = null,
+    Object? capReached = null,
+  }) {
+    return _then(_self.copyWith(
+      isRetryDownload: null == isRetryDownload
+          ? _self.isRetryDownload
+          : isRetryDownload // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isActivated: null == isActivated
+          ? _self.isActivated
+          : isActivated // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isOldUser: null == isOldUser
+          ? _self.isOldUser
+          : isOldUser // ignore: cast_nullable_to_non_nullable
+              as bool,
+      activeCurrencyId: null == activeCurrencyId
+          ? _self.activeCurrencyId
+          : activeCurrencyId // ignore: cast_nullable_to_non_nullable
+              as int,
+      expiredOn: freezed == expiredOn
+          ? _self.expiredOn
+          : expiredOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      expiredInSeconds: freezed == expiredInSeconds
+          ? _self.expiredInSeconds
+          : expiredInSeconds // ignore: cast_nullable_to_non_nullable
+              as double?,
+      isInstalled: null == isInstalled
+          ? _self.isInstalled
+          : isInstalled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      capReached: null == capReached
+          ? _self.capReached
+          : capReached // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [CampaignValidity].
+extension CampaignValidityPatterns on CampaignValidity {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_CampaignValidity value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _CampaignValidity() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_CampaignValidity value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CampaignValidity():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_CampaignValidity value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CampaignValidity() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            bool isRetryDownload,
+            bool isActivated,
+            bool isOldUser,
+            int activeCurrencyId,
+            DateTime? expiredOn,
+            double? expiredInSeconds,
+            bool isInstalled,
+            bool capReached)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _CampaignValidity() when $default != null:
+        return $default(
+            _that.isRetryDownload,
+            _that.isActivated,
+            _that.isOldUser,
+            _that.activeCurrencyId,
+            _that.expiredOn,
+            _that.expiredInSeconds,
+            _that.isInstalled,
+            _that.capReached);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            bool isRetryDownload,
+            bool isActivated,
+            bool isOldUser,
+            int activeCurrencyId,
+            DateTime? expiredOn,
+            double? expiredInSeconds,
+            bool isInstalled,
+            bool capReached)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CampaignValidity():
+        return $default(
+            _that.isRetryDownload,
+            _that.isActivated,
+            _that.isOldUser,
+            _that.activeCurrencyId,
+            _that.expiredOn,
+            _that.expiredInSeconds,
+            _that.isInstalled,
+            _that.capReached);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            bool isRetryDownload,
+            bool isActivated,
+            bool isOldUser,
+            int activeCurrencyId,
+            DateTime? expiredOn,
+            double? expiredInSeconds,
+            bool isInstalled,
+            bool capReached)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CampaignValidity() when $default != null:
+        return $default(
+            _that.isRetryDownload,
+            _that.isActivated,
+            _that.isOldUser,
+            _that.activeCurrencyId,
+            _that.expiredOn,
+            _that.expiredInSeconds,
+            _that.isInstalled,
+            _that.capReached);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _CampaignValidity implements CampaignValidity {
+  const _CampaignValidity(
+      {this.isRetryDownload = false,
+      this.isActivated = false,
+      this.isOldUser = false,
+      this.activeCurrencyId = 0,
+      this.expiredOn,
+      this.expiredInSeconds,
+      this.isInstalled = false,
+      this.capReached = false});
+  factory _CampaignValidity.fromJson(Map<String, dynamic> json) =>
+      _$CampaignValidityFromJson(json);
+
+  @override
+  @JsonKey()
+  final bool isRetryDownload;
+  @override
+  @JsonKey()
+  final bool isActivated;
+  @override
+  @JsonKey()
+  final bool isOldUser;
+  @override
+  @JsonKey()
+  final int activeCurrencyId;
+  @override
+  final DateTime? expiredOn;
+  @override
+  final double? expiredInSeconds;
+  @override
+  @JsonKey()
+  final bool isInstalled;
+  @override
+  @JsonKey()
+  final bool capReached;
+
+  /// Create a copy of CampaignValidity
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CampaignValidityCopyWith<_CampaignValidity> get copyWith =>
+      __$CampaignValidityCopyWithImpl<_CampaignValidity>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$CampaignValidityToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _CampaignValidity &&
+            (identical(other.isRetryDownload, isRetryDownload) ||
+                other.isRetryDownload == isRetryDownload) &&
+            (identical(other.isActivated, isActivated) ||
+                other.isActivated == isActivated) &&
+            (identical(other.isOldUser, isOldUser) ||
+                other.isOldUser == isOldUser) &&
+            (identical(other.activeCurrencyId, activeCurrencyId) ||
+                other.activeCurrencyId == activeCurrencyId) &&
+            (identical(other.expiredOn, expiredOn) ||
+                other.expiredOn == expiredOn) &&
+            (identical(other.expiredInSeconds, expiredInSeconds) ||
+                other.expiredInSeconds == expiredInSeconds) &&
+            (identical(other.isInstalled, isInstalled) ||
+                other.isInstalled == isInstalled) &&
+            (identical(other.capReached, capReached) ||
+                other.capReached == capReached));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      isRetryDownload,
+      isActivated,
+      isOldUser,
+      activeCurrencyId,
+      expiredOn,
+      expiredInSeconds,
+      isInstalled,
+      capReached);
+
+  @override
+  String toString() {
+    return 'CampaignValidity(isRetryDownload: $isRetryDownload, isActivated: $isActivated, isOldUser: $isOldUser, activeCurrencyId: $activeCurrencyId, expiredOn: $expiredOn, expiredInSeconds: $expiredInSeconds, isInstalled: $isInstalled, capReached: $capReached)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$CampaignValidityCopyWith<$Res>
+    implements $CampaignValidityCopyWith<$Res> {
+  factory _$CampaignValidityCopyWith(
+          _CampaignValidity value, $Res Function(_CampaignValidity) _then) =
+      __$CampaignValidityCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {bool isRetryDownload,
+      bool isActivated,
+      bool isOldUser,
+      int activeCurrencyId,
+      DateTime? expiredOn,
+      double? expiredInSeconds,
+      bool isInstalled,
+      bool capReached});
+}
+
+/// @nodoc
+class __$CampaignValidityCopyWithImpl<$Res>
+    implements _$CampaignValidityCopyWith<$Res> {
+  __$CampaignValidityCopyWithImpl(this._self, this._then);
+
+  final _CampaignValidity _self;
+  final $Res Function(_CampaignValidity) _then;
+
+  /// Create a copy of CampaignValidity
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? isRetryDownload = null,
+    Object? isActivated = null,
+    Object? isOldUser = null,
+    Object? activeCurrencyId = null,
+    Object? expiredOn = freezed,
+    Object? expiredInSeconds = freezed,
+    Object? isInstalled = null,
+    Object? capReached = null,
+  }) {
+    return _then(_CampaignValidity(
+      isRetryDownload: null == isRetryDownload
+          ? _self.isRetryDownload
+          : isRetryDownload // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isActivated: null == isActivated
+          ? _self.isActivated
+          : isActivated // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isOldUser: null == isOldUser
+          ? _self.isOldUser
+          : isOldUser // ignore: cast_nullable_to_non_nullable
+              as bool,
+      activeCurrencyId: null == activeCurrencyId
+          ? _self.activeCurrencyId
+          : activeCurrencyId // ignore: cast_nullable_to_non_nullable
+              as int,
+      expiredOn: freezed == expiredOn
+          ? _self.expiredOn
+          : expiredOn // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      expiredInSeconds: freezed == expiredInSeconds
+          ? _self.expiredInSeconds
+          : expiredInSeconds // ignore: cast_nullable_to_non_nullable
+              as double?,
+      isInstalled: null == isInstalled
+          ? _self.isInstalled
+          : isInstalled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      capReached: null == capReached
+          ? _self.capReached
+          : capReached // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -1647,20 +2686,17 @@ mixin _$ActiveCampaign {
   int get campaignId;
   String get campaignName;
   String get campaignDescription;
-  String get status;
-  DateTime? get createdOn;
-  double get sortingScore;
-  DateTime? get expiredOn;
+  String get campaignType;
+  bool get campaignPremium;
+  CampaignValidity get validity;
+  Map<String, AcmoCurrency> get availableCurrencies;
   ActiveApp get app;
-  bool get isRetryDownload;
-  bool get capReached;
-  String? get group;
-  bool get premium;
-  bool get isOldUser;
-  bool get isInstalled;
+  String get campaignStatus;
+  String get group;
+  dynamic get stage;
+  CampaignEventSummary get eventSummary;
   List<PayoutEvents> get limitedTimeEvents;
-  CampaignEventSummary get campaignEventSummary;
-  Currency? get currency;
+  List<dynamic> get shorterMaxTimeEvents;
 
   /// Create a copy of ActiveCampaign
   /// with the given fields replaced by the non-null parameter values.
@@ -1684,30 +2720,25 @@ mixin _$ActiveCampaign {
                 other.campaignName == campaignName) &&
             (identical(other.campaignDescription, campaignDescription) ||
                 other.campaignDescription == campaignDescription) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.createdOn, createdOn) ||
-                other.createdOn == createdOn) &&
-            (identical(other.sortingScore, sortingScore) ||
-                other.sortingScore == sortingScore) &&
-            (identical(other.expiredOn, expiredOn) ||
-                other.expiredOn == expiredOn) &&
+            (identical(other.campaignType, campaignType) ||
+                other.campaignType == campaignType) &&
+            (identical(other.campaignPremium, campaignPremium) ||
+                other.campaignPremium == campaignPremium) &&
+            (identical(other.validity, validity) ||
+                other.validity == validity) &&
+            const DeepCollectionEquality()
+                .equals(other.availableCurrencies, availableCurrencies) &&
             (identical(other.app, app) || other.app == app) &&
-            (identical(other.isRetryDownload, isRetryDownload) ||
-                other.isRetryDownload == isRetryDownload) &&
-            (identical(other.capReached, capReached) ||
-                other.capReached == capReached) &&
+            (identical(other.campaignStatus, campaignStatus) ||
+                other.campaignStatus == campaignStatus) &&
             (identical(other.group, group) || other.group == group) &&
-            (identical(other.premium, premium) || other.premium == premium) &&
-            (identical(other.isOldUser, isOldUser) ||
-                other.isOldUser == isOldUser) &&
-            (identical(other.isInstalled, isInstalled) ||
-                other.isInstalled == isInstalled) &&
+            const DeepCollectionEquality().equals(other.stage, stage) &&
+            (identical(other.eventSummary, eventSummary) ||
+                other.eventSummary == eventSummary) &&
             const DeepCollectionEquality()
                 .equals(other.limitedTimeEvents, limitedTimeEvents) &&
-            (identical(other.campaignEventSummary, campaignEventSummary) ||
-                other.campaignEventSummary == campaignEventSummary) &&
-            (identical(other.currency, currency) ||
-                other.currency == currency));
+            const DeepCollectionEquality()
+                .equals(other.shorterMaxTimeEvents, shorterMaxTimeEvents));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1717,24 +2748,21 @@ mixin _$ActiveCampaign {
       campaignId,
       campaignName,
       campaignDescription,
-      status,
-      createdOn,
-      sortingScore,
-      expiredOn,
+      campaignType,
+      campaignPremium,
+      validity,
+      const DeepCollectionEquality().hash(availableCurrencies),
       app,
-      isRetryDownload,
-      capReached,
+      campaignStatus,
       group,
-      premium,
-      isOldUser,
-      isInstalled,
+      const DeepCollectionEquality().hash(stage),
+      eventSummary,
       const DeepCollectionEquality().hash(limitedTimeEvents),
-      campaignEventSummary,
-      currency);
+      const DeepCollectionEquality().hash(shorterMaxTimeEvents));
 
   @override
   String toString() {
-    return 'ActiveCampaign(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, status: $status, createdOn: $createdOn, sortingScore: $sortingScore, expiredOn: $expiredOn, app: $app, isRetryDownload: $isRetryDownload, capReached: $capReached, group: $group, premium: $premium, isOldUser: $isOldUser, isInstalled: $isInstalled, limitedTimeEvents: $limitedTimeEvents, campaignEventSummary: $campaignEventSummary, currency: $currency)';
+    return 'ActiveCampaign(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, campaignType: $campaignType, campaignPremium: $campaignPremium, validity: $validity, availableCurrencies: $availableCurrencies, app: $app, campaignStatus: $campaignStatus, group: $group, stage: $stage, eventSummary: $eventSummary, limitedTimeEvents: $limitedTimeEvents, shorterMaxTimeEvents: $shorterMaxTimeEvents)';
   }
 }
 
@@ -1748,24 +2776,21 @@ abstract mixin class $ActiveCampaignCopyWith<$Res> {
       {int campaignId,
       String campaignName,
       String campaignDescription,
-      String status,
-      DateTime? createdOn,
-      double sortingScore,
-      DateTime? expiredOn,
+      String campaignType,
+      bool campaignPremium,
+      CampaignValidity validity,
+      Map<String, AcmoCurrency> availableCurrencies,
       ActiveApp app,
-      bool isRetryDownload,
-      bool capReached,
-      String? group,
-      bool premium,
-      bool isOldUser,
-      bool isInstalled,
+      String campaignStatus,
+      String group,
+      dynamic stage,
+      CampaignEventSummary eventSummary,
       List<PayoutEvents> limitedTimeEvents,
-      CampaignEventSummary campaignEventSummary,
-      Currency? currency});
+      List<dynamic> shorterMaxTimeEvents});
 
+  $CampaignValidityCopyWith<$Res> get validity;
   $ActiveAppCopyWith<$Res> get app;
-  $CampaignEventSummaryCopyWith<$Res> get campaignEventSummary;
-  $CurrencyCopyWith<$Res>? get currency;
+  $CampaignEventSummaryCopyWith<$Res> get eventSummary;
 }
 
 /// @nodoc
@@ -1784,20 +2809,17 @@ class _$ActiveCampaignCopyWithImpl<$Res>
     Object? campaignId = null,
     Object? campaignName = null,
     Object? campaignDescription = null,
-    Object? status = null,
-    Object? createdOn = freezed,
-    Object? sortingScore = null,
-    Object? expiredOn = freezed,
+    Object? campaignType = null,
+    Object? campaignPremium = null,
+    Object? validity = null,
+    Object? availableCurrencies = null,
     Object? app = null,
-    Object? isRetryDownload = null,
-    Object? capReached = null,
-    Object? group = freezed,
-    Object? premium = null,
-    Object? isOldUser = null,
-    Object? isInstalled = null,
+    Object? campaignStatus = null,
+    Object? group = null,
+    Object? stage = freezed,
+    Object? eventSummary = null,
     Object? limitedTimeEvents = null,
-    Object? campaignEventSummary = null,
-    Object? currency = freezed,
+    Object? shorterMaxTimeEvents = null,
   }) {
     return _then(_self.copyWith(
       campaignId: null == campaignId
@@ -1812,63 +2834,61 @@ class _$ActiveCampaignCopyWithImpl<$Res>
           ? _self.campaignDescription
           : campaignDescription // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
-          ? _self.status
-          : status // ignore: cast_nullable_to_non_nullable
+      campaignType: null == campaignType
+          ? _self.campaignType
+          : campaignType // ignore: cast_nullable_to_non_nullable
               as String,
-      createdOn: freezed == createdOn
-          ? _self.createdOn
-          : createdOn // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      sortingScore: null == sortingScore
-          ? _self.sortingScore
-          : sortingScore // ignore: cast_nullable_to_non_nullable
-              as double,
-      expiredOn: freezed == expiredOn
-          ? _self.expiredOn
-          : expiredOn // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+      campaignPremium: null == campaignPremium
+          ? _self.campaignPremium
+          : campaignPremium // ignore: cast_nullable_to_non_nullable
+              as bool,
+      validity: null == validity
+          ? _self.validity
+          : validity // ignore: cast_nullable_to_non_nullable
+              as CampaignValidity,
+      availableCurrencies: null == availableCurrencies
+          ? _self.availableCurrencies
+          : availableCurrencies // ignore: cast_nullable_to_non_nullable
+              as Map<String, AcmoCurrency>,
       app: null == app
           ? _self.app
           : app // ignore: cast_nullable_to_non_nullable
               as ActiveApp,
-      isRetryDownload: null == isRetryDownload
-          ? _self.isRetryDownload
-          : isRetryDownload // ignore: cast_nullable_to_non_nullable
-              as bool,
-      capReached: null == capReached
-          ? _self.capReached
-          : capReached // ignore: cast_nullable_to_non_nullable
-              as bool,
-      group: freezed == group
+      campaignStatus: null == campaignStatus
+          ? _self.campaignStatus
+          : campaignStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      group: null == group
           ? _self.group
           : group // ignore: cast_nullable_to_non_nullable
-              as String?,
-      premium: null == premium
-          ? _self.premium
-          : premium // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isOldUser: null == isOldUser
-          ? _self.isOldUser
-          : isOldUser // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isInstalled: null == isInstalled
-          ? _self.isInstalled
-          : isInstalled // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as String,
+      stage: freezed == stage
+          ? _self.stage
+          : stage // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      eventSummary: null == eventSummary
+          ? _self.eventSummary
+          : eventSummary // ignore: cast_nullable_to_non_nullable
+              as CampaignEventSummary,
       limitedTimeEvents: null == limitedTimeEvents
           ? _self.limitedTimeEvents
           : limitedTimeEvents // ignore: cast_nullable_to_non_nullable
               as List<PayoutEvents>,
-      campaignEventSummary: null == campaignEventSummary
-          ? _self.campaignEventSummary
-          : campaignEventSummary // ignore: cast_nullable_to_non_nullable
-              as CampaignEventSummary,
-      currency: freezed == currency
-          ? _self.currency
-          : currency // ignore: cast_nullable_to_non_nullable
-              as Currency?,
+      shorterMaxTimeEvents: null == shorterMaxTimeEvents
+          ? _self.shorterMaxTimeEvents
+          : shorterMaxTimeEvents // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>,
     ));
+  }
+
+  /// Create a copy of ActiveCampaign
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CampaignValidityCopyWith<$Res> get validity {
+    return $CampaignValidityCopyWith<$Res>(_self.validity, (value) {
+      return _then(_self.copyWith(validity: value));
+    });
   }
 
   /// Create a copy of ActiveCampaign
@@ -1885,24 +2905,9 @@ class _$ActiveCampaignCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $CampaignEventSummaryCopyWith<$Res> get campaignEventSummary {
-    return $CampaignEventSummaryCopyWith<$Res>(_self.campaignEventSummary,
-        (value) {
-      return _then(_self.copyWith(campaignEventSummary: value));
-    });
-  }
-
-  /// Create a copy of ActiveCampaign
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CurrencyCopyWith<$Res>? get currency {
-    if (_self.currency == null) {
-      return null;
-    }
-
-    return $CurrencyCopyWith<$Res>(_self.currency!, (value) {
-      return _then(_self.copyWith(currency: value));
+  $CampaignEventSummaryCopyWith<$Res> get eventSummary {
+    return $CampaignEventSummaryCopyWith<$Res>(_self.eventSummary, (value) {
+      return _then(_self.copyWith(eventSummary: value));
     });
   }
 }
@@ -2004,20 +3009,17 @@ extension ActiveCampaignPatterns on ActiveCampaign {
             int campaignId,
             String campaignName,
             String campaignDescription,
-            String status,
-            DateTime? createdOn,
-            double sortingScore,
-            DateTime? expiredOn,
+            String campaignType,
+            bool campaignPremium,
+            CampaignValidity validity,
+            Map<String, AcmoCurrency> availableCurrencies,
             ActiveApp app,
-            bool isRetryDownload,
-            bool capReached,
-            String? group,
-            bool premium,
-            bool isOldUser,
-            bool isInstalled,
+            String campaignStatus,
+            String group,
+            dynamic stage,
+            CampaignEventSummary eventSummary,
             List<PayoutEvents> limitedTimeEvents,
-            CampaignEventSummary campaignEventSummary,
-            Currency? currency)?
+            List<dynamic> shorterMaxTimeEvents)?
         $default, {
     required TResult orElse(),
   }) {
@@ -2028,20 +3030,17 @@ extension ActiveCampaignPatterns on ActiveCampaign {
             _that.campaignId,
             _that.campaignName,
             _that.campaignDescription,
-            _that.status,
-            _that.createdOn,
-            _that.sortingScore,
-            _that.expiredOn,
+            _that.campaignType,
+            _that.campaignPremium,
+            _that.validity,
+            _that.availableCurrencies,
             _that.app,
-            _that.isRetryDownload,
-            _that.capReached,
+            _that.campaignStatus,
             _that.group,
-            _that.premium,
-            _that.isOldUser,
-            _that.isInstalled,
+            _that.stage,
+            _that.eventSummary,
             _that.limitedTimeEvents,
-            _that.campaignEventSummary,
-            _that.currency);
+            _that.shorterMaxTimeEvents);
       case _:
         return orElse();
     }
@@ -2066,20 +3065,17 @@ extension ActiveCampaignPatterns on ActiveCampaign {
             int campaignId,
             String campaignName,
             String campaignDescription,
-            String status,
-            DateTime? createdOn,
-            double sortingScore,
-            DateTime? expiredOn,
+            String campaignType,
+            bool campaignPremium,
+            CampaignValidity validity,
+            Map<String, AcmoCurrency> availableCurrencies,
             ActiveApp app,
-            bool isRetryDownload,
-            bool capReached,
-            String? group,
-            bool premium,
-            bool isOldUser,
-            bool isInstalled,
+            String campaignStatus,
+            String group,
+            dynamic stage,
+            CampaignEventSummary eventSummary,
             List<PayoutEvents> limitedTimeEvents,
-            CampaignEventSummary campaignEventSummary,
-            Currency? currency)
+            List<dynamic> shorterMaxTimeEvents)
         $default,
   ) {
     final _that = this;
@@ -2089,20 +3085,17 @@ extension ActiveCampaignPatterns on ActiveCampaign {
             _that.campaignId,
             _that.campaignName,
             _that.campaignDescription,
-            _that.status,
-            _that.createdOn,
-            _that.sortingScore,
-            _that.expiredOn,
+            _that.campaignType,
+            _that.campaignPremium,
+            _that.validity,
+            _that.availableCurrencies,
             _that.app,
-            _that.isRetryDownload,
-            _that.capReached,
+            _that.campaignStatus,
             _that.group,
-            _that.premium,
-            _that.isOldUser,
-            _that.isInstalled,
+            _that.stage,
+            _that.eventSummary,
             _that.limitedTimeEvents,
-            _that.campaignEventSummary,
-            _that.currency);
+            _that.shorterMaxTimeEvents);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -2126,20 +3119,17 @@ extension ActiveCampaignPatterns on ActiveCampaign {
             int campaignId,
             String campaignName,
             String campaignDescription,
-            String status,
-            DateTime? createdOn,
-            double sortingScore,
-            DateTime? expiredOn,
+            String campaignType,
+            bool campaignPremium,
+            CampaignValidity validity,
+            Map<String, AcmoCurrency> availableCurrencies,
             ActiveApp app,
-            bool isRetryDownload,
-            bool capReached,
-            String? group,
-            bool premium,
-            bool isOldUser,
-            bool isInstalled,
+            String campaignStatus,
+            String group,
+            dynamic stage,
+            CampaignEventSummary eventSummary,
             List<PayoutEvents> limitedTimeEvents,
-            CampaignEventSummary campaignEventSummary,
-            Currency? currency)?
+            List<dynamic> shorterMaxTimeEvents)?
         $default,
   ) {
     final _that = this;
@@ -2149,20 +3139,17 @@ extension ActiveCampaignPatterns on ActiveCampaign {
             _that.campaignId,
             _that.campaignName,
             _that.campaignDescription,
-            _that.status,
-            _that.createdOn,
-            _that.sortingScore,
-            _that.expiredOn,
+            _that.campaignType,
+            _that.campaignPremium,
+            _that.validity,
+            _that.availableCurrencies,
             _that.app,
-            _that.isRetryDownload,
-            _that.capReached,
+            _that.campaignStatus,
             _that.group,
-            _that.premium,
-            _that.isOldUser,
-            _that.isInstalled,
+            _that.stage,
+            _that.eventSummary,
             _that.limitedTimeEvents,
-            _that.campaignEventSummary,
-            _that.currency);
+            _that.shorterMaxTimeEvents);
       case _:
         return null;
     }
@@ -2176,21 +3163,20 @@ class _ActiveCampaign implements ActiveCampaign {
       {this.campaignId = 0,
       this.campaignName = '',
       this.campaignDescription = '',
-      this.status = '',
-      this.createdOn,
-      this.sortingScore = 0,
-      this.expiredOn,
+      this.campaignType = '',
+      this.campaignPremium = false,
+      this.validity = CampaignValidity.empty,
+      final Map<String, AcmoCurrency> availableCurrencies = const {},
       this.app = ActiveApp.empty,
-      this.isRetryDownload = false,
-      this.capReached = false,
-      this.group = null,
-      this.premium = false,
-      this.isOldUser = false,
-      this.isInstalled = false,
+      this.campaignStatus = '',
+      this.group = '',
+      this.stage,
+      this.eventSummary = CampaignEventSummary.empty,
       final List<PayoutEvents> limitedTimeEvents = const [],
-      this.campaignEventSummary = CampaignEventSummary.empty,
-      this.currency})
-      : _limitedTimeEvents = limitedTimeEvents;
+      final List<dynamic> shorterMaxTimeEvents = const []})
+      : _availableCurrencies = availableCurrencies,
+        _limitedTimeEvents = limitedTimeEvents,
+        _shorterMaxTimeEvents = shorterMaxTimeEvents;
   factory _ActiveCampaign.fromJson(Map<String, dynamic> json) =>
       _$ActiveCampaignFromJson(json);
 
@@ -2205,35 +3191,37 @@ class _ActiveCampaign implements ActiveCampaign {
   final String campaignDescription;
   @override
   @JsonKey()
-  final String status;
-  @override
-  final DateTime? createdOn;
+  final String campaignType;
   @override
   @JsonKey()
-  final double sortingScore;
+  final bool campaignPremium;
   @override
-  final DateTime? expiredOn;
+  @JsonKey()
+  final CampaignValidity validity;
+  final Map<String, AcmoCurrency> _availableCurrencies;
+  @override
+  @JsonKey()
+  Map<String, AcmoCurrency> get availableCurrencies {
+    if (_availableCurrencies is EqualUnmodifiableMapView)
+      return _availableCurrencies;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_availableCurrencies);
+  }
+
   @override
   @JsonKey()
   final ActiveApp app;
   @override
   @JsonKey()
-  final bool isRetryDownload;
+  final String campaignStatus;
   @override
   @JsonKey()
-  final bool capReached;
+  final String group;
+  @override
+  final dynamic stage;
   @override
   @JsonKey()
-  final String? group;
-  @override
-  @JsonKey()
-  final bool premium;
-  @override
-  @JsonKey()
-  final bool isOldUser;
-  @override
-  @JsonKey()
-  final bool isInstalled;
+  final CampaignEventSummary eventSummary;
   final List<PayoutEvents> _limitedTimeEvents;
   @override
   @JsonKey()
@@ -2244,11 +3232,15 @@ class _ActiveCampaign implements ActiveCampaign {
     return EqualUnmodifiableListView(_limitedTimeEvents);
   }
 
+  final List<dynamic> _shorterMaxTimeEvents;
   @override
   @JsonKey()
-  final CampaignEventSummary campaignEventSummary;
-  @override
-  final Currency? currency;
+  List<dynamic> get shorterMaxTimeEvents {
+    if (_shorterMaxTimeEvents is EqualUnmodifiableListView)
+      return _shorterMaxTimeEvents;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_shorterMaxTimeEvents);
+  }
 
   /// Create a copy of ActiveCampaign
   /// with the given fields replaced by the non-null parameter values.
@@ -2276,30 +3268,25 @@ class _ActiveCampaign implements ActiveCampaign {
                 other.campaignName == campaignName) &&
             (identical(other.campaignDescription, campaignDescription) ||
                 other.campaignDescription == campaignDescription) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.createdOn, createdOn) ||
-                other.createdOn == createdOn) &&
-            (identical(other.sortingScore, sortingScore) ||
-                other.sortingScore == sortingScore) &&
-            (identical(other.expiredOn, expiredOn) ||
-                other.expiredOn == expiredOn) &&
+            (identical(other.campaignType, campaignType) ||
+                other.campaignType == campaignType) &&
+            (identical(other.campaignPremium, campaignPremium) ||
+                other.campaignPremium == campaignPremium) &&
+            (identical(other.validity, validity) ||
+                other.validity == validity) &&
+            const DeepCollectionEquality()
+                .equals(other._availableCurrencies, _availableCurrencies) &&
             (identical(other.app, app) || other.app == app) &&
-            (identical(other.isRetryDownload, isRetryDownload) ||
-                other.isRetryDownload == isRetryDownload) &&
-            (identical(other.capReached, capReached) ||
-                other.capReached == capReached) &&
+            (identical(other.campaignStatus, campaignStatus) ||
+                other.campaignStatus == campaignStatus) &&
             (identical(other.group, group) || other.group == group) &&
-            (identical(other.premium, premium) || other.premium == premium) &&
-            (identical(other.isOldUser, isOldUser) ||
-                other.isOldUser == isOldUser) &&
-            (identical(other.isInstalled, isInstalled) ||
-                other.isInstalled == isInstalled) &&
+            const DeepCollectionEquality().equals(other.stage, stage) &&
+            (identical(other.eventSummary, eventSummary) ||
+                other.eventSummary == eventSummary) &&
             const DeepCollectionEquality()
                 .equals(other._limitedTimeEvents, _limitedTimeEvents) &&
-            (identical(other.campaignEventSummary, campaignEventSummary) ||
-                other.campaignEventSummary == campaignEventSummary) &&
-            (identical(other.currency, currency) ||
-                other.currency == currency));
+            const DeepCollectionEquality()
+                .equals(other._shorterMaxTimeEvents, _shorterMaxTimeEvents));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2309,24 +3296,21 @@ class _ActiveCampaign implements ActiveCampaign {
       campaignId,
       campaignName,
       campaignDescription,
-      status,
-      createdOn,
-      sortingScore,
-      expiredOn,
+      campaignType,
+      campaignPremium,
+      validity,
+      const DeepCollectionEquality().hash(_availableCurrencies),
       app,
-      isRetryDownload,
-      capReached,
+      campaignStatus,
       group,
-      premium,
-      isOldUser,
-      isInstalled,
+      const DeepCollectionEquality().hash(stage),
+      eventSummary,
       const DeepCollectionEquality().hash(_limitedTimeEvents),
-      campaignEventSummary,
-      currency);
+      const DeepCollectionEquality().hash(_shorterMaxTimeEvents));
 
   @override
   String toString() {
-    return 'ActiveCampaign(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, status: $status, createdOn: $createdOn, sortingScore: $sortingScore, expiredOn: $expiredOn, app: $app, isRetryDownload: $isRetryDownload, capReached: $capReached, group: $group, premium: $premium, isOldUser: $isOldUser, isInstalled: $isInstalled, limitedTimeEvents: $limitedTimeEvents, campaignEventSummary: $campaignEventSummary, currency: $currency)';
+    return 'ActiveCampaign(campaignId: $campaignId, campaignName: $campaignName, campaignDescription: $campaignDescription, campaignType: $campaignType, campaignPremium: $campaignPremium, validity: $validity, availableCurrencies: $availableCurrencies, app: $app, campaignStatus: $campaignStatus, group: $group, stage: $stage, eventSummary: $eventSummary, limitedTimeEvents: $limitedTimeEvents, shorterMaxTimeEvents: $shorterMaxTimeEvents)';
   }
 }
 
@@ -2342,27 +3326,24 @@ abstract mixin class _$ActiveCampaignCopyWith<$Res>
       {int campaignId,
       String campaignName,
       String campaignDescription,
-      String status,
-      DateTime? createdOn,
-      double sortingScore,
-      DateTime? expiredOn,
+      String campaignType,
+      bool campaignPremium,
+      CampaignValidity validity,
+      Map<String, AcmoCurrency> availableCurrencies,
       ActiveApp app,
-      bool isRetryDownload,
-      bool capReached,
-      String? group,
-      bool premium,
-      bool isOldUser,
-      bool isInstalled,
+      String campaignStatus,
+      String group,
+      dynamic stage,
+      CampaignEventSummary eventSummary,
       List<PayoutEvents> limitedTimeEvents,
-      CampaignEventSummary campaignEventSummary,
-      Currency? currency});
+      List<dynamic> shorterMaxTimeEvents});
 
+  @override
+  $CampaignValidityCopyWith<$Res> get validity;
   @override
   $ActiveAppCopyWith<$Res> get app;
   @override
-  $CampaignEventSummaryCopyWith<$Res> get campaignEventSummary;
-  @override
-  $CurrencyCopyWith<$Res>? get currency;
+  $CampaignEventSummaryCopyWith<$Res> get eventSummary;
 }
 
 /// @nodoc
@@ -2381,20 +3362,17 @@ class __$ActiveCampaignCopyWithImpl<$Res>
     Object? campaignId = null,
     Object? campaignName = null,
     Object? campaignDescription = null,
-    Object? status = null,
-    Object? createdOn = freezed,
-    Object? sortingScore = null,
-    Object? expiredOn = freezed,
+    Object? campaignType = null,
+    Object? campaignPremium = null,
+    Object? validity = null,
+    Object? availableCurrencies = null,
     Object? app = null,
-    Object? isRetryDownload = null,
-    Object? capReached = null,
-    Object? group = freezed,
-    Object? premium = null,
-    Object? isOldUser = null,
-    Object? isInstalled = null,
+    Object? campaignStatus = null,
+    Object? group = null,
+    Object? stage = freezed,
+    Object? eventSummary = null,
     Object? limitedTimeEvents = null,
-    Object? campaignEventSummary = null,
-    Object? currency = freezed,
+    Object? shorterMaxTimeEvents = null,
   }) {
     return _then(_ActiveCampaign(
       campaignId: null == campaignId
@@ -2409,63 +3387,61 @@ class __$ActiveCampaignCopyWithImpl<$Res>
           ? _self.campaignDescription
           : campaignDescription // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
-          ? _self.status
-          : status // ignore: cast_nullable_to_non_nullable
+      campaignType: null == campaignType
+          ? _self.campaignType
+          : campaignType // ignore: cast_nullable_to_non_nullable
               as String,
-      createdOn: freezed == createdOn
-          ? _self.createdOn
-          : createdOn // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      sortingScore: null == sortingScore
-          ? _self.sortingScore
-          : sortingScore // ignore: cast_nullable_to_non_nullable
-              as double,
-      expiredOn: freezed == expiredOn
-          ? _self.expiredOn
-          : expiredOn // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+      campaignPremium: null == campaignPremium
+          ? _self.campaignPremium
+          : campaignPremium // ignore: cast_nullable_to_non_nullable
+              as bool,
+      validity: null == validity
+          ? _self.validity
+          : validity // ignore: cast_nullable_to_non_nullable
+              as CampaignValidity,
+      availableCurrencies: null == availableCurrencies
+          ? _self._availableCurrencies
+          : availableCurrencies // ignore: cast_nullable_to_non_nullable
+              as Map<String, AcmoCurrency>,
       app: null == app
           ? _self.app
           : app // ignore: cast_nullable_to_non_nullable
               as ActiveApp,
-      isRetryDownload: null == isRetryDownload
-          ? _self.isRetryDownload
-          : isRetryDownload // ignore: cast_nullable_to_non_nullable
-              as bool,
-      capReached: null == capReached
-          ? _self.capReached
-          : capReached // ignore: cast_nullable_to_non_nullable
-              as bool,
-      group: freezed == group
+      campaignStatus: null == campaignStatus
+          ? _self.campaignStatus
+          : campaignStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      group: null == group
           ? _self.group
           : group // ignore: cast_nullable_to_non_nullable
-              as String?,
-      premium: null == premium
-          ? _self.premium
-          : premium // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isOldUser: null == isOldUser
-          ? _self.isOldUser
-          : isOldUser // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isInstalled: null == isInstalled
-          ? _self.isInstalled
-          : isInstalled // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as String,
+      stage: freezed == stage
+          ? _self.stage
+          : stage // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      eventSummary: null == eventSummary
+          ? _self.eventSummary
+          : eventSummary // ignore: cast_nullable_to_non_nullable
+              as CampaignEventSummary,
       limitedTimeEvents: null == limitedTimeEvents
           ? _self._limitedTimeEvents
           : limitedTimeEvents // ignore: cast_nullable_to_non_nullable
               as List<PayoutEvents>,
-      campaignEventSummary: null == campaignEventSummary
-          ? _self.campaignEventSummary
-          : campaignEventSummary // ignore: cast_nullable_to_non_nullable
-              as CampaignEventSummary,
-      currency: freezed == currency
-          ? _self.currency
-          : currency // ignore: cast_nullable_to_non_nullable
-              as Currency?,
+      shorterMaxTimeEvents: null == shorterMaxTimeEvents
+          ? _self._shorterMaxTimeEvents
+          : shorterMaxTimeEvents // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>,
     ));
+  }
+
+  /// Create a copy of ActiveCampaign
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CampaignValidityCopyWith<$Res> get validity {
+    return $CampaignValidityCopyWith<$Res>(_self.validity, (value) {
+      return _then(_self.copyWith(validity: value));
+    });
   }
 
   /// Create a copy of ActiveCampaign
@@ -2482,53 +3458,456 @@ class __$ActiveCampaignCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $CampaignEventSummaryCopyWith<$Res> get campaignEventSummary {
-    return $CampaignEventSummaryCopyWith<$Res>(_self.campaignEventSummary,
-        (value) {
-      return _then(_self.copyWith(campaignEventSummary: value));
-    });
-  }
-
-  /// Create a copy of ActiveCampaign
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CurrencyCopyWith<$Res>? get currency {
-    if (_self.currency == null) {
-      return null;
-    }
-
-    return $CurrencyCopyWith<$Res>(_self.currency!, (value) {
-      return _then(_self.copyWith(currency: value));
+  $CampaignEventSummaryCopyWith<$Res> get eventSummary {
+    return $CampaignEventSummaryCopyWith<$Res>(_self.eventSummary, (value) {
+      return _then(_self.copyWith(eventSummary: value));
     });
   }
 }
 
 /// @nodoc
+mixin _$AcmoPayoutInfo {
+  int get currencyId;
+  String get currencyName;
+  String get currencyIcon;
+  double get currencyConversionRate;
+  double get payoutAmountConverted;
+
+  /// Create a copy of AcmoPayoutInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $AcmoPayoutInfoCopyWith<AcmoPayoutInfo> get copyWith =>
+      _$AcmoPayoutInfoCopyWithImpl<AcmoPayoutInfo>(
+          this as AcmoPayoutInfo, _$identity);
+
+  /// Serializes this AcmoPayoutInfo to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is AcmoPayoutInfo &&
+            (identical(other.currencyId, currencyId) ||
+                other.currencyId == currencyId) &&
+            (identical(other.currencyName, currencyName) ||
+                other.currencyName == currencyName) &&
+            (identical(other.currencyIcon, currencyIcon) ||
+                other.currencyIcon == currencyIcon) &&
+            (identical(other.currencyConversionRate, currencyConversionRate) ||
+                other.currencyConversionRate == currencyConversionRate) &&
+            (identical(other.payoutAmountConverted, payoutAmountConverted) ||
+                other.payoutAmountConverted == payoutAmountConverted));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, currencyId, currencyName,
+      currencyIcon, currencyConversionRate, payoutAmountConverted);
+
+  @override
+  String toString() {
+    return 'AcmoPayoutInfo(currencyId: $currencyId, currencyName: $currencyName, currencyIcon: $currencyIcon, currencyConversionRate: $currencyConversionRate, payoutAmountConverted: $payoutAmountConverted)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $AcmoPayoutInfoCopyWith<$Res> {
+  factory $AcmoPayoutInfoCopyWith(
+          AcmoPayoutInfo value, $Res Function(AcmoPayoutInfo) _then) =
+      _$AcmoPayoutInfoCopyWithImpl;
+  @useResult
+  $Res call(
+      {int currencyId,
+      String currencyName,
+      String currencyIcon,
+      double currencyConversionRate,
+      double payoutAmountConverted});
+}
+
+/// @nodoc
+class _$AcmoPayoutInfoCopyWithImpl<$Res>
+    implements $AcmoPayoutInfoCopyWith<$Res> {
+  _$AcmoPayoutInfoCopyWithImpl(this._self, this._then);
+
+  final AcmoPayoutInfo _self;
+  final $Res Function(AcmoPayoutInfo) _then;
+
+  /// Create a copy of AcmoPayoutInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? currencyId = null,
+    Object? currencyName = null,
+    Object? currencyIcon = null,
+    Object? currencyConversionRate = null,
+    Object? payoutAmountConverted = null,
+  }) {
+    return _then(_self.copyWith(
+      currencyId: null == currencyId
+          ? _self.currencyId
+          : currencyId // ignore: cast_nullable_to_non_nullable
+              as int,
+      currencyName: null == currencyName
+          ? _self.currencyName
+          : currencyName // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyIcon: null == currencyIcon
+          ? _self.currencyIcon
+          : currencyIcon // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyConversionRate: null == currencyConversionRate
+          ? _self.currencyConversionRate
+          : currencyConversionRate // ignore: cast_nullable_to_non_nullable
+              as double,
+      payoutAmountConverted: null == payoutAmountConverted
+          ? _self.payoutAmountConverted
+          : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [AcmoPayoutInfo].
+extension AcmoPayoutInfoPatterns on AcmoPayoutInfo {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_AcmoPayoutInfo value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoPayoutInfo() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_AcmoPayoutInfo value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoPayoutInfo():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_AcmoPayoutInfo value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoPayoutInfo() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(int currencyId, String currencyName, String currencyIcon,
+            double currencyConversionRate, double payoutAmountConverted)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoPayoutInfo() when $default != null:
+        return $default(
+            _that.currencyId,
+            _that.currencyName,
+            _that.currencyIcon,
+            _that.currencyConversionRate,
+            _that.payoutAmountConverted);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(int currencyId, String currencyName, String currencyIcon,
+            double currencyConversionRate, double payoutAmountConverted)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoPayoutInfo():
+        return $default(
+            _that.currencyId,
+            _that.currencyName,
+            _that.currencyIcon,
+            _that.currencyConversionRate,
+            _that.payoutAmountConverted);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(int currencyId, String currencyName, String currencyIcon,
+            double currencyConversionRate, double payoutAmountConverted)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AcmoPayoutInfo() when $default != null:
+        return $default(
+            _that.currencyId,
+            _that.currencyName,
+            _that.currencyIcon,
+            _that.currencyConversionRate,
+            _that.payoutAmountConverted);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _AcmoPayoutInfo implements AcmoPayoutInfo {
+  const _AcmoPayoutInfo(
+      {this.currencyId = 0,
+      this.currencyName = '',
+      this.currencyIcon = '',
+      this.currencyConversionRate = 0.0,
+      this.payoutAmountConverted = 0.0});
+  factory _AcmoPayoutInfo.fromJson(Map<String, dynamic> json) =>
+      _$AcmoPayoutInfoFromJson(json);
+
+  @override
+  @JsonKey()
+  final int currencyId;
+  @override
+  @JsonKey()
+  final String currencyName;
+  @override
+  @JsonKey()
+  final String currencyIcon;
+  @override
+  @JsonKey()
+  final double currencyConversionRate;
+  @override
+  @JsonKey()
+  final double payoutAmountConverted;
+
+  /// Create a copy of AcmoPayoutInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$AcmoPayoutInfoCopyWith<_AcmoPayoutInfo> get copyWith =>
+      __$AcmoPayoutInfoCopyWithImpl<_AcmoPayoutInfo>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$AcmoPayoutInfoToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _AcmoPayoutInfo &&
+            (identical(other.currencyId, currencyId) ||
+                other.currencyId == currencyId) &&
+            (identical(other.currencyName, currencyName) ||
+                other.currencyName == currencyName) &&
+            (identical(other.currencyIcon, currencyIcon) ||
+                other.currencyIcon == currencyIcon) &&
+            (identical(other.currencyConversionRate, currencyConversionRate) ||
+                other.currencyConversionRate == currencyConversionRate) &&
+            (identical(other.payoutAmountConverted, payoutAmountConverted) ||
+                other.payoutAmountConverted == payoutAmountConverted));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, currencyId, currencyName,
+      currencyIcon, currencyConversionRate, payoutAmountConverted);
+
+  @override
+  String toString() {
+    return 'AcmoPayoutInfo(currencyId: $currencyId, currencyName: $currencyName, currencyIcon: $currencyIcon, currencyConversionRate: $currencyConversionRate, payoutAmountConverted: $payoutAmountConverted)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$AcmoPayoutInfoCopyWith<$Res>
+    implements $AcmoPayoutInfoCopyWith<$Res> {
+  factory _$AcmoPayoutInfoCopyWith(
+          _AcmoPayoutInfo value, $Res Function(_AcmoPayoutInfo) _then) =
+      __$AcmoPayoutInfoCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {int currencyId,
+      String currencyName,
+      String currencyIcon,
+      double currencyConversionRate,
+      double payoutAmountConverted});
+}
+
+/// @nodoc
+class __$AcmoPayoutInfoCopyWithImpl<$Res>
+    implements _$AcmoPayoutInfoCopyWith<$Res> {
+  __$AcmoPayoutInfoCopyWithImpl(this._self, this._then);
+
+  final _AcmoPayoutInfo _self;
+  final $Res Function(_AcmoPayoutInfo) _then;
+
+  /// Create a copy of AcmoPayoutInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? currencyId = null,
+    Object? currencyName = null,
+    Object? currencyIcon = null,
+    Object? currencyConversionRate = null,
+    Object? payoutAmountConverted = null,
+  }) {
+    return _then(_AcmoPayoutInfo(
+      currencyId: null == currencyId
+          ? _self.currencyId
+          : currencyId // ignore: cast_nullable_to_non_nullable
+              as int,
+      currencyName: null == currencyName
+          ? _self.currencyName
+          : currencyName // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyIcon: null == currencyIcon
+          ? _self.currencyIcon
+          : currencyIcon // ignore: cast_nullable_to_non_nullable
+              as String,
+      currencyConversionRate: null == currencyConversionRate
+          ? _self.currencyConversionRate
+          : currencyConversionRate // ignore: cast_nullable_to_non_nullable
+              as double,
+      payoutAmountConverted: null == payoutAmountConverted
+          ? _self.payoutAmountConverted
+          : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
 mixin _$PayoutEvents {
-  int get id;
-  String? get conversionStatus;
+  int get appEventId;
+  dynamic get conversionStatus;
   String get identifier;
   String get eventName;
-  String get eventDescription;
+  String? get eventDescription;
   String get eventCategory;
-  double get payoutAmount;
-  double get payoutAmountConverted;
-  String get payoutType;
+  Map<String, AcmoPayoutInfo> get payoutInfo;
   bool get allowDuplicateEvents;
   int get maxTime;
-  String get maxTimeMetric;
+  String? get maxTimeMetric;
   double? get maxTimeRemainSeconds;
   bool get enforceMaxTimeCompletion;
   bool get isLimitedTimeEvent;
   double get limitedTimeEventRemainingSeconds;
   bool get isTicketSubmitted;
-  bool get isPlaytime;
-  int get totalPlaytime;
+  dynamic get ticketStatus;
+  dynamic get lockEventRule;
+  dynamic get hideEventRule;
+  dynamic get shorterMaxTimeRule;
+  dynamic get specialCompletionReason;
   int get dailyCount;
-  int get dailyLimit;
+  int? get dailyLimit;
   int get count;
-  int get limit;
+  int? get limit;
+  int get totalDailyUniqueCount;
+  int? get totalDailyUniqueLimit;
+  bool get dailyUniqueTodayExist;
 
   /// Create a copy of PayoutEvents
   /// with the given fields replaced by the non-null parameter values.
@@ -2546,9 +3925,10 @@ mixin _$PayoutEvents {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is PayoutEvents &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.conversionStatus, conversionStatus) ||
-                other.conversionStatus == conversionStatus) &&
+            (identical(other.appEventId, appEventId) ||
+                other.appEventId == appEventId) &&
+            const DeepCollectionEquality()
+                .equals(other.conversionStatus, conversionStatus) &&
             (identical(other.identifier, identifier) ||
                 other.identifier == identifier) &&
             (identical(other.eventName, eventName) ||
@@ -2557,12 +3937,8 @@ mixin _$PayoutEvents {
                 other.eventDescription == eventDescription) &&
             (identical(other.eventCategory, eventCategory) ||
                 other.eventCategory == eventCategory) &&
-            (identical(other.payoutAmount, payoutAmount) ||
-                other.payoutAmount == payoutAmount) &&
-            (identical(other.payoutAmountConverted, payoutAmountConverted) ||
-                other.payoutAmountConverted == payoutAmountConverted) &&
-            (identical(other.payoutType, payoutType) ||
-                other.payoutType == payoutType) &&
+            const DeepCollectionEquality()
+                .equals(other.payoutInfo, payoutInfo) &&
             (identical(other.allowDuplicateEvents, allowDuplicateEvents) ||
                 other.allowDuplicateEvents == allowDuplicateEvents) &&
             (identical(other.maxTime, maxTime) || other.maxTime == maxTime) &&
@@ -2581,31 +3957,41 @@ mixin _$PayoutEvents {
                     limitedTimeEventRemainingSeconds) &&
             (identical(other.isTicketSubmitted, isTicketSubmitted) ||
                 other.isTicketSubmitted == isTicketSubmitted) &&
-            (identical(other.isPlaytime, isPlaytime) ||
-                other.isPlaytime == isPlaytime) &&
-            (identical(other.totalPlaytime, totalPlaytime) ||
-                other.totalPlaytime == totalPlaytime) &&
+            const DeepCollectionEquality()
+                .equals(other.ticketStatus, ticketStatus) &&
+            const DeepCollectionEquality()
+                .equals(other.lockEventRule, lockEventRule) &&
+            const DeepCollectionEquality()
+                .equals(other.hideEventRule, hideEventRule) &&
+            const DeepCollectionEquality()
+                .equals(other.shorterMaxTimeRule, shorterMaxTimeRule) &&
+            const DeepCollectionEquality().equals(
+                other.specialCompletionReason, specialCompletionReason) &&
             (identical(other.dailyCount, dailyCount) ||
                 other.dailyCount == dailyCount) &&
             (identical(other.dailyLimit, dailyLimit) ||
                 other.dailyLimit == dailyLimit) &&
             (identical(other.count, count) || other.count == count) &&
-            (identical(other.limit, limit) || other.limit == limit));
+            (identical(other.limit, limit) || other.limit == limit) &&
+            (identical(other.totalDailyUniqueCount, totalDailyUniqueCount) ||
+                other.totalDailyUniqueCount == totalDailyUniqueCount) &&
+            (identical(other.totalDailyUniqueLimit, totalDailyUniqueLimit) ||
+                other.totalDailyUniqueLimit == totalDailyUniqueLimit) &&
+            (identical(other.dailyUniqueTodayExist, dailyUniqueTodayExist) ||
+                other.dailyUniqueTodayExist == dailyUniqueTodayExist));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
-        id,
-        conversionStatus,
+        appEventId,
+        const DeepCollectionEquality().hash(conversionStatus),
         identifier,
         eventName,
         eventDescription,
         eventCategory,
-        payoutAmount,
-        payoutAmountConverted,
-        payoutType,
+        const DeepCollectionEquality().hash(payoutInfo),
         allowDuplicateEvents,
         maxTime,
         maxTimeMetric,
@@ -2614,17 +4000,23 @@ mixin _$PayoutEvents {
         isLimitedTimeEvent,
         limitedTimeEventRemainingSeconds,
         isTicketSubmitted,
-        isPlaytime,
-        totalPlaytime,
+        const DeepCollectionEquality().hash(ticketStatus),
+        const DeepCollectionEquality().hash(lockEventRule),
+        const DeepCollectionEquality().hash(hideEventRule),
+        const DeepCollectionEquality().hash(shorterMaxTimeRule),
+        const DeepCollectionEquality().hash(specialCompletionReason),
         dailyCount,
         dailyLimit,
         count,
-        limit
+        limit,
+        totalDailyUniqueCount,
+        totalDailyUniqueLimit,
+        dailyUniqueTodayExist
       ]);
 
   @override
   String toString() {
-    return 'PayoutEvents(id: $id, conversionStatus: $conversionStatus, identifier: $identifier, eventName: $eventName, eventDescription: $eventDescription, eventCategory: $eventCategory, payoutAmount: $payoutAmount, payoutAmountConverted: $payoutAmountConverted, payoutType: $payoutType, allowDuplicateEvents: $allowDuplicateEvents, maxTime: $maxTime, maxTimeMetric: $maxTimeMetric, maxTimeRemainSeconds: $maxTimeRemainSeconds, enforceMaxTimeCompletion: $enforceMaxTimeCompletion, isLimitedTimeEvent: $isLimitedTimeEvent, limitedTimeEventRemainingSeconds: $limitedTimeEventRemainingSeconds, isTicketSubmitted: $isTicketSubmitted, isPlaytime: $isPlaytime, totalPlaytime: $totalPlaytime, dailyCount: $dailyCount, dailyLimit: $dailyLimit, count: $count, limit: $limit)';
+    return 'PayoutEvents(appEventId: $appEventId, conversionStatus: $conversionStatus, identifier: $identifier, eventName: $eventName, eventDescription: $eventDescription, eventCategory: $eventCategory, payoutInfo: $payoutInfo, allowDuplicateEvents: $allowDuplicateEvents, maxTime: $maxTime, maxTimeMetric: $maxTimeMetric, maxTimeRemainSeconds: $maxTimeRemainSeconds, enforceMaxTimeCompletion: $enforceMaxTimeCompletion, isLimitedTimeEvent: $isLimitedTimeEvent, limitedTimeEventRemainingSeconds: $limitedTimeEventRemainingSeconds, isTicketSubmitted: $isTicketSubmitted, ticketStatus: $ticketStatus, lockEventRule: $lockEventRule, hideEventRule: $hideEventRule, shorterMaxTimeRule: $shorterMaxTimeRule, specialCompletionReason: $specialCompletionReason, dailyCount: $dailyCount, dailyLimit: $dailyLimit, count: $count, limit: $limit, totalDailyUniqueCount: $totalDailyUniqueCount, totalDailyUniqueLimit: $totalDailyUniqueLimit, dailyUniqueTodayExist: $dailyUniqueTodayExist)';
   }
 }
 
@@ -2635,29 +4027,33 @@ abstract mixin class $PayoutEventsCopyWith<$Res> {
       _$PayoutEventsCopyWithImpl;
   @useResult
   $Res call(
-      {int id,
-      String? conversionStatus,
+      {int appEventId,
+      dynamic conversionStatus,
       String identifier,
       String eventName,
-      String eventDescription,
+      String? eventDescription,
       String eventCategory,
-      double payoutAmount,
-      double payoutAmountConverted,
-      String payoutType,
+      Map<String, AcmoPayoutInfo> payoutInfo,
       bool allowDuplicateEvents,
       int maxTime,
-      String maxTimeMetric,
+      String? maxTimeMetric,
       double? maxTimeRemainSeconds,
       bool enforceMaxTimeCompletion,
       bool isLimitedTimeEvent,
       double limitedTimeEventRemainingSeconds,
       bool isTicketSubmitted,
-      bool isPlaytime,
-      int totalPlaytime,
+      dynamic ticketStatus,
+      dynamic lockEventRule,
+      dynamic hideEventRule,
+      dynamic shorterMaxTimeRule,
+      dynamic specialCompletionReason,
       int dailyCount,
-      int dailyLimit,
+      int? dailyLimit,
       int count,
-      int limit});
+      int? limit,
+      int totalDailyUniqueCount,
+      int? totalDailyUniqueLimit,
+      bool dailyUniqueTodayExist});
 }
 
 /// @nodoc
@@ -2672,39 +4068,43 @@ class _$PayoutEventsCopyWithImpl<$Res> implements $PayoutEventsCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? appEventId = null,
     Object? conversionStatus = freezed,
     Object? identifier = null,
     Object? eventName = null,
-    Object? eventDescription = null,
+    Object? eventDescription = freezed,
     Object? eventCategory = null,
-    Object? payoutAmount = null,
-    Object? payoutAmountConverted = null,
-    Object? payoutType = null,
+    Object? payoutInfo = null,
     Object? allowDuplicateEvents = null,
     Object? maxTime = null,
-    Object? maxTimeMetric = null,
+    Object? maxTimeMetric = freezed,
     Object? maxTimeRemainSeconds = freezed,
     Object? enforceMaxTimeCompletion = null,
     Object? isLimitedTimeEvent = null,
     Object? limitedTimeEventRemainingSeconds = null,
     Object? isTicketSubmitted = null,
-    Object? isPlaytime = null,
-    Object? totalPlaytime = null,
+    Object? ticketStatus = freezed,
+    Object? lockEventRule = freezed,
+    Object? hideEventRule = freezed,
+    Object? shorterMaxTimeRule = freezed,
+    Object? specialCompletionReason = freezed,
     Object? dailyCount = null,
-    Object? dailyLimit = null,
+    Object? dailyLimit = freezed,
     Object? count = null,
-    Object? limit = null,
+    Object? limit = freezed,
+    Object? totalDailyUniqueCount = null,
+    Object? totalDailyUniqueLimit = freezed,
+    Object? dailyUniqueTodayExist = null,
   }) {
     return _then(_self.copyWith(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
+      appEventId: null == appEventId
+          ? _self.appEventId
+          : appEventId // ignore: cast_nullable_to_non_nullable
               as int,
       conversionStatus: freezed == conversionStatus
           ? _self.conversionStatus
           : conversionStatus // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as dynamic,
       identifier: null == identifier
           ? _self.identifier
           : identifier // ignore: cast_nullable_to_non_nullable
@@ -2713,26 +4113,18 @@ class _$PayoutEventsCopyWithImpl<$Res> implements $PayoutEventsCopyWith<$Res> {
           ? _self.eventName
           : eventName // ignore: cast_nullable_to_non_nullable
               as String,
-      eventDescription: null == eventDescription
+      eventDescription: freezed == eventDescription
           ? _self.eventDescription
           : eventDescription // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       eventCategory: null == eventCategory
           ? _self.eventCategory
           : eventCategory // ignore: cast_nullable_to_non_nullable
               as String,
-      payoutAmount: null == payoutAmount
-          ? _self.payoutAmount
-          : payoutAmount // ignore: cast_nullable_to_non_nullable
-              as double,
-      payoutAmountConverted: null == payoutAmountConverted
-          ? _self.payoutAmountConverted
-          : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as double,
-      payoutType: null == payoutType
-          ? _self.payoutType
-          : payoutType // ignore: cast_nullable_to_non_nullable
-              as String,
+      payoutInfo: null == payoutInfo
+          ? _self.payoutInfo
+          : payoutInfo // ignore: cast_nullable_to_non_nullable
+              as Map<String, AcmoPayoutInfo>,
       allowDuplicateEvents: null == allowDuplicateEvents
           ? _self.allowDuplicateEvents
           : allowDuplicateEvents // ignore: cast_nullable_to_non_nullable
@@ -2741,10 +4133,10 @@ class _$PayoutEventsCopyWithImpl<$Res> implements $PayoutEventsCopyWith<$Res> {
           ? _self.maxTime
           : maxTime // ignore: cast_nullable_to_non_nullable
               as int,
-      maxTimeMetric: null == maxTimeMetric
+      maxTimeMetric: freezed == maxTimeMetric
           ? _self.maxTimeMetric
           : maxTimeMetric // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       maxTimeRemainSeconds: freezed == maxTimeRemainSeconds
           ? _self.maxTimeRemainSeconds
           : maxTimeRemainSeconds // ignore: cast_nullable_to_non_nullable
@@ -2765,30 +4157,54 @@ class _$PayoutEventsCopyWithImpl<$Res> implements $PayoutEventsCopyWith<$Res> {
           ? _self.isTicketSubmitted
           : isTicketSubmitted // ignore: cast_nullable_to_non_nullable
               as bool,
-      isPlaytime: null == isPlaytime
-          ? _self.isPlaytime
-          : isPlaytime // ignore: cast_nullable_to_non_nullable
-              as bool,
-      totalPlaytime: null == totalPlaytime
-          ? _self.totalPlaytime
-          : totalPlaytime // ignore: cast_nullable_to_non_nullable
-              as int,
+      ticketStatus: freezed == ticketStatus
+          ? _self.ticketStatus
+          : ticketStatus // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      lockEventRule: freezed == lockEventRule
+          ? _self.lockEventRule
+          : lockEventRule // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      hideEventRule: freezed == hideEventRule
+          ? _self.hideEventRule
+          : hideEventRule // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      shorterMaxTimeRule: freezed == shorterMaxTimeRule
+          ? _self.shorterMaxTimeRule
+          : shorterMaxTimeRule // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      specialCompletionReason: freezed == specialCompletionReason
+          ? _self.specialCompletionReason
+          : specialCompletionReason // ignore: cast_nullable_to_non_nullable
+              as dynamic,
       dailyCount: null == dailyCount
           ? _self.dailyCount
           : dailyCount // ignore: cast_nullable_to_non_nullable
               as int,
-      dailyLimit: null == dailyLimit
+      dailyLimit: freezed == dailyLimit
           ? _self.dailyLimit
           : dailyLimit // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       count: null == count
           ? _self.count
           : count // ignore: cast_nullable_to_non_nullable
               as int,
-      limit: null == limit
+      limit: freezed == limit
           ? _self.limit
           : limit // ignore: cast_nullable_to_non_nullable
+              as int?,
+      totalDailyUniqueCount: null == totalDailyUniqueCount
+          ? _self.totalDailyUniqueCount
+          : totalDailyUniqueCount // ignore: cast_nullable_to_non_nullable
               as int,
+      totalDailyUniqueLimit: freezed == totalDailyUniqueLimit
+          ? _self.totalDailyUniqueLimit
+          : totalDailyUniqueLimit // ignore: cast_nullable_to_non_nullable
+              as int?,
+      dailyUniqueTodayExist: null == dailyUniqueTodayExist
+          ? _self.dailyUniqueTodayExist
+          : dailyUniqueTodayExist // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -2887,29 +4303,33 @@ extension PayoutEventsPatterns on PayoutEvents {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            int id,
-            String? conversionStatus,
+            int appEventId,
+            dynamic conversionStatus,
             String identifier,
             String eventName,
-            String eventDescription,
+            String? eventDescription,
             String eventCategory,
-            double payoutAmount,
-            double payoutAmountConverted,
-            String payoutType,
+            Map<String, AcmoPayoutInfo> payoutInfo,
             bool allowDuplicateEvents,
             int maxTime,
-            String maxTimeMetric,
+            String? maxTimeMetric,
             double? maxTimeRemainSeconds,
             bool enforceMaxTimeCompletion,
             bool isLimitedTimeEvent,
             double limitedTimeEventRemainingSeconds,
             bool isTicketSubmitted,
-            bool isPlaytime,
-            int totalPlaytime,
+            dynamic ticketStatus,
+            dynamic lockEventRule,
+            dynamic hideEventRule,
+            dynamic shorterMaxTimeRule,
+            dynamic specialCompletionReason,
             int dailyCount,
-            int dailyLimit,
+            int? dailyLimit,
             int count,
-            int limit)?
+            int? limit,
+            int totalDailyUniqueCount,
+            int? totalDailyUniqueLimit,
+            bool dailyUniqueTodayExist)?
         $default, {
     required TResult orElse(),
   }) {
@@ -2917,15 +4337,13 @@ extension PayoutEventsPatterns on PayoutEvents {
     switch (_that) {
       case _PayoutEvents() when $default != null:
         return $default(
-            _that.id,
+            _that.appEventId,
             _that.conversionStatus,
             _that.identifier,
             _that.eventName,
             _that.eventDescription,
             _that.eventCategory,
-            _that.payoutAmount,
-            _that.payoutAmountConverted,
-            _that.payoutType,
+            _that.payoutInfo,
             _that.allowDuplicateEvents,
             _that.maxTime,
             _that.maxTimeMetric,
@@ -2934,12 +4352,18 @@ extension PayoutEventsPatterns on PayoutEvents {
             _that.isLimitedTimeEvent,
             _that.limitedTimeEventRemainingSeconds,
             _that.isTicketSubmitted,
-            _that.isPlaytime,
-            _that.totalPlaytime,
+            _that.ticketStatus,
+            _that.lockEventRule,
+            _that.hideEventRule,
+            _that.shorterMaxTimeRule,
+            _that.specialCompletionReason,
             _that.dailyCount,
             _that.dailyLimit,
             _that.count,
-            _that.limit);
+            _that.limit,
+            _that.totalDailyUniqueCount,
+            _that.totalDailyUniqueLimit,
+            _that.dailyUniqueTodayExist);
       case _:
         return orElse();
     }
@@ -2961,44 +4385,46 @@ extension PayoutEventsPatterns on PayoutEvents {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            int id,
-            String? conversionStatus,
+            int appEventId,
+            dynamic conversionStatus,
             String identifier,
             String eventName,
-            String eventDescription,
+            String? eventDescription,
             String eventCategory,
-            double payoutAmount,
-            double payoutAmountConverted,
-            String payoutType,
+            Map<String, AcmoPayoutInfo> payoutInfo,
             bool allowDuplicateEvents,
             int maxTime,
-            String maxTimeMetric,
+            String? maxTimeMetric,
             double? maxTimeRemainSeconds,
             bool enforceMaxTimeCompletion,
             bool isLimitedTimeEvent,
             double limitedTimeEventRemainingSeconds,
             bool isTicketSubmitted,
-            bool isPlaytime,
-            int totalPlaytime,
+            dynamic ticketStatus,
+            dynamic lockEventRule,
+            dynamic hideEventRule,
+            dynamic shorterMaxTimeRule,
+            dynamic specialCompletionReason,
             int dailyCount,
-            int dailyLimit,
+            int? dailyLimit,
             int count,
-            int limit)
+            int? limit,
+            int totalDailyUniqueCount,
+            int? totalDailyUniqueLimit,
+            bool dailyUniqueTodayExist)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PayoutEvents():
         return $default(
-            _that.id,
+            _that.appEventId,
             _that.conversionStatus,
             _that.identifier,
             _that.eventName,
             _that.eventDescription,
             _that.eventCategory,
-            _that.payoutAmount,
-            _that.payoutAmountConverted,
-            _that.payoutType,
+            _that.payoutInfo,
             _that.allowDuplicateEvents,
             _that.maxTime,
             _that.maxTimeMetric,
@@ -3007,12 +4433,18 @@ extension PayoutEventsPatterns on PayoutEvents {
             _that.isLimitedTimeEvent,
             _that.limitedTimeEventRemainingSeconds,
             _that.isTicketSubmitted,
-            _that.isPlaytime,
-            _that.totalPlaytime,
+            _that.ticketStatus,
+            _that.lockEventRule,
+            _that.hideEventRule,
+            _that.shorterMaxTimeRule,
+            _that.specialCompletionReason,
             _that.dailyCount,
             _that.dailyLimit,
             _that.count,
-            _that.limit);
+            _that.limit,
+            _that.totalDailyUniqueCount,
+            _that.totalDailyUniqueLimit,
+            _that.dailyUniqueTodayExist);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -3033,44 +4465,46 @@ extension PayoutEventsPatterns on PayoutEvents {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            int id,
-            String? conversionStatus,
+            int appEventId,
+            dynamic conversionStatus,
             String identifier,
             String eventName,
-            String eventDescription,
+            String? eventDescription,
             String eventCategory,
-            double payoutAmount,
-            double payoutAmountConverted,
-            String payoutType,
+            Map<String, AcmoPayoutInfo> payoutInfo,
             bool allowDuplicateEvents,
             int maxTime,
-            String maxTimeMetric,
+            String? maxTimeMetric,
             double? maxTimeRemainSeconds,
             bool enforceMaxTimeCompletion,
             bool isLimitedTimeEvent,
             double limitedTimeEventRemainingSeconds,
             bool isTicketSubmitted,
-            bool isPlaytime,
-            int totalPlaytime,
+            dynamic ticketStatus,
+            dynamic lockEventRule,
+            dynamic hideEventRule,
+            dynamic shorterMaxTimeRule,
+            dynamic specialCompletionReason,
             int dailyCount,
-            int dailyLimit,
+            int? dailyLimit,
             int count,
-            int limit)?
+            int? limit,
+            int totalDailyUniqueCount,
+            int? totalDailyUniqueLimit,
+            bool dailyUniqueTodayExist)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PayoutEvents() when $default != null:
         return $default(
-            _that.id,
+            _that.appEventId,
             _that.conversionStatus,
             _that.identifier,
             _that.eventName,
             _that.eventDescription,
             _that.eventCategory,
-            _that.payoutAmount,
-            _that.payoutAmountConverted,
-            _that.payoutType,
+            _that.payoutInfo,
             _that.allowDuplicateEvents,
             _that.maxTime,
             _that.maxTimeMetric,
@@ -3079,12 +4513,18 @@ extension PayoutEventsPatterns on PayoutEvents {
             _that.isLimitedTimeEvent,
             _that.limitedTimeEventRemainingSeconds,
             _that.isTicketSubmitted,
-            _that.isPlaytime,
-            _that.totalPlaytime,
+            _that.ticketStatus,
+            _that.lockEventRule,
+            _that.hideEventRule,
+            _that.shorterMaxTimeRule,
+            _that.specialCompletionReason,
             _that.dailyCount,
             _that.dailyLimit,
             _that.count,
-            _that.limit);
+            _that.limit,
+            _that.totalDailyUniqueCount,
+            _that.totalDailyUniqueLimit,
+            _that.dailyUniqueTodayExist);
       case _:
         return null;
     }
@@ -3095,37 +4535,42 @@ extension PayoutEventsPatterns on PayoutEvents {
 @JsonSerializable()
 class _PayoutEvents implements PayoutEvents {
   _PayoutEvents(
-      {this.id = 0,
+      {this.appEventId = 0,
       this.conversionStatus,
       this.identifier = '',
       this.eventName = '',
-      this.eventDescription = '',
+      this.eventDescription,
       this.eventCategory = '',
-      this.payoutAmount = 0,
-      this.payoutAmountConverted = 0,
-      this.payoutType = '',
+      final Map<String, AcmoPayoutInfo> payoutInfo = const {},
       this.allowDuplicateEvents = false,
       this.maxTime = 0,
-      this.maxTimeMetric = '',
+      this.maxTimeMetric,
       this.maxTimeRemainSeconds,
       this.enforceMaxTimeCompletion = false,
       this.isLimitedTimeEvent = false,
-      this.limitedTimeEventRemainingSeconds = 0,
+      this.limitedTimeEventRemainingSeconds = 0.0,
       this.isTicketSubmitted = false,
-      this.isPlaytime = false,
-      this.totalPlaytime = 0,
+      this.ticketStatus,
+      this.lockEventRule,
+      this.hideEventRule,
+      this.shorterMaxTimeRule,
+      this.specialCompletionReason,
       this.dailyCount = 0,
-      this.dailyLimit = 0,
+      this.dailyLimit,
       this.count = 0,
-      this.limit = 0});
+      this.limit,
+      this.totalDailyUniqueCount = 0,
+      this.totalDailyUniqueLimit,
+      this.dailyUniqueTodayExist = false})
+      : _payoutInfo = payoutInfo;
   factory _PayoutEvents.fromJson(Map<String, dynamic> json) =>
       _$PayoutEventsFromJson(json);
 
   @override
   @JsonKey()
-  final int id;
+  final int appEventId;
   @override
-  final String? conversionStatus;
+  final dynamic conversionStatus;
   @override
   @JsonKey()
   final String identifier;
@@ -3133,20 +4578,19 @@ class _PayoutEvents implements PayoutEvents {
   @JsonKey()
   final String eventName;
   @override
-  @JsonKey()
-  final String eventDescription;
+  final String? eventDescription;
   @override
   @JsonKey()
   final String eventCategory;
+  final Map<String, AcmoPayoutInfo> _payoutInfo;
   @override
   @JsonKey()
-  final double payoutAmount;
-  @override
-  @JsonKey()
-  final double payoutAmountConverted;
-  @override
-  @JsonKey()
-  final String payoutType;
+  Map<String, AcmoPayoutInfo> get payoutInfo {
+    if (_payoutInfo is EqualUnmodifiableMapView) return _payoutInfo;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_payoutInfo);
+  }
+
   @override
   @JsonKey()
   final bool allowDuplicateEvents;
@@ -3154,8 +4598,7 @@ class _PayoutEvents implements PayoutEvents {
   @JsonKey()
   final int maxTime;
   @override
-  @JsonKey()
-  final String maxTimeMetric;
+  final String? maxTimeMetric;
   @override
   final double? maxTimeRemainSeconds;
   @override
@@ -3171,23 +4614,33 @@ class _PayoutEvents implements PayoutEvents {
   @JsonKey()
   final bool isTicketSubmitted;
   @override
-  @JsonKey()
-  final bool isPlaytime;
+  final dynamic ticketStatus;
   @override
-  @JsonKey()
-  final int totalPlaytime;
+  final dynamic lockEventRule;
+  @override
+  final dynamic hideEventRule;
+  @override
+  final dynamic shorterMaxTimeRule;
+  @override
+  final dynamic specialCompletionReason;
   @override
   @JsonKey()
   final int dailyCount;
   @override
-  @JsonKey()
-  final int dailyLimit;
+  final int? dailyLimit;
   @override
   @JsonKey()
   final int count;
   @override
+  final int? limit;
+  @override
   @JsonKey()
-  final int limit;
+  final int totalDailyUniqueCount;
+  @override
+  final int? totalDailyUniqueLimit;
+  @override
+  @JsonKey()
+  final bool dailyUniqueTodayExist;
 
   /// Create a copy of PayoutEvents
   /// with the given fields replaced by the non-null parameter values.
@@ -3209,9 +4662,10 @@ class _PayoutEvents implements PayoutEvents {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _PayoutEvents &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.conversionStatus, conversionStatus) ||
-                other.conversionStatus == conversionStatus) &&
+            (identical(other.appEventId, appEventId) ||
+                other.appEventId == appEventId) &&
+            const DeepCollectionEquality()
+                .equals(other.conversionStatus, conversionStatus) &&
             (identical(other.identifier, identifier) ||
                 other.identifier == identifier) &&
             (identical(other.eventName, eventName) ||
@@ -3220,12 +4674,8 @@ class _PayoutEvents implements PayoutEvents {
                 other.eventDescription == eventDescription) &&
             (identical(other.eventCategory, eventCategory) ||
                 other.eventCategory == eventCategory) &&
-            (identical(other.payoutAmount, payoutAmount) ||
-                other.payoutAmount == payoutAmount) &&
-            (identical(other.payoutAmountConverted, payoutAmountConverted) ||
-                other.payoutAmountConverted == payoutAmountConverted) &&
-            (identical(other.payoutType, payoutType) ||
-                other.payoutType == payoutType) &&
+            const DeepCollectionEquality()
+                .equals(other._payoutInfo, _payoutInfo) &&
             (identical(other.allowDuplicateEvents, allowDuplicateEvents) ||
                 other.allowDuplicateEvents == allowDuplicateEvents) &&
             (identical(other.maxTime, maxTime) || other.maxTime == maxTime) &&
@@ -3244,31 +4694,41 @@ class _PayoutEvents implements PayoutEvents {
                     limitedTimeEventRemainingSeconds) &&
             (identical(other.isTicketSubmitted, isTicketSubmitted) ||
                 other.isTicketSubmitted == isTicketSubmitted) &&
-            (identical(other.isPlaytime, isPlaytime) ||
-                other.isPlaytime == isPlaytime) &&
-            (identical(other.totalPlaytime, totalPlaytime) ||
-                other.totalPlaytime == totalPlaytime) &&
+            const DeepCollectionEquality()
+                .equals(other.ticketStatus, ticketStatus) &&
+            const DeepCollectionEquality()
+                .equals(other.lockEventRule, lockEventRule) &&
+            const DeepCollectionEquality()
+                .equals(other.hideEventRule, hideEventRule) &&
+            const DeepCollectionEquality()
+                .equals(other.shorterMaxTimeRule, shorterMaxTimeRule) &&
+            const DeepCollectionEquality().equals(
+                other.specialCompletionReason, specialCompletionReason) &&
             (identical(other.dailyCount, dailyCount) ||
                 other.dailyCount == dailyCount) &&
             (identical(other.dailyLimit, dailyLimit) ||
                 other.dailyLimit == dailyLimit) &&
             (identical(other.count, count) || other.count == count) &&
-            (identical(other.limit, limit) || other.limit == limit));
+            (identical(other.limit, limit) || other.limit == limit) &&
+            (identical(other.totalDailyUniqueCount, totalDailyUniqueCount) ||
+                other.totalDailyUniqueCount == totalDailyUniqueCount) &&
+            (identical(other.totalDailyUniqueLimit, totalDailyUniqueLimit) ||
+                other.totalDailyUniqueLimit == totalDailyUniqueLimit) &&
+            (identical(other.dailyUniqueTodayExist, dailyUniqueTodayExist) ||
+                other.dailyUniqueTodayExist == dailyUniqueTodayExist));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
-        id,
-        conversionStatus,
+        appEventId,
+        const DeepCollectionEquality().hash(conversionStatus),
         identifier,
         eventName,
         eventDescription,
         eventCategory,
-        payoutAmount,
-        payoutAmountConverted,
-        payoutType,
+        const DeepCollectionEquality().hash(_payoutInfo),
         allowDuplicateEvents,
         maxTime,
         maxTimeMetric,
@@ -3277,17 +4737,23 @@ class _PayoutEvents implements PayoutEvents {
         isLimitedTimeEvent,
         limitedTimeEventRemainingSeconds,
         isTicketSubmitted,
-        isPlaytime,
-        totalPlaytime,
+        const DeepCollectionEquality().hash(ticketStatus),
+        const DeepCollectionEquality().hash(lockEventRule),
+        const DeepCollectionEquality().hash(hideEventRule),
+        const DeepCollectionEquality().hash(shorterMaxTimeRule),
+        const DeepCollectionEquality().hash(specialCompletionReason),
         dailyCount,
         dailyLimit,
         count,
-        limit
+        limit,
+        totalDailyUniqueCount,
+        totalDailyUniqueLimit,
+        dailyUniqueTodayExist
       ]);
 
   @override
   String toString() {
-    return 'PayoutEvents(id: $id, conversionStatus: $conversionStatus, identifier: $identifier, eventName: $eventName, eventDescription: $eventDescription, eventCategory: $eventCategory, payoutAmount: $payoutAmount, payoutAmountConverted: $payoutAmountConverted, payoutType: $payoutType, allowDuplicateEvents: $allowDuplicateEvents, maxTime: $maxTime, maxTimeMetric: $maxTimeMetric, maxTimeRemainSeconds: $maxTimeRemainSeconds, enforceMaxTimeCompletion: $enforceMaxTimeCompletion, isLimitedTimeEvent: $isLimitedTimeEvent, limitedTimeEventRemainingSeconds: $limitedTimeEventRemainingSeconds, isTicketSubmitted: $isTicketSubmitted, isPlaytime: $isPlaytime, totalPlaytime: $totalPlaytime, dailyCount: $dailyCount, dailyLimit: $dailyLimit, count: $count, limit: $limit)';
+    return 'PayoutEvents(appEventId: $appEventId, conversionStatus: $conversionStatus, identifier: $identifier, eventName: $eventName, eventDescription: $eventDescription, eventCategory: $eventCategory, payoutInfo: $payoutInfo, allowDuplicateEvents: $allowDuplicateEvents, maxTime: $maxTime, maxTimeMetric: $maxTimeMetric, maxTimeRemainSeconds: $maxTimeRemainSeconds, enforceMaxTimeCompletion: $enforceMaxTimeCompletion, isLimitedTimeEvent: $isLimitedTimeEvent, limitedTimeEventRemainingSeconds: $limitedTimeEventRemainingSeconds, isTicketSubmitted: $isTicketSubmitted, ticketStatus: $ticketStatus, lockEventRule: $lockEventRule, hideEventRule: $hideEventRule, shorterMaxTimeRule: $shorterMaxTimeRule, specialCompletionReason: $specialCompletionReason, dailyCount: $dailyCount, dailyLimit: $dailyLimit, count: $count, limit: $limit, totalDailyUniqueCount: $totalDailyUniqueCount, totalDailyUniqueLimit: $totalDailyUniqueLimit, dailyUniqueTodayExist: $dailyUniqueTodayExist)';
   }
 }
 
@@ -3300,29 +4766,33 @@ abstract mixin class _$PayoutEventsCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
-      String? conversionStatus,
+      {int appEventId,
+      dynamic conversionStatus,
       String identifier,
       String eventName,
-      String eventDescription,
+      String? eventDescription,
       String eventCategory,
-      double payoutAmount,
-      double payoutAmountConverted,
-      String payoutType,
+      Map<String, AcmoPayoutInfo> payoutInfo,
       bool allowDuplicateEvents,
       int maxTime,
-      String maxTimeMetric,
+      String? maxTimeMetric,
       double? maxTimeRemainSeconds,
       bool enforceMaxTimeCompletion,
       bool isLimitedTimeEvent,
       double limitedTimeEventRemainingSeconds,
       bool isTicketSubmitted,
-      bool isPlaytime,
-      int totalPlaytime,
+      dynamic ticketStatus,
+      dynamic lockEventRule,
+      dynamic hideEventRule,
+      dynamic shorterMaxTimeRule,
+      dynamic specialCompletionReason,
       int dailyCount,
-      int dailyLimit,
+      int? dailyLimit,
       int count,
-      int limit});
+      int? limit,
+      int totalDailyUniqueCount,
+      int? totalDailyUniqueLimit,
+      bool dailyUniqueTodayExist});
 }
 
 /// @nodoc
@@ -3338,39 +4808,43 @@ class __$PayoutEventsCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? id = null,
+    Object? appEventId = null,
     Object? conversionStatus = freezed,
     Object? identifier = null,
     Object? eventName = null,
-    Object? eventDescription = null,
+    Object? eventDescription = freezed,
     Object? eventCategory = null,
-    Object? payoutAmount = null,
-    Object? payoutAmountConverted = null,
-    Object? payoutType = null,
+    Object? payoutInfo = null,
     Object? allowDuplicateEvents = null,
     Object? maxTime = null,
-    Object? maxTimeMetric = null,
+    Object? maxTimeMetric = freezed,
     Object? maxTimeRemainSeconds = freezed,
     Object? enforceMaxTimeCompletion = null,
     Object? isLimitedTimeEvent = null,
     Object? limitedTimeEventRemainingSeconds = null,
     Object? isTicketSubmitted = null,
-    Object? isPlaytime = null,
-    Object? totalPlaytime = null,
+    Object? ticketStatus = freezed,
+    Object? lockEventRule = freezed,
+    Object? hideEventRule = freezed,
+    Object? shorterMaxTimeRule = freezed,
+    Object? specialCompletionReason = freezed,
     Object? dailyCount = null,
-    Object? dailyLimit = null,
+    Object? dailyLimit = freezed,
     Object? count = null,
-    Object? limit = null,
+    Object? limit = freezed,
+    Object? totalDailyUniqueCount = null,
+    Object? totalDailyUniqueLimit = freezed,
+    Object? dailyUniqueTodayExist = null,
   }) {
     return _then(_PayoutEvents(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
+      appEventId: null == appEventId
+          ? _self.appEventId
+          : appEventId // ignore: cast_nullable_to_non_nullable
               as int,
       conversionStatus: freezed == conversionStatus
           ? _self.conversionStatus
           : conversionStatus // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as dynamic,
       identifier: null == identifier
           ? _self.identifier
           : identifier // ignore: cast_nullable_to_non_nullable
@@ -3379,26 +4853,18 @@ class __$PayoutEventsCopyWithImpl<$Res>
           ? _self.eventName
           : eventName // ignore: cast_nullable_to_non_nullable
               as String,
-      eventDescription: null == eventDescription
+      eventDescription: freezed == eventDescription
           ? _self.eventDescription
           : eventDescription // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       eventCategory: null == eventCategory
           ? _self.eventCategory
           : eventCategory // ignore: cast_nullable_to_non_nullable
               as String,
-      payoutAmount: null == payoutAmount
-          ? _self.payoutAmount
-          : payoutAmount // ignore: cast_nullable_to_non_nullable
-              as double,
-      payoutAmountConverted: null == payoutAmountConverted
-          ? _self.payoutAmountConverted
-          : payoutAmountConverted // ignore: cast_nullable_to_non_nullable
-              as double,
-      payoutType: null == payoutType
-          ? _self.payoutType
-          : payoutType // ignore: cast_nullable_to_non_nullable
-              as String,
+      payoutInfo: null == payoutInfo
+          ? _self._payoutInfo
+          : payoutInfo // ignore: cast_nullable_to_non_nullable
+              as Map<String, AcmoPayoutInfo>,
       allowDuplicateEvents: null == allowDuplicateEvents
           ? _self.allowDuplicateEvents
           : allowDuplicateEvents // ignore: cast_nullable_to_non_nullable
@@ -3407,10 +4873,10 @@ class __$PayoutEventsCopyWithImpl<$Res>
           ? _self.maxTime
           : maxTime // ignore: cast_nullable_to_non_nullable
               as int,
-      maxTimeMetric: null == maxTimeMetric
+      maxTimeMetric: freezed == maxTimeMetric
           ? _self.maxTimeMetric
           : maxTimeMetric // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       maxTimeRemainSeconds: freezed == maxTimeRemainSeconds
           ? _self.maxTimeRemainSeconds
           : maxTimeRemainSeconds // ignore: cast_nullable_to_non_nullable
@@ -3431,30 +4897,54 @@ class __$PayoutEventsCopyWithImpl<$Res>
           ? _self.isTicketSubmitted
           : isTicketSubmitted // ignore: cast_nullable_to_non_nullable
               as bool,
-      isPlaytime: null == isPlaytime
-          ? _self.isPlaytime
-          : isPlaytime // ignore: cast_nullable_to_non_nullable
-              as bool,
-      totalPlaytime: null == totalPlaytime
-          ? _self.totalPlaytime
-          : totalPlaytime // ignore: cast_nullable_to_non_nullable
-              as int,
+      ticketStatus: freezed == ticketStatus
+          ? _self.ticketStatus
+          : ticketStatus // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      lockEventRule: freezed == lockEventRule
+          ? _self.lockEventRule
+          : lockEventRule // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      hideEventRule: freezed == hideEventRule
+          ? _self.hideEventRule
+          : hideEventRule // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      shorterMaxTimeRule: freezed == shorterMaxTimeRule
+          ? _self.shorterMaxTimeRule
+          : shorterMaxTimeRule // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      specialCompletionReason: freezed == specialCompletionReason
+          ? _self.specialCompletionReason
+          : specialCompletionReason // ignore: cast_nullable_to_non_nullable
+              as dynamic,
       dailyCount: null == dailyCount
           ? _self.dailyCount
           : dailyCount // ignore: cast_nullable_to_non_nullable
               as int,
-      dailyLimit: null == dailyLimit
+      dailyLimit: freezed == dailyLimit
           ? _self.dailyLimit
           : dailyLimit // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       count: null == count
           ? _self.count
           : count // ignore: cast_nullable_to_non_nullable
               as int,
-      limit: null == limit
+      limit: freezed == limit
           ? _self.limit
           : limit // ignore: cast_nullable_to_non_nullable
+              as int?,
+      totalDailyUniqueCount: null == totalDailyUniqueCount
+          ? _self.totalDailyUniqueCount
+          : totalDailyUniqueCount // ignore: cast_nullable_to_non_nullable
               as int,
+      totalDailyUniqueLimit: freezed == totalDailyUniqueLimit
+          ? _self.totalDailyUniqueLimit
+          : totalDailyUniqueLimit // ignore: cast_nullable_to_non_nullable
+              as int?,
+      dailyUniqueTodayExist: null == dailyUniqueTodayExist
+          ? _self.dailyUniqueTodayExist
+          : dailyUniqueTodayExist // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }

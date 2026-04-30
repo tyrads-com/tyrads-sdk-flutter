@@ -18,11 +18,24 @@ abstract class AcmoActiveOffersModel with _$AcmoActiveOffersModel {
 abstract class AcmoActiveOffers with _$AcmoActiveOffers {
   const factory AcmoActiveOffers({
     @Default('') String groupName,
+    @Default({}) Map<String, AcmoCurrency> availableCurrencies,
     @Default([]) List<ActiveCampaign> campaigns,
   }) = _AcmoActiveOffers;
 
   factory AcmoActiveOffers.fromJson(Map<String, dynamic> json) =>
       _$AcmoActiveOffersFromJson(json);
+}
+
+@freezed
+abstract class AcmoCurrency with _$AcmoCurrency {
+  const factory AcmoCurrency({
+    @Default(0) int currencyId,
+    @Default('') String currencyIcon,
+    @Default('') String currencyName,
+  }) = _AcmoCurrency;
+
+  factory AcmoCurrency.fromJson(Map<String, dynamic> json) =>
+      _$AcmoCurrencyFromJson(json);
 }
 
 @freezed
@@ -52,6 +65,9 @@ abstract class CampaignEventSummary with _$CampaignEventSummary {
     @Default(0) int playableEventCountAvailable,
     @Default(0) int playableEventCountCompleted,
     @Default(0) int playableEventCountTotal,
+    @Default(0) int microchargeEventCountAvailable,
+    @Default(0) int microchargeEventCountCompleted,
+    @Default(0) int microchargeEventCountTotal,
   }) = _CampaignEventSummary;
 
   factory CampaignEventSummary.fromJson(Map<String, dynamic> json) =>
@@ -60,26 +76,40 @@ abstract class CampaignEventSummary with _$CampaignEventSummary {
 }
 
 @freezed
+abstract class CampaignValidity with _$CampaignValidity {
+  const factory CampaignValidity({
+    @Default(false) bool isRetryDownload,
+    @Default(false) bool isActivated,
+    @Default(false) bool isOldUser,
+    @Default(0) int activeCurrencyId,
+    DateTime? expiredOn,
+    double? expiredInSeconds,
+    @Default(false) bool isInstalled,
+    @Default(false) bool capReached,
+  }) = _CampaignValidity;
+
+  factory CampaignValidity.fromJson(Map<String, dynamic> json) =>
+      _$CampaignValidityFromJson(json);
+  static const empty = CampaignValidity();
+}
+
+@freezed
 abstract class ActiveCampaign with _$ActiveCampaign {
   const factory ActiveCampaign({
     @Default(0) int campaignId,
     @Default('') String campaignName,
     @Default('') String campaignDescription,
-    @Default('') String status,
-    DateTime? createdOn,
-    @Default(0) double sortingScore,
-    DateTime? expiredOn,
+    @Default('') String campaignType,
+    @Default(false) bool campaignPremium,
+    @Default(CampaignValidity.empty) CampaignValidity validity,
+    @Default({}) Map<String, AcmoCurrency> availableCurrencies,
     @Default(ActiveApp.empty) ActiveApp app,
-    @Default(false) bool isRetryDownload,
-    @Default(false) bool capReached,
-    @Default(null) String? group,
-    @Default(false) bool premium,
-    @Default(false) bool isOldUser,
-    @Default(false) bool isInstalled,
+    @Default('') String campaignStatus,
+    @Default('') String group,
+    dynamic stage,
+    @Default(CampaignEventSummary.empty) CampaignEventSummary eventSummary,
     @Default([]) List<PayoutEvents> limitedTimeEvents,
-    @Default(CampaignEventSummary.empty)
-    CampaignEventSummary campaignEventSummary,
-    Currency? currency,
+    @Default([]) List<dynamic> shorterMaxTimeEvents,
   }) = _ActiveCampaign;
 
   factory ActiveCampaign.fromJson(Map<String, dynamic> json) =>
@@ -87,31 +117,49 @@ abstract class ActiveCampaign with _$ActiveCampaign {
 }
 
 @freezed
+abstract class AcmoPayoutInfo with _$AcmoPayoutInfo {
+  const factory AcmoPayoutInfo({
+    @Default(0) int currencyId,
+    @Default('') String currencyName,
+    @Default('') String currencyIcon,
+    @Default(0.0) double currencyConversionRate,
+    @Default(0.0) double payoutAmountConverted,
+  }) = _AcmoPayoutInfo;
+
+  factory AcmoPayoutInfo.fromJson(Map<String, dynamic> json) =>
+      _$AcmoPayoutInfoFromJson(json);
+}
+
+@freezed
 abstract class PayoutEvents with _$PayoutEvents {
   factory PayoutEvents({
-    @Default(0) int id,
-    String? conversionStatus,
+    @Default(0) int appEventId,
+    dynamic conversionStatus,
     @Default('') String identifier,
     @Default('') String eventName,
-    @Default('') String eventDescription,
+    String? eventDescription,
     @Default('') String eventCategory,
-    @Default(0) double payoutAmount,
-    @Default(0) double payoutAmountConverted,
-    @Default('') String payoutType,
+    @Default({}) Map<String, AcmoPayoutInfo> payoutInfo,
     @Default(false) bool allowDuplicateEvents,
     @Default(0) int maxTime,
-    @Default('') String maxTimeMetric,
+    String? maxTimeMetric,
     double? maxTimeRemainSeconds,
     @Default(false) bool enforceMaxTimeCompletion,
     @Default(false) bool isLimitedTimeEvent,
-    @Default(0) double limitedTimeEventRemainingSeconds,
+    @Default(0.0) double limitedTimeEventRemainingSeconds,
     @Default(false) bool isTicketSubmitted,
-    @Default(false) bool isPlaytime,
-    @Default(0) int totalPlaytime,
+    dynamic ticketStatus,
+    dynamic lockEventRule,
+    dynamic hideEventRule,
+    dynamic shorterMaxTimeRule,
+    dynamic specialCompletionReason,
     @Default(0) int dailyCount,
-    @Default(0) int dailyLimit,
+    int? dailyLimit,
     @Default(0) int count,
-    @Default(0) int limit,
+    int? limit,
+    @Default(0) int totalDailyUniqueCount,
+    int? totalDailyUniqueLimit,
+    @Default(false) bool dailyUniqueTodayExist,
   }) = _PayoutEvents;
 
   factory PayoutEvents.fromJson(Map<String, dynamic> json) =>
