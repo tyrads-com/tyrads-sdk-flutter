@@ -36,7 +36,7 @@ import 'package:uuid/uuid.dart';
 
 import 'src/acmo/modules/tracking/activities.dart';
 import 'src/acmo/modules/tracking/controller.dart';
-import 'src/acmo/modules/web_sdk/webview_manager.dart';
+
 import 'src/acmo/modules/in_app_notification/inapp_notification_context_bridge.dart';
 
 export 'src/acmo/modules/premium_widgets/premium_offers_widget.dart';
@@ -331,7 +331,7 @@ class Tyrads {
             });
           });
         });
-        _preloadWebView();
+
       }
     } catch (e) {
       debugPrint("Error initializing: ${e.toString()}");
@@ -382,12 +382,6 @@ class Tyrads {
     );
   }
 
-  void _preloadWebView() {
-    if (!kIsWeb) {
-      webURI = getWebUri();
-      WebViewManager.instance.preload(webURI);
-    }
-  }
 
   Future<void> showOffers({
     int? campaignID,
@@ -413,14 +407,7 @@ class Tyrads {
 
       final requestedUri =
       getWebUri(campaignID: campaignID, route: this.route);
-
-      if (webURI.toString() != requestedUri.toString() ||
-          (!kIsWeb && WebViewManager.instance.headlessWebView == null)) {
-        webURI = requestedUri;
-        if (!kIsWeb) {
-          WebViewManager.instance.preload(webURI);
-        }
-      }
+      webURI = requestedUri;
 
       final ready =
       await OnboardingCheck.instance.checkOnboardingStatus();
@@ -483,7 +470,6 @@ class Tyrads {
       if (hostNavigator != null && hostNavigator.canPop()) {
         hostNavigator.pop(result);
         track(TyradsActivity.closed);
-        _preloadWebView();
         return true;
       }
     } catch (e) {

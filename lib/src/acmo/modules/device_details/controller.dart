@@ -14,6 +14,7 @@ import '../../../plugin/tyrads_sdk_platform_interface.dart';
 class AcmoDeviceDetailsController {
   final _networkController = AcmoNetworkDetailsController();
   final _deviceMetricsController = AcmoDeviceMetricsController();
+
   getDeviceDetails() {
     if (Platform.isAndroid) {
       return _getAndroidDeviceDetails();
@@ -32,6 +33,7 @@ class AcmoDeviceDetailsController {
     var networkDetails = await _networkController.getNetworkDetails();
     var trackingInfo = await TyradsSdkPlatform.instance.getTrackingInfo();
     final deviceMetrics = await _deviceMetricsController.getDeviceMetrics();
+
     fd['deviceAge'] = await usageController.getDeviceAgeTime();
     fd['deviceId'] = await PlatformDeviceId.getDeviceId;
     fd['androidId'] = fd['deviceId'];
@@ -69,6 +71,7 @@ class AcmoDeviceDetailsController {
     fd['virtual'] = !(await FlutterSecurityChecker.isRealDevice);
     fd['sdkVersion'] =  AcmoConfig.SDK_VERSION;
     fd['sdkPlatform'] = 'Flutter';
+
     fd['carrierName'] = trackingInfo.carrierName;
     fd['mccMnc'] = trackingInfo.mccMnc;
     fd['mcc'] = trackingInfo.mcc;
@@ -109,16 +112,36 @@ class AcmoDeviceDetailsController {
     fd['screenDensity'] = trackingInfo.screenDensity;
     fd['screenWidth'] = trackingInfo.screenWidth;
     fd['screenHeight'] = trackingInfo.screenHeight;
-    
-    //Network Details
+
+    // Network Details
     fd['connectionType'] = networkDetails['connectionType'];
     fd['networkSpeed'] = networkDetails['networkSpeed'];
     fd['isVpnActive'] = networkDetails['isVpnActive'];
+
+    // Device Metrics
     fd['deviceUpTime'] = deviceMetrics.uptime;
     fd['deviceBootTime'] = deviceMetrics.bootTime;
     fd['timeZone'] = DateTime.now().timeZoneName;
     fd['timeZoneOffset'] = DateTime.now().timeZoneOffset.inSeconds;
     fd['systemTime'] = DateTime.now().millisecondsSinceEpoch.toString();
+
+    // User Interaction Metrics - All properly typed as int (from TrackingInfo._parseToInt())
+    fd['keyboardNumEvents'] = trackingInfo.keyboardNumEvents;
+    fd['keyboardScore'] = trackingInfo.keyboardScore;
+    fd['clipboardNumEvents'] = trackingInfo.clipboardNumEvents;
+    fd['clipboardScore'] = trackingInfo.clipboardScore;
+    fd['clickNumEvents'] = trackingInfo.clickNumEvents;
+    fd['mouseNumEvents'] = trackingInfo.mouseNumEvents;
+    fd['touchNumEvents'] = trackingInfo.touchNumEvents;
+
+    // Device Capabilities
+    fd['gpu'] = trackingInfo.gpu ?? 'Unknown';
+    fd['bluetooth'] = trackingInfo.bluetooth ?? 'Unknown';
+    fd['touchSupport'] = trackingInfo.touchSupport ?? 'Unknown';
+
+    // Device Identification
+    fd['googleAppSetID'] = trackingInfo.googleAppSetID ?? 'Unknown';
+
     return fd;
   }
 
@@ -133,7 +156,7 @@ class AcmoDeviceDetailsController {
 
     fd['deviceId'] = await PlatformDeviceId.getDeviceId;
     fd['device'] =
-        (iosInfo.model.toLowerCase().contains("ipad")) ? "iPad" : "iPhone";
+    (iosInfo.model.toLowerCase().contains("ipad")) ? "iPad" : "iPhone";
     fd['deviceName'] = iosInfo.name;
     fd['brand'] = "Apple";
     fd['model'] = iosInfo.model;
@@ -160,6 +183,25 @@ class AcmoDeviceDetailsController {
 
     fd['sdkVersion'] = AcmoConfig.SDK_VERSION;
     fd['sdkPlatform'] = 'Flutter';
+
+    // ======================== NEW 11 FIELDS - TS-1826 v4.0 (iOS) ========================
+    // User Interaction Metrics - All properly typed as int (from TrackingInfo._parseToInt())
+    fd['keyboardNumEvents'] = trackingInfo.keyboardNumEvents;
+    fd['keyboardScore'] = trackingInfo.keyboardScore;
+    fd['clipboardNumEvents'] = trackingInfo.clipboardNumEvents;
+    fd['clipboardScore'] = trackingInfo.clipboardScore;
+    fd['clickNumEvents'] = trackingInfo.clickNumEvents;
+    fd['mouseNumEvents'] = trackingInfo.mouseNumEvents;
+    fd['touchNumEvents'] = trackingInfo.touchNumEvents;
+
+    // Device Capabilities
+    fd['gpu'] = trackingInfo.gpu ?? 'Unknown';
+    fd['bluetooth'] = trackingInfo.bluetooth ?? 'Unknown';
+    fd['touchSupport'] = trackingInfo.touchSupport ?? 'Unknown';
+
+    // Device Identification
+    fd['googleAppSetID'] = trackingInfo.googleAppSetID ?? 'Unknown';
+    // ====================================================================================
 
     return fd;
   }

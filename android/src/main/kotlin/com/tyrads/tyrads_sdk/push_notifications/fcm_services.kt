@@ -16,6 +16,7 @@ import com.tyrads.tyrads_sdk.push_notifications.activity.NotificationPermissionA
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import androidx.core.content.edit
@@ -46,17 +47,39 @@ class FCMService : FirebaseMessagingService() {
                 )
                 FCMNotifications.getInstance().initialize(context)
                 requestNotificationPermissionIfNeeded(context)
-                val token = FirebaseMessaging.getInstance().token.await()
+                val token = fetchTokenWithRetry()
                 Log.d(TAG, "FCM token retrieved: $token")
                 token
             } catch (e: IllegalStateException) {
                 Log.d(TAG, "Firebase already initialized")
-                val token = FirebaseMessaging.getInstance().token.await()
-                token
+                fetchTokenWithRetry()
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to initialize FCM: ${e.message}", e)
                 null
             }
+        }
+
+        private const val MAX_TOKEN_RETRIES = 3
+        private const val RETRY_DELAY_MS = 1_000L
+
+        private suspend fun fetchTokenWithRetry(): String? {
+            repeat(MAX_TOKEN_RETRIES) { attempt ->
+                try {
+                    val token = FirebaseMessaging.getInstance().token.await()
+                    if (!token.isNullOrEmpty()) {
+                        Log.d(TAG, "FCM token fetched on attempt ${attempt + 1}: $token")
+                        return token
+                    }
+                    Log.w(TAG, "FCM token was empty on attempt ${attempt + 1}, retrying...")
+                } catch (e: Exception) {
+                    Log.w(TAG, "FCM token fetch failed on attempt ${attempt + 1}: ${e.message}")
+                }
+                val backoffDelay = RETRY_DELAY_MS * (1 shl attempt)
+                Log.d(TAG, "Waiting ${backoffDelay}ms before next retry...")
+                delay(backoffDelay)
+            }
+            Log.e(TAG, "FCM token could not be retrieved after $MAX_TOKEN_RETRIES attempts")
+            return null
         }
 
         private fun requestNotificationPermissionIfNeeded(context: Context) {
