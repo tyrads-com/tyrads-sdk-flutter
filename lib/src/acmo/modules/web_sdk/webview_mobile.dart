@@ -25,28 +25,6 @@ class _WebSdkState extends State<WebSdk> {
   bool _hasError = false;
   final GlobalKey webViewKey = GlobalKey();
 
-  @override
-  void initState() {
-    super.initState();
-    final preloaded = WebViewManager.instance.headlessWebView;
-    if (preloaded != null) {
-      _webViewController = preloaded.webViewController!;
-      _hasError = WebViewManager.instance.hasError;
-    }
-
-    WebViewManager.instance.onMessage = (msg) => widget.onMessage(msg);
-    WebViewManager.instance.onErrorChanged = (val) {
-      if (mounted) setState(() => _hasError = val);
-    };
-  }
-
-  @override
-  void dispose() {
-    WebViewManager.instance.onMessage = null;
-    WebViewManager.instance.onErrorChanged = null;
-    super.dispose();
-  }
-
   void _handleJSMessage(String message) {
     widget.onMessage(message);
   }
@@ -67,7 +45,6 @@ class _WebSdkState extends State<WebSdk> {
       children: [
         InAppWebView(
           key: webViewKey,
-          headlessWebView: WebViewManager.instance.headlessWebView,
           initialUrlRequest: URLRequest(url: WebUri(widget.initialUrl)),
           initialSettings: WebViewManager.instance.settings,
           initialUserScripts: WebViewManager.instance.userScripts,
@@ -79,22 +56,19 @@ class _WebSdkState extends State<WebSdk> {
                 .shouldOverrideUrlLoading(controller, navigationAction);
           },
           onWebViewCreated: (controller) {
-            debugPrint(
-                'WebSdk: onWebViewCreated called. Preloaded: ${WebViewManager.instance.headlessWebView != null}');
+            debugPrint('WebSdk: onWebViewCreated called.');
             _webViewController = controller;
 
             _webViewController.addJavaScriptHandler(
               handlerName: 'JSInterface',
               callback: (args) {
                 debugPrint(
-                    'WebSdk: JSInterface message received: ${args.length > 0 ? args[0] : "empty"}');
+                    'WebSdk: JSInterface message received: ${args.isNotEmpty ? args[0] : "empty"}');
                 if (args.isNotEmpty) {
                   _handleJSMessage(args[0].toString());
                 }
               },
             );
-
-            WebViewManager.instance.clearPreload();
           },
           onLoadStart: (controller, url) async {
             if (mounted) {
