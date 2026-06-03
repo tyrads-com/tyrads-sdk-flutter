@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:example/env/env.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +101,6 @@ int? _previousGender;
 bool? _previousSkipInitialPages;
 
 Future<void> initializeTyrads({
-  String selectedConfig = 'belanda1',
   String? apiKey,
   String? apiSecret,
   String? encKey,
@@ -110,7 +111,9 @@ Future<void> initializeTyrads({
   int? gender,
   bool skipInitialPages = false,
 }) async {
-  final configKeys = _getConfigKeys(selectedConfig);
+  final prefs = await SharedPreferences.getInstance();
+  final configKeys = _getConfigKeys(
+      prefs.getString('selectedConfig') ?? 'belanda1');
   final finalApiKey =
       (apiKey != null && apiKey.isNotEmpty) ? apiKey : configKeys['apiKey']!;
   final finalApiSecret = (apiSecret != null && apiSecret.isNotEmpty)
@@ -133,6 +136,15 @@ Future<void> initializeTyrads({
       _previousSkipInitialPages == skipInitialPages) {
     return;
   }
+  log("apiKey: $finalApiKey");
+  log("apiSecret: $finalApiSecret");
+  log("encKey: $finalEncKey");
+  log("engagementId: $engagementId");
+  log("placementId: $placementId");
+  log("userID: $finalUserId");
+  log("age: $age");
+  log("gender: $gender");
+  log("skipInitialPages: $skipInitialPages");
 
   await Tyrads.instance.init(
     navigatorKey: hostNavKey,
@@ -298,7 +310,11 @@ class _MyHomePageState extends State<MyHomePage> {
     await prefs.setString('selectedConfig', value);
 
     clearTyradsCache();
-    await initializeTyrads(selectedConfig: value);
+    await initializeTyrads(
+      apiKey: newKeys['apiKey']!,
+      apiSecret: newKeys['apiSecret']!,
+      encKey: newKeys['encKey']!,
+    );
 
     setState(() {
       widgetKey++;
@@ -331,7 +347,6 @@ class _MyHomePageState extends State<MyHomePage> {
     await Tyrads.instance.initializationWait.future;
 
     await initializeTyrads(
-      selectedConfig: selectedConfig,
       apiKey: apiKeyController.text,
       apiSecret: apiSecretController.text,
       encKey: encKeyController.text,
@@ -429,7 +444,6 @@ class _MyHomePageState extends State<MyHomePage> {
                             initialPageMode = value ?? 1;
                           });
                           await initializeTyrads(
-                            selectedConfig: selectedConfig,
                             apiKey: apiKeyController.text.isEmpty
                                 ? null
                                 : apiKeyController.text,

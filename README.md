@@ -57,7 +57,7 @@ This step initializes the Tyrads SDK within your application. You need to provid
   final navigatorKey = GlobalKey<NavigatorState>();
 
   // Initialize the SDK
-  Tyrads.instance.init(
+  await Tyrads.instance.init(
     navigatorKey: navigatorKey, // Required
     apiKey: "xyz",
     apiSecret: "abc123",
@@ -71,7 +71,7 @@ From version 1.1.2, you can also pass the user & media source information to the
   final navigatorKey = GlobalKey<NavigatorState>();
 
   // Initialize the SDK with user & media source information
-  Tyrads.instance.init(
+  await Tyrads.instance.init(
     navigatorKey: navigatorKey,
     apiKey: Env.TYRADS_SDK_KEY,
     apiSecret: Env.TYRADS_SDK_SECRET,
@@ -131,7 +131,7 @@ var isLoginSuccessful = await Tyrads.instance.loginUser(userID: "xxx");//userID 
 Once the SDK is initialized and the user is logged in (if applicable), you can display the offerwall to the user. This typically involves calling a function provided by the Tyrads SDK, such as showOffers. The offerwall is where users can engage with various offers, advertisements, or promotions provided by Tyrads, potentially earning rewards or incentives in the process.
 
 ```dart
-    Tyrads.instance.showOffers();
+  await Tyrads.instance.showOffers();
 ```
 </br>
 <details>
@@ -143,19 +143,19 @@ Available routes and their usage:
 
 ```dart
 // Note: CAMPAIGNS is the default route when no specific route is provided
-Tyrads.instance.showOffers();
+await Tyrads.instance.showOffers();
 
 // Explicitly specifying the Campaigns Page
-Tyrads.instance.showOffers(route: TyradsDeepRoutes.OFFERS);
+await Tyrads.instance.showOffers(route: TyradsDeepRoutes.OFFERS);
 
 // Activated Campaigns Page
-Tyrads.instance.showOffers(route: TyradsDeepRoutes.ACTIVE_OFFERS);
+await Tyrads.instance.showOffers(route: TyradsDeepRoutes.ACTIVE_OFFERS);
 
 // Campaign Details Page (requires campaignID as int)
-Tyrads.instance.showOffers(route: TyradsDeepRoutes.OFFERS, campaignID: 12345);
+await Tyrads.instance.showOffers(route: TyradsDeepRoutes.OFFERS, campaignID: 12345);
 
 // Campaign Tickets Page (requires campaignID as int)
-Tyrads.instance.showOffers(route: TyradsDeepRoutes.SUPPORT, campaignID: 12345);
+await Tyrads.instance.showOffers(route: TyradsDeepRoutes.SUPPORT, campaignID: 12345);
 ```
 
 #### `showOffers` Parameters

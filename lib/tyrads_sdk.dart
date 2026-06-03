@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
 
 library tyrads_sdk;
 
@@ -36,7 +35,7 @@ import 'package:uuid/uuid.dart';
 
 import 'src/acmo/modules/tracking/activities.dart';
 import 'src/acmo/modules/tracking/controller.dart';
-import 'src/acmo/modules/web_sdk/webview_manager.dart';
+
 import 'src/acmo/modules/in_app_notification/inapp_notification_context_bridge.dart';
 
 export 'src/acmo/modules/premium_widgets/premium_offers_widget.dart';
@@ -54,14 +53,17 @@ class Tyrads {
   static final Tyrads _singleton = Tyrads._internal();
 
   GlobalKey<NavigatorState>? _navigatorKey;
-  GlobalKey<NavigatorState> get navKey => _navigatorKey!;
+  GlobalKey<NavigatorState> get navKey {
+    assert(_navigatorKey != null, 'Tyrads.instance.init() must be called before accessing navKey.');
+    return _navigatorKey!;
+  }
   
   final offerwallKey = GlobalKey<NavigatorState>();
-  var newUser = false;
-  var apiKey;
-  var apiSecret;
-  var publisherUserID;
-  var token;
+  bool newUser = false;
+  String? apiKey;
+  String? apiSecret;
+  String publisherUserID = '';
+  String token = '';
   String? engagementId;
   String? placementId;
   TyradsConfig config = TyradsConfig();
@@ -117,6 +119,15 @@ class Tyrads {
     TyradsConfig? config,
     TyradsLaunchMode? launchMode,
   }) async {
+    assert(apiKey.isNotEmpty, 'apiKey cannot be empty.');
+    assert(apiSecret.isNotEmpty, 'apiSecret cannot be empty.');
+    if (engagementId != null && engagementId.isNotEmpty) {
+      assert(int.tryParse(engagementId) != null, 'engagementId must be a valid integer string.');
+    }
+    if (placementId != null && placementId.isNotEmpty) {
+      assert(int.tryParse(placementId) != null, 'placementId must be a valid integer string.');
+    }
+
     _isInitCalled = true;
     _navigatorKey = navigatorKey;
     this.apiKey = apiKey;
@@ -169,6 +180,7 @@ class Tyrads {
   }
 
   Future<bool> loginUser({String? userID = ""}) async {
+    assert(_isInitCalled, 'Tyrads.instance.init() must be called before loginUser().');
     try {
       if (!_isInitCalled) {
         debugPrint("[Tyrads SDK] Make sure init method is called first");
@@ -331,7 +343,7 @@ class Tyrads {
             });
           });
         });
-        _preloadWebView();
+
       }
     } catch (e) {
       debugPrint("Error initializing: ${e.toString()}");
@@ -345,17 +357,18 @@ class Tyrads {
   }
 
   Future<void> logoutUser() async {
+    assert(_isInitCalled, 'Tyrads.instance.init() must be called before logoutUser().');
     await prefs.remove(AcmoKeyNames.USER_ID);
     await prefs.remove(AcmoKeyNames.TOKEN);
     publisherUserID = '';
     isLoginSuccessful = false;
   }
 
-  setLaunchMode(TyradsLaunchMode launchMode) => this.launchMode = launchMode;
+  void setLaunchMode(TyradsLaunchMode launchMode) => this.launchMode = launchMode;
 
-  setNewUser(bool newUser) => this.newUser = newUser;
+  void setNewUser(bool newUser) => this.newUser = newUser;
 
-  setTyradsConfig(TyradsConfig config) {
+  void setTyradsConfig(TyradsConfig config) {
     this.config = config;
   }
 
@@ -382,18 +395,14 @@ class Tyrads {
     );
   }
 
-  void _preloadWebView() {
-    if (!kIsWeb) {
-      webURI = getWebUri();
-      WebViewManager.instance.preload(webURI);
-    }
-  }
 
   Future<void> showOffers({
     int? campaignID,
     String? route,
     TyradsLaunchMode? launchMode,
   }) async {
+    assert(_isInitCalled, 'Tyrads.instance.init() must be called before showOffers().');
+    assert(_isLoginCalled, 'Tyrads.instance.loginUser() must be called before showOffers().');
     FCMManager.clearPendingDeepLink();
 
     try {
@@ -413,14 +422,7 @@ class Tyrads {
 
       final requestedUri =
       getWebUri(campaignID: campaignID, route: this.route);
-
-      if (webURI.toString() != requestedUri.toString() ||
-          (!kIsWeb && WebViewManager.instance.headlessWebView == null)) {
-        webURI = requestedUri;
-        if (!kIsWeb) {
-          WebViewManager.instance.preload(webURI);
-        }
-      }
+      webURI = requestedUri;
 
       final ready =
       await OnboardingCheck.instance.checkOnboardingStatus();
@@ -472,6 +474,7 @@ class Tyrads {
   }
 
   bool back({dynamic result}) {
+    assert(_isInitCalled, 'Tyrads.instance.init() must be called before back().');
     final internalNavigator = offerwallKey.currentState;
     if (internalNavigator != null && internalNavigator.canPop()) {
       internalNavigator.pop(result);
@@ -483,7 +486,6 @@ class Tyrads {
       if (hostNavigator != null && hostNavigator.canPop()) {
         hostNavigator.pop(result);
         track(TyradsActivity.closed);
-        _preloadWebView();
         return true;
       }
     } catch (e) {
@@ -521,6 +523,7 @@ class Tyrads {
   ///
   /// Supported codes: en, es, id, ja, ko, zh-Hans-CN.
   Future<void> changeLanguage(String languageCode) async {
+    assert(_isInitCalled, 'Tyrads.instance.init() must be called before changeLanguage().');
     prefs = await SharedPreferences.getInstance();
     selectedLanguage = languageCode;
     await LocalizationService().changeLanguage(selectedLanguage);
