@@ -14,10 +14,16 @@ class TyradsUserInfo {
   /// Example: "High purchasing user"
   final String? userGroup;
 
+  final int? age;
+
+  final int? gender;
+
   TyradsUserInfo({
     this.email,
     this.phoneNumber,
     this.userGroup,
+    this.age,
+    this.gender,
   });
 
 }

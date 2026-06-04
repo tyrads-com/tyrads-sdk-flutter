@@ -1,8 +1,10 @@
-import 'dart:collection';
+// ignore_for_file: unused_element, unused_field
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+
+import 'webview_manager.dart';
 
 class WebSdk extends StatefulWidget {
   final String initialUrl;
@@ -28,72 +30,40 @@ class _WebSdkState extends State<WebSdk> {
   }
 
   @override
+  void didUpdateWidget(WebSdk oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialUrl != widget.initialUrl) {
+      _webViewController.loadUrl(
+        urlRequest: URLRequest(url: WebUri(widget.initialUrl)),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         InAppWebView(
           key: webViewKey,
           initialUrlRequest: URLRequest(url: WebUri(widget.initialUrl)),
-          initialSettings: InAppWebViewSettings(
-              javaScriptEnabled: true,
-              javaScriptCanOpenWindowsAutomatically: true,
-              allowFileAccess: true,
-              allowContentAccess: true,
-              mediaPlaybackRequiresUserGesture: false,
-              useShouldOverrideUrlLoading: true,
-              allowsInlineMediaPlayback: true,
-              iframeAllowFullscreen: true),
-          initialUserScripts: UnmodifiableListView([
-            UserScript(
-              source: '''
-                            window.addEventListener('message', function(event) {
-                              try {
-                                const message = typeof event.data === 'string'
-                                  ? JSON.parse(event.data)
-                                  : event.data;
-                                if (message) {
-                                  if (window.flutter_inappwebview) {
-                                    console.error('JS Bridge Message:', message);
-                                    window.flutter_inappwebview.callHandler('JSInterface', JSON.stringify(message));
-                                  } else if (window.parent !== window) {
-                                    // Send to Flutter Web
-                                    console.error('JS Bridge Message Web:', message);
-                                    window.parent.postMessage({ type: 'JSInterface', payload: message }, '*');
-                                  }
-                                }
-                              } catch (error) {
-                                console.error('JS Bridge error:', error);
-                              }
-                            });
-                          ''',
-              injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
-            ),
-          ]),
+          initialSettings: WebViewManager.instance.settings,
+          initialUserScripts: WebViewManager.instance.userScripts,
           onConsoleMessage: (controller, consoleMessage) {
             debugPrint(consoleMessage.message);
           },
           shouldOverrideUrlLoading: (controller, navigationAction) async {
-            Uri uri = navigationAction.request.url!;
-
-            final urlString = uri.toString();
-            if (uri.host == 'sdk.tyrads.com') {
-              return NavigationActionPolicy.ALLOW;
-            }
-
-            if (!urlString.contains('sdk.tyrads.com')) {
-              await launchUrlString(
-                urlString,
-                mode: LaunchMode.externalApplication,
-              );
-              return NavigationActionPolicy.CANCEL;
-            }
-            return NavigationActionPolicy.ALLOW;
+            return WebViewManager.instance
+                .shouldOverrideUrlLoading(controller, navigationAction);
           },
           onWebViewCreated: (controller) {
+            debugPrint('WebSdk: onWebViewCreated called.');
             _webViewController = controller;
+
             _webViewController.addJavaScriptHandler(
               handlerName: 'JSInterface',
               callback: (args) {
+                debugPrint(
+                    'WebSdk: JSInterface message received: ${args.isNotEmpty ? args[0] : "empty"}');
                 if (args.isNotEmpty) {
                   _handleJSMessage(args[0].toString());
                 }
@@ -110,7 +80,16 @@ class _WebSdkState extends State<WebSdk> {
           onLoadStop: (controller, url) {},
           onReceivedError: (controller, request, error) {
             debugPrint('WebView Error: ${error.toString()}');
-            if (error.description.contains('code=102')) {
+            if (error.description.contains('code=102') ||
+                error.description.contains('-1001') ||
+                error.description.contains('-1009') ||
+                error.type.toString().contains('TIMEOUT') ||
+                error.type.toString().contains('timeOut') ||
+                error.type.toString().contains('timeout') ||
+                error.type.toString().contains('CONNECT') ||
+                error.type.toString().contains('connect') ||
+                error.type.toString().contains('UNKNOWN') ||
+                error.type.toString().contains('unknown')) {
               setState(() {
                 _hasError = true;
               });
@@ -123,7 +102,7 @@ class _WebSdkState extends State<WebSdk> {
             );
           },
         ),
-        if (_hasError) _buildErrorView(),
+        // if (_hasError) _buildErrorView(),
       ],
     );
   }
@@ -147,7 +126,10 @@ class _WebSdkState extends State<WebSdk> {
               });
               _webViewController.reload();
             },
-            child: const Text('Retry'),
+            child: Text(
+              'Retry',
+              style: GoogleFonts.poppins(color: Colors.white),
+            ),
           ),
         ],
       ),

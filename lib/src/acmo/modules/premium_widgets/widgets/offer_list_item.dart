@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:numeral/numeral.dart';
 import 'package:tyrads_sdk/src/acmo/core/components/acmo_image.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
+import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/controller.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/currency_sale_model/currency_sale_model.dart';
 import 'package:tyrads_sdk/src/acmo/modules/premium_widgets/models/offers_model/offers.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
@@ -46,7 +47,6 @@ class AcmoOfferListItem extends StatelessWidget {
                 onTap: anyLoading
                     ? null
                     : () => Tyrads.instance.showOffers(
-                          context,
                           route: TyradsDeepRoutes.OFFERS,
                           campaignID: e.campaignId,
                           launchMode: Tyrads.instance.launchMode,
@@ -77,7 +77,7 @@ class AcmoOfferListItem extends StatelessWidget {
                         child: Text(
                           // '${currencySales?.multiplier}x BONUS',
                           LocalizationService().translate(
-                            'data.shared.label.bonusTagCaps',
+                            TyradsLocalKeys.sharedLabelBonusTagCaps,
                             args: {'multiplier': currencySales?.multiplier},
                           ),
                           style: GoogleFonts.poppins(
@@ -103,8 +103,7 @@ class AcmoOfferListItem extends StatelessWidget {
                   children: [
                     if (currencySales != null)
                       Text(
-                        e.campaignPayout.totalPlayablePayoutConverted
-                            .numeral(digits: 2),
+                        getTotalPayoutConverted(e).numeral(digits: 2),
                         style: GoogleFonts.poppins(
                           color: const Color(0xFF323434),
                           decoration: TextDecoration.lineThrough,
@@ -114,12 +113,12 @@ class AcmoOfferListItem extends StatelessWidget {
                         ),
                       ),
                     AcmoNetworkImage(
-                      url: e.currency.adUnitCurrencyIcon,
+                      url: getCurrencyIcon(e),
                       width: 14,
                       height: 14,
                     ),
                     Text(
-                      (e.campaignPayout.totalPlayablePayoutConverted *
+                      (getTotalPayoutConverted(e) *
                               (currencySales?.multiplier ?? 1))
                           .numeral(digits: 2),
                       style: GoogleFonts.poppins(
@@ -166,7 +165,7 @@ class AcmoOfferListItem extends StatelessWidget {
                       ],
                       Text(
                         LocalizationService()
-                            .translate('data.widget.button.play'),
+                            .translate(TyradsLocalKeys.widgetBtnPlay),
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           color: anyLoading

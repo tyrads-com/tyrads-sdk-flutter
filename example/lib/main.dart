@@ -1,11 +1,11 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 
 import 'package:example/env/env.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
+import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,45 +14,154 @@ void main() async {
 }
 
 bool _isTyradsInitialized = false;
+const String _defaultUserId = 'acmo_user_01';
+final GlobalKey<NavigatorState> hostNavKey = GlobalKey<NavigatorState>();
+
+const List<Map<String, String>> configOptions = [
+  {'label': 'Tyrreward', 'value': 'tyrreward'},
+  {'label': 'Belanda 1', 'value': 'belanda1'},
+  {'label': 'Belanda 2', 'value': 'belanda2'},
+  {'label': 'Belanda 3', 'value': 'belanda3'},
+];
+
+Map<String, String> _getConfigKeys(String selectedConfig) {
+  final isAndroid = defaultTargetPlatform == TargetPlatform.android;
+
+  switch (selectedConfig) {
+    case 'tyrreward':
+      return isAndroid
+          ? {
+              'apiKey': Env.ANDROID_TYRREWARD_SDK_KEY,
+              'apiSecret': Env.ANDROID_TYRREWARD_SDK_SECRET,
+              'encKey': Env.ANDROID_TYRREWARD_SDK_ENC_KEY
+            }
+          : {
+              'apiKey': Env.IOS_TYRREWARD_SDK_KEY,
+              'apiSecret': Env.IOS_TYRREWARD_SDK_SECRET,
+              'encKey': Env.IOS_TYRREWARD_SDK_ENC_KEY
+            };
+    case 'belanda2':
+      return isAndroid
+          ? {
+              'apiKey': Env.ANDROID_BELANDA2_TYRADS_SDK_KEY,
+              'apiSecret': Env.ANDROID_BELANDA2_TYRADS_SDK_SECRET,
+              'encKey': Env.ANDROID_BELANDA2_TYRADS_SDK_ENC_KEY
+            }
+          : {
+              'apiKey': Env.IOS_BELANDA2_TYRADS_SDK_KEY,
+              'apiSecret': Env.IOS_BELANDA2_TYRADS_SDK_SECRET,
+              'encKey': Env.IOS_BELANDA2_TYRADS_SDK_ENC_KEY
+            };
+    case 'belanda3':
+      return isAndroid
+          ? {
+              'apiKey': Env.ANDROID_BELANDA3_TYRADS_SDK_KEY,
+              'apiSecret': Env.ANDROID_BELANDA3_TYRADS_SDK_SECRET,
+              'encKey': Env.ANDROID_BELANDA3_TYRADS_SDK_ENC_KEY
+            }
+          : {
+              'apiKey': Env.IOS_BELANDA3_TYRADS_SDK_KEY,
+              'apiSecret': Env.IOS_BELANDA3_TYRADS_SDK_SECRET,
+              'encKey': Env.IOS_BELANDA3_TYRADS_SDK_ENC_KEY
+            };
+    case 'belanda1':
+    default:
+      return isAndroid
+          ? {
+              'apiKey': Env.ANDROID_BELANDA1_TYRADS_SDK_KEY,
+              'apiSecret': Env.ANDROID_BELANDA1_TYRADS_SDK_SECRET,
+              'encKey': Env.ANDROID_BELANDA1_TYRADS_SDK_ENC_KEY
+            }
+          : {
+              'apiKey': Env.IOS_BELANDA1_TYRADS_SDK_KEY,
+              'apiSecret': Env.IOS_BELANDA1_TYRADS_SDK_SECRET,
+              'encKey': Env.IOS_BELANDA1_TYRADS_SDK_ENC_KEY
+            };
+  }
+}
+
+Future<String> _getUserId() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('tyrads_user_id') ?? _defaultUserId;
+}
+
+Future<void> _saveUserId(String userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('tyrads_user_id', userId);
+}
+
 String? _previousApiKey;
 String? _previousApiSecret;
 String? _previousEncKey;
+String? _previousEngagementId;
+String? _previousPlacementId;
 String? _previousUserID;
+int? _previousAge;
+int? _previousGender;
+bool? _previousSkipInitialPages;
 
 Future<void> initializeTyrads({
   String? apiKey,
   String? apiSecret,
   String? encKey,
   String? engagementId,
+  String? placementId,
   String? userID,
+  int? age,
+  int? gender,
+  bool skipInitialPages = false,
 }) async {
+  final prefs = await SharedPreferences.getInstance();
+  final configKeys = _getConfigKeys(
+      prefs.getString('selectedConfig') ?? 'belanda1');
+  final finalApiKey =
+      (apiKey != null && apiKey.isNotEmpty) ? apiKey : configKeys['apiKey']!;
+  final finalApiSecret = (apiSecret != null && apiSecret.isNotEmpty)
+      ? apiSecret
+      : configKeys['apiSecret']!;
+  final finalEncKey =
+      (encKey != null && encKey.isNotEmpty) ? encKey : configKeys['encKey']!;
+  final finalUserId =
+      (userID != null && userID.isNotEmpty) ? userID : await _getUserId();
+
   if (_isTyradsInitialized &&
-      _previousApiKey == apiKey &&
-      _previousApiSecret == apiSecret &&
-      _previousEncKey == encKey &&
-      _previousUserID == userID) {
-    log("Tyrads already initialized with same details, skipping reinitialization");
+      _previousApiKey == finalApiKey &&
+      _previousApiSecret == finalApiSecret &&
+      _previousEncKey == finalEncKey &&
+      _previousEngagementId == engagementId &&
+      _previousPlacementId == placementId &&
+      _previousUserID == finalUserId &&
+      _previousAge == age &&
+      _previousGender == gender &&
+      _previousSkipInitialPages == skipInitialPages) {
     return;
   }
-  log("initializeTyrads $apiKey,  $apiSecret,  $userID");
+  log("apiKey: $finalApiKey");
+  log("apiSecret: $finalApiSecret");
+  log("encKey: $finalEncKey");
+  log("engagementId: $engagementId");
+  log("placementId: $placementId");
+  log("userID: $finalUserId");
+  log("age: $age");
+  log("gender: $gender");
+  log("skipInitialPages: $skipInitialPages");
+
   await Tyrads.instance.init(
-    apiKey: apiKey ??
-        (defaultTargetPlatform == TargetPlatform.iOS
-            ? Env.TYRADS_SDK_IOS_KEY
-            : Env.TYRADS_SDK_KEY),
-    apiSecret: apiSecret ??
-        (defaultTargetPlatform == TargetPlatform.iOS
-            ? Env.TYRADS_SDK_IOS_SECRET
-            : Env.TYRADS_SDK_SECRET),
-    encryptionKey: encKey ??
-        (defaultTargetPlatform == TargetPlatform.iOS
-            ? Env.TYRADS_SDK_IOS_ENC_KEY
-            : Env.TYRADS_SDK_ENC_KEY),
+    navigatorKey: hostNavKey,
+    apiKey: finalApiKey,
+    apiSecret: finalApiSecret,
+    encryptionKey: finalEncKey,
     engagementId: engagementId,
+    placementId: placementId,
+    config: Platform.isAndroid
+        ? TyradsConfig(skipInitialPages: skipInitialPages)
+        : null,
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
       userGroup: "High purchase user",
+      age: age,
+      gender: gender,
     ),
     mediaSourceInfo: TyradsMediaSourceInfo(
       mediaSourceName: "Facebook",
@@ -71,7 +180,11 @@ Future<void> initializeTyrads({
       sub5: "iOSDevice",
     ),
   );
-  await Tyrads.instance.loginUser(userID: userID ?? "acmoUser_34233");
+
+  await Tyrads.instance.loginUser(userID: finalUserId);
+  await _saveUserId(
+      finalUserId); // only userId is persisted — keys always come from Env
+
   Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
     debugPrint("TyradsCallbackType.campaignDetail: $data");
   });
@@ -79,31 +192,39 @@ Future<void> initializeTyrads({
     debugPrint("TyradsCallbackType.activated: $data");
   });
 
-  _previousApiKey = apiKey;
-  _previousApiSecret = apiSecret;
-  _previousEncKey = encKey;
-  _previousUserID = userID;
+  _previousApiKey = finalApiKey;
+  _previousApiSecret = finalApiSecret;
+  _previousEncKey = finalEncKey;
+  _previousEngagementId = engagementId;
+  _previousPlacementId = placementId;
+  _previousUserID = finalUserId;
+  _previousAge = age;
+  _previousGender = gender;
   _isTyradsInitialized = true;
+  _previousSkipInitialPages = skipInitialPages;
 
-  log("Tyrads initialized successfully with new details");
+  debugPrint('Tyrads initialized successfully');
 }
 
 void clearTyradsCache() {
   _previousApiKey = null;
   _previousApiSecret = null;
   _previousEncKey = null;
+  _previousEngagementId = null;
+  _previousPlacementId = null;
   _previousUserID = null;
+  _previousAge = null;
+  _previousGender = null;
   _isTyradsInitialized = false;
-  log("Tyrads cache cleared");
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: hostNavKey,
       title: 'Tyrrewards SDK Demo',
       theme: ThemeData.light(),
       home: Builder(builder: (context) {
@@ -127,9 +248,18 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController apiSecretController;
   late TextEditingController encKeyController;
   late TextEditingController engagementIdController;
+  late TextEditingController placementIdController;
   late TextEditingController userIDController;
   bool loading = false;
   int style = 1;
+  int initialPageMode = 1;
+  String selectedConfig = 'belanda1';
+  int? selectedAge;
+  int? selectedGender;
+
+  int widgetKey = 0;
+  bool isReady = false;
+
   @override
   void initState() {
     super.initState();
@@ -137,17 +267,59 @@ class _MyHomePageState extends State<MyHomePage> {
     apiSecretController = TextEditingController();
     encKeyController = TextEditingController();
     engagementIdController = TextEditingController();
+    placementIdController = TextEditingController();
     userIDController = TextEditingController();
+
+    _loadStoredCredentials();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    apiKeyController.dispose();
-    apiSecretController.dispose();
-    encKeyController.dispose();
-    engagementIdController.dispose();
-    userIDController.dispose();
+  Future<void> _loadStoredCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final storedConfig = prefs.getString('selectedConfig');
+    final configToUse = storedConfig ?? selectedConfig;
+    if (storedConfig != null && storedConfig != selectedConfig) {
+      setState(() {
+        selectedConfig = storedConfig;
+      });
+    }
+
+    final configKeys = _getConfigKeys(configToUse);
+    final userId = prefs.getString('tyrads_user_id') ?? _defaultUserId;
+
+    setState(() {
+      apiKeyController.text = configKeys['apiKey']!;
+      apiSecretController.text = configKeys['apiSecret']!;
+      encKeyController.text = configKeys['encKey']!;
+      userIDController.text = userId;
+      isReady = true;
+    });
+  }
+
+  Future<void> _onConfigChange(String value) async {
+    final newKeys = _getConfigKeys(value);
+    setState(() {
+      selectedConfig = value;
+      apiKeyController.text = newKeys['apiKey']!;
+      apiSecretController.text = newKeys['apiSecret']!;
+      encKeyController.text = newKeys['encKey']!;
+      isReady = false;
+    });
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedConfig', value);
+
+    clearTyradsCache();
+    await initializeTyrads(
+      apiKey: newKeys['apiKey']!,
+      apiSecret: newKeys['apiSecret']!,
+      encKey: newKeys['encKey']!,
+    );
+
+    setState(() {
+      widgetKey++;
+      isReady = true;
+    });
   }
 
   void _showOfferwall() async {
@@ -175,40 +347,33 @@ class _MyHomePageState extends State<MyHomePage> {
     await Tyrads.instance.initializationWait.future;
 
     await initializeTyrads(
-      apiKey: apiKeyController.text.isEmpty ? null : apiKeyController.text,
-      apiSecret:
-          apiSecretController.text.isEmpty ? null : apiSecretController.text,
-      encKey: encKeyController.text.isEmpty ? null : encKeyController.text,
-      engagementId: engagementIdController.text.isEmpty ? null : engagementIdController.text,
-      userID: userIDController.text.isEmpty ? null : userIDController.text,
+      apiKey: apiKeyController.text,
+      apiSecret: apiSecretController.text,
+      encKey: encKeyController.text,
+      engagementId: engagementIdController.text,
+      placementId: placementIdController.text,
+      userID: userIDController.text,
+      age: selectedAge,
+      gender: selectedGender,
+      skipInitialPages: initialPageMode == 2,
     );
 
-    Tyrads.instance.setCallback(TyradsCallbackType.campaignDetail, (data) {
-      debugPrint("TyradsCallbackType.campaignDetail: $data");
-    });
-
-    // var isLoginSuccessful = await Tyrads.instance.loginUser(userID: userID);
-    // if(!isLoginSuccessful){
-    //   //re-initialize
-    // }
-
-    // or you can login without waiting for the future
-
-    //  Tyrads.instance.loginUser(userID: userID);
-    //   if(!Tyrads.instance.initializationWait.isCompleted){
-    //      await Tyrads.instance.initializationWait.future;
-    //   }
-    //   if(!Tyrads.instance.isLoginSuccessful){
-    //     //re-initialize
-    //   }
     setState(() {
       loading = false;
     });
 
-    Tyrads.instance.showOffers(
-      context,
-      // ,campaignID: 00,route: TyradsDeepRoutes.CAMPAIGN_TICKETS
-    );
+    Tyrads.instance.showOffers();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    apiKeyController.dispose();
+    apiSecretController.dispose();
+    encKeyController.dispose();
+    engagementIdController.dispose();
+    placementIdController.dispose();
+    userIDController.dispose();
   }
 
   @override
@@ -225,81 +390,257 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Tyrads.instance.topOffersWidget(
-                  context,
-                  widgetStyle: style == 1
-                      ? PremiumWidgetStyles.list
-                      : PremiumWidgetStyles.sliderCards,
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                DropdownButton(
-                  value: style,
-                  items: const [
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text("List View"),
+                if (isReady)
+                  KeyedSubtree(
+                    key: ValueKey(widgetKey),
+                    child: PremiumOffersWidget(
+                      widgetStyle: style == 1
+                          ? PremiumWidgetStyles.list
+                          : PremiumWidgetStyles.sliderCards,
                     ),
-                    DropdownMenuItem(
-                      value: 2,
-                      child: Text("Slide Cards"),
+                  )
+                else
+                  Container(
+                    width: double.maxFinite,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: Platform.isAndroid
+                      ? MainAxisAlignment.spaceEvenly
+                      : MainAxisAlignment.center,
+                  children: [
+                    DropdownButton(
+                      value: style,
+                      items: const [
+                        DropdownMenuItem(value: 1, child: Text("List View")),
+                        DropdownMenuItem(value: 2, child: Text("Slide Cards")),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          style = value ?? 1;
+                        });
+                      },
+                    ),
+                    Visibility(
+                      visible: Platform.isAndroid,
+                      child: DropdownButton(
+                        value: initialPageMode,
+                        items: const [
+                          DropdownMenuItem(
+                              value: 1, child: Text("Show Initial Pages")),
+                          DropdownMenuItem(
+                              value: 2, child: Text("Hide Initial Pages")),
+                        ],
+                        onChanged: (value) async {
+                          setState(() {
+                            initialPageMode = value ?? 1;
+                          });
+                          await initializeTyrads(
+                            apiKey: apiKeyController.text.isEmpty
+                                ? null
+                                : apiKeyController.text,
+                            apiSecret: apiSecretController.text.isEmpty
+                                ? null
+                                : apiSecretController.text,
+                            encKey: encKeyController.text.isEmpty
+                                ? null
+                                : encKeyController.text,
+                            engagementId: engagementIdController.text.isEmpty
+                                ? null
+                                : engagementIdController.text,
+                            userID: userIDController.text.isEmpty
+                                ? null
+                                : userIDController.text,
+                            age: selectedAge,
+                            gender: selectedGender,
+                            skipInitialPages: initialPageMode == 2,
+                          );
+                          setState(() {
+                            widgetKey++;
+                          });
+                        },
+                      ),
                     ),
                   ],
-                  onChanged: (value) {
-                    setState(() {
-                      style = value ?? 1;
-                    });
-                  },
                 ),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.maxFinite,
-                  child: TextField(
-                      controller: apiKeyController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Api_Key (Optional)",
-                      )),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Select Config:',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF333333),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonFormField<String>(
+                          initialValue: selectedConfig,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                              borderSide: BorderSide(color: Color(0xFFCCCCCC)),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 12),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          items: configOptions.map((option) {
+                            return DropdownMenuItem<String>(
+                              value: option['value'],
+                              child: Text(option['label']!,
+                                  style: const TextStyle(color: Colors.black)),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            if (value != null) _onConfigChange(value);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Platform: ${Platform.isAndroid ? 'Android' : 'iOS'} | Config: ${selectedConfig.toUpperCase()}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF666666),
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<int>(
+                        initialValue: selectedAge,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Age',
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                        items:
+                            List.generate(83, (index) => index + 18).map((age) {
+                          return DropdownMenuItem(
+                            value: age,
+                            child: Text(age.toString()),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedAge = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: DropdownButtonFormField<int>(
+                        initialValue: selectedGender,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Gender',
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 1, child: Text("Male")),
+                          DropdownMenuItem(value: 2, child: Text("Female")),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGender = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                      controller: apiSecretController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Api_Secret (Optional)",
-                      )),
+                    controller: apiKeyController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Api_Key (Optional)",
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                      controller: encKeyController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Encryption Key (Optional)",
-                      )),
+                    controller: apiSecretController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Api_Secret (Optional)",
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                      controller: engagementIdController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Engagement Id (Optional)",
-                      )),
+                    controller: encKeyController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Encryption Key (Optional)",
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: engagementIdController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Engagement Id (Optional)",
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: placementIdController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Placement Id (Optional)",
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                      controller: userIDController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Custom user Id or empty for anonymous user",
-                      )),
+                    controller: userIDController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Custom user Id or empty for anonymous user",
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 OutlinedButton(
@@ -316,7 +657,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       const Text("Show offerwall"),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

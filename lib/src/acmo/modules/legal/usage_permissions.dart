@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/core/services/localization_service.dart';
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/widgets/usage_stats_tile.dart';
-import 'package:tyrads_sdk/src/acmo/modules/users/pages/age_gender.dart';
+
 import 'package:tyrads_sdk/src/acmo/modules/web_sdk/web_sdk.dart';
 import 'package:tyrads_sdk/src/gen/assets.gen.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
@@ -69,11 +69,9 @@ class AcmoUsagePermissionsPage extends StatelessWidget {
                             if (isReturningToWidget) {
                               if (!context.mounted) return;
 
-                              Navigator.pop(context, true); 
+                              Navigator.pop(context, true);
                             } else {
-                              Widget page = Tyrads.instance.newUser
-                                  ? const AcmoUsersUpdatePage()
-                                  : const AcmoWebSdk();
+                              Widget page = const AcmoWebSdk();
                               Tyrads.instance.to(page, replace: true);
                             }
                           }),
@@ -107,7 +105,7 @@ class Body extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.65,
             child: Text(
               localization
-                  .translate('data.initialization.usagePermission.title'),
+                  .translate(TyradsLocalKeys.usagePermissionTitle),
               style: GoogleFonts.lexend(
                   textStyle: const TextStyle(
                       fontWeight: FontWeight.w500, fontSize: 16)),

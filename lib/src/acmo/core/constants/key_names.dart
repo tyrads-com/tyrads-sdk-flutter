@@ -11,16 +11,22 @@ class AcmoKeyNames {
   static const String PLAY_INTEGRITY_TOKEN = '${PREFIX}play_integrity_token';
   static const String USERNAME = '${PREFIX}username';
   static const String FCM_TOKEN = '${PREFIX}fcm_token';
+  static const String APNS_TOKEN = '${PREFIX}apns_token';
   static const String USER_DATA = '${PREFIX}user_data';
   static const String ADVERTISING_ID = '${PREFIX}advertising_id';
   static const String TRACKED_CAMPAIGNS_FOR_USER_ID =
       '${PREFIX}tracked_campaigns_for_user_id_';
-  static const String PLAY_PER_MINUTE_PACKAGES = '${PREFIX}play_per_minute_packages';
-  static const String PRIVACY_ACCEPTED_FOR_USER_ID = '${PREFIX}privacy_accepted_for_user_id_';
+  static const String PLAY_PER_MINUTE_PACKAGES =
+      '${PREFIX}play_per_minute_packages';
+  static const String PRIVACY_ACCEPTED_FOR_USER_ID =
+      '${PREFIX}privacy_accepted_for_user_id_';
   static const String SKIP_USER_INFO = '${PREFIX}skip_user_info_for_user_id_';
   static const String CUSTOM_AD_ID = '${PREFIX}custom_ad_id';
   static const String LANGUAGE = '${PREFIX}language';
-
+  static const String HAS_SHOWN_CURRENCY_SALES_NOTIFICATION =
+      '${PREFIX}has_shown_currency_sales_notification';
+  static const String HAS_SHOWN_LIMITED_TIME_OFFER_NOTIFICATION =
+      '${PREFIX}has_shown_limited_time_offer_notification';
 
   static const String TOKEN = '${PREFIX}token';
 }

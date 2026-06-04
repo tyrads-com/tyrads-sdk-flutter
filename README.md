@@ -13,6 +13,15 @@
 
 **Tyrads** is an open source framework that provides a wrapper for presenting and creating offerwall. It interacts with the Tyrads backend letting you easily show offers with only few lines of code!
 
+### Key Features
+
+* **Full Support for FCM & APNS**: Rich-media notifications for Android and iOS with background state handling.
+* **Limited Time Offers & Currency Sales**: Engaging in-app promotion dialogs with countdown timers and automated routing.
+* **Dynamic Placement Support**: Use `placementId` to enable user-specific currency settings based on ad placements.
+* **Remote Localization**: Automatic translation updates with SHA-256 verification and local caching.
+* **Advanced Security**: Hardware-level telemetry (GPU, sensors) and Play Integrity integration to prevent fraud.
+* **Optimized Performance**: Enhanced loading and caching mechanisms for a smoother UX across all widgets.
+
 > **Note:** Apps designed for [Children and Families program](https://play.google.com/about/families/ads-monetization/) should not be using Tyrads SDK, since Tyrads does not collect data from users less than 13 years old
 
 > **Note:** Tyrads SDK utilizes Apple's Advertising ID (IDFA) on iOS and GAID on Android  to identify and retarget users with campaigns. You should initialize Tyrads Flutter plugin only if the relevant IDFA/GAID permission was granted by the user
@@ -44,42 +53,71 @@ Integrating the Tyrads offerwall functionality into your application is a straig
 This step initializes the Tyrads SDK within your application. You need to provide the API key and API secret obtained from the Tyrads platform. This allows your app to communicate securely with Tyrads' servers.
 
 ```dart
+  // Create a navigator key for the Tyrads SDK
+  final navigatorKey = GlobalKey<NavigatorState>();
 
-  Tyrads.instance.init( apiKey: "xyz", apiSecret:"abc123");
+  // Initialize the SDK
+  await Tyrads.instance.init(
+    navigatorKey: navigatorKey, // Required
+    apiKey: "xyz",
+    apiSecret: "abc123",
+  );
 ```
 
 From version 1.1.2, you can also pass the user & media source information to the SDK. This information is used to personalize the user experience and improve the accuracy of attribution. You can know about each parameter in the [documentation](https://sdk-doc.tyrads.com/getting-started/advanced-options).
 
 ```dart
+  // Create a navigator key for the Tyrads SDK
+  final navigatorKey = GlobalKey<NavigatorState>();
 
-  Tyrads.instance
-      .init(
-        apiKey: Env.TYRADS_SDK_KEY,
-        apiSecret: Env.TYRADS_SDK_SECRET,
-        userInfo: TyradsUserInfo(
-          email: "example@tyrads.com",
-          phoneNumber: "001234567890",
-          userGroup: "High purchase user",
-        ),
-        mediaSourceInfo: TyradsMediaSourceInfo(
-          mediaSourceName: "Facebook",
-          mediaCampaignName: "Summer2023Promo",
-          mediaSourceId: "FB001",
-          mediaSubSourceId: "FB001_Stories",
-          incentivized: false,
-          mediaAdsetName: "YoungAdults25-34",
-          mediaAdsetId: "AD001",
-          mediaCreativeName: "SummerSale_Video",
-          mediaCreativeId: "CR001",
-          sub1: "ReferralCode123",
-          sub2: "OrganicInstall",
-          sub3: "HighValueUser",
-          sub4: "FirstTimeUser",
-          sub5: "iOSDevice",
-        ),
-        );
-
+  // Initialize the SDK with user & media source information
+  await Tyrads.instance.init(
+    navigatorKey: navigatorKey,
+    apiKey: Env.TYRADS_SDK_KEY,
+    apiSecret: Env.TYRADS_SDK_SECRET,
+    encryptionKey: "12345", // Optional: AES-GCM encryption of sensitive tracking data
+    placementId: "12345", // Optional: Dynamic placement ID
+    engagementId: "12345", // Optional: Engagement ID
+    userInfo: TyradsUserInfo(
+      email: "example@tyrads.com",
+      phoneNumber: "001234567890",
+      userGroup: "High purchase user",
+      age: 25,
+      gender: 1, // 1: Male, 2: Female
+    ),
+    mediaSourceInfo: TyradsMediaSourceInfo(
+      mediaSourceName: "Facebook",
+      mediaCampaignName: "Summer2023Promo",
+      mediaSourceId: "FB001",
+      mediaSubSourceId: "FB001_Stories",
+      incentivized: false,
+      mediaAdsetName: "YoungAdults25-34",
+      mediaAdsetId: "AD001",
+      mediaCreativeName: "SummerSale_Video",
+      mediaCreativeId: "CR001",
+      sub1: "ReferralCode123",
+      sub2: "OrganicInstall",
+      sub3: "HighValueUser",
+      sub4: "FirstTimeUser",
+      sub5: "iOSDevice",
+    ),
+  );
 ```
+
+#### `init` Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :---: | :--- |
+| `navigatorKey` | `GlobalKey<NavigatorState>` | **Yes** | Required for displaying in-app notifications and promotion dialogs. |
+| `apiKey` | `String` | **Yes** | Your TyrAds API Key. |
+| `apiSecret` | `String` | **Yes** | Your TyrAds API Secret. |
+| `encryptionKey`| `String` | No | Key used for AES-GCM encryption of sensitive tracking data. |
+| `engagementId` | `String` | No | Unique ID for the engagement campaign. |
+| `placementId` | `String` | No | ID to enable dynamic coin selection and user-specific currency settings. |
+| `mediaSourceInfo`| `TyradsMediaSourceInfo` | No | Attribution details (media source, campaign, creative, etc.). |
+| `userInfo` | `TyradsUserInfo` | No | User details for personalization (email, phone, age, gender). |
+| `config` | `TyradsConfig` | No | Android only: SDK configuration options. |
+| `launchMode` | `TyradsLaunchMode` | No | Preferred launch mode (`inAppWebView` or `externalBrowser`). |
 
 ### 2. User Login
 
@@ -90,10 +128,10 @@ var isLoginSuccessful = await Tyrads.instance.loginUser(userID: "xxx");//userID 
 
 ### 3. Show Offerwall
 
-Once the SDK is initialized and the user is logged in (if applicable), you can display the offerwall to the user. This typically involves calling a function provided by the Tyrads SDK, such as showOffers, passing in the context of your application. The offerwall is where users can engage with various offers, advertisements, or promotions provided by Tyrads, potentially earning rewards or incentives in the process.
+Once the SDK is initialized and the user is logged in (if applicable), you can display the offerwall to the user. This typically involves calling a function provided by the Tyrads SDK, such as showOffers. The offerwall is where users can engage with various offers, advertisements, or promotions provided by Tyrads, potentially earning rewards or incentives in the process.
 
 ```dart
-    Tyrads.instance.showOffers(context);
+  await Tyrads.instance.showOffers();
 ```
 </br>
 <details>
@@ -105,21 +143,42 @@ Available routes and their usage:
 
 ```dart
 // Note: CAMPAIGNS is the default route when no specific route is provided
-Tyrads.instance.showOffers(context);
+await Tyrads.instance.showOffers();
 
 // Explicitly specifying the Campaigns Page
-Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.OFFERS);
+await Tyrads.instance.showOffers(route: TyradsDeepRoutes.OFFERS);
 
 // Activated Campaigns Page
-Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.ACTIVE_OFFERS);
+await Tyrads.instance.showOffers(route: TyradsDeepRoutes.ACTIVE_OFFERS);
 
-// Campaign Details Page (requires campaignID)
-Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.OFFERS, campaignID: "your_campaign_id_here");
+// Campaign Details Page (requires campaignID as int)
+await Tyrads.instance.showOffers(route: TyradsDeepRoutes.OFFERS, campaignID: 12345);
 
-// Campaign Tickets Page (requires campaignID)
-Tyrads.instance.showOffers(context, route: TyradsDeepRoutes.SUPPORT, campaignID: "your_campaign_id_here");
+// Campaign Tickets Page (requires campaignID as int)
+await Tyrads.instance.showOffers(route: TyradsDeepRoutes.SUPPORT, campaignID: 12345);
 ```
+
+#### `showOffers` Parameters
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :---: | :--- |
+| `campaignID` | `int` | No | ID of a specific campaign to open directly. |
+| `route` | `String` | No | Deep link route (use `TyradsDeepRoutes`). |
+| `launchMode` | `TyradsLaunchMode` | No | Override the default launch mode for this call. |
+
 </details>
+
+# Advanced Features
+
+### In-App Promotions
+The SDK automatically manages **Limited Time Offers** and **Currency Sales** based on remote configurations. Ensure you have provided a `navigatorKey` during `init` to allow the SDK to present promotion dialogs seamlessly.
+
+### Remote Localization
+Translations are fetched remotely and cached locally. You can manually change the SDK language using:
+
+```dart
+await Tyrads.instance.changeLanguage("es"); // Spanish
+```
 
 </br></br>
 **Android 12**

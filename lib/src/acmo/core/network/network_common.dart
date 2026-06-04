@@ -41,6 +41,7 @@ class NetworkCommon {
         maxRedirects: 0,
         //  validateStatus: (status) { return status! < 500; },
         contentType: Headers.jsonContentType));
+    dio.transformer = BackgroundTransformer();
     dio.interceptors.add(
         InterceptorsWrapper(onRequest: (RequestOptions options, handler) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -92,6 +93,9 @@ class NetworkCommon {
               .then((value) => isDialogOpen = false);
         }
       } else {
+        debugPrint("Dio Error: ${e.message}");
+        debugPrint("Failing URL: ${e.requestOptions.baseUrl}${e.requestOptions.path}");
+        debugPrint("Status Code: ${e.response?.statusCode}");
         return handler.next(e); //continue
       }
     }));

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
-import 'package:tyrads_sdk/src/app_config.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class LocalizationService {
@@ -40,7 +39,7 @@ class LocalizationService {
         locale = _fallbackLocale;
       }
       final response = await _dio.get(
-        "${AcmoConfig.BASE_URL}translations/$locale",
+        "translations/$locale",
         queryParameters: {
           "force": force,
           "format": "nested",
@@ -63,7 +62,7 @@ class LocalizationService {
   Future<bool> _checkForUpdate(String locale, [bool force = false]) async {
     try {
       final response = await _dio.get(
-        "${AcmoConfig.BASE_URL}translations/version",
+        "translations/version",
         queryParameters: {
           "force": force,
         },

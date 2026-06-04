@@ -22,6 +22,7 @@ class TrackingInfo {
   final String totalMemory;
   final String freeMemory;
   final String osArch;
+  final String ramSize;
 
   // Device Information
   final String deviceManufacturer;
@@ -35,10 +36,28 @@ class TrackingInfo {
   final String buildType;
   final String buildTags;
 
-  // Screen Metrics
+  // Screen metrics
   final String screenDensity;
   final String screenWidth;
   final String screenHeight;
+  final String screenScale;
+
+  final String batteryLevel;
+  final String totalDiskSpace;
+  final String freeDiskSpace;
+
+  // NEW 11 FIELDS
+  final int keyboardNumEvents;
+  final int keyboardScore;
+  final int clipboardNumEvents;
+  final int clipboardScore;
+  final int clickNumEvents;
+  final int mouseNumEvents;
+  final int touchNumEvents;
+  final String? gpu;
+  final String? bluetooth;
+  final String? touchSupport;
+  final String? googleAppSetID;
 
   TrackingInfo({
     // Telephony Information
@@ -64,6 +83,7 @@ class TrackingInfo {
     required this.totalMemory,
     required this.freeMemory,
     required this.osArch,
+    required this.ramSize,
 
     // Device Information
     required this.deviceManufacturer,
@@ -81,7 +101,39 @@ class TrackingInfo {
     required this.screenDensity,
     required this.screenWidth,
     required this.screenHeight,
+    required this.screenScale,
+    required this.batteryLevel,
+    required this.totalDiskSpace,
+    required this.freeDiskSpace,
+
+    // NEW 11 FIELDS
+    this.keyboardNumEvents = 0,
+    this.keyboardScore = 0,
+    this.clipboardNumEvents = 0,
+    this.clipboardScore = 0,
+    this.clickNumEvents = 0,
+    this.mouseNumEvents = 0,
+    this.touchNumEvents = 0,
+    this.gpu,
+    this.bluetooth,
+    this.touchSupport,
+    this.googleAppSetID,
   });
+
+  // Helper method to parse dynamic values to int
+  static int _parseToInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
+  // Helper method to parse dynamic values to String
+  static String? _parseToString(dynamic value) {
+    if (value == null) return null;
+    if (value is String) return value;
+    return value.toString();
+  }
 
   factory TrackingInfo.fromMap(Map<String, dynamic> map) {
     return TrackingInfo(
@@ -108,6 +160,7 @@ class TrackingInfo {
       totalMemory: map['total_memory'] ?? '',
       freeMemory: map['free_memory'] ?? '',
       osArch: map['os_arch'] ?? '',
+      ramSize: map['ram_size'] ?? '',
 
       // Device Information
       deviceManufacturer: map['device_manufacturer'] ?? '',
@@ -125,6 +178,23 @@ class TrackingInfo {
       screenDensity: map['screen_density'] ?? '',
       screenWidth: map['screen_width'] ?? '',
       screenHeight: map['screen_height'] ?? '',
+      screenScale: map['screen_scale'] ?? '',
+      batteryLevel: map['batteryLevel']?.toString() ?? '',
+      totalDiskSpace: map['totalDiskSpace']?.toString() ?? '',
+      freeDiskSpace: map['freeDiskSpace']?.toString() ?? '',
+
+      // NEW 11 FIELDS
+      keyboardNumEvents: _parseToInt(map['keyboard_num_events'] ?? map['keyboardNumEvents']),
+      keyboardScore: _parseToInt(map['keyboard_score'] ?? map['keyboardScore']),
+      clipboardNumEvents: _parseToInt(map['clipboard_num_events'] ?? map['clipboardNumEvents']),
+      clipboardScore: _parseToInt(map['clipboard_score'] ?? map['clipboardScore']),
+      clickNumEvents: _parseToInt(map['click_num_events'] ?? map['clickNumEvents']),
+      mouseNumEvents: _parseToInt(map['mouse_num_events'] ?? map['mouseNumEvents']),
+      touchNumEvents: _parseToInt(map['touch_num_events'] ?? map['touchNumEvents']),
+      gpu: _parseToString(map['gpu']),
+      bluetooth: _parseToString(map['bluetooth']),
+      touchSupport: _parseToString(map['touch_support'] ?? map['touchSupport']),
+      googleAppSetID: _parseToString(map['googleAppSetID'] ?? map['google_app_set_id']),
     );
   }
 }

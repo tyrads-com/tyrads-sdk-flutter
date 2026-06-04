@@ -6,36 +6,35 @@ part of 'currency_sale_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AcmoOfferCurrencySaleModelImpl _$$AcmoOfferCurrencySaleModelImplFromJson(
+_AcmoOfferCurrencySaleModel _$AcmoOfferCurrencySaleModelFromJson(
         Map<String, dynamic> json) =>
-    _$AcmoOfferCurrencySaleModelImpl(
+    _AcmoOfferCurrencySaleModel(
       data: json['data'] == null
           ? null
           : Data.fromJson(json['data'] as Map<String, dynamic>),
       message: json['message'] as String?,
     );
 
-Map<String, dynamic> _$$AcmoOfferCurrencySaleModelImplToJson(
-        _$AcmoOfferCurrencySaleModelImpl instance) =>
+Map<String, dynamic> _$AcmoOfferCurrencySaleModelToJson(
+        _AcmoOfferCurrencySaleModel instance) =>
     <String, dynamic>{
       'data': instance.data,
       'message': instance.message,
     };
 
-_$DataImpl _$$DataImplFromJson(Map<String, dynamic> json) => _$DataImpl(
+_Data _$DataFromJson(Map<String, dynamic> json) => _Data(
       currencySales: json['CurrencySales'] == null
           ? null
           : CurrencySales.fromJson(
               json['CurrencySales'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$DataImplToJson(_$DataImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$DataToJson(_Data instance) => <String, dynamic>{
       'CurrencySales': instance.currencySales,
     };
 
-_$CurrencySalesImpl _$$CurrencySalesImplFromJson(Map<String, dynamic> json) =>
-    _$CurrencySalesImpl(
+_CurrencySales _$CurrencySalesFromJson(Map<String, dynamic> json) =>
+    _CurrencySales(
       name: json['name'] as String?,
       multiplier: (json['multiplier'] as num?)?.toDouble(),
       bannerUrl: json['bannerUrl'] as String?,
@@ -48,7 +47,7 @@ _$CurrencySalesImpl _$$CurrencySalesImplFromJson(Map<String, dynamic> json) =>
       remainingTimeSeconds: (json['remainingTimeSeconds'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$$CurrencySalesImplToJson(_$CurrencySalesImpl instance) =>
+Map<String, dynamic> _$CurrencySalesToJson(_CurrencySales instance) =>
     <String, dynamic>{
       'name': instance.name,
       'multiplier': instance.multiplier,

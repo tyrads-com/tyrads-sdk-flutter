@@ -23,20 +23,51 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.PluginRegistry.NewIntentListener
+import android.app.Activity
+import com.tyrads.tyrads_sdk.push_notifications.FCMNotifications
+import java.util.concurrent.CopyOnWriteArrayList
+
 
 /** TyradsSdkPlugin */
-class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
+class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler, ActivityAware, NewIntentListener {
   private lateinit var methodChannel : MethodChannel
   private lateinit var networkEventChannel: EventChannel
   private lateinit var vpnEventChannel: EventChannel
+  private lateinit var notificationEventChannel: EventChannel
   private lateinit var context: Context
+  private var activity: Activity? = null
   private var networkEventSink: EventSink? = null
   private var vpnEventSink: EventSink? = null
   private lateinit var networkChangeReceiver: BroadcastReceiver
 
-  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk")
-    methodChannel.setMethodCallHandler(this)
+
+  companion object {
+    var notificationEventSink: EventSink? = null
+    private val pendingEvents = CopyOnWriteArrayList<Map<String, Any>>()
+
+    fun sendOrBufferEvent(eventData: Map<String, Any>) {
+        val sink = notificationEventSink
+        if (sink != null) {
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                try {
+                    sink.success(eventData)
+                } catch (e: Exception) {
+                    pendingEvents.add(eventData)
+                }
+            }
+        } else {
+            pendingEvents.add(eventData)
+        }
+    }
+  }
+
+
+    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk")
+        methodChannel.setMethodCallHandler(this)
 
     networkEventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk/networkType")
     networkEventChannel.setStreamHandler(this)
@@ -44,20 +75,26 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
     vpnEventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk/vpnCheck")
     vpnEventChannel.setStreamHandler(this)
 
-    context = flutterPluginBinding.applicationContext
+    notificationEventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "tyrads_sdk/notifications")
+    notificationEventChannel.setStreamHandler(this)
 
-    networkChangeReceiver = object : BroadcastReceiver() {
-      override fun onReceive(context: Context, intent: Intent) {
-          sendNetworkAndVpnStatus()
-      }
+        context = flutterPluginBinding.applicationContext
+
+        // Initialize ExtraDeviceDetails with context
+        ExtraDeviceDetails.initialize(context)
+
+        networkChangeReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                sendNetworkAndVpnStatus()
+            }
+        }
+
+        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        context.registerReceiver(networkChangeReceiver, intentFilter)
+
     }
 
-    val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-    context.registerReceiver(networkChangeReceiver, intentFilter)
-    
-  }
-
-  private fun sendNetworkAndVpnStatus() {
+    private fun sendNetworkAndVpnStatus() {
         val networkType = getNetworkType(context)
         println("Network type changed to: $networkType")
         networkEventSink?.success(networkType)
@@ -65,7 +102,7 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
         val vpnStatus = isVpnActive(context)
         println("VPN status changed to: $vpnStatus")
         vpnEventSink?.success(vpnStatus)
-  }
+    }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
@@ -88,6 +125,20 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
           }
         }
       }
+      "initializeFCM" -> {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val token = com.tyrads.tyrads_sdk.push_notifications.FCMService.initialize(context)
+                withContext(Dispatchers.Main) {
+                    result.success(token)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    result.error("FCM_INIT_ERROR", e.message, null)
+                }
+            }
+        }
+      }
       else -> result.notImplemented()
     }
   }
@@ -96,6 +147,18 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
     when (arguments) {
       "networkType" -> networkEventSink = events
       "vpnCheck" -> vpnEventSink = events
+      "notifications" -> {
+          notificationEventSink = events
+          // Flush pending events
+          if (events != null && pendingEvents.isNotEmpty()) {
+              val iterator = pendingEvents.iterator()
+              while (iterator.hasNext()) {
+                  val event = iterator.next()
+                  events.success(event)
+                  pendingEvents.remove(event)
+              }
+          }
+      }
       else -> {
             
             println("Unexpected stream argument: $arguments")
@@ -108,6 +171,7 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
     when (arguments) {
       "networkType" -> networkEventSink = null
       "vpnCheck" -> vpnEventSink = null
+      "notifications" -> notificationEventSink = null
       else -> {
              println("Unexpected stream argument: $arguments") // Log the issue
         }
@@ -121,7 +185,34 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
     context.unregisterReceiver(networkChangeReceiver)
   }
 
-  private fun getTrackingInfo(): Map<String, String> {
+  override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+    activity = binding.activity
+    binding.addOnNewIntentListener(this)
+    // Handle the initial intent that launched the activity
+    FCMNotifications.getInstance().handleNotificationIntent(activity?.intent)
+  }
+
+  override fun onDetachedFromActivityForConfigChanges() {
+    activity = null
+  }
+
+  override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+    activity = binding.activity
+    binding.addOnNewIntentListener(this)
+  }
+
+  override fun onDetachedFromActivity() {
+    activity = null
+  }
+
+  override fun onNewIntent(intent: Intent): Boolean {
+    // Handle subsequent intents while the activity is alive
+    FCMNotifications.getInstance().handleNotificationIntent(intent)
+    return false
+  }
+
+
+    private fun getTrackingInfo(): Map<String, String> {
         val telephonyManager = context.getSystemService(TELEPHONY_SERVICE) as TelephonyManager
 
         val carrierName = telephonyManager.networkOperatorName ?: "Unknown"
@@ -157,45 +248,147 @@ class TyradsSdkPlugin: FlutterPlugin, MethodCallHandler, StreamHandler {
             "supported_abis" to supportedAbis
         )
 
-    // CPU Information
-    val cpuInfo = mapOf(
-        "cpu_cores" to Runtime.getRuntime().availableProcessors().toString(),
-        "supported_abis" to Build.SUPPORTED_ABIS.joinToString(","),
-        "supported_32_bit_abis" to Build.SUPPORTED_32_BIT_ABIS.joinToString(","),
-        "supported_64_bit_abis" to Build.SUPPORTED_64_BIT_ABIS.joinToString(","),
-        "cpu_hardware" to Build.HARDWARE,
-        "cpu_model" to if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) Build.SOC_MODEL else "Unknown",
-        "max_memory" to (Runtime.getRuntime().maxMemory() / 1024 / 1024).toString(),
-        "total_memory" to (Runtime.getRuntime().totalMemory() / 1024 / 1024).toString(),
-        "free_memory" to (Runtime.getRuntime().freeMemory() / 1024 / 1024).toString(),
-        "os_arch" to System.getProperty("os.arch"),
-    )
-    // Device Information
-    val deviceInfo = mapOf(
-        "device_manufacturer" to Build.MANUFACTURER,
-        "device_model" to Build.MODEL,
-        "device_brand" to Build.BRAND,
-        "device_board" to Build.BOARD,
-        "device_hardware" to Build.HARDWARE,
-        "device_fingerprint" to Build.FINGERPRINT,
-        "android_version" to Build.VERSION.RELEASE,
-        "android_sdk_int" to Build.VERSION.SDK_INT.toString(),
-        "build_type" to Build.TYPE,
-        "build_tags" to (Build.TAGS ?: "Unknown")
-    )
+        // CPU Information
+        val cpuInfo = mapOf(
+            "cpu_cores" to Runtime.getRuntime().availableProcessors().toString(),
+            "supported_abis" to Build.SUPPORTED_ABIS.joinToString(","),
+            "supported_32_bit_abis" to Build.SUPPORTED_32_BIT_ABIS.joinToString(","),
+            "supported_64_bit_abis" to Build.SUPPORTED_64_BIT_ABIS.joinToString(","),
+            "cpu_hardware" to Build.HARDWARE,
+            "cpu_model" to if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) Build.SOC_MODEL else "Unknown",
+            "max_memory" to (Runtime.getRuntime().maxMemory() / 1024 / 1024).toString(),
+            "total_memory" to (Runtime.getRuntime().totalMemory() / 1024 / 1024).toString(),
+            "free_memory" to (Runtime.getRuntime().freeMemory() / 1024 / 1024).toString(),
+            "os_arch" to System.getProperty("os.arch"),
+        )
 
-    // Screen Metrics
-    val screenInfo = mapOf(
-        "screen_density" to context.resources.displayMetrics.density.toString(),
-        "screen_width" to context.resources.displayMetrics.widthPixels.toString(),
-        "screen_height" to context.resources.displayMetrics.heightPixels.toString()
-    )
-    return buildMap {
-        putAll(telephonyInfo)
-        putAll(cpuInfo) 
-        putAll(deviceInfo)
-        putAll(screenInfo)
+        // Device Information
+        val deviceInfo = mapOf(
+            "device_manufacturer" to Build.MANUFACTURER,
+            "device_model" to Build.MODEL,
+            "device_brand" to Build.BRAND,
+            "device_board" to Build.BOARD,
+            "device_hardware" to Build.HARDWARE,
+            "device_fingerprint" to Build.FINGERPRINT,
+            "android_version" to Build.VERSION.RELEASE,
+            "android_sdk_int" to Build.VERSION.SDK_INT.toString(),
+            "build_type" to Build.TYPE,
+            "build_tags" to (Build.TAGS ?: "Unknown")
+        )
+
+        // Screen Metrics
+        val screenInfo = mapOf(
+            "screen_density" to context.resources.displayMetrics.density.toString(),
+            "screen_width" to context.resources.displayMetrics.widthPixels.toString(),
+            "screen_height" to context.resources.displayMetrics.heightPixels.toString()
+        )
+
+        // ==================== NEW 11 FIELDS - TS-1826 v4.0 ====================
+        // User Interaction Metrics
+        val keyboardNumEvents = try {
+            KeyboardTracker.getKeyboardEventCount().toString()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error getting keyboard events", e)
+            "0"
+        }
+
+        val keyboardScore = try {
+            KeyboardTracker.calculateKeyboardScore().toString()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error calculating keyboard score", e)
+            "0"
+        }
+
+        val clipboardNumEvents = try {
+            ClipboardTracker.getClipboardEventCount().toString()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error getting clipboard events", e)
+            "0"
+        }
+
+        val clipboardScore = try {
+            ClipboardTracker.calculateClipboardScore().toString()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error calculating clipboard score", e)
+            "0"
+        }
+
+        val clickNumEvents = try {
+            EventTracker.getClickEventCount().toString()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error getting click events", e)
+            "0"
+        }
+
+        val mouseNumEvents = try {
+            EventTracker.getMouseEventCount().toString()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error getting mouse events", e)
+            "0"
+        }
+
+        val touchNumEvents = try {
+            EventTracker.getTouchEventCount().toString()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error getting touch events", e)
+            "0"
+        }
+
+        // Device Capabilities
+        val gpu = try {
+            ExtraDeviceDetails.getGpu()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error getting GPU info", e)
+            "Unknown"
+        }
+
+        val bluetooth = try {
+            ExtraDeviceDetails.getBluetooth()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error getting Bluetooth info", e)
+            "Unknown"
+        }
+
+        val touchSupport = try {
+            ExtraDeviceDetails.getTouchSupport()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error getting touch support", e)
+            "Unknown"
+        }
+
+        // Device Identification
+        val googleAppSetID = try {
+            ExtraDeviceDetails.getGoogleAppSetId()
+        } catch (e: Exception) {
+            Log.e("TyradsSdk", "Error getting AppSet ID", e)
+            "Unknown"
+        }
+        // ======================================================================
+
+        return buildMap {
+            putAll(telephonyInfo)
+            putAll(cpuInfo)
+            putAll(deviceInfo)
+            putAll(screenInfo)
+
+            // ==================== ADD THE 11 NEW FIELDS ====================
+            // User Interaction Metrics
+            put("keyboard_num_events", keyboardNumEvents)
+            put("keyboard_score", keyboardScore)
+            put("clipboard_num_events", clipboardNumEvents)
+            put("clipboard_score", clipboardScore)
+            put("click_num_events", clickNumEvents)
+            put("mouse_num_events", mouseNumEvents)
+            put("touch_num_events", touchNumEvents)
+
+            // Device Capabilities
+            put("gpu", gpu)
+            put("bluetooth", bluetooth)
+            put("touch_support", touchSupport)
+
+            // Device Identification
+            put("googleAppSetID", googleAppSetID)
+            // ================================================================
+        }
     }
-
-  } 
 }

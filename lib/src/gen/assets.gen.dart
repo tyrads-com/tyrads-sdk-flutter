@@ -1,3 +1,5 @@
+// dart format width=80
+
 /// GENERATED CODE - DO NOT MODIFY BY HAND
 /// *****************************************************
 ///  FlutterGen
@@ -5,7 +7,7 @@
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-// ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
+// ignore_for_file: deprecated_member_use,directives_ordering,implicit_dynamic_list_literal,unnecessary_import
 
 import 'package:flutter/widgets.dart';
 
@@ -52,6 +54,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/clapper-play.png
   AssetGenImage get clapperPlay =>
       const AssetGenImage('assets/icons/clapper-play.png');
+
+  /// File path: assets/icons/coin_stack.png
+  AssetGenImage get coinStack =>
+      const AssetGenImage('assets/icons/coin_stack.png');
+
+  /// File path: assets/icons/coin_timer.png
+  AssetGenImage get coinTimer =>
+      const AssetGenImage('assets/icons/coin_timer.png');
 
   /// File path: assets/icons/diamond.png
   AssetGenImage get diamond => const AssetGenImage('assets/icons/diamond.png');
@@ -146,45 +156,47 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-    addNew,
-    alarmClock,
-    angleDown,
-    angleLeft,
-    angleUp,
-    arrowDown,
-    badgeCheck,
-    checkCircle,
-    circleXOutlined,
-    circleX,
-    clapperPlay,
-    diamond,
-    downToLine,
-    exclamation,
-    female,
-    gamepad,
-    hotjar,
-    infinity,
-    info,
-    language,
-    lock,
-    male,
-    pending,
-    privacy,
-    rank1,
-    rank2,
-    rank3,
-    rank4,
-    rank5,
-    rotateSquare,
-    shoppingCart,
-    star,
-    terms,
-    timeDelete,
-    timeDeleteOutlined,
-    timeFast,
-    triangleWarning,
-    wind,
-  ];
+        addNew,
+        alarmClock,
+        angleDown,
+        angleLeft,
+        angleUp,
+        arrowDown,
+        badgeCheck,
+        checkCircle,
+        circleXOutlined,
+        circleX,
+        clapperPlay,
+        coinStack,
+        coinTimer,
+        diamond,
+        downToLine,
+        exclamation,
+        female,
+        gamepad,
+        hotjar,
+        infinity,
+        info,
+        language,
+        lock,
+        male,
+        pending,
+        privacy,
+        rank1,
+        rank2,
+        rank3,
+        rank4,
+        rank5,
+        rotateSquare,
+        shoppingCart,
+        star,
+        terms,
+        timeDelete,
+        timeDeleteOutlined,
+        timeFast,
+        triangleWarning,
+        wind
+      ];
 }
 
 class $AssetsImagesGen {
@@ -207,6 +219,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/clock.png
   AssetGenImage get clock => const AssetGenImage('assets/images/clock.png');
+
+  /// File path: assets/images/clock_icon.png
+  AssetGenImage get clockIcon =>
+      const AssetGenImage('assets/images/clock_icon.png');
 
   /// File path: assets/images/empty_icon.png
   AssetGenImage get emptyIcon =>
@@ -308,38 +324,39 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-    alarmBackground,
-    alarmBg,
-    banner,
-    chargeCan,
-    clock,
-    emptyIcon,
-    faqs,
-    fire,
-    galaxyStar,
-    game1,
-    game2,
-    giftBox,
-    goldenStar,
-    helpIcon,
-    infoIcon,
-    lightening,
-    lighteningBg,
-    loadingCoins,
-    padlock,
-    pendingIcon,
-    playtimeIcon,
-    playtimeTracking,
-    premiumEmptybg,
-    premiumStar,
-    privacyBanner,
-    sadFace,
-    sampleProof,
-    silverStar,
-    singupBg,
-    superChargeCan,
-    trophy,
-  ];
+        alarmBackground,
+        alarmBg,
+        banner,
+        chargeCan,
+        clock,
+        clockIcon,
+        emptyIcon,
+        faqs,
+        fire,
+        galaxyStar,
+        game1,
+        game2,
+        giftBox,
+        goldenStar,
+        helpIcon,
+        infoIcon,
+        lightening,
+        lighteningBg,
+        loadingCoins,
+        padlock,
+        pendingIcon,
+        playtimeIcon,
+        playtimeTracking,
+        premiumEmptybg,
+        premiumStar,
+        privacyBanner,
+        sadFace,
+        sampleProof,
+        silverStar,
+        singupBg,
+        superChargeCan,
+        trophy
+      ];
 }
 
 class Assets {
@@ -352,7 +369,12 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
+  const AssetGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+    this.animation,
+  });
 
   final String _assetName;
 
@@ -360,6 +382,7 @@ class AssetGenImage {
 
   final Size? size;
   final Set<String> flavors;
+  final AssetGenImageAnimation? animation;
 
   Image image({
     Key? key,
@@ -420,10 +443,26 @@ class AssetGenImage {
     @Deprecated('Do not specify package for a generated library asset')
     String? package = package,
   }) {
-    return AssetImage(_assetName, bundle: bundle, package: package);
+    return AssetImage(
+      _assetName,
+      bundle: bundle,
+      package: package,
+    );
   }
 
   String get path => _assetName;
 
   String get keyName => 'packages/tyrads_sdk/$_assetName';
+}
+
+class AssetGenImageAnimation {
+  const AssetGenImageAnimation({
+    required this.isAnimation,
+    required this.duration,
+    required this.frames,
+  });
+
+  final bool isAnimation;
+  final Duration duration;
+  final int frames;
 }
