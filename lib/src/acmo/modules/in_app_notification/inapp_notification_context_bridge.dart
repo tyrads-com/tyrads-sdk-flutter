@@ -37,6 +37,10 @@ class AcmoInAppContextBridge {
     }
 
     Future.microtask(() async {
+      if (!_listenerAttached) {
+        log(name: "Tyrads SDK", "Bridge disposed, aborting execution.");
+        return;
+      }
       log(name: "Tyrads SDK", "Checking for context...");
 
       final liveCtx = Tyrads.instance.navKey.currentContext;
