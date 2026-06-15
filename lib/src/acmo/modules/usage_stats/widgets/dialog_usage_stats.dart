@@ -24,8 +24,13 @@ class _AcmoAppUsageStatDialogState extends State<AcmoAppUsageStatDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => widget.dismisable,
+    return PopScope(
+      canPop: widget.dismisable,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (didPop) {
+          return;
+        }
+      },
       child: Dialog(
           alignment: Alignment.topCenter,
           insetPadding: const EdgeInsets.only(top: 130, right: 16, left: 16),
