@@ -92,7 +92,7 @@ class AcmoStyleThemes {
           outline: Colors.transparent),
       appBarTheme: const AppBarTheme(
         iconTheme: IconThemeData(color: Colors.white),
-        color: AcmoConfig.APPBAR_BG,
+        backgroundColor: AcmoConfig.APPBAR_BG,
         foregroundColor: Colors.white,
         systemOverlayStyle: SystemUiOverlayStyle(
           //<-- SEE HERE

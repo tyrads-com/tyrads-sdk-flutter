@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 class AcmoButton_3 extends StatelessWidget {
   const AcmoButton_3({
-    Key? key,
+    super.key,
     required this.onTap,
     this.label = "Edit",
     this.color,
     this.borderRadius,
     this.labelStyle,
     this.isLoading = false,
-  }) : super(key: key);
+  });
 
   final Function()? onTap;
   final String label;
