@@ -2,6 +2,7 @@
 library tyrads_sdk;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:advertising_id/advertising_id.dart';
@@ -45,6 +46,7 @@ part 'src/acmo/core/input_models/user_info.dart';
 part 'src/acmo/core/input_models/tyrads_config.dart';
 part 'src/acmo/core/constants/deep_routes.dart';
 part 'src/acmo/core/constants/launch_mode.dart';
+part 'src/acmo/core/constants/mmp_provider.dart';
 part 'src/acmo/core/constants/localization_keys.dart';
 part 'src/acmo/core/helpers/callback_types.dart';
 part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
@@ -114,7 +116,7 @@ class Tyrads {
     String? encryptionKey,
     String? engagementId,
     String? placementId,
-    TyradsMediaSourceInfo? mediaSourceInfo,
+    @Deprecated('Use updateMediaSourceFromMMP instead.') TyradsMediaSourceInfo? mediaSourceInfo,
     TyradsUserInfo? userInfo,
     TyradsConfig? config,
     TyradsLaunchMode? launchMode,
@@ -139,6 +141,12 @@ class Tyrads {
     this.launchMode = launchMode;
 
     prefs = await SharedPreferences.getInstance();
+
+    if (this.mediaSourceInfo == null) {
+      await _loadMediaSourceFromPrefs();
+    } else {
+      await _saveMediaSourceToPrefs();
+    }
 
     if (AcmoPlatform.isAndroid) {
       this.config = config ?? TyradsConfig();
@@ -529,5 +537,101 @@ class Tyrads {
     await LocalizationService().changeLanguage(selectedLanguage);
     prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
     AcmoPremiumWidgetsController.instance.refresh(force: true);
+  }
+
+  /// Updates [mediaSourceInfo] using raw attribution payloads from supported MMPs.
+  /// This allows automatic population of media source campaign data.
+  void updateMediaSourceFromMMP({
+    required MMPProvider provider,
+    required Map<String, dynamic> rawData,
+  }) {
+    switch (provider) {
+      case MMPProvider.appsflyer:
+        mediaSourceInfo = TyradsMediaSourceInfo(
+          mediaSourceName: rawData['media_source'] as String? ?? 'AppsFlyer',
+          mediaCampaignName: rawData['campaign'] as String?,
+          mediaSourceId: rawData['media_source'] as String?,
+          mediaSubSourceId: rawData['af_sub1'] as String?,
+          mediaAdsetName: rawData['af_adset'] as String?,
+          mediaAdsetId: rawData['af_adset_id'] as String?,
+          mediaCreativeName: rawData['af_ad'] as String?,
+          mediaCreativeId: rawData['af_ad_id'] as String?,
+          sub1: rawData['af_sub1'] as String?,
+          sub2: rawData['af_sub2'] as String?,
+          sub3: rawData['af_sub3'] as String?,
+          sub4: rawData['af_sub4'] as String?,
+          sub5: rawData['af_sub5'] as String?,
+          incentivized: rawData['is_incentivized'] == true ||
+              rawData['is_incentivized'] == 'true',
+        );
+        break;
+
+      case MMPProvider.adjust:
+        mediaSourceInfo = TyradsMediaSourceInfo(
+          mediaSourceName: rawData['network'] as String? ?? 'Adjust',
+          mediaCampaignName: rawData['campaign'] as String?,
+          mediaAdsetName: rawData['adgroup'] as String?,
+          mediaCreativeName: rawData['creative'] as String?,
+          sub1: rawData['adgroup'] as String?,
+          sub2: rawData['creative'] as String?,
+          sub3: rawData['click_label'] as String?,
+        );
+        break;
+
+      case MMPProvider.branch:
+        mediaSourceInfo = TyradsMediaSourceInfo(
+          mediaSourceName: rawData['~channel'] as String? ?? 'Branch',
+          mediaCampaignName: rawData['~campaign'] as String?,
+          mediaAdsetName: rawData['~ad_set_name'] as String?,
+          mediaAdsetId: rawData['~ad_set_id'] as String?,
+          mediaCreativeName: rawData['~ad_name'] as String?,
+          mediaCreativeId: rawData['~ad_id'] as String?,
+          sub1: rawData['~tags']?.toString(),
+          sub2: rawData['~stage']?.toString(),
+        );
+        break;
+
+      case MMPProvider.singular:
+        mediaSourceInfo = TyradsMediaSourceInfo(
+          mediaSourceName: rawData['network'] as String? ?? 'Singular',
+          mediaCampaignName: rawData['campaign_name'] as String?,
+          mediaSourceId: rawData['campaign_id'] as String?,
+          mediaAdsetName: rawData['adgroup_name'] as String?,
+          mediaAdsetId: rawData['adgroup_id'] as String?,
+          mediaCreativeName: rawData['creative_name'] as String?,
+          mediaCreativeId: rawData['creative_id'] as String?,
+          sub1: rawData['sub1'] as String?,
+          sub2: rawData['sub2'] as String?,
+          sub3: rawData['sub3'] as String?,
+          sub4: rawData['sub4'] as String?,
+          sub5: rawData['sub5'] as String?,
+        );
+        break;
+    }
+
+    _saveMediaSourceToPrefs();
+  }
+
+  Future<void> _saveMediaSourceToPrefs() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    if (mediaSourceInfo != null) {
+      await sharedPrefs.setString(
+        AcmoKeyNames.MEDIA_SOURCE_INFO,
+        jsonEncode(mediaSourceInfo!.toJson()),
+      );
+    }
+  }
+
+  Future<void> _loadMediaSourceFromPrefs() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    final rawJson = sharedPrefs.getString(AcmoKeyNames.MEDIA_SOURCE_INFO);
+    if (rawJson != null) {
+      try {
+        final decoded = jsonDecode(rawJson) as Map<String, dynamic>;
+        mediaSourceInfo = TyradsMediaSourceInfo.fromJson(decoded);
+      } catch (e) {
+        debugPrint("[Tyrads SDK] Failed to load cached media source info: $e");
+      }
+    }
   }
 }
