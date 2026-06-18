@@ -60,4 +60,42 @@ class TyradsMediaSourceInfo {
     this.sub4,
     this.sub5,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'mediaSourceName': mediaSourceName,
+      'mediaCampaignName': mediaCampaignName,
+      'mediaSourceId': mediaSourceId,
+      'mediaSubSourceId': mediaSubSourceId,
+      'incentivized': incentivized,
+      'mediaAdsetName': mediaAdsetName,
+      'mediaAdsetId': mediaAdsetId,
+      'mediaCreativeName': mediaCreativeName,
+      'mediaCreativeId': mediaCreativeId,
+      'sub1': sub1,
+      'sub2': sub2,
+      'sub3': sub3,
+      'sub4': sub4,
+      'sub5': sub5,
+    };
+  }
+
+  factory TyradsMediaSourceInfo.fromJson(Map<String, dynamic> json) {
+    return TyradsMediaSourceInfo(
+      mediaSourceName: json['mediaSourceName'] as String?,
+      mediaCampaignName: json['mediaCampaignName'] as String?,
+      mediaSourceId: json['mediaSourceId'] as String?,
+      mediaSubSourceId: json['mediaSubSourceId'] as String?,
+      incentivized: json['incentivized'] as bool?,
+      mediaAdsetName: json['mediaAdsetName'] as String?,
+      mediaAdsetId: json['mediaAdsetId'] as String?,
+      mediaCreativeName: json['mediaCreativeName'] as String?,
+      mediaCreativeId: json['mediaCreativeId'] as String?,
+      sub1: json['sub1'] as String?,
+      sub2: json['sub2'] as String?,
+      sub3: json['sub3'] as String?,
+      sub4: json['sub4'] as String?,
+      sub5: json['sub5'] as String?,
+    );
+  }
 }
