@@ -9,7 +9,9 @@ import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeTyrads();
+  final prefs = await SharedPreferences.getInstance();
+  final savedEnvironment = prefs.getString('selectedEnvironment') ?? 'Production';
+  await initializeTyrads(environment: savedEnvironment);
   runApp(const MyApp());
 }
 
@@ -99,6 +101,10 @@ String? _previousUserID;
 int? _previousAge;
 int? _previousGender;
 bool? _previousSkipInitialPages;
+String? _previousEnvironment;
+
+TyradsFlavor _getTyradsFlavor(String env) =>
+    env == 'Staging' ? TyradsFlavor.staging : TyradsFlavor.production;
 
 Future<void> initializeTyrads({
   String? apiKey,
@@ -110,6 +116,7 @@ Future<void> initializeTyrads({
   int? age,
   int? gender,
   bool skipInitialPages = false,
+  String environment = 'Production',
 }) async {
   final prefs = await SharedPreferences.getInstance();
   final configKeys = _getConfigKeys(
@@ -133,7 +140,8 @@ Future<void> initializeTyrads({
       _previousUserID == finalUserId &&
       _previousAge == age &&
       _previousGender == gender &&
-      _previousSkipInitialPages == skipInitialPages) {
+      _previousSkipInitialPages == skipInitialPages &&
+      _previousEnvironment == environment) {
     return;
   }
   log("apiKey: $finalApiKey");
@@ -156,6 +164,7 @@ Future<void> initializeTyrads({
     config: Platform.isAndroid
         ? TyradsConfig(skipInitialPages: skipInitialPages)
         : null,
+    flavor: _getTyradsFlavor(environment),
     userInfo: TyradsUserInfo(
       email: "example@tyrads.com",
       phoneNumber: "001234567890",
@@ -202,6 +211,7 @@ Future<void> initializeTyrads({
   _previousGender = gender;
   _isTyradsInitialized = true;
   _previousSkipInitialPages = skipInitialPages;
+  _previousEnvironment = environment;
 
   debugPrint('Tyrads initialized successfully');
 }
@@ -216,6 +226,7 @@ void clearTyradsCache() {
   _previousAge = null;
   _previousGender = null;
   _isTyradsInitialized = false;
+  _previousEnvironment = null;
 }
 
 class MyApp extends StatelessWidget {
@@ -259,6 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int widgetKey = 0;
   bool isReady = false;
+  String selectedEnvironment = 'Production';
 
   @override
   void initState() {
@@ -281,6 +293,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if (storedConfig != null && storedConfig != selectedConfig) {
       setState(() {
         selectedConfig = storedConfig;
+      });
+    }
+
+    final storedEnv = prefs.getString('selectedEnvironment');
+    if (storedEnv != null && storedEnv != selectedEnvironment) {
+      setState(() {
+        selectedEnvironment = storedEnv;
       });
     }
 
@@ -314,6 +333,7 @@ class _MyHomePageState extends State<MyHomePage> {
       apiKey: newKeys['apiKey']!,
       apiSecret: newKeys['apiSecret']!,
       encKey: newKeys['encKey']!,
+      environment: selectedEnvironment,
     );
 
     setState(() {
@@ -356,6 +376,7 @@ class _MyHomePageState extends State<MyHomePage> {
       age: selectedAge,
       gender: selectedGender,
       skipInitialPages: initialPageMode == 2,
+      environment: selectedEnvironment,
     );
 
     setState(() {
@@ -462,6 +483,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             age: selectedAge,
                             gender: selectedGender,
                             skipInitialPages: initialPageMode == 2,
+                            environment: selectedEnvironment,
                           );
                           setState(() {
                             widgetKey++;
@@ -524,6 +546,35 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
+                ),
+                const SizedBox(height: 10),
+                EnvironmentDropdown(
+                  selectedEnvironment: selectedEnvironment,
+                  onEnvironmentSelected: (newEnv) async {
+                    setState(() {
+                      selectedEnvironment = newEnv;
+                      isReady = false;
+                    });
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('selectedEnvironment', newEnv);
+                    clearTyradsCache();
+                    await initializeTyrads(
+                      apiKey: apiKeyController.text.isEmpty
+                          ? null
+                          : apiKeyController.text,
+                      apiSecret: apiSecretController.text.isEmpty
+                          ? null
+                          : apiSecretController.text,
+                      encKey: encKeyController.text.isEmpty
+                          ? null
+                          : encKeyController.text,
+                      environment: newEnv,
+                    );
+                    setState(() {
+                      widgetKey++;
+                      isReady = true;
+                    });
+                  },
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -662,6 +713,79 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class EnvironmentDropdown extends StatefulWidget {
+  final String selectedEnvironment;
+  final void Function(String) onEnvironmentSelected;
+
+  const EnvironmentDropdown({
+    super.key,
+    required this.selectedEnvironment,
+    required this.onEnvironmentSelected,
+  });
+
+  @override
+  State<EnvironmentDropdown> createState() => _EnvironmentDropdownState();
+}
+
+class _EnvironmentDropdownState extends State<EnvironmentDropdown> {
+  static const _environments = ['Production', 'Staging'];
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.maxFinite,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Select Environment:',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF333333),
+            ),
+          ),
+          const SizedBox(height: 5),
+          ButtonTheme(
+            alignedDropdown: true,
+            child: DropdownButtonFormField<String>(
+              value: widget.selectedEnvironment,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  borderSide: BorderSide(color: Color(0xFFCCCCCC)),
+                ),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              items: _environments.map((env) {
+                return DropdownMenuItem<String>(
+                  value: env,
+                  child: Text(env, style: const TextStyle(color: Colors.black)),
+                );
+              }).toList(),
+              onChanged: (value) {
+                if (value != null) widget.onEnvironmentSelected(value);
+              },
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'API: ${widget.selectedEnvironment == 'Staging' ? 'Staging' : 'Production'}',
+            style: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFF666666),
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
       ),
     );
   }
