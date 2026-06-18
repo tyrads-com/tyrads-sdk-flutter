@@ -33,8 +33,11 @@ class NetworkCommon {
   Dio get dio {
     // set base url
 
+    final baseUrl = Tyrads.instance.flavor == TyradsFlavor.staging
+        ? AcmoConfig.STAGING_BASE_URL
+        : AcmoConfig.BASE_URL;
     Dio dio = Dio(BaseOptions(
-        baseUrl: AcmoConfig.BASE_URL,
+        baseUrl: baseUrl,
         receiveTimeout: const Duration(seconds: 300),
         sendTimeout: const Duration(seconds: 100),
         followRedirects: false,
