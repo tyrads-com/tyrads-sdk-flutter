@@ -1,7 +1,5 @@
 
 
-import 'package:flutter/widgets.dart';
-
 import 'repository.dart';
 
 class AcmoTrackingController {
@@ -14,7 +12,7 @@ class AcmoTrackingController {
       fd["activity"] = activity;
       await _repo.updateUser(fd);
     } catch (e) {
-      debugPrint(e.toString());
+      print(e.toString());
     }
   }
 }

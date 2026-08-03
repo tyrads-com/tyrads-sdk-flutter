@@ -15,8 +15,10 @@ SharedPreferences getSharedPreferences() {
 Future<bool> acmoLaunchURLForce(url,
     {LaunchMode mode = LaunchMode.externalApplication}) async {
   try {
+    print('[URL Launch] Opening URL: $url (mode: $mode)');
    return await launchUrl(Uri.parse(url), mode: mode);
   } catch(e) {
+    print('[URL Launch] Failed to open URL: $url | Error: $e');
     return false;
   }
 }
@@ -24,6 +26,7 @@ Future<bool> acmoLaunchURLForce(url,
 void acmoLaunchURL(url) async {
   try {
     var uri = Uri.parse(url);
+    print('[URL Launch] Opening URL: $url');
     await canLaunchUrl(uri)
         ? await launchUrl(uri)
         : throw 'Could not launch $url';

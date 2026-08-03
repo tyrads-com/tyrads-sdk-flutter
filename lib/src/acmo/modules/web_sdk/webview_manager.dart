@@ -57,6 +57,7 @@ class WebViewManager {
     }
 
     if (!urlString.contains('sdk.tyrads.com')) {
+      print('[WebView] Opening external URL: $urlString');
       await launchUrlString(
         urlString,
         mode: LaunchMode.externalApplication,

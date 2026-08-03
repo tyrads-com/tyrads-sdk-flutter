@@ -22,7 +22,7 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
 
   void _handleCloseRequestFromiFrame() {
     if (_isClosing) {
-      debugPrint('Close already in progress; ignoring duplicate request.');
+      print('Close already in progress; ignoring duplicate request.');
       return;
     }
     _isClosing = true;
@@ -59,7 +59,7 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
 
       if (_lastExecutionTime.containsKey(action) &&
           (now - _lastExecutionTime[action]!) < _debounceDurationMs) {
-        debugPrint('Debouncing duplicate message for action: $action');
+        print('Debouncing duplicate message for action: $action');
         return;
       }
 
@@ -94,10 +94,10 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
           }
           break;
         default:
-          debugPrint('Unknown action: $action');
+          print('Unknown action: $action');
       }
     } catch (e) {
-      debugPrint('Failed to parse JS message: $e');
+      print('Failed to parse JS message: $e');
     }
   }
 
@@ -107,6 +107,7 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
   void initState() {
     super.initState();
     initialUrl = Tyrads.instance.webURI.toString();
+    print('[WebView] Loading WebView URL: $initialUrl');
   }
 
 

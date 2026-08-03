@@ -59,7 +59,7 @@ class MethodChannelTyradsSdk extends TyradsSdkPlatform {
           ) ??
           "";
     } on PlatformException catch (e) {
-      debugPrint("Error getting play integrity token $e");
+      print("Error getting play integrity token $e");
     }
     return token;
   }

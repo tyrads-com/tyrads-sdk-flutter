@@ -167,21 +167,21 @@ class Tyrads {
     selectedLanguage = prefs.getString(AcmoKeyNames.LANGUAGE) ??
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
     WidgetsFlutterBinding.ensureInitialized();
-    debugPrint("[Tyrads SDK] Selected Language: $selectedLanguage");
+    print("[Tyrads SDK] Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
 
     if (AcmoPlatform.isAndroid) {
       try {
         await FCMManager.initialize();
       } catch (error) {
-        debugPrint("[Tyrads SDK] Failed to init FCM: $error");
+        print("[Tyrads SDK] Failed to init FCM: $error");
       }
     }
     if (AcmoPlatform.isIOS) {
       try {
         ApnsManager.instance.init();
       } catch (e) {
-        debugPrint("[Tyrads SDK] Error initializing APNs: $e");
+        print("[Tyrads SDK] Error initializing APNs: $e");
       }
     }
     AcmoInAppContextBridge.instance.init();
@@ -191,7 +191,7 @@ class Tyrads {
     assert(_isInitCalled, 'Tyrads.instance.init() must be called before loginUser().');
     try {
       if (!_isInitCalled) {
-        debugPrint("[Tyrads SDK] Make sure init method is called first");
+        print("[Tyrads SDK] Make sure init method is called first");
         return false;
       }
       _isLoginCalled = true;
@@ -223,7 +223,7 @@ class Tyrads {
           await AdvertisingId.isLimitAdTrackingEnabled;
           advertisingId = await AdvertisingId.id(true);
         } on PlatformException {
-          debugPrint("Failed to get advertising id");
+          print("Failed to get advertising id");
         }
       }
 
@@ -354,7 +354,7 @@ class Tyrads {
 
       }
     } catch (e) {
-      debugPrint("Error initializing: ${e.toString()}");
+      print("Error initializing: ${e.toString()}");
       isLoginSuccessful = false;
     } finally {
       if (!initializationWait.isCompleted) {
@@ -416,11 +416,11 @@ class Tyrads {
     try {
       final liveCtx = navKey.currentContext;
       if (liveCtx == null) {
-        debugPrint("[Tyrads SDK] No valid BuildContext found for showOffers. Make sure the navigatorKey is correctly attached.");
+        print("[Tyrads SDK] No valid BuildContext found for showOffers. Make sure the navigatorKey is correctly attached.");
         return;
       }
       if (!_isLoginCalled) {
-        debugPrint("[Tyrads SDK] Make sure login method is called first");
+        print("[Tyrads SDK] Make sure login method is called first");
         return;
       }
       if (await waitAndCheck() == false) return;
@@ -435,17 +435,18 @@ class Tyrads {
       final ready =
       await OnboardingCheck.instance.checkOnboardingStatus();
       if (ready == false) {
-        debugPrint("[Tyrads SDK] Onboarding not completed");
+        print("[Tyrads SDK] Onboarding not completed");
         return;
       }
 
       if (launchMode == TyradsLaunchMode.externalBrowser || this.launchMode == TyradsLaunchMode.externalBrowser) {
         if (await canLaunchUrl(requestedUri)) {
+          print("[Tyrads SDK] Opening external browser URL: $requestedUri");
           await launchUrl(requestedUri, mode: LaunchMode.externalApplication);
           track(TyradsActivity.opened);
           return;
         } else {
-          debugPrint("[Tyrads SDK] Could not launch external browser for URI: $requestedUri");
+          print("[Tyrads SDK] Could not launch external browser for URI: $requestedUri");
         }
       }
 
@@ -461,7 +462,7 @@ class Tyrads {
 
       track(TyradsActivity.opened);
     } catch (e) {
-      debugPrint("[Tyrads SDK] Exiting: $e");
+      print("[Tyrads SDK] Exiting: $e");
     }
   }
 
@@ -497,7 +498,7 @@ class Tyrads {
         return true;
       }
     } catch (e) {
-      debugPrint("[Tyrads SDK] Error during back navigation: $e");
+      print("[Tyrads SDK] Error during back navigation: $e");
     }
     return false;
   }
@@ -510,7 +511,7 @@ class Tyrads {
     }
     await initializationWait.future;
     if (!isLoginSuccessful) {
-      debugPrint("[Tyrads SDK] initialisation failed");
+      print("[Tyrads SDK] initialisation failed");
       acmoSnackbar("Please try back later.");
       return false;
     }
@@ -630,7 +631,7 @@ class Tyrads {
         final decoded = jsonDecode(rawJson) as Map<String, dynamic>;
         mediaSourceInfo = TyradsMediaSourceInfo.fromJson(decoded);
       } catch (e) {
-        debugPrint("[Tyrads SDK] Failed to load cached media source info: $e");
+        print("[Tyrads SDK] Failed to load cached media source info: $e");
       }
     }
   }

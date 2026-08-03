@@ -49,20 +49,20 @@ class _WebSdkState extends State<WebSdk> {
           initialSettings: WebViewManager.instance.settings,
           initialUserScripts: WebViewManager.instance.userScripts,
           onConsoleMessage: (controller, consoleMessage) {
-            debugPrint(consoleMessage.message);
+            print(consoleMessage.message);
           },
           shouldOverrideUrlLoading: (controller, navigationAction) async {
             return WebViewManager.instance
                 .shouldOverrideUrlLoading(controller, navigationAction);
           },
           onWebViewCreated: (controller) {
-            debugPrint('WebSdk: onWebViewCreated called.');
+            print('WebSdk: onWebViewCreated called.');
             _webViewController = controller;
 
             _webViewController.addJavaScriptHandler(
               handlerName: 'JSInterface',
               callback: (args) {
-                debugPrint(
+                print(
                     'WebSdk: JSInterface message received: ${args.isNotEmpty ? args[0] : "empty"}');
                 if (args.isNotEmpty) {
                   _handleJSMessage(args[0].toString());
@@ -79,7 +79,7 @@ class _WebSdkState extends State<WebSdk> {
           },
           onLoadStop: (controller, url) {},
           onReceivedError: (controller, request, error) {
-            debugPrint('WebView Error: ${error.toString()}');
+            print('WebView Error: ${error.toString()}');
             if (error.description.contains('code=102') ||
                 error.description.contains('-1001') ||
                 error.description.contains('-1009') ||

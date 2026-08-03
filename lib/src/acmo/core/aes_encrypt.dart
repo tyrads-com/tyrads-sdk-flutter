@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
 import 'package:tyrads_sdk/tyrads_sdk.dart';
 
@@ -32,7 +32,7 @@ class AcmoEncrypt {
         'tag': base64.encode(secretBox.mac.bytes),
       };
     } catch (e) {
-      debugPrint('Error encrypting data: $e');
+      print('Error encrypting data: $e');
       return {
         'val': '',
         'vec': '',
@@ -66,7 +66,7 @@ class AcmoEncrypt {
 
       return utf8.decode(plainTextBytes);
     } catch (e) {
-      debugPrint('Error decrypting data: $e');
+      print('Error decrypting data: $e');
       return '';
     }
   }

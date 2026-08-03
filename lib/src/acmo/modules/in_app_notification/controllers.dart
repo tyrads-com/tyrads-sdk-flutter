@@ -32,7 +32,7 @@ class AcmoInAppNotificationController {
       final filteredOffers = filterLimitedOffersWithEvents(result.data);
       activeOffers = filteredOffers.toList();
     } catch (e) {
-      debugPrint("[Active Offers]: ${e.toString()}");
+      print("[Active Offers]: ${e.toString()}");
     }
   }
 
@@ -62,7 +62,7 @@ class AcmoInAppNotificationController {
       currencySaleRemainingSeconds =
           result.data?.currencySales?.remainingTimeSeconds ?? 0;
     } catch (e) {
-      debugPrint("[Engagement]: ${e.toString()}");
+      print("[Engagement]: ${e.toString()}");
     }
   }
 
