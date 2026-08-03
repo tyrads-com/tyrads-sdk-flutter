@@ -30,6 +30,7 @@ import 'package:tyrads_sdk/src/acmo/modules/push-notifications/apns_manager.dart
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/acmo/core/input_models/init/init.dart';
 import 'package:tyrads_sdk/src/acmo/core/extensions/colors.dart';
+import 'package:tyrads_sdk/src/app_config.dart';
 import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -48,6 +49,7 @@ part 'src/acmo/core/constants/deep_routes.dart';
 part 'src/acmo/core/constants/launch_mode.dart';
 part 'src/acmo/core/constants/mmp_provider.dart';
 part 'src/acmo/core/constants/localization_keys.dart';
+part 'src/acmo/core/constants/tyrads_flavor.dart';
 part 'src/acmo/core/helpers/callback_types.dart';
 part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
 
@@ -101,6 +103,8 @@ class Tyrads {
 
   bool get isSecure => _isSecure;
 
+  TyradsFlavor flavor = TyradsFlavor.production;
+
   Tyrads._internal();
 
   static Tyrads get instance => _singleton;
@@ -120,7 +124,9 @@ class Tyrads {
     TyradsUserInfo? userInfo,
     TyradsConfig? config,
     TyradsLaunchMode? launchMode,
+    TyradsFlavor flavor = TyradsFlavor.production,
   }) async {
+    this.flavor = flavor;
     assert(apiKey.isNotEmpty, 'apiKey cannot be empty.');
     assert(apiSecret.isNotEmpty, 'apiSecret cannot be empty.');
     if (engagementId != null && engagementId.isNotEmpty) {
@@ -382,9 +388,12 @@ class Tyrads {
 
   Uri getWebUri({int? campaignID, String? route}) {
     final currentRoute = route ?? TyradsDeepRoutes.OFFERS;
+    final host = flavor == TyradsFlavor.staging
+        ? AcmoConfig.STAGING_WEB_URL
+        : AcmoConfig.WEB_URL;
     return Uri(
       scheme: 'https',
-      host: 'v4.sdk.tyrads.com',
+      host: host,
       queryParameters: {
         'token': token,
         'to': campaignID == null
