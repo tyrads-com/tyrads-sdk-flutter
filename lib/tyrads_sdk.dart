@@ -3,6 +3,7 @@ library tyrads_sdk;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:advertising_id/advertising_id.dart';
@@ -16,6 +17,7 @@ import 'package:tyrads_sdk/src/acmo/core/app.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/endpoint_name.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/colors.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/formatted_locale_code.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
@@ -171,7 +173,8 @@ class Tyrads {
 
     dio = NetworkCommon().dio;
     selectedLanguage = prefs.getString(AcmoKeyNames.LANGUAGE) ??
-        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+        getFormattedLocaleCode();
+    log("[Tyrads SDK] Selected Language: $selectedLanguage");
     WidgetsFlutterBinding.ensureInitialized();
     print("[Tyrads SDK] Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
