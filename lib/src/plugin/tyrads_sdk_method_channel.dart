@@ -30,6 +30,12 @@ class MethodChannelTyradsSdk extends TyradsSdkPlatform {
   }
 
   @override
+  Future<Map<String, dynamic>> getIosDeviceDetails() async {
+    final info = await methodChannel.invokeMethod<Map>('getIosDeviceDetails');
+    return (info as Map<Object?, Object?>?)?.cast<String, dynamic>() ?? {};
+  }
+
+  @override
   Future<bool> isVpnActive() async {
     final result = await methodChannel.invokeMethod<bool>('checkVpnStatus');
     return result ?? false;
@@ -109,10 +115,13 @@ class MethodChannelTyradsSdk extends TyradsSdkPlatform {
   Stream<Map<String, dynamic>> onPushEvent() {
     if (isIOS) {
       return _pushEventChannel.receiveBroadcastStream().map(
-            (event) => Map<String, dynamic>.from(event as Map<Object?, Object?>),
+            (event) =>
+                Map<String, dynamic>.from(event as Map<Object?, Object?>),
           );
     }
-    return _androidNotificationEventChannel.receiveBroadcastStream("notifications").map(
+    return _androidNotificationEventChannel
+        .receiveBroadcastStream("notifications")
+        .map(
           (event) => Map<String, dynamic>.from(event as Map<Object?, Object?>),
         );
   }

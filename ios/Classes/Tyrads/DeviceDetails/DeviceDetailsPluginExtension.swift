@@ -15,6 +15,9 @@ extension TyradsSdkPlugin {
         case "getTrackingInfo":
             result(AcmoDeviceDetailsProvider.getDeviceDetails())
             return true
+        case "getIosDeviceDetails":
+            result(TyradsIosDeviceInfo.deviceDetails())
+            return true
         case "getDeviceMetrics":
             result(AcmoDeviceDetailsProvider.getUptimeMetrics())
             return true
