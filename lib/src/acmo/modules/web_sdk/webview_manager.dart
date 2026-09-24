@@ -17,6 +17,9 @@ class WebViewManager {
         useShouldOverrideUrlLoading: true,
         allowsInlineMediaPlayback: true,
         iframeAllowFullscreen: true,
+        // iPadOS WKWebView defaults to desktop mode ("Macintosh" UA), so the web offerwall
+        // takes its window.open path, whose popup never displays here. Force the mobile UA.
+        preferredContentMode: UserPreferredContentMode.MOBILE,
       );
 
   UnmodifiableListView<UserScript> get userScripts => UnmodifiableListView([
