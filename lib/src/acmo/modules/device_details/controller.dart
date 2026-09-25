@@ -69,7 +69,7 @@ class AcmoDeviceDetailsController {
     fd["osLang"] = Platform.localeName.toString().split('_')[0];
     fd['rooted'] = await FlutterSecurityChecker.isRooted;
     fd['virtual'] = !(await FlutterSecurityChecker.isRealDevice);
-    fd['sdkVersion'] =  AcmoConfig.SDK_VERSION;
+    fd['sdkVersion'] = AcmoConfig.SDK_VERSION;
     fd['sdkPlatform'] = 'Flutter';
 
     fd['carrierName'] = trackingInfo.carrierName;
@@ -85,7 +85,8 @@ class AcmoDeviceDetailsController {
 
     // CPU Information
     fd['supportedAbis'] = trackingInfo.supportedAbis;
-    fd['cpuType'] = trackingInfo.supportedAbis.split(',').firstOrNull ?? 'unknown';
+    fd['cpuType'] =
+        trackingInfo.supportedAbis.split(',').firstOrNull ?? 'unknown';
     fd['cpuCores'] = trackingInfo.cpuCores;
     fd['supported32BitAbis'] = trackingInfo.supported32BitAbis;
     fd['supported64BitAbis'] = trackingInfo.supported64BitAbis;
@@ -145,63 +146,29 @@ class AcmoDeviceDetailsController {
     return fd;
   }
 
+  // Device/app/security/memory fields come from native TyradsIosDeviceInfo, a port of
+  // TyradsSDKIOS's provider, so both SDKs send identical iOS deviceData.
   _getIosDeviceDetails() async {
-    var fd = <String, dynamic>{};
-
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
+    var fd = await TyradsSdkPlatform.instance.getIosDeviceDetails();
     var networkDetails = await _networkController.getNetworkDetails();
-    var trackingInfo = await TyradsSdkPlatform.instance.getTrackingInfo();
 
-    fd['deviceId'] = await PlatformDeviceId.getDeviceId;
-    fd['device'] =
-    (iosInfo.model.toLowerCase().contains("ipad")) ? "iPad" : "iPhone";
-    fd['deviceName'] = iosInfo.name;
-    fd['brand'] = "Apple";
-    fd['model'] = iosInfo.model;
-    fd['modelName'] = iosInfo.modelName;
-    fd['hardware'] = iosInfo.utsname.machine;
-    fd['product'] = iosInfo.utsname.sysname;
-    fd['baseOs'] = iosInfo.systemName;
-    fd['releaseVersion'] = iosInfo.systemVersion;
-
-    fd["build"] = packageInfo.buildNumber;
-    fd["version"] = packageInfo.version;
-    fd["package"] = packageInfo.packageName;
     fd['apiVersion'] = AcmoConfig.API_VERSION;
-    fd["platform"] = acmoGetPlatformName();
-    fd["installerStore"] = packageInfo.installerStore;
-    fd["osLang"] = Platform.localeName.toString().split('_')[0];
-
-    fd['rooted'] = await FlutterSecurityChecker.isRooted;
-    fd['virtual'] = !(await FlutterSecurityChecker.isRealDevice);
-
-    fd['totalMemory'] = trackingInfo.totalDiskSpace;
-
     fd['connectionType'] = networkDetails['connectionType'];
-
     fd['sdkVersion'] = AcmoConfig.SDK_VERSION;
     fd['sdkPlatform'] = 'Flutter';
 
-    // ======================== NEW 11 FIELDS - TS-1826 v4.0 (iOS) ========================
-    // User Interaction Metrics - All properly typed as int (from TrackingInfo._parseToInt())
-    fd['keyboardNumEvents'] = trackingInfo.keyboardNumEvents;
-    fd['keyboardScore'] = trackingInfo.keyboardScore;
-    fd['clipboardNumEvents'] = trackingInfo.clipboardNumEvents;
-    fd['clipboardScore'] = trackingInfo.clipboardScore;
-    fd['clickNumEvents'] = trackingInfo.clickNumEvents;
-    fd['mouseNumEvents'] = trackingInfo.mouseNumEvents;
-    fd['touchNumEvents'] = trackingInfo.touchNumEvents;
-
-    // Device Capabilities
-    fd['gpu'] = trackingInfo.gpu ?? 'Unknown';
-    fd['bluetooth'] = trackingInfo.bluetooth ?? 'Unknown';
-    fd['touchSupport'] = trackingInfo.touchSupport ?? 'Unknown';
-
-    // Device Identification
-    fd['googleAppSetID'] = trackingInfo.googleAppSetID ?? 'Unknown';
-    // ====================================================================================
+    // iOS does not expose these natively; same placeholders as TyradsSDKIOS
+    fd['keyboardNumEvents'] = 0;
+    fd['keyboardScore'] = 0;
+    fd['clipboardNumEvents'] = 0;
+    fd['clipboardScore'] = 0;
+    fd['clickNumEvents'] = 0;
+    fd['mouseNumEvents'] = 0;
+    fd['touchNumEvents'] = 0;
+    fd['gpu'] = 'Unknown';
+    fd['bluetooth'] = 'Unknown';
+    fd['touchSupport'] = 'Unknown';
+    fd['googleAppSetID'] = 'Unknown';
 
     return fd;
   }

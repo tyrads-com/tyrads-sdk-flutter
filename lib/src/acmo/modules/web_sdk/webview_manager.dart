@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -17,6 +18,9 @@ class WebViewManager {
         useShouldOverrideUrlLoading: true,
         allowsInlineMediaPlayback: true,
         iframeAllowFullscreen: true,
+        // iPadOS WKWebView defaults to desktop mode ("Macintosh" UA), so the web offerwall
+        // takes its window.open path, whose popup never displays here. Force the mobile UA.
+        preferredContentMode: UserPreferredContentMode.MOBILE,
       );
 
   UnmodifiableListView<UserScript> get userScripts => UnmodifiableListView([
@@ -54,6 +58,17 @@ class WebViewManager {
     final urlString = uri.toString();
     if (uri.host == 'sdk.tyrads.com') {
       return NavigationActionPolicy.ALLOW;
+    }
+
+    // iOS mirrors TyradsSDKIOS: the click URL's redirect chain (clicks-api -> MMP)
+    // runs inside the WebView and only non-http schemes (itms-apps, app deep links)
+    // leave the app. Handing the chain to Safari breaks the MMP's App Store handoff.
+    if (Platform.isIOS) {
+      if (uri.scheme == 'http' || uri.scheme == 'https') {
+        return NavigationActionPolicy.ALLOW;
+      }
+      await launchUrlString(urlString, mode: LaunchMode.externalApplication);
+      return NavigationActionPolicy.CANCEL;
     }
 
     if (!urlString.contains('sdk.tyrads.com')) {

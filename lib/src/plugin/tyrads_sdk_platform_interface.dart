@@ -30,6 +30,11 @@ abstract class TyradsSdkPlatform extends platform_interface.PlatformInterface {
     throw UnimplementedError('getTrackingInfo() has not been implemented.');
   }
 
+  /// iOS deviceData, built natively to match TyradsSDKIOS
+  Future<Map<String, dynamic>> getIosDeviceDetails() {
+    throw UnimplementedError('getIosDeviceDetails() has not been implemented.');
+  }
+
   /// Uptime and boot time
   Future<DeviceMetrics> getDeviceMetrics() {
     throw UnimplementedError('getDeviceMetrics() has not been implemented.');
@@ -47,7 +52,8 @@ abstract class TyradsSdkPlatform extends platform_interface.PlatformInterface {
 
   /// Get play integrity token
   Future<String> getPlayIntegrityToken() {
-    throw UnimplementedError('getPlayIntegrityToken() has not been implemented.');
+    throw UnimplementedError(
+        'getPlayIntegrityToken() has not been implemented.');
   }
 
   Stream<String> onNetworkStatusChange() {
