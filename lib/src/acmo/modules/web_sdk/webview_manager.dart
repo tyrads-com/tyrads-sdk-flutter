@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class WebViewManager {
@@ -17,6 +18,7 @@ class WebViewManager {
         useShouldOverrideUrlLoading: true,
         allowsInlineMediaPlayback: true,
         iframeAllowFullscreen: true,
+        preferredContentMode: UserPreferredContentMode.MOBILE,
       );
 
   UnmodifiableListView<UserScript> get userScripts => UnmodifiableListView([
@@ -46,24 +48,39 @@ class WebViewManager {
         ),
       ]);
 
+  bool _isSdkHost(String host) {
+    return host.endsWith('.tyrads.com') ||
+        host.endsWith('.tyr-sdk-webapp-v4.pages.dev') ||
+        host == 'tyrads.com';
+  }
+
   Future<NavigationActionPolicy?> shouldOverrideUrlLoading(
       InAppWebViewController controller,
       NavigationAction navigationAction) async {
-    Uri uri = navigationAction.request.url!;
+    final Uri uri = navigationAction.request.url!;
+    final String host = uri.host;
 
-    final urlString = uri.toString();
-    if (uri.host == 'sdk.tyrads.com') {
+    // if (AcmoPlatform.isIOS) {
+    //   if (uri.scheme == "https" || uri.scheme == "http"){
+    //     return NavigationActionPolicy.ALLOW;
+    //   }
+    //   await launchUrlString(
+    //     uri.toString(),
+    //     mode: LaunchMode.externalApplication,
+    //   );
+    //   return NavigationActionPolicy.CANCEL;
+    // }
+
+    if (_isSdkHost(host)) {
+      print('[WebView] Allowing internal SDK navigation: $uri');
       return NavigationActionPolicy.ALLOW;
     }
 
-    if (!urlString.contains('sdk.tyrads.com')) {
-      print('[WebView] Opening external URL: $urlString');
-      await launchUrlString(
-        urlString,
-        mode: LaunchMode.externalApplication,
-      );
-      return NavigationActionPolicy.CANCEL;
-    }
-    return NavigationActionPolicy.ALLOW;
+    print('[WebView] Opening external URL: $uri');
+    await launchUrlString(
+      uri.toString(),
+      mode: LaunchMode.externalApplication,
+    );
+    return NavigationActionPolicy.CANCEL;
   }
 }
