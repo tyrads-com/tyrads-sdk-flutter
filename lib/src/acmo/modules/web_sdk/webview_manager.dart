@@ -75,7 +75,6 @@ class WebViewManager {
       print('[WebView] Allowing internal SDK navigation: $uri');
       return NavigationActionPolicy.ALLOW;
     }
-
     print('[WebView] Opening external URL: $uri');
     await launchUrlString(
       uri.toString(),
