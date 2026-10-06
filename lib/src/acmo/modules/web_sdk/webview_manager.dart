@@ -62,7 +62,9 @@ class WebViewManager {
 
     if (AcmoPlatform.isIOS) {
       if (uri.scheme == "https" || uri.scheme == "http"){
-        return NavigationActionPolicy.ALLOW;
+        if (!host.contains("apps.apple.com")) {
+          return NavigationActionPolicy.ALLOW;
+        }
       }
       await launchUrlString(
         uri.toString(),
