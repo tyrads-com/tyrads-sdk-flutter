@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_security_checker/flutter_security_checker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -66,7 +69,8 @@ class AcmoDeviceDetailsController {
     fd["platform"] = acmoGetPlatformName();
     fd['apiVersion'] = AcmoConfig.API_VERSION;
     fd["installerStore"] = packageInfo.installerStore;
-    fd["osLang"] = Platform.localeName.toString().split('_')[0];
+    fd["osLang"] = WidgetsBinding.instance.platformDispatcher.locale.toLanguageTag();
+    debugPrint('[Tyrads SDK] osLang resolved: ${fd["osLang"]}');
     fd['rooted'] = await FlutterSecurityChecker.isRooted;
     fd['virtual'] = !(await FlutterSecurityChecker.isRealDevice);
     fd['sdkVersion'] =  AcmoConfig.SDK_VERSION;
@@ -172,7 +176,8 @@ class AcmoDeviceDetailsController {
     fd['apiVersion'] = AcmoConfig.API_VERSION;
     fd["platform"] = acmoGetPlatformName();
     fd["installerStore"] = packageInfo.installerStore;
-    fd["osLang"] = Platform.localeName.toString().split('_')[0];
+    fd["osLang"] = WidgetsBinding.instance.platformDispatcher.locale.toLanguageTag();
+    debugPrint('[Tyrads SDK] osLang resolved: ${fd["osLang"]}');
 
     fd['rooted'] = await FlutterSecurityChecker.isRooted;
     fd['virtual'] = !(await FlutterSecurityChecker.isRealDevice);
@@ -184,25 +189,6 @@ class AcmoDeviceDetailsController {
     fd['sdkVersion'] = AcmoConfig.SDK_VERSION;
     fd['sdkPlatform'] = 'Flutter';
 
-    // ======================== NEW 11 FIELDS - TS-1826 v4.0 (iOS) ========================
-    // User Interaction Metrics - All properly typed as int (from TrackingInfo._parseToInt())
-    fd['keyboardNumEvents'] = trackingInfo.keyboardNumEvents;
-    fd['keyboardScore'] = trackingInfo.keyboardScore;
-    fd['clipboardNumEvents'] = trackingInfo.clipboardNumEvents;
-    fd['clipboardScore'] = trackingInfo.clipboardScore;
-    fd['clickNumEvents'] = trackingInfo.clickNumEvents;
-    fd['mouseNumEvents'] = trackingInfo.mouseNumEvents;
-    fd['touchNumEvents'] = trackingInfo.touchNumEvents;
-
-    // Device Capabilities
-    fd['gpu'] = trackingInfo.gpu ?? 'Unknown';
-    fd['bluetooth'] = trackingInfo.bluetooth ?? 'Unknown';
-    fd['touchSupport'] = trackingInfo.touchSupport ?? 'Unknown';
-
-    // Device Identification
-    fd['googleAppSetID'] = trackingInfo.googleAppSetID ?? 'Unknown';
-    // ====================================================================================
-
-    return fd;
+  return fd;
   }
 }
