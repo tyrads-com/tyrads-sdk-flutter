@@ -107,6 +107,7 @@ class _AcmoWebSdkState extends State<AcmoWebSdk> {
   void initState() {
     super.initState();
     initialUrl = Tyrads.instance.webURI.toString();
+    debugPrint('[WebView] Loading WebView URL: $initialUrl');
   }
 
 

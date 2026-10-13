@@ -29,4 +29,5 @@ class AcmoKeyNames {
       '${PREFIX}has_shown_limited_time_offer_notification';
 
   static const String TOKEN = '${PREFIX}token';
+  static const String MEDIA_SOURCE_INFO = '${PREFIX}media_source_info';
 }

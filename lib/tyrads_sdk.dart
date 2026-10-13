@@ -2,6 +2,8 @@
 library tyrads_sdk;
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:advertising_id/advertising_id.dart';
@@ -15,6 +17,7 @@ import 'package:tyrads_sdk/src/acmo/core/app.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/endpoint_name.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/colors.dart';
+import 'package:tyrads_sdk/src/acmo/core/helpers/formatted_locale_code.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/toasts.dart';
 import 'package:tyrads_sdk/src/acmo/core/network/network_common.dart';
@@ -29,6 +32,7 @@ import 'package:tyrads_sdk/src/acmo/modules/push-notifications/apns_manager.dart
 import 'package:tyrads_sdk/src/acmo/modules/usage_stats/controller.dart';
 import 'package:tyrads_sdk/src/acmo/core/input_models/init/init.dart';
 import 'package:tyrads_sdk/src/acmo/core/extensions/colors.dart';
+import 'package:tyrads_sdk/src/app_config.dart';
 import 'package:tyrads_sdk/src/plugin/tyrads_sdk_platform_interface.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -45,7 +49,9 @@ part 'src/acmo/core/input_models/user_info.dart';
 part 'src/acmo/core/input_models/tyrads_config.dart';
 part 'src/acmo/core/constants/deep_routes.dart';
 part 'src/acmo/core/constants/launch_mode.dart';
+part 'src/acmo/core/constants/mmp_provider.dart';
 part 'src/acmo/core/constants/localization_keys.dart';
+part 'src/acmo/core/constants/tyrads_flavor.dart';
 part 'src/acmo/core/helpers/callback_types.dart';
 part 'src/acmo/modules/premium_widgets/widgets/premium_widget_styles.dart';
 
@@ -99,6 +105,8 @@ class Tyrads {
 
   bool get isSecure => _isSecure;
 
+  TyradsFlavor flavor = TyradsFlavor.production;
+
   Tyrads._internal();
 
   static Tyrads get instance => _singleton;
@@ -114,11 +122,13 @@ class Tyrads {
     String? encryptionKey,
     String? engagementId,
     String? placementId,
-    TyradsMediaSourceInfo? mediaSourceInfo,
+    @Deprecated('Use updateMediaSourceFromMMP instead.') TyradsMediaSourceInfo? mediaSourceInfo,
     TyradsUserInfo? userInfo,
     TyradsConfig? config,
     TyradsLaunchMode? launchMode,
+    TyradsFlavor flavor = TyradsFlavor.production,
   }) async {
+    this.flavor = flavor;
     assert(apiKey.isNotEmpty, 'apiKey cannot be empty.');
     assert(apiSecret.isNotEmpty, 'apiSecret cannot be empty.');
     if (engagementId != null && engagementId.isNotEmpty) {
@@ -140,6 +150,12 @@ class Tyrads {
 
     prefs = await SharedPreferences.getInstance();
 
+    if (this.mediaSourceInfo == null) {
+      await _loadMediaSourceFromPrefs();
+    } else {
+      await _saveMediaSourceToPrefs();
+    }
+
     if (AcmoPlatform.isAndroid) {
       this.config = config ?? TyradsConfig();
       final integrityToken =
@@ -157,7 +173,8 @@ class Tyrads {
 
     dio = NetworkCommon().dio;
     selectedLanguage = prefs.getString(AcmoKeyNames.LANGUAGE) ??
-        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+        getFormattedLocaleCode();
+    log("[Tyrads SDK] Selected Language: $selectedLanguage");
     WidgetsFlutterBinding.ensureInitialized();
     debugPrint("[Tyrads SDK] Selected Language: $selectedLanguage");
     await LocalizationService().init(selectedLanguage);
@@ -374,9 +391,12 @@ class Tyrads {
 
   Uri getWebUri({int? campaignID, String? route}) {
     final currentRoute = route ?? TyradsDeepRoutes.OFFERS;
+    final host = flavor == TyradsFlavor.staging
+        ? AcmoConfig.STAGING_WEB_URL
+        : AcmoConfig.WEB_URL;
     return Uri(
       scheme: 'https',
-      host: 'v4.sdk.tyrads.com',
+      host: host,
       queryParameters: {
         'token': token,
         'to': campaignID == null
@@ -433,6 +453,7 @@ class Tyrads {
 
       if (launchMode == TyradsLaunchMode.externalBrowser || this.launchMode == TyradsLaunchMode.externalBrowser) {
         if (await canLaunchUrl(requestedUri)) {
+          debugPrint("[Tyrads SDK] Opening external browser URL: $requestedUri");
           await launchUrl(requestedUri, mode: LaunchMode.externalApplication);
           track(TyradsActivity.opened);
           return;
@@ -529,5 +550,71 @@ class Tyrads {
     await LocalizationService().changeLanguage(selectedLanguage);
     prefs.setString(AcmoKeyNames.LANGUAGE, selectedLanguage);
     AcmoPremiumWidgetsController.instance.refresh(force: true);
+  }
+
+  /// Updates [mediaSourceInfo] using raw attribution payloads from supported MMPs.
+  /// This allows automatic population of media source campaign data.
+  void updateMediaSourceFromMMP({
+    required MMPProvider provider,
+    required Map<String, dynamic> rawData,
+  }) {
+    switch (provider) {
+      case MMPProvider.appsflyer:
+        mediaSourceInfo = TyradsMediaSourceInfo(
+          mediaSourceName: rawData['media_source'] as String? ?? 'AppsFlyer',
+          mediaCampaignName: rawData['campaign'] as String?,
+          mediaSourceId: rawData['media_source'] as String?,
+          mediaSubSourceId: rawData['af_sub1'] as String?,
+          mediaAdsetName: rawData['af_adset'] as String?,
+          mediaAdsetId: rawData['af_adset_id'] as String?,
+          mediaCreativeName: rawData['af_ad'] as String?,
+          mediaCreativeId: rawData['af_ad_id'] as String?,
+          sub1: rawData['af_sub1'] as String?,
+          sub2: rawData['af_sub2'] as String?,
+          sub3: rawData['af_sub3'] as String?,
+          sub4: rawData['af_sub4'] as String?,
+          sub5: rawData['af_sub5'] as String?,
+          incentivized: rawData['is_incentivized'] == true ||
+              rawData['is_incentivized'] == 'true',
+        );
+        break;
+
+      case MMPProvider.adjust:
+        mediaSourceInfo = TyradsMediaSourceInfo(
+          mediaSourceName: rawData['network'] as String? ?? 'Adjust',
+          mediaCampaignName: rawData['campaign'] as String?,
+          mediaAdsetName: rawData['adgroup'] as String?,
+          mediaCreativeName: rawData['creative'] as String?,
+          sub1: rawData['adgroup'] as String?,
+          sub2: rawData['creative'] as String?,
+          sub3: rawData['click_label'] as String?,
+        );
+        break;
+    }
+
+    _saveMediaSourceToPrefs();
+  }
+
+  Future<void> _saveMediaSourceToPrefs() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    if (mediaSourceInfo != null) {
+      await sharedPrefs.setString(
+        AcmoKeyNames.MEDIA_SOURCE_INFO,
+        jsonEncode(mediaSourceInfo!.toJson()),
+      );
+    }
+  }
+
+  Future<void> _loadMediaSourceFromPrefs() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    final rawJson = sharedPrefs.getString(AcmoKeyNames.MEDIA_SOURCE_INFO);
+    if (rawJson != null) {
+      try {
+        final decoded = jsonDecode(rawJson) as Map<String, dynamic>;
+        mediaSourceInfo = TyradsMediaSourceInfo.fromJson(decoded);
+      } catch (e) {
+        debugPrint("[Tyrads SDK] Failed to load cached media source info: $e");
+      }
+    }
   }
 }

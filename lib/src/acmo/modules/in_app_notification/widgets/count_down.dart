@@ -26,12 +26,12 @@ class AcmoComponentCountdown extends StatefulWidget {
 
 class _AcmoComponentCountdownState extends State<AcmoComponentCountdown>
     with SingleTickerProviderStateMixin {
-  late CustomTimerController cd_controller;
+  late CustomTimerController cdController;
   late int _remainingSeconds;
 
   @override
   void dispose() {
-    cd_controller.dispose();
+    cdController.dispose();
     super.dispose();
   }
 
@@ -54,13 +54,13 @@ class _AcmoComponentCountdownState extends State<AcmoComponentCountdown>
       _remainingSeconds = (widget.seconds - elapsed).clamp(0, widget.seconds);
     }
 
-    cd_controller = CustomTimerController(
+    cdController = CustomTimerController(
         vsync: this,
         begin: Duration(seconds: _remainingSeconds),
         end: const Duration(),
         initialState: CustomTimerState.reset,
         interval: CustomTimerInterval.seconds);
-    cd_controller.start();
+    cdController.start();
 
     if (_remainingSeconds > 0) {
       Future.delayed(Duration(seconds: _remainingSeconds)).then((value) {
@@ -75,7 +75,7 @@ class _AcmoComponentCountdownState extends State<AcmoComponentCountdown>
   void didUpdateWidget(AcmoComponentCountdown oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.seconds != widget.seconds) {
-      cd_controller.dispose();
+      cdController.dispose();
       _countdownStartTimes.clear();
       _initializeCountdown();
     }
@@ -84,7 +84,7 @@ class _AcmoComponentCountdownState extends State<AcmoComponentCountdown>
   @override
   Widget build(BuildContext context) {
     return CustomTimer(
-        controller: cd_controller,
+        controller: cdController,
         builder: (state, time) {
           var totalTime = _remainingSeconds;
           return DefaultTextStyle(

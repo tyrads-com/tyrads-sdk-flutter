@@ -5,10 +5,10 @@ import 'package:tyrads_sdk/tyrads_sdk.dart';
 
 class AcmoAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AcmoAppBar({
-    Key? key,
+    super.key,
     required this.titleText,
     this.onBack,
-  }) : super(key: key);
+  });
   final String titleText;
   final Function()? onBack;
   @override
@@ -44,11 +44,11 @@ class AcmoAppBar extends StatelessWidget implements PreferredSizeWidget {
 class AcmoAppBarWithSearch extends StatefulWidget
     implements PreferredSizeWidget {
   const AcmoAppBarWithSearch({
-    Key? key,
+    super.key,
     required this.titleText,
     required this.onSearch,
     this.onBack,
-  }) : super(key: key);
+  });
   final String titleText;
   final Function(String) onSearch;
   final Function()? onBack;

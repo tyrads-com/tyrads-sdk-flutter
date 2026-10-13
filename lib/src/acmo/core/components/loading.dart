@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class AcmoComponentLoading extends StatelessWidget {
   const AcmoComponentLoading({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

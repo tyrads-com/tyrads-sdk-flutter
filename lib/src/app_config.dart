@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 
 class AcmoConfig {
   static const API_VERSION = "4.0";
-  static const BUILD_VERSION = "2";
+  static const BUILD_VERSION = "4";
   static const AV = "4";
   static const SDK_VERSION = "4.0.1-$BUILD_VERSION";
   static const SDK_PLATFORM = "Flutter";
   static const BASE_URL = "https://api.tyrads.com/v$API_VERSION/";
+  static const STAGING_BASE_URL = "https://api.stage.tyrads.com/v$API_VERSION/";
+  static const WEB_URL = "v4.sdk.tyrads.com";
+  static const STAGING_WEB_URL =
+      "refactor-sdk-v4-refinement.tyr-sdk-webapp-v4.pages.dev";
   static const PRIMARY_COLOR =
       Color.fromARGB(255, 0, 36, 51); // Color(0xFF149CD4);
   static const PRIMARY_COLOR_LIGHT =

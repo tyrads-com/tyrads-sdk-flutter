@@ -1,4 +1,14 @@
-## 4.0.0-beta.0
+## 4.0.1-beta.0
+* Added MMP bridge integration via `updateMediaSourceFromMMP` supporting attribution payloads from AppsFlyer, Adjust, Branch, and Singular.
+* Added JSON serialization and persistent local caching for `TyradsMediaSourceInfo`.
+* Introduced `TyradsFlavor` (`production`, `staging`) in `init` for seamless switching between production and staging environments.
+* Added `getFormattedLocaleCode` helper for accurate locale resolution and script variant support (e.g., `zh-Hant`/`zh-Hans`).
+* Improved `osLang` resolution in device details using platform dispatcher language tags.
+* Enhanced iOS WebView configuration with mobile content mode (`UserPreferredContentMode.MOBILE`) to resolve iPad desktop UA and popup issues.
+* Enhanced URL routing in `WebViewManager` to keep MMP redirect chains internal on iOS while opening App Store links externally.
+* Added internal SDK routing support for Cloudflare Pages preview/development hosts.
+
+## 4.0.0
 * Full support for Firebase Cloud Messaging (FCM) on Android and APNS support on iOS.
 * Support for image-rich and text-based notifications with background and terminated state handling.
 * Automated routing from notification clicks to specific app sections.
@@ -8,6 +18,7 @@
 * Implementation of advanced hardware level telemetry (GPU, sensors, device state) for enhanced security checks.
 * Enhanced security checker with integrity checks to prevent fraud.
 * Optimized loading and caching mechanisms for smoother performance and better UX across widgets.
+* Removed preloading of webview for faster loading and less memory usage.
 
 ## 3.3.0-beta.3
 * A skip button has been added to the User Update page (Age and Gender) on iOS.
