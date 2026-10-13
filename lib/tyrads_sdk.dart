@@ -590,36 +590,6 @@ class Tyrads {
           sub3: rawData['click_label'] as String?,
         );
         break;
-
-      case MMPProvider.branch:
-        mediaSourceInfo = TyradsMediaSourceInfo(
-          mediaSourceName: rawData['~channel'] as String? ?? 'Branch',
-          mediaCampaignName: rawData['~campaign'] as String?,
-          mediaAdsetName: rawData['~ad_set_name'] as String?,
-          mediaAdsetId: rawData['~ad_set_id'] as String?,
-          mediaCreativeName: rawData['~ad_name'] as String?,
-          mediaCreativeId: rawData['~ad_id'] as String?,
-          sub1: rawData['~tags']?.toString(),
-          sub2: rawData['~stage']?.toString(),
-        );
-        break;
-
-      case MMPProvider.singular:
-        mediaSourceInfo = TyradsMediaSourceInfo(
-          mediaSourceName: rawData['network'] as String? ?? 'Singular',
-          mediaCampaignName: rawData['campaign_name'] as String?,
-          mediaSourceId: rawData['campaign_id'] as String?,
-          mediaAdsetName: rawData['adgroup_name'] as String?,
-          mediaAdsetId: rawData['adgroup_id'] as String?,
-          mediaCreativeName: rawData['creative_name'] as String?,
-          mediaCreativeId: rawData['creative_id'] as String?,
-          sub1: rawData['sub1'] as String?,
-          sub2: rawData['sub2'] as String?,
-          sub3: rawData['sub3'] as String?,
-          sub4: rawData['sub4'] as String?,
-          sub5: rawData['sub5'] as String?,
-        );
-        break;
     }
 
     _saveMediaSourceToPrefs();
