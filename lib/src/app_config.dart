@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class AcmoConfig {
   static const API_VERSION = "4.0";
-  static const BUILD_VERSION = "3";
+  static const BUILD_VERSION = "4";
   static const AV = "4";
   static const SDK_VERSION = "4.0.1-$BUILD_VERSION";
   static const SDK_PLATFORM = "Flutter";
