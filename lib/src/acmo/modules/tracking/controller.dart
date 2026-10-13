@@ -1,5 +1,7 @@
 
 
+import 'package:flutter/cupertino.dart';
+
 import 'repository.dart';
 
 class AcmoTrackingController {
@@ -12,7 +14,7 @@ class AcmoTrackingController {
       fd["activity"] = activity;
       await _repo.updateUser(fd);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 }

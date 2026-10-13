@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/endpoint_name.dart';
 import 'package:tyrads_sdk/src/acmo/core/constants/key_names.dart';
@@ -60,15 +61,15 @@ class NetworkCommon {
           Tyrads.instance.isSecure ? "BASIC" : "PLAIN";
       options.headers["X-Play-Integrity"] =
           prefs.getString(AcmoKeyNames.PLAY_INTEGRITY_TOKEN);
-      print(
+      debugPrint(
           "Pre request:${options.method},${options.baseUrl}${options.path}${options.queryParameters}");
-      print("Pre request:${options.headers.toString()}");
-      print("Pre request data:${options.data}");
+      debugPrint("Pre request:${options.headers.toString()}");
+      debugPrint("Pre request data:${options.data}");
       return handler.next(options); //continue
       //return options;
     }, onResponse: (Response response, handler) async {
       try {
-        print(response.toString());
+        debugPrint(response.toString());
         final int statusCode = response.statusCode ?? 0;
 
         response.data;
@@ -95,9 +96,9 @@ class NetworkCommon {
               .then((value) => isDialogOpen = false);
         }
       } else {
-        print("Dio Error: ${e.message}");
-        print("Failing URL: ${e.requestOptions.baseUrl}${e.requestOptions.path}");
-        print("Status Code: ${e.response?.statusCode}");
+        debugPrint("Dio Error: ${e.message}");
+        debugPrint("Failing URL: ${e.requestOptions.baseUrl}${e.requestOptions.path}");
+        debugPrint("Status Code: ${e.response?.statusCode}");
         return handler.next(e); //continue
       }
     }));

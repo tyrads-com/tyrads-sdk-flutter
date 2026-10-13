@@ -35,10 +35,10 @@ class _WebSdkState extends State<WebSdk> {
       final messageEvent = event as web.MessageEvent;
       try {
         final messageData = messageEvent.data as String;
-        print('Received message data: $messageData');
+        debugPrint('Received message data: $messageData');
         widget.onMessage(messageData);
       } catch (e) {
-        print('Error processing message: $e');
+        debugPrint('Error processing message: $e');
       }
     }
 
@@ -60,7 +60,7 @@ class _WebSdkState extends State<WebSdk> {
     iframe.addEventListener(
       'error',
       (web.Event event) {
-        print('Iframe failed to load: ${widget.initialUrl}');
+        debugPrint('Iframe failed to load: ${widget.initialUrl}');
         if (mounted) {
           setState(() {
             _hasError = true;

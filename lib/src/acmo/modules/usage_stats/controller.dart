@@ -26,7 +26,7 @@ class AcmoControllerUsageStats {
         //  saveUsageStats(packageName: packageName);
       }
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
@@ -108,7 +108,7 @@ class AcmoControllerUsageStats {
 
       return timestamp;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 

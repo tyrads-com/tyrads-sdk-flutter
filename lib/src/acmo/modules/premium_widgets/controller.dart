@@ -95,7 +95,7 @@ class AcmoPremiumWidgetsController {
 
       return hotOffers;
     } catch (e) {
-      print('[PremiumWidgets] _fetchOffers error: $e');
+      debugPrint('[PremiumWidgets] _fetchOffers error: $e');
       return hotOffers;
     }
   }
@@ -134,7 +134,7 @@ class AcmoPremiumWidgetsController {
     }
     if (s2sClickUrl != null) {
       final res = await Dio().get(s2sClickUrl);
-      print('[PremiumWidgets] s2sClickUrl response: ${res.statusCode} - ${res.data}');
+      debugPrint('[PremiumWidgets] s2sClickUrl response: ${res.statusCode} - ${res.data}');
       if (res.statusCode != 200) {
         acmoSnackbar("Error while sending click");
         offerLoading = false;

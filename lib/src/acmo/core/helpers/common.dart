@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,10 +16,10 @@ SharedPreferences getSharedPreferences() {
 Future<bool> acmoLaunchURLForce(url,
     {LaunchMode mode = LaunchMode.externalApplication}) async {
   try {
-    print('[URL Launch] Opening URL: $url (mode: $mode)');
+    debugPrint('[URL Launch] Opening URL: $url (mode: $mode)');
    return await launchUrl(Uri.parse(url), mode: mode);
   } catch(e) {
-    print('[URL Launch] Failed to open URL: $url | Error: $e');
+    debugPrint('[URL Launch] Failed to open URL: $url | Error: $e');
     return false;
   }
 }
@@ -26,7 +27,7 @@ Future<bool> acmoLaunchURLForce(url,
 void acmoLaunchURL(url) async {
   try {
     var uri = Uri.parse(url);
-    print('[URL Launch] Opening URL: $url');
+    debugPrint('[URL Launch] Opening URL: $url');
     await canLaunchUrl(uri)
         ? await launchUrl(uri)
         : throw 'Could not launch $url';

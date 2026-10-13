@@ -9,16 +9,16 @@ class FCMManager {
   static String? _pendingDeepLink;
 
   static void handleDeepLink(String deeplink) {
-    print("Tyrads SDK Deep link received: $deeplink");
+    debugPrint("Tyrads SDK Deep link received: $deeplink");
     if (deeplink.isEmpty) {
-      print("Tyrads SDK Deep link is empty, ignoring.");
+      debugPrint("Tyrads SDK Deep link is empty, ignoring.");
       return;
     }
 
     final tyrads = Tyrads.instance;
 
     if (tyrads.offerwallKey.currentState != null && tyrads.offerwallKey.currentState!.mounted) {
-      print("Tyrads SDK is already open. Updating internal state for deep link.");
+      debugPrint("Tyrads SDK is already open. Updating internal state for deep link.");
       tyrads.updateWebUri(deeplink);
       tyrads.deepLinkNotifier.value = deeplink;
       return;
@@ -26,13 +26,13 @@ class FCMManager {
 
     final context = tyrads.navKey.currentContext;
     if (context != null && context.mounted) {
-      print("Tyrads SDK Valid context found. Executing showOffers for deep link.");
+      debugPrint("Tyrads SDK Valid context found. Executing showOffers for deep link.");
       _pendingDeepLink = null;
       Future.microtask(() {
         tyrads.showOffers(route: deeplink);
       });
     } else {
-      print("Tyrads SDK Context is null or unmounted. Marking deep link as pending.");
+      debugPrint("Tyrads SDK Context is null or unmounted. Marking deep link as pending.");
       _pendingDeepLink = deeplink;
       _startRetryLoop(deeplink);
     }
@@ -43,7 +43,7 @@ class FCMManager {
       await Future.delayed(const Duration(seconds: 1));
       if (_pendingDeepLink != deeplink) break;
       
-      print("Tyrads SDK Retrying pending deep link check (attempt ${i + 1})...");
+      debugPrint("Tyrads SDK Retrying pending deep link check (attempt ${i + 1})...");
       final context = Tyrads.instance.navKey.currentContext;
       if (context != null && context.mounted) {
         checkPendingDeepLink();
@@ -55,17 +55,17 @@ class FCMManager {
   static void checkPendingDeepLink() {
     final tyrads = Tyrads.instance;
     final context = tyrads.navKey.currentContext;
-    print("Tyrads SDK Checking pending deep link. Link: $_pendingDeepLink, Context: $context");
+    debugPrint("Tyrads SDK Checking pending deep link. Link: $_pendingDeepLink, Context: $context");
     
     if (_pendingDeepLink != null && context != null && context.mounted) {
       final link = _pendingDeepLink!;
-      print("Tyrads SDK Executing pending deep link: $link");
+      debugPrint("Tyrads SDK Executing pending deep link: $link");
       _pendingDeepLink = null;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) {
           tyrads.showOffers(route: link);
         } else {
-          print("Tyrads SDK Context unmounted before post-frame callback execution.");
+          debugPrint("Tyrads SDK Context unmounted before post-frame callback execution.");
         }
       });
     }
@@ -77,27 +77,27 @@ class FCMManager {
 
   static Future<void> initialize() async {
     try {
-      print('Initializing Native FCM service...');
+      debugPrint('Initializing Native FCM service...');
       
       final String? token = await TyradsSdkPlatform.instance.initializeFCM();
       if (token != null) {
-        print('Native FCM Token: $token');
+        debugPrint('Native FCM Token: $token');
         await _saveToken(token);
       }
       
       _setupMessageHandlers();
-      print('Native FCM service initialized successfully');
+      debugPrint('Native FCM service initialized successfully');
     } catch (error) {
-      print('Native FCM initialization failed: $error');
+      debugPrint('Native FCM initialization failed: $error');
     }
   }
 
   static Future<void> _saveToken(String token) async {
-    print('Saving FCM token: $token');
+    debugPrint('Saving FCM token: $token');
     try {
       await Tyrads.instance.prefs.setString(AcmoKeyNames.FCM_TOKEN, token);
     } catch (error) {
-      print('Failed to save FCM token $error');
+      debugPrint('Failed to save FCM token $error');
     }
   }
 
@@ -107,19 +107,19 @@ class FCMManager {
       final type = event['type'];
       final data = Map<String, dynamic>.from(event['data'] ?? {});
       
-      print('Notification Event Received: $type');
-      print('Notification Data: $data');
+      debugPrint('Notification Event Received: $type');
+      debugPrint('Notification Data: $data');
       
       if (type == 'onClick') {
         _handleMessageData(data);
       }
     });
 
-    print('Native message handlers setup complete');
+    debugPrint('Native message handlers setup complete');
   }
 
   static void _handleMessageData(Map<String, dynamic> data) {
-    print('Message data :$data');
+    debugPrint('Message data :$data');
     final deeplink = data['deepLink'] ?? data['deeplink'];
     if (deeplink != null && deeplink != '') {
       handleDeepLink(deeplink.toString());
@@ -129,7 +129,7 @@ class FCMManager {
   static Future<void> dispose() async {
     await _notificationSubscription?.cancel();
     _notificationSubscription = null;
-    print('FCM service disposed');
+    debugPrint('FCM service disposed');
   }
 }
 

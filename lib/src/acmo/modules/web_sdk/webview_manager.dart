@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:tyrads_sdk/src/acmo/core/helpers/platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -74,10 +75,10 @@ class WebViewManager {
     }
 
     if (_isSdkHost(host)) {
-      print('[WebView] Allowing internal SDK navigation: $uri');
+      debugPrint('[WebView] Allowing internal SDK navigation: $uri');
       return NavigationActionPolicy.ALLOW;
     }
-    print('[WebView] Opening external URL: $uri');
+    debugPrint('[WebView] Opening external URL: $uri');
     await launchUrlString(
       uri.toString(),
       mode: LaunchMode.externalApplication,
